@@ -4,6 +4,8 @@
 
 本项目已有 `ai-runtime/` 基础代码及 Java Gateway/Knowledge 四模块。知识资料受理与查询按参考规则独立实现，旧数据和旧部署未迁入；以下原项目映射仍是固定取证证据。
 
+本轮同步基线 `1b02f504dd8af5ee49a9036762722f58fb887f36` → S2 工作树：`ai-runtime/processing` 与 P01/P02、三框架正式锁、本地 AI 启停及真实模型证据同步到运行 README、架构/选型、契约与 QA。历史候选解析仍保留原范围；当前三框架运行与真实模型状态以 [S2 验收](qa/knowledge-processing-20261020/TEST_RESULT.md)为准。
+
 ## 权威文档
 
 - 当前需求：[首期业务与工程约定](design/knowledge-first-20261020/BRIEF.md)；当前进度：[准备与实施进度](design/knowledge-first-20261020/PROGRESS_STATE.md)。

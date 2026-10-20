@@ -349,18 +349,46 @@ def stop(service: str | None = None) -> None:
 def main() -> None:
     """入口默认不打印凭据，token 命令仅生成受保护文件。"""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["init", "start", "stop", "status", "token", "test"])
+    parser.add_argument(
+        "command",
+        choices=[
+            "init",
+            "start",
+            "stop",
+            "status",
+            "token",
+            "test",
+            "init-ai",
+            "start-ai",
+            "stop-ai",
+        ],
+    )
     parser.add_argument("--service", choices=SERVICES)
+    parser.add_argument("--reference-env", type=Path, help="已获授权的来源模型环境文件")
     args = parser.parse_args()
-    if args.command == "init":
+    if args.command in {"init-ai", "start-ai", "stop-ai"}:
+        import ai_local
+
+        if args.command == "init-ai":
+            if args.reference_env is None:
+                parser.error("init-ai 需要 --reference-env")
+            ai_local.init(args.reference_env)
+        elif args.command == "start-ai":
+            ai_local.start()
+        else:
+            ai_local.stop()
+    elif args.command == "init":
         init()
     elif args.command == "start":
         start(args.service)
     elif args.command == "stop":
         stop(args.service)
     elif args.command == "status":
+        import ai_local
+
         for name in SERVICES:
             print(f"{name}: {'running' if alive(name) else 'stopped'}")
+        print(f"ai-runtime: {'running' if ai_local.alive() else 'stopped'}")
     elif args.command == "token":
         load()
         private(

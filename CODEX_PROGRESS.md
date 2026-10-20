@@ -1,9 +1,9 @@
 # Codex Progress
 
-- 当前任务：`knowledge-ingestion-20261020`；用户要求开始执行后续实施，推进独立知识入库路径。
+- 当前任务：`knowledge-processing-20261020`；用户要求继续后续实施，推进三框架接入与知识处理、发布、检索。
 - 当前唯一状态与恢复入口：[独立知识平台准备进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 - 业务与交付基线：[首期约定](docs/design/knowledge-first-20261020/BRIEF.md)；架构与选型继续在原权威文档维护。
-- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`。S1 实现提交 `05d1779` 已正常合并并推送 `main`，远端核对一致；任务分支 `feat/knowledge-ingestion-20261020` 的文档收尾沿同一流程交付。下一阶段依赖已盘点，真实模型账号/地域/预算待必要答复；完整知识库和 React 尚未完成。源码摘要、运行服务及证据见唯一进度文档。
+- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`。当前任务分支 `feat/knowledge-processing-20261020`，起点 `1b02f504dd8af5ee49a9036762722f58fb887f36`。用户已确认沿用原百炼账号/地域，本轮真实 Embedding 调用费用上限 1 元。先冻结准备结果与处理契约，再连续实现和验证；完整知识库和 React 尚未完成。运行状态、任务清单、授权和证据见唯一进度文档。
 - 上一任务：[选型与迁移进度](docs/design/platform-selection-20261020/PROGRESS_STATE.md)，已完成；保留历史事实与证据。
 
 ## 前期可行性任务记录

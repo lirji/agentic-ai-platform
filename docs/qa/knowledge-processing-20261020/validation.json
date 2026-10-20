@@ -1,0 +1,77 @@
+{
+  "slice": "S2",
+  "baseCommit": "1b02f504dd8af5ee49a9036762722f58fb887f36",
+  "revisionKind": "working_tree_sha256",
+  "revision": "2cff0d78383caea8b91635d37be28346c49ae83573c1956ca27de5dd785b3125",
+  "files": {
+    "ai-runtime/.env.example": "70d7d56b779df3982d387814a9550f8120510f2cd35069b6ba1ede4773bbd0db",
+    "ai-runtime/pyproject.toml": "43a5856941c6c6ad1b53df94026cd8eeb7b289665c74058ab32c1b1604346af2",
+    "ai-runtime/src/agentic_ai/__init__.py": "79f73549e17372045759a0b3afab298f10403b9bf5a39ba05ff05903c18988b4",
+    "ai-runtime/src/agentic_ai/adapters/__init__.py": "f30902c8ac3207cf2ad9c2dd750312ec24e328cfaee79e1bd9877c320c14dfd6",
+    "ai-runtime/src/agentic_ai/adapters/openai_embedding.py": "eb96684dda328f3509dbedebdcdb98c44345b73eb612d3b6de13626f9de22982",
+    "ai-runtime/src/agentic_ai/api/__init__.py": "8d83f36a273430995eb45cf45fc4bcb09b1683e2f8b6cd94049f36bf8785bec1",
+    "ai-runtime/src/agentic_ai/api/app.py": "c5184752403180986a4e0df6a7bcd53d73807ebed8e3799ca1a707f378124641",
+    "ai-runtime/src/agentic_ai/api/processing.py": "ea1056f37d1f7259cdf93c3f2be71eb350f6adc106cda97b6dd6a83e061fe3ef",
+    "ai-runtime/src/agentic_ai/cli.py": "1845293b57d684c460d26c3168d8578a7280b7ff2f83175642c84c043640a8d9",
+    "ai-runtime/src/agentic_ai/processing/__init__.py": "0ee351d510e0c568ec7703c09ff434af0bc8b11d7a513176d57d864b7c281802",
+    "ai-runtime/src/agentic_ai/processing/errors.py": "9f178fbf544777fa01121237b445d8a9fcf7ad3c8c9b12a281492ea180aa8123",
+    "ai-runtime/src/agentic_ai/processing/identity.py": "2e4c858396e6151c59a4c27a8db5a0a48fac7c081b6fce48b8918302182dcb71",
+    "ai-runtime/src/agentic_ai/processing/models.py": "f4d046bdaf0c7944d54a3aa0fa7b5bc3978054a0ceee7190dc69879970c87f06",
+    "ai-runtime/src/agentic_ai/processing/pipeline.py": "fc9f9021f93e64296068963817627f435f9165bb48afcbf581002ac22779be20",
+    "ai-runtime/src/agentic_ai/rag/__init__.py": "e2a6c40222be61e85821e0d6e5efcb35cf9bb5c4c7b25bcb8490b45bf64abbd9",
+    "ai-runtime/src/agentic_ai/rag/errors.py": "acecf04d1fdd1e50e9599913e6cbd61d61cb6875fd2c40f8e7382cedbbf816c8",
+    "ai-runtime/src/agentic_ai/rag/ports.py": "875dcb8326ac317fcaafd24ea798a4827e5f93ead779af7488360ec2763335dc",
+    "ai-runtime/src/agentic_ai/runtime/__init__.py": "e5211bf19ec6a30b1463d96559a65ccb545ffde481666323a0b46c758d48301a",
+    "ai-runtime/src/agentic_ai/runtime/embedding_config.py": "7a9857ceefa83b33803493095a1dd0b89cc01a7d00b4dbcfbcfe886c99acacc7",
+    "ai-runtime/src/agentic_ai/runtime/processing_config.py": "6ee805c6b87e7626385f1e7e7c2a97fab383a10f22a42db71f2999f92b61ec18",
+    "ai-runtime/tests/conftest.py": "494554e0e8e0e93a80c70fbcaa1a31bcc09e97982430768ca7d11e092f08608d",
+    "ai-runtime/tests/test_config_and_entrypoints.py": "812ad850a0eb1dbd3646cda76004c9e7a7469a1c6f532325fbaeb9be9c95496c",
+    "ai-runtime/tests/test_embedding_adapter.py": "05d3c73b81ea1060600aac34d1e9faeb12227690afb338abf3a43b98bb4105ad",
+    "ai-runtime/tests/test_framework_compatibility.py": "febd7873e5e3a5fb4c65ad0b3f8f22b5fb201027833bfaddf7cc5ee0eff564a5",
+    "ai-runtime/tests/test_http_process.py": "b140a4a79455a867005c0acc9079c548c82750a1e812cfda4855ea8988392d88",
+    "ai-runtime/tests/test_processing.py": "329dd4f9f8b2948caa417343ff94915b7619f04e661ac8c099e51031caa191a2",
+    "ai-runtime/uv.lock": "028296e3fb9f4171042455076fe653eb6a6e5a3a0eff4ec65bf55362a5f651a3",
+    "deploy/ai_local.py": "99511ce0f569059956399f03ea3430cc55a4a24e1aa0a0df104792dc59483b61",
+    "deploy/local.py": "1f0a145bf0e00c31b200248d70b694749d1a9409e4cb9229e99a34b7e482a38d",
+    "deploy/processing_smoke.py": "ebf71cc6fbaa59b3cb165a05d6cbed823b6059dc66f406abea885c615f46a4a9"
+  },
+  "checks": [
+    {
+      "name": "FORMAT",
+      "result": "PASS"
+    },
+    {
+      "name": "STATIC_ANALYSIS",
+      "result": "PASS"
+    },
+    {
+      "name": "TYPECHECK",
+      "result": "PASS"
+    },
+    {
+      "name": "UNIT_AND_INTEGRATION_103",
+      "result": "PASS"
+    },
+    {
+      "name": "BUILD",
+      "result": "PASS"
+    },
+    {
+      "name": "REAL_MODEL_HTTP",
+      "result": "PASS"
+    },
+    {
+      "name": "DEPENDENCY_REVIEW_WITH_NLTK_EXCEPTION",
+      "result": "PASS"
+    },
+    {
+      "name": "DIFF_HYGIENE",
+      "result": "PASS"
+    }
+  ],
+  "externalModelCalls": 2,
+  "reservedCny": "0.02",
+  "budgetCny": "1",
+  "billing": "conservative reservation, actual bill not queried",
+  "documentLinksChecked": 167
+}

@@ -1,6 +1,23 @@
-# S1 本地运行
+# 本地运行
 
 该入口用于开发验证。使用独立 Gateway/Knowledge 进程与项目独占数据库、账号、原文桶；共享 `dev-infra` 的 MySQL 8.4 和 MinIO 实例。不会修改、停止旧业务服务，不执行生产部署。
+
+## S2 Python 知识准备服务
+
+先在 `ai-runtime/` 执行 `uv sync --frozen --python 3.12`。回到项目根目录：
+
+```bash
+python3 deploy/local.py init-ai --reference-env /已授权的来源项目/deploy/.env
+python3 deploy/local.py start-ai
+python3 deploy/local.py status
+python3 deploy/local.py stop-ai
+```
+
+`init-ai` 仅在已有授权时从来源 `.env` 指定的百炼 CSV 读取 Embedding 密钥与接口，不执行来源脚本、不迁入其他配置、不调用模型。已存在本项目配置则不覆盖。凭据在 `.local/ai-runtime.json`，Knowledge 专用服务密钥在 `.local/knowledge-ai-{private,public}.pem`，权限 0600；Python 只需公钥。不要提交或展示这些文件。
+
+AI 绑定 `127.0.0.1:28085`，PID 在 `.local/ai-runtime.pid`，日志在 `.logs/ai-runtime.log`。存活端点仅证明 HTTP 可用，内部接口和必要配置见 [P01/P02](../docs/design/knowledge-first-20261020/PROCESSING_CONTRACTS.md)。该进程目前不接收公开网关流量，也不直接写入知识数据库。
+
+获授权后可运行 `ai-runtime/.venv/bin/python deploy/processing_smoke.py`，它发送少量固定合成文本，独立重算返回摘要，并先在 `.local/embedding-budget-20261020.json` 锁定预留费用；未知结果仍计入预留，达到 1 元则拒绝继续。该文件属于本轮操作预算，不能删除后重跑来重置额度；不是供应商账单或正式租户计费系统。
 
 ## 前提与启动
 

@@ -16,6 +16,20 @@ S1 已追加知识受理/查询的一致性审查与冻结契约，见下文。�
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | S0 | 开发者可启动 AI 运行时存活端点、验证真实模型配置；内部 Embedding 客户端正确分批并拒绝错误响应及 hash 配置 | D0 文档基线已交付；R01/H01 已冻结 | backend：`ai-runtime/`，根 `.gitignore`；必要 CI 与文档由对应 Owner 同步 | R01/H01；无数据库迁移 | no；首次定义共享运行入口与错误目录 | 下列 S0-AC 全部满足 | Python 3.12、HTTPX、FastAPI；本片不启动数据库/模型服务 | DONE |
 | S1 | API 客户端通过独立网关鉴权提交资料，原文与受理状态真实持久化，并能分页查询自己的资料与任务 | S0；KNOWLEDGE_CONTRACTS K01/K02/K03 查询与身份边界 | backend：根 Maven、platform-contracts/security、knowledge-service、edge-gateway；runtime：deploy；doc：当前设计/验证/进度 | Knowledge 独占本项目数据库 V1、S3 桶；不导入旧数据 | no；首次共享安全/迁移与 Runtime | 下列 S1-AC | JDK 21、独立 IAM/内部密钥、dev-infra MySQL/S3 | DONE |
+| S2 | Knowledge 客户端经独立服务身份调用 Python，取得有来源定位和真实向量的版本化准备结果及查询向量 | S0/S1；PROCESSING_CONTRACTS P01/P02；模型账号/地域/1 元授权已确认 | backend：ai-runtime；runtime：deploy 本地 AI 启动/私密配置；docs：既有设计/QA | Python 只计算准备结果，不写 Knowledge/检索存储；无业务迁移 | no；首次跨语言准备契约 | 下列 S2-AC | 已选三框架、PyJWT RSA 验签、真实百炼；服务密钥独立 | DONE |
+
+### S2 有限验收
+
+人工一致性检查：沿已批准 Python AI/Java 数据边界细化 P01/P02；复用 R01，原 H01 默认行为兼容。PyJWT 仅补充该接口 RSA 验签，不新增身份服务。框架版本沿候选主线，正式锁及本机运行、许可证/漏洞在本片验证。
+
+1. **S2-AC1**：三框架在正式锁中共同安装/导入；LangGraph 固定处理图、LlamaIndex 实际分块、Deep Agents 工具/流式调用由独立测试验证。测试替身不进入产品配置；PG 恢复与真实聊天不计入本片。
+2. **S2-AC2**：P01/P02 拒绝伪签名、过期/错误 issuer/audience/azp/scope、身份不匹配；未知字段/错误类型/错误哈希/超大正文被拒绝，错误及日志不含输入和秘密。
+3. **S2-AC3**：中文/英文/重复段落/Unicode/CRLF 原文的分块位置、稳定 ID、摘要可复现；块数、向量数量/维度/有限值严格校验，失败不截断或 fallback。
+4. **S2-AC4**：并发超限立即拒绝，总期限与取消生效，失败后容量归还；请求状态互不串用，框架不上传原文观测。
+5. **S2-AC5**：在授权地域用少量合成文本完成真实 1024 维准备/查询验证；本轮费用预留与已知用量记录不超 1 元；真实 HTTP 认证端点验证成功和拒绝路径。
+6. **S2-AC6**：Ruff/mypy/pytest/构建、依赖与代码卫生检查、源码摘要/文档同步通过；明确准备成功不等于索引发布完成。
+
+验证：[S2 TEST_RESULT](../../qa/knowledge-processing-20261020/TEST_RESULT.md)。103 项测试、真实准备/查询与本地 HTTP 通过；NLTK 当前路径适用性、工具发现限制、PG/生产未验证范围明确保留。
 
 ### S0 有限验收
 

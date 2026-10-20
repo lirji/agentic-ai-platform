@@ -1,0 +1,592 @@
+[
+  {
+    "name": "Deprecated",
+    "version": "3.0.0",
+    "license": "MIT"
+  },
+  {
+    "name": "Jinja2",
+    "version": "3.1.6",
+    "license": "License :: OSI Approved :: BSD License"
+  },
+  {
+    "name": "MarkupSafe",
+    "version": "3.0.4",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "PyJWT",
+    "version": "2.15.1",
+    "license": "MIT"
+  },
+  {
+    "name": "PyYAML",
+    "version": "6.0.3",
+    "license": "MIT"
+  },
+  {
+    "name": "Pygments",
+    "version": "2.21.0",
+    "license": "BSD-2-Clause"
+  },
+  {
+    "name": "SQLAlchemy",
+    "version": "2.1.5",
+    "license": "MIT"
+  },
+  {
+    "name": "aiohappyeyeballs",
+    "version": "2.7.1",
+    "license": "PSF-2.0"
+  },
+  {
+    "name": "aiohttp",
+    "version": "3.14.5",
+    "license": "Apache-2.0 AND MIT"
+  },
+  {
+    "name": "aiosignal",
+    "version": "1.4.0",
+    "license": "Apache 2.0"
+  },
+  {
+    "name": "aiosqlite",
+    "version": "0.22.1",
+    "license": "License :: OSI Approved :: MIT License"
+  },
+  {
+    "name": "annotated-doc",
+    "version": "0.0.5",
+    "license": "MIT"
+  },
+  {
+    "name": "annotated-types",
+    "version": "0.8.0",
+    "license": "MIT"
+  },
+  {
+    "name": "anthropic",
+    "version": "1.15.0",
+    "license": "MIT"
+  },
+  {
+    "name": "anyio",
+    "version": "4.15.1",
+    "license": "MIT"
+  },
+  {
+    "name": "attrs",
+    "version": "26.1.0",
+    "license": "MIT"
+  },
+  {
+    "name": "banks",
+    "version": "2.5.1",
+    "license": "MIT"
+  },
+  {
+    "name": "bracex",
+    "version": "3.1",
+    "license": "MIT"
+  },
+  {
+    "name": "certifi",
+    "version": "2026.10.19",
+    "license": "MPL-2.0"
+  },
+  {
+    "name": "cffi",
+    "version": "2.1.1",
+    "license": "MIT-0"
+  },
+  {
+    "name": "charset-normalizer",
+    "version": "3.5.2",
+    "license": "MIT"
+  },
+  {
+    "name": "click",
+    "version": "8.5.0",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "cloudpickle",
+    "version": "3.1.2",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "colorama",
+    "version": "0.4.6",
+    "license": "License :: OSI Approved :: BSD License"
+  },
+  {
+    "name": "cryptography",
+    "version": "50.0.2",
+    "license": "Apache-2.0 OR BSD-3-Clause"
+  },
+  {
+    "name": "dataclasses-json",
+    "version": "0.6.7",
+    "license": "MIT"
+  },
+  {
+    "name": "deepagents",
+    "version": "0.7.28",
+    "license": "MIT"
+  },
+  {
+    "name": "defusedxml",
+    "version": "0.7.1",
+    "license": "PSFL"
+  },
+  {
+    "name": "dirtyjson",
+    "version": "1.0.8",
+    "license": "MIT License"
+  },
+  {
+    "name": "distro",
+    "version": "1.9.0",
+    "license": "Apache License, Version 2.0"
+  },
+  {
+    "name": "docstring_parser",
+    "version": "0.18.0",
+    "license": "MIT"
+  },
+  {
+    "name": "fastapi",
+    "version": "0.151.0",
+    "license": "MIT"
+  },
+  {
+    "name": "filetype",
+    "version": "1.2.0",
+    "license": "MIT"
+  },
+  {
+    "name": "frozenlist",
+    "version": "1.8.0",
+    "license": "Apache-2.0"
+  },
+  {
+    "name": "fsspec",
+    "version": "2026.9.0",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "google-auth",
+    "version": "2.62.0",
+    "license": "Apache 2.0"
+  },
+  {
+    "name": "google-genai",
+    "version": "2.31.0",
+    "license": "Apache-2.0"
+  },
+  {
+    "name": "greenlet",
+    "version": "3.5.6",
+    "license": "MIT AND PSF-2.0"
+  },
+  {
+    "name": "griffe",
+    "version": "2.4.0",
+    "license": "ISC"
+  },
+  {
+    "name": "griffecli",
+    "version": "2.4.0",
+    "license": "ISC"
+  },
+  {
+    "name": "griffelib",
+    "version": "2.4.0",
+    "license": "ISC"
+  },
+  {
+    "name": "h11",
+    "version": "0.16.0",
+    "license": "MIT"
+  },
+  {
+    "name": "httpcore",
+    "version": "1.0.9",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "httpcore2",
+    "version": "2.15.1",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "httpx",
+    "version": "0.28.1",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "httpx2",
+    "version": "2.15.1",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "idna",
+    "version": "3.20",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "iniconfig",
+    "version": "2.3.1",
+    "license": "MIT"
+  },
+  {
+    "name": "jiter",
+    "version": "0.17.0",
+    "license": "MIT"
+  },
+  {
+    "name": "joblib",
+    "version": "1.6.0",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "jsonpatch",
+    "version": "1.36",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "jsonpointer",
+    "version": "3.4",
+    "license": "Modified BSD License"
+  },
+  {
+    "name": "langchain",
+    "version": "1.4.6",
+    "license": "MIT"
+  },
+  {
+    "name": "langchain-anthropic",
+    "version": "1.7.6",
+    "license": "MIT"
+  },
+  {
+    "name": "langchain-core",
+    "version": "1.6.12",
+    "license": "MIT"
+  },
+  {
+    "name": "langchain-google-genai",
+    "version": "4.4.2",
+    "license": "MIT"
+  },
+  {
+    "name": "langchain-openai",
+    "version": "1.7.2",
+    "license": "MIT"
+  },
+  {
+    "name": "langchain-protocol",
+    "version": "0.0.20",
+    "license": "MIT"
+  },
+  {
+    "name": "langgraph",
+    "version": "1.2.16",
+    "license": "MIT"
+  },
+  {
+    "name": "langgraph-checkpoint",
+    "version": "4.3.0",
+    "license": "MIT"
+  },
+  {
+    "name": "langgraph-checkpoint-postgres",
+    "version": "3.2.0",
+    "license": "MIT"
+  },
+  {
+    "name": "langgraph-prebuilt",
+    "version": "1.1.1",
+    "license": "MIT"
+  },
+  {
+    "name": "langgraph-sdk",
+    "version": "0.4.8",
+    "license": "MIT"
+  },
+  {
+    "name": "langsmith",
+    "version": "0.14.11",
+    "license": "MIT"
+  },
+  {
+    "name": "librt",
+    "version": "0.16.0",
+    "license": "MIT"
+  },
+  {
+    "name": "llama-index-core",
+    "version": "0.14.25",
+    "license": "MIT"
+  },
+  {
+    "name": "llama-index-instrumentation",
+    "version": "0.6.0",
+    "license": "MIT"
+  },
+  {
+    "name": "llama-index-workflows",
+    "version": "2.26.0",
+    "license": "MIT"
+  },
+  {
+    "name": "marshmallow",
+    "version": "3.26.2",
+    "license": "License :: OSI Approved :: MIT License"
+  },
+  {
+    "name": "multidict",
+    "version": "7.1.0",
+    "license": "Apache-2.0"
+  },
+  {
+    "name": "mypy",
+    "version": "1.20.2",
+    "license": "MIT"
+  },
+  {
+    "name": "mypy_extensions",
+    "version": "1.1.0",
+    "license": "MIT"
+  },
+  {
+    "name": "nest-asyncio",
+    "version": "1.6.0",
+    "license": "BSD"
+  },
+  {
+    "name": "networkx",
+    "version": "3.7",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "nltk",
+    "version": "3.10.3",
+    "license": "Apache License, Version 2.0"
+  },
+  {
+    "name": "numpy",
+    "version": "2.5.4",
+    "license": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0"
+  },
+  {
+    "name": "openai",
+    "version": "3.35.1",
+    "license": "Apache-2.0"
+  },
+  {
+    "name": "opentelemetry-api",
+    "version": "1.45.1",
+    "license": "Apache-2.0"
+  },
+  {
+    "name": "orjson",
+    "version": "3.13.0",
+    "license": "MPL-2.0 AND (Apache-2.0 OR MIT)"
+  },
+  {
+    "name": "ormsgpack",
+    "version": "1.13.0",
+    "license": "Apache-2.0 OR MIT"
+  },
+  {
+    "name": "packaging",
+    "version": "26.3",
+    "license": "Apache-2.0 OR BSD-2-Clause"
+  },
+  {
+    "name": "pathspec",
+    "version": "1.1.1",
+    "license": "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)"
+  },
+  {
+    "name": "pillow",
+    "version": "13.0.0",
+    "license": "MIT-CMU"
+  },
+  {
+    "name": "platformdirs",
+    "version": "4.13.5",
+    "license": "MIT"
+  },
+  {
+    "name": "pluggy",
+    "version": "1.7.0",
+    "license": "MIT"
+  },
+  {
+    "name": "propcache",
+    "version": "0.5.4",
+    "license": "Apache-2.0"
+  },
+  {
+    "name": "psycopg",
+    "version": "3.3.6",
+    "license": "LGPL-3.0-only"
+  },
+  {
+    "name": "psycopg-pool",
+    "version": "3.3.3",
+    "license": "LGPL-3.0-only"
+  },
+  {
+    "name": "pyasn1",
+    "version": "0.6.4",
+    "license": "BSD-2-Clause"
+  },
+  {
+    "name": "pyasn1_modules",
+    "version": "0.4.2",
+    "license": "BSD"
+  },
+  {
+    "name": "pycparser",
+    "version": "3.11",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "pydantic",
+    "version": "2.14.1",
+    "license": "MIT"
+  },
+  {
+    "name": "pydantic_core",
+    "version": "2.50.1",
+    "license": "MIT"
+  },
+  {
+    "name": "pytest",
+    "version": "9.1.1",
+    "license": "MIT"
+  },
+  {
+    "name": "regex",
+    "version": "2026.9.29",
+    "license": "Apache-2.0 AND CNRI-Python"
+  },
+  {
+    "name": "requests",
+    "version": "2.34.2",
+    "license": "Apache-2.0"
+  },
+  {
+    "name": "requests-toolbelt",
+    "version": "1.0.0",
+    "license": "Apache 2.0"
+  },
+  {
+    "name": "ruff",
+    "version": "0.17.1",
+    "license": "MIT"
+  },
+  {
+    "name": "setuptools",
+    "version": "84.2.0",
+    "license": "MIT"
+  },
+  {
+    "name": "sniffio",
+    "version": "1.3.1",
+    "license": "MIT OR Apache-2.0"
+  },
+  {
+    "name": "starlette",
+    "version": "1.9.0",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "tenacity",
+    "version": "9.1.4",
+    "license": "Apache 2.0"
+  },
+  {
+    "name": "tiktoken",
+    "version": "0.14.0",
+    "license": "MIT License\n\nCopyright (c) 2022 OpenAI, Shantanu Jain\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n"
+  },
+  {
+    "name": "tinytag",
+    "version": "2.3.2",
+    "license": "License :: OSI Approved :: MIT License"
+  },
+  {
+    "name": "tqdm",
+    "version": "4.70.1",
+    "license": "MPL-2.0 AND MIT"
+  },
+  {
+    "name": "truststore",
+    "version": "0.10.5",
+    "license": "MIT"
+  },
+  {
+    "name": "typing-inspect",
+    "version": "0.9.0",
+    "license": "MIT"
+  },
+  {
+    "name": "typing-inspection",
+    "version": "0.4.4",
+    "license": "MIT"
+  },
+  {
+    "name": "typing_extensions",
+    "version": "4.16.0",
+    "license": "PSF-2.0"
+  },
+  {
+    "name": "urllib3",
+    "version": "2.8.0",
+    "license": "MIT"
+  },
+  {
+    "name": "uuid_utils",
+    "version": "0.18.0",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "uvicorn",
+    "version": "0.54.0",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "wcmatch",
+    "version": "11.1",
+    "license": "MIT"
+  },
+  {
+    "name": "websockets",
+    "version": "16.1.1",
+    "license": "BSD-3-Clause"
+  },
+  {
+    "name": "wrapt",
+    "version": "2.5.1",
+    "license": "BSD-2-Clause"
+  },
+  {
+    "name": "xxhash",
+    "version": "4.0.2",
+    "license": "BSD-2-Clause"
+  },
+  {
+    "name": "yarl",
+    "version": "1.25.1",
+    "license": "Apache-2.0"
+  },
+  {
+    "name": "zstandard",
+    "version": "0.25.0",
+    "license": "BSD-3-Clause"
+  }
+]

@@ -1,0 +1,752 @@
+{
+  "source": "PyPI release metadata (vulnerabilities supplied by advisory feed)",
+  "packageCount": 118,
+  "packages": [
+    {
+      "name": "Deprecated",
+      "version": "3.0.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.4",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "PyJWT",
+      "version": "2.15.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "PyYAML",
+      "version": "6.0.3",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "Pygments",
+      "version": "2.21.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "SQLAlchemy",
+      "version": "2.1.5",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "aiohappyeyeballs",
+      "version": "2.7.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "aiohttp",
+      "version": "3.14.5",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "aiosignal",
+      "version": "1.4.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "aiosqlite",
+      "version": "0.22.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "annotated-doc",
+      "version": "0.0.5",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.8.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "anthropic",
+      "version": "1.15.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "anyio",
+      "version": "4.15.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "attrs",
+      "version": "26.1.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "banks",
+      "version": "2.5.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "bracex",
+      "version": "3.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "certifi",
+      "version": "2026.10.19",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.5.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "click",
+      "version": "8.5.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "cloudpickle",
+      "version": "3.1.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "colorama",
+      "version": "0.4.6",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "cryptography",
+      "version": "50.0.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "dataclasses-json",
+      "version": "0.6.7",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "deepagents",
+      "version": "0.7.28",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "defusedxml",
+      "version": "0.7.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "dirtyjson",
+      "version": "1.0.8",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "distro",
+      "version": "1.9.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "docstring_parser",
+      "version": "0.18.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "fastapi",
+      "version": "0.151.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "filetype",
+      "version": "1.2.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "frozenlist",
+      "version": "1.8.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "fsspec",
+      "version": "2026.9.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "google-auth",
+      "version": "2.62.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "google-genai",
+      "version": "2.31.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "greenlet",
+      "version": "3.5.6",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "griffe",
+      "version": "2.4.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "griffecli",
+      "version": "2.4.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "griffelib",
+      "version": "2.4.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "httpcore2",
+      "version": "2.15.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "httpx",
+      "version": "0.28.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "httpx2",
+      "version": "2.15.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "idna",
+      "version": "3.20",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "iniconfig",
+      "version": "2.3.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "jiter",
+      "version": "0.17.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "joblib",
+      "version": "1.6.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "jsonpatch",
+      "version": "1.36",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "jsonpointer",
+      "version": "3.4",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langchain",
+      "version": "1.4.6",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langchain-anthropic",
+      "version": "1.7.6",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langchain-core",
+      "version": "1.6.12",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langchain-google-genai",
+      "version": "4.4.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langchain-openai",
+      "version": "1.7.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langchain-protocol",
+      "version": "0.0.20",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langgraph",
+      "version": "1.2.16",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langgraph-checkpoint",
+      "version": "4.3.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langgraph-checkpoint-postgres",
+      "version": "3.2.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langgraph-prebuilt",
+      "version": "1.1.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langgraph-sdk",
+      "version": "0.4.8",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "langsmith",
+      "version": "0.14.11",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "librt",
+      "version": "0.16.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "llama-index-core",
+      "version": "0.14.25",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "llama-index-instrumentation",
+      "version": "0.6.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "llama-index-workflows",
+      "version": "2.26.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "marshmallow",
+      "version": "3.26.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "multidict",
+      "version": "7.1.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "mypy",
+      "version": "1.20.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "mypy_extensions",
+      "version": "1.1.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "nest-asyncio",
+      "version": "1.6.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "networkx",
+      "version": "3.7",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "nltk",
+      "version": "3.10.3",
+      "vulnerabilities": [
+        {
+          "aliases": [
+            "CVE-2026-81726",
+            "PYSEC-2026-3740"
+          ],
+          "details": "### Summary\n\nSeveral model-artifact APIs still treat caller-controlled model paths as ordinary filenames even when NLTK path security is enforced. The same outside-root paths are rejected by guarded helpers, but these public read and write flows still use raw file APIs.\n\n### Details\n\n- **Vulnerability type:** File sandbox bypass\n- **Affected component:** `TransitionParser.train`, `TransitionParser.parse`, `AveragedPerceptron.save`, `AveragedPerceptron.load`, `PerceptronTagger.save_to_json`, `save_maxent_params`\n- **Affected versions:** Published `3.9.4` and current source `v3.10.0-rc2` both reproduced.\n- **Patched versions:** Not yet patched\n- **Root cause:** Model import and export helpers use built-in `open()` on caller-controlled paths instead of pathsec-aware helpers.\n\n`TransitionParser.train()` writes outside allowed roots, `TransitionParser.parse()` reads outside allowed roots, `AveragedPerceptron` bypasses the sandbox in both directions, and adjacent read-side helpers in the same family already show the intended guarded behavior. I confirmed outside-root reads and writes while `pathsec.open()` or the guarded sibling helpers rejected the same paths.\n\n### PoC\n\n**Preconditions**\n- The application enables `pathsec` enforcement and lets untrusted workflows choose model import or export paths.\n\n**Steps**\n1. Enable `pathsec.ENFORCE=True` and restrict allowed roots to a dedicated sandbox directory.\n2. Use public model import or export APIs with paths that point outside that root.\n3. Observe the same paths are rejected by negative-control guarded helpers such as `pathsec.open()`, `PerceptronTagger.load_from_json()`, or `load_maxent_params()`.\n4. Observe the vulnerable APIs still read or write outside-root files successfully.\n\n**Minimal reproducible excerpt**\n\n```text\ntransition_train_exists True\ntransition_parse_loader_read_bytes 13\naveraged_load_keys ['bias']\nmaxent_save wrote ['alwayson.tab', 'labels.txt']\n```\n\n### Impact\n\nConsumers that rely on `pathsec` for local containment can be tricked into reading or overwriting files outside approved roots through normal model persistence and loading APIs.\n\n### Remediation\n\nRoute all model-path file access through `nltk.pathsec.open()` or existing pathsec-aware helpers, and add regression tests that pair each vulnerable API with a negative control on the same path.",
+          "fixed_in": [],
+          "id": "GHSA-8mgp-746c-j5xp",
+          "link": "https://osv.dev/vulnerability/GHSA-8mgp-746c-j5xp",
+          "source": "osv",
+          "summary": null,
+          "withdrawn": null
+        }
+      ],
+      "yanked": false
+    },
+    {
+      "name": "numpy",
+      "version": "2.5.4",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "openai",
+      "version": "3.35.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "opentelemetry-api",
+      "version": "1.45.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "orjson",
+      "version": "3.13.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "ormsgpack",
+      "version": "1.13.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "packaging",
+      "version": "26.3",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "pathspec",
+      "version": "1.1.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "pillow",
+      "version": "13.0.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "platformdirs",
+      "version": "4.13.5",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "pluggy",
+      "version": "1.7.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "propcache",
+      "version": "0.5.4",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "psycopg",
+      "version": "3.3.6",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "psycopg-pool",
+      "version": "3.3.3",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "pyasn1",
+      "version": "0.6.4",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "pyasn1_modules",
+      "version": "0.4.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "pycparser",
+      "version": "3.11",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "pydantic",
+      "version": "2.14.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "pydantic_core",
+      "version": "2.50.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "pytest",
+      "version": "9.1.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "regex",
+      "version": "2026.9.29",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "requests",
+      "version": "2.34.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "requests-toolbelt",
+      "version": "1.0.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "ruff",
+      "version": "0.17.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "setuptools",
+      "version": "84.2.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "sniffio",
+      "version": "1.3.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "starlette",
+      "version": "1.9.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "tenacity",
+      "version": "9.1.4",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "tiktoken",
+      "version": "0.14.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "tinytag",
+      "version": "2.3.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "tqdm",
+      "version": "4.70.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "truststore",
+      "version": "0.10.5",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "typing-inspect",
+      "version": "0.9.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.4",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "urllib3",
+      "version": "2.8.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "uuid_utils",
+      "version": "0.18.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.54.0",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "wcmatch",
+      "version": "11.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "websockets",
+      "version": "16.1.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "wrapt",
+      "version": "2.5.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "xxhash",
+      "version": "4.0.2",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "yarl",
+      "version": "1.25.1",
+      "vulnerabilities": [],
+      "yanked": false
+    },
+    {
+      "name": "zstandard",
+      "version": "0.25.0",
+      "vulnerabilities": [],
+      "yanked": false
+    }
+  ],
+  "findings": [
+    {
+      "name": "nltk",
+      "version": "3.10.3",
+      "vulnerabilities": [
+        {
+          "aliases": [
+            "CVE-2026-81726",
+            "PYSEC-2026-3740"
+          ],
+          "details": "### Summary\n\nSeveral model-artifact APIs still treat caller-controlled model paths as ordinary filenames even when NLTK path security is enforced. The same outside-root paths are rejected by guarded helpers, but these public read and write flows still use raw file APIs.\n\n### Details\n\n- **Vulnerability type:** File sandbox bypass\n- **Affected component:** `TransitionParser.train`, `TransitionParser.parse`, `AveragedPerceptron.save`, `AveragedPerceptron.load`, `PerceptronTagger.save_to_json`, `save_maxent_params`\n- **Affected versions:** Published `3.9.4` and current source `v3.10.0-rc2` both reproduced.\n- **Patched versions:** Not yet patched\n- **Root cause:** Model import and export helpers use built-in `open()` on caller-controlled paths instead of pathsec-aware helpers.\n\n`TransitionParser.train()` writes outside allowed roots, `TransitionParser.parse()` reads outside allowed roots, `AveragedPerceptron` bypasses the sandbox in both directions, and adjacent read-side helpers in the same family already show the intended guarded behavior. I confirmed outside-root reads and writes while `pathsec.open()` or the guarded sibling helpers rejected the same paths.\n\n### PoC\n\n**Preconditions**\n- The application enables `pathsec` enforcement and lets untrusted workflows choose model import or export paths.\n\n**Steps**\n1. Enable `pathsec.ENFORCE=True` and restrict allowed roots to a dedicated sandbox directory.\n2. Use public model import or export APIs with paths that point outside that root.\n3. Observe the same paths are rejected by negative-control guarded helpers such as `pathsec.open()`, `PerceptronTagger.load_from_json()`, or `load_maxent_params()`.\n4. Observe the vulnerable APIs still read or write outside-root files successfully.\n\n**Minimal reproducible excerpt**\n\n```text\ntransition_train_exists True\ntransition_parse_loader_read_bytes 13\naveraged_load_keys ['bias']\nmaxent_save wrote ['alwayson.tab', 'labels.txt']\n```\n\n### Impact\n\nConsumers that rely on `pathsec` for local containment can be tricked into reading or overwriting files outside approved roots through normal model persistence and loading APIs.\n\n### Remediation\n\nRoute all model-path file access through `nltk.pathsec.open()` or existing pathsec-aware helpers, and add regression tests that pair each vulnerable API with a negative control on the same path.",
+          "fixed_in": [],
+          "id": "GHSA-8mgp-746c-j5xp",
+          "link": "https://osv.dev/vulnerability/GHSA-8mgp-746c-j5xp",
+          "source": "osv",
+          "summary": null,
+          "withdrawn": null
+        }
+      ],
+      "yanked": false
+    }
+  ],
+  "skipped": [],
+  "osvDirect": "TLS EOF; used PyPI release advisories instead"
+}

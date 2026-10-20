@@ -1,0 +1,14 @@
+{
+  "slice": "S2",
+  "checks": {
+    "unauthenticated": "PASS",
+    "owner_mismatch": "PASS",
+    "real_prepare_1024_and_digests": "PASS",
+    "real_query_1024": "PASS"
+  },
+  "sampleBytes": 115,
+  "chunkCount": 1,
+  "reservedCny": "0.02",
+  "budgetCny": "1",
+  "billing": "保守预留，未读取供应商账单"
+}

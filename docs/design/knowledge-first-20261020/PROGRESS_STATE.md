@@ -1,6 +1,20 @@
 # 独立知识平台准备进度
 
-## 当前任务：知识入库实施
+## 当前任务：知识处理与检索实施
+
+- 标识：`knowledge-processing-20261020`；最新指令“继续后续的实施”，延续知识平台完整目标与正常 Git 交付授权。
+- 当前状态：`S2 DONE / S3 契约细化`。S0/S1 已交付；S2 三框架正式锁、Python 准备/查询向量、独立服务身份与真实模型验收通过。下一步 Java 领取、索引提交、发布及检索，完整知识平台尚未完成。
+- 模型授权：用户已明确答复“沿用原配置，上限 1 元”。仅沿用 `langchain4j-platform` 百炼账号、接口地域、`text-embedding-v4 / 1024`；本轮累计费用 ≤1 元。少量合成测试文本；不自动迁入旧业务语料，不授权其他付费聊天/Agent 调用。凭据仅进入本项目忽略配置，调用前核对价格、用量及预算。
+- Git：原项目目录，任务分支 `feat/knowledge-processing-20261020`，起点 `1b02f504dd8af5ee49a9036762722f58fb887f36`；开始时工作树干净，无新 worktree。
+- 任务清单：①冻结准备结果、处理/恢复、索引与检索契约；②Python LangGraph/LlamaIndex 准备接口及三框架兼容验证；③Java 持久 worker 与版本化索引提交；④真实受理→处理→发布→检索和故障恢复验收；⑤文档、进度与 Git 交付；⑥继续下一依赖满足的知识路径。
+- 边界：Java 仍为资料、权限、任务与发布权威；Python 不直写业务数据库或检索索引；新项目资源隔离，旧 `lc4j-*` 专属检索实例不自动当成公共实例。无生产部署或旧数据变更。
+- 已完成证据：[S2 TEST_RESULT](../../qa/knowledge-processing-20261020/TEST_RESULT.md)；103 项测试、Ruff/mypy/构建、真实 HTTP 身份拒绝及百炼 1024 维准备/查询通过。30 个源码/配置摘要 `2cff0d78383caea8b91635d37be28346c49ae83573c1956ca27de5dd785b3125`，167 个文档本地链接通过；依赖 118 包公告无跳过，NLTK 公告当前路径不触发的范围例外已记录；Code Hygiene 工具发现限制保留。
+- 修改范围：`ai-runtime` P01/P02/框架锁/测试、`deploy` AI 私密初始化与启停/真实模型验证、当前设计/QA/README。Java 产品代码本片未改。
+- 运行中任务：原 Gateway/Knowledge 与本项目 AI 进程运行；AI PID `.local/ai-runtime.pid`，日志 `.logs/ai-runtime.log`。无未完成构建/模型调用；模型累计 2 次，保守预留 0.02 元（非实际账单），剩余预留预算 0.98 元。原账号配置、专用密钥和预算账本位于 `.local/`，必须保留；无新 worktree。
+- 下一步：S2 正常 Git 交付后，补齐 PROCESSING_CONTRACTS 的 Java 提交/恢复与检索细节、建立 S3，随后连续实现。Qdrant/ES 采用本项目独立数据资源；不直接复用旧 lc4j 专属实例。PG 长任务恢复/问答/研究/React 仍待后续。
+- 采用规范：`continue-approved-delivery`、`implementation-slicing`、`backend-implementation`、`update-progress-docs`、`task-git-delivery`；架构规范的业务建模、持久化、契约、并发安全、容量演进与发布治理。沿用原手工工程 pass，未改全局技能/Runtime 状态。
+
+## 历史：S1 知识入库受理
 
 - 标识：`knowledge-ingestion-20261020`；用户最新指令“开始执行吧”，沿已确认路线连续完成契约、切片、实现、验证、进度与正常 Git 交付，无需逐步询问继续。
 - 目标：先形成独立网关、知识领域服务与项目级真实存储上的资料受理/查询路径，再按依赖推进真实向量处理及 React；没有实际完成的业务不标 DONE。

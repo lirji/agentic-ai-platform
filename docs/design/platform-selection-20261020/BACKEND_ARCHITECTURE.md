@@ -4,6 +4,8 @@
 
 **已确认基线：独立知识平台，采用全新 React 前端、Python AI 核心与按需迁入本项目的 Java 领域能力。LangGraph 统一执行与恢复，Deep Agents 承载复杂 Agent，LlamaIndex 承载知识处理与 RAG。**
 
+S2 已实现 Python 内部准备图和查询向量接口，LangGraph/LlamaIndex 实际参与处理；Deep Agents 仅完成隔离兼容验证。接口经 Knowledge 专用服务密钥鉴权，Python 不持有业务数据库或检索索引写权限。当前短准备图无 checkpoint，返回结果待 Java 持久化后提交索引；不能据此宣称长任务恢复、知识发布或研究 Agent 已完成。契约见 [P01/P02](../knowledge-first-20261020/PROCESSING_CONTRACTS.md)。
+
 这是新项目 `agentic-ai-platform` 的目标设计；已开始实施 S0 AI 运行基础与 S1 知识资料受理/查询，尚未完成三框架业务闭环。用户已确认架构与组件，并进一步明确独立运行、全新 React 前端、知识业务优先及按需迁入资产，见[首期业务与工程约定](../knowledge-first-20261020/BRIEF.md)。下文事实表中的“已有/当前”指参考项目；“迁入/沿用”表示复用代码与能力，不表示必须依赖旧项目正在运行的业务服务。组件、版本、候选取舍见 [TECH_SELECTION](TECH_SELECTION.md)，历史背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)，真实实施/验证状态见[当前进度](../knowledge-first-20261020/PROGRESS_STATE.md)。
 
 ## 1. 目标、主作业与范围

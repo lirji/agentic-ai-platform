@@ -2,7 +2,7 @@
 
 独立建设的知识与 Agent 平台，优先实现**知识入库、知识问答、研究分析和业务助手**。架构与组件已确认：**全新 React 前端 + LangGraph、Deep Agents、LlamaIndex AI 核心 + 按需迁入的 Java 领域能力**。
 
-**已实现 AI 运行基础，以及独立网关到知识资料受理/查询的真实存储路径。** Java 服务的启动与验收入口见 [本地运行](deploy/README.md)，Python 配置与真实 Embedding 客户端见 [AI 运行时](ai-runtime/README.md)。当前资料只到 `RECEIVED`，向量发布、问答和 React 页面尚未接通；验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+**已实现独立资料受理/查询，以及 Python 的鉴权知识准备与查询向量接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证；Java 资料仍只到 `RECEIVED`，索引发布、问答和 React 页面尚未接通；验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 
 ## 阅读入口
 
@@ -22,4 +22,4 @@
 
 前端使用独立新建的 React 工程和既定配套；后续业务参考 AgentScope 的用例与规则。默认文本 Embedding 采用参考项目的百炼 `text-embedding-v4`、1024 维和 OpenAI 兼容接口；不采用 HashEmbedding 或自动回退到 hash。
 
-准备基线、React 架构、R01/H01 及首批知识 K 契约已落盘。Java 使用 JDK 21、Boot 3.5、MyBatis-Plus/XML，Gateway 验签后换发内部 JWT；Knowledge 独占项目 MySQL 数据库与 S3 原文桶。Python 3.12 基础依赖已锁定；三框架候选组合仍仅通过元数据解析。后续接通真实模型、处理与检索发布，再交付 React 知识路径；模型账号、语义质量和费用尚未验证。
+准备基线、React 架构、R01/H01、P01/P02 及首批知识 K 契约已落盘。Java 使用 JDK 21、Boot 3.5、MyBatis-Plus/XML，Gateway 验签后换发内部 JWT；Knowledge 独占项目 MySQL 数据库与 S3 原文桶。Python 3.12 已锁定三框架：LangGraph/LlamaIndex 用于准备图，Deep Agents 完成隔离工具/流式兼容验证。真实北京百炼账号的 1024 维准备/查询已验证，完整检索质量、PG 恢复与生产运行仍待后续验收。

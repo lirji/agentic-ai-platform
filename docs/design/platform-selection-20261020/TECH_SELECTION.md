@@ -24,6 +24,16 @@ Deep Agents 构建在 LangChain Agent 基础之上，使用 LangGraph 执行；L
 
 ## 2. 候选版本与已做验证
 
+### S2 实际接入（2026-10-20）
+
+正式 [uv.lock](../../../ai-runtime/uv.lock) 已锁定并在 Python 3.12/macOS ARM64 安装 `langgraph 1.2.16`、`deepagents 0.7.28`、`llama-index-core 0.14.25`、`langchain-openai 1.7.2`、`langgraph-checkpoint-postgres 3.2.0`；PyJWT 2.15.1（crypto）补充独立 Knowledge 服务 RS256 验签，不引入第二个身份服务。
+
+LangGraph/LlamaIndex 已用于 P01 准备图，Deep Agents 工具循环/流式通过隔离测试；真实北京百炼 `text-embedding-v4 / 1024` 准备/查询已验证。PG 持久恢复、真实研究 Agent、Linux 与完整检索质量仍未验证。详情见 [S2 验收](../../qa/knowledge-processing-20261020/TEST_RESULT.md)。
+
+本机 118 个运行/开发依赖已查 PyPI 发布元数据，许可证无缺项；NLTK 3.10.3 有未修复的模型文件路径沙箱绕过公告 `GHSA-8mgp-746c-j5xp`。本片显式分句，不调用该公告涉及的训练、模型导入/导出或用户控制路径，不以此宣称整个 NLTK 安全。后续启用文档 reader/模型加载前重新评估。OSV 直连 TLS 失败后使用 PyPI 发布公告，完整结果与例外见 S2 报告。
+
+### 历史候选解析
+
 以下是本次建议用于 **P0 兼容验证** 的固定版本，不是生产认证清单：
 
 | 包 | 候选版本 | 用途与依据 |

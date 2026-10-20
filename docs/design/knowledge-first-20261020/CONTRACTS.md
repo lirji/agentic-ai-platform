@@ -6,6 +6,8 @@
 
 后续知识契约细化见 [KNOWLEDGE_CONTRACTS](KNOWLEDGE_CONTRACTS.md)：S1 已冻结 K01 受理、K02 资料查询、K03 状态查询及身份/错误边界；K03 重试、K04 处理/发布细节仍随对应切片补齐。此增补不改变 R01/H01。
 
+S2 的 Python 内部准备与查询向量契约 P01/P02 已在 [PROCESSING_CONTRACTS](PROCESSING_CONTRACTS.md) 冻结；启用开关关闭时维持原 H01 行为。S3 的索引/发布仍需续补后实施。
+
 ## 1. 通用约定
 
 - 新业务 API 使用 `/api/v1` 命名空间，由本项目网关路由；迁入旧 schema 时明确版本及适配映射，原项目文件只作固定参考，不能双向竞争维护。
