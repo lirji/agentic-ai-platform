@@ -19,6 +19,21 @@ S1 已追加知识受理/查询的一致性审查与冻结契约，见下文。�
 | S2 | Knowledge 客户端经独立服务身份调用 Python，取得有来源定位和真实向量的版本化准备结果及查询向量 | S0/S1；PROCESSING_CONTRACTS P01/P02；模型账号/地域/1 元授权已确认 | backend：ai-runtime；runtime：deploy 本地 AI 启动/私密配置；docs：既有设计/QA | Python 只计算准备结果，不写 Knowledge/检索存储；无业务迁移 | no；首次跨语言准备契约 | 下列 S2-AC | 已选三框架、PyJWT RSA 验签、真实百炼；服务密钥独立 | DONE |
 | S3 | 上传资料经持久 worker、真实准备及双索引发布为 READY；所有者可检索、引用及按原输入重试 | S2；PROCESSING_CONTRACTS S3 与 K03/K04 | backend：knowledge-service、必要 API；ai-runtime 仅本机预算护栏；runtime：deploy 独立搜索与验证；docs：权威设计/QA | Knowledge V2/V3、准备对象、双索引；不修改已应用迁移 | no | 下列 S3-AC | 现有 MySQL/S3/AI；独立 Qdrant 1.19.2、ES 8.19.23 smartcn | DONE |
 
+### S4：React 知识工作台（DONE）
+
+- 目标：用户在独立 React 工作台完成真实资料分页、上传、状态/失败重试、已发布内容检索和授权引用核对。依赖 S3 DONE；本片不冒充 Q 聊天回答。
+- 契约：K01–K04 原样消费；仅有 cursor/limit 分页，不伪造名称/状态服务端筛选、总数、整篇原文下载或取消 API。详情显示任务真实阶段与摘要元数据，检索入口打开本资料的引用片段。
+- 路径：独立 `/Users/liruijun/personal/LLM/agentic-ai-platform-web` 仓库，任务分支 `feat/knowledge-workbench-20261020`；后端只维护当前切片、前端架构/运行约定和交付记录，产品接口不变。
+- Pass：前端实现（src/tests）；runtime（Vite loopback 开发身份桥与运行文档）；独立 QA（真实浏览器 + 契约故障状态）；文档/进度/Git。无并行 Agent、无新业务数据库。
+- 本机身份：开发入口限定 127.0.0.1:28086，用服务端读取已有测试私钥换发短时 JWT 后代理 Gateway，浏览器不接收 JWT/私钥；固定 local-dev / workbench-user，与 S3 验收资料隔离。开发桥拒绝非同源写入、非本机 Host 和非知识路径；默认构建不启用桥，生产 IAM 仍需独立接入。页面明确显示本地联调身份。
+- 数据：少量合成资料经正式上传 API 写入真实存储；固定幂等键，可重跑但不清理已提交数据，沿用累计 Embedding 1 元预算。
+- S4-AC1：React strict 类型/生产构建、ESLint/Prettier、直接相关 Vitest/RTL、Code Hygiene 通过；版本锁定且依赖兼容/许可证/公告可追溯。
+- S4-AC2：真实浏览器上传→处理→READY→检索→引用→详情/返回，所有数据来自正式 API；游标页和返回上下文成立，202 不显示发布完成。
+- S4-AC3：校验/网络失败保留输入及幂等键，未知响应可原键重放；409 刷新任务再操作，FAILED 只有 retryable 且 retryCount<3 才允许重试；请求取消、查询范围与缓存隔离。
+- S4-AC4：loading/empty/error/403/404、服务不可用、窄屏/长内容/模态键盘焦点经过操作；1440/1024/414px 当前截图已实际查看。合成故障夹具仅在测试，不作为生产列表。
+- S4-AC5：开发桥拒绝非法来源/Host/路径，密钥、令牌及正文不进 URL/构建/Git；运行说明、验证证据和独立仓库交付完成。
+
+
 ### S3 有限验收
 
 人工一致性检查：Java 继续拥有任务/索引/发布，Python 只准备；既有 K03/K04 补齐恢复语义。验证使用项目独立资源，新增组件限已批准搜索能力。

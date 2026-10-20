@@ -104,7 +104,7 @@ S3 搜索运行版本决策（2026-10-20）：本项目独立实例采用 **Qdra
 | T26 状态机 | 现有状态模型；新简单流程用稳定 code/迁移表，复杂生命周期按需评估 COLA | LangGraph 图状态、Flowable 流程状态、领域状态各归其主；COLA 不取代图运行时或数据库条件更新 |
 | T27 可观测/评测 | OTel + 现有 Prometheus/采集端；复用固定 RAG/Agent 评测资产 | LangSmith 可选作独立诊断工具，须评估数据与费用，不作为三框架运行硬依赖；不同时新建多套观测平台 |
 | T28 API 与协议 | HTTP/JSON/SSE；沿用 MCP/A2A 边界 | 不引入 gRPC/GraphQL 作为此次框架迁移前置；SDK 事件只在内部使用，对外发布语言中立版本契约 |
-| T29 前端 | **全新 React + TypeScript + Vite + Ant Design 前端，独立 Git 仓库** | 用户明确不复用旧前端；React Router、TanStack Query、Axios、Ant Design Form/主题、CSS Modules、pnpm 为默认配套，Zustand 按需；围绕知识库、问答、研究和助手完成页面/状态设计，具体版本及仓库位置在建项时落实 |
+| T29 前端 | **全新 React + TypeScript + Vite + Ant Design 前端，独立 Git 仓库** | 用户明确不复用旧前端；React Router、TanStack Query、Axios、Ant Design Form/主题、CSS Modules、pnpm 为默认配套，Zustand 按需；围绕知识库、问答、研究和助手完成页面/状态设计，S4 已锁定版本与独立仓库，详见 [前端选型](https://github.com/lirji/agentic-ai-platform-web/blob/main/docs/TECH_SELECTION.md) |
 | T30 部署 | 本项目独立 Compose + dev_infra；按需求参考 Helm 能力 | 所需业务服务随本项目交付；共享实例落实库/账号/前缀与资源权限隔离；不启动或访问旧业务部署也能完成当前业务闭环，尚无本项目部署文件 |
 | T31 工程验证 | Python pytest/Ruff/mypy + Java 现有测试 + 契约一致性 | 增加与真实风险对应的检查点、恢复、租户和版本共存测试；不改现有 Coding Agent 工具或触发真实模型 benchmark |
 

@@ -57,7 +57,7 @@
 | 通用代码规则 | 中文原因注释、稳定状态 code、统一错误码及提示、配置化参数；按实际路径落实权限、幂等、取消与恢复 | 用户规范、前后端实现技能 |
 | 交付 | 正式契约 → 有界纵向切片 → 实现 → 独立验证 → 进度 → Git；运行组件在首次需要时接入 | `implementation-slicing`、`implementation-validation`、`runtime-and-deploy`、`task-git-delivery` |
 
-技能定义职责和依赖方向，具体目录见 [前端架构](FRONTEND_ARCHITECTURE.md)与[实施切片](IMPLEMENTATION_SLICES.md)。`ai-runtime/` 已实现基础 `rag`、`adapters`、`runtime`、`api` 和 CLI；S1 已建立 `platform-contracts`、`platform-security`、`knowledge-service`、`edge-gateway`。前端独立仓库尚未创建，不为无当前用例的能力建立空模块。
+技能定义职责和依赖方向，具体目录见 [前端架构](FRONTEND_ARCHITECTURE.md)与[实施切片](IMPLEMENTATION_SLICES.md)。`ai-runtime/` 已实现基础 `rag`、`adapters`、`runtime`、`api` 和 CLI；S1 已建立 `platform-contracts`、`platform-security`、`knowledge-service`、`edge-gateway`。S4 已建立独立 React 仓库并验证资料工作台，不为无当前用例的能力建立空模块。
 
 ## 5. 已核对的参考资产
 

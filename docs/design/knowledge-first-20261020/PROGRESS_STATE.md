@@ -1,17 +1,19 @@
 # 独立知识平台准备进度
 
-## 当前任务：知识处理与检索实施
+## 当前任务：React 知识工作台实施
 
-- 标识：`knowledge-processing-20261020`；延续“继续后续的实施”，完整目标包含知识资料、问答、研究、助手与独立 React 前端。
-- 状态：`S2 DONE / S3 DONE`，S3 必需验证通过，Git 交付待执行；完整平台尚未完成。下一步立即进入 S4 知识工作台，不等待再次确认继续。
-- 模型授权：Embedding 沿用原 langchain4j-platform 百炼北京账号、text-embedding-v4 / 1024，上限 1 元；聊天沿用原聊天配置，另限 1 元。当前 Embedding 共 11 次保守预留、0.11 元（含 S2，非账单）；聊天未接入、未调用。两个预算独立，凭据只进忽略配置，不迁入旧语料。
-- Git：原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`；分支 `feat/knowledge-processing-20261020`，HEAD `3b3674613c138f89e902265b5b634e06de5aba6d`；S3 实现/验证/文档未提交，均属本任务，无新 worktree。用户授权验证后按逻辑单元提交、正常合并推送 main，无生产部署。
+- 标识：`knowledge-workbench-20261020`；延续“继续后续的实施”，完整目标包含知识资料、问答、研究、助手与独立 React 前端。
+- 状态：`S2 DONE / S3 DONE`，S3 必需验证通过，已正常合并推送 main `32bc3b4`；S4 DONE（前端已交付，后端文档交付中）；完整平台尚未完成。已冻结 S4，继续知识工作台，不等待再次确认继续。
+- 模型授权：Embedding 沿用原 langchain4j-platform 百炼北京账号、text-embedding-v4 / 1024，上限 1 元；聊天沿用原聊天配置，另限 1 元。当前 Embedding 共 16 次保守预留、0.16 元（含 S2，非账单）；聊天未接入、未调用。两个预算独立，凭据只进忽略配置，不迁入旧语料。
+- Git：原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`；分支 `feat/knowledge-workbench-20261020`，HEAD `2ac00ce`；S3 交付记录已单独提交，当前未提交为 S4 设计/进度与验收指针，无新 worktree。用户授权验证后按逻辑单元提交、正常合并推送 main，无生产部署。
 - 已完成：Java 持久租约 worker、不可变准备复用、双索引确认后原子发布、失败 CAS 重试、授权检索与引用；Python 持久预算护栏；本项目隔离 Qdrant/ES、版本和中文分析插件；loopback S3 关闭错误的代理继承。
 - 验证：[S3 TEST_RESULT](../../qa/knowledge-publication-20261020/TEST_RESULT.md)；Java 41 项（ES 8.19.23，`.logs/s3-java-tests-upgraded.log`）、Python 113 项、Ruff/mypy/构建通过；真实网关/模型/数据库/对象与索引完整链路、Knowledge 真重启、权限隔离及故障恢复通过。源码摘要见同目录 validation.json；Code Hygiene 限制与历史失败保留。
 - 迁移：V1/V2/V3 已在 dev/test 应用，禁止改写。准备包、索引和发布事实仍由 Java/MySQL 决定，Python 不直写业务存储。worker 本机仅领取 local-dev。
 - 运行：Gateway 28080、Knowledge 28084、AI 28085 均运行，readiness UP；Qdrant 1.19.2（26333）、ES 8.19.23 smartcn（29200）。ES 官方制品下载失败已通过分段下载及 digest 校验恢复，构建升级与新增真实资料查询通过；无运行中下载、迁移、模型或测试任务。PID/log 在 `.local/` / `.logs/`。
 - 保留：`.local/` 中运行凭据/签名密钥/预算/恢复编号必须保留；搜索快照在本项目卷和 `.local/search-backups/20261020-prepatch/`，未做恢复演练；OCI 缓存和诊断目录可经授权清理，本轮不删。旧平台与 `.idea/` 未改。
-- 下一步：完成文档核对与分批 Git 交付；按已批准前端架构冻结 S4（真实列表、上传、状态/重试、检索/引用），创建独立 React 仓库。之后继续 Q/T 与 PG 恢复。业务助手已异步询问具体场景，尚无答复；可逆默认候选为基于资料生成清单、摘要和草稿，不自动接入外部写工具。
+- S4 结果：独立前端目录 `/Users/liruijun/personal/LLM/agentic-ai-platform-web`，分支 feat/knowledge-workbench-20261020；已提交推送私有远程 main `51dc652f1734586d8fb0fe38e1175f3d246622b9`，工作树干净。44 个源码/配置/测试摘要 `899d20ccdf823a8fc3a54de2ba89a52d6bd6b195a81865cae2d0ab2b90c8cf31`。strict 构建/类型、ESLint/Prettier、8 项单元/组件、4 组 Chromium 真实/故障测试与 Code Hygiene 通过；1440/1024/414px 截图已查看。证据在前端 docs/qa/s4/TEST_RESULT.md。
+- S4 本机：前端 127.0.0.1:28086 已运行，前端 .local/web.pid 与 .logs/web.log；固定 workbench-user 开发身份，浏览器不接收令牌。3 份合成资料都已发布，其中一份来自夹具格式化改变内容，已保留并排除自动格式化，未删除数据。原生上传重放、检索及引用通过；最后 E2E `.logs/e2e-complete.log` 4 passed，无运行中测试/模型任务。
+- 下一步：完成后端 S4 文档提交（前端私有远程已核对）；随后冻结 Q01–Q03/T01 和 S5，接入独立 LiteLLM、PG 检查点和聊天预算。业务助手暂无额外场景答复，采用 BRIEF 建议的只读资料解释/清单/草稿辅助，不接外部写工具。完整问答、研究与助手尚未实现。
 - 采用规范：continue-approved-delivery、backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；全局架构业务建模、持久化、契约、并发安全、容量和发布治理。沿用手工专业 pass，未改全局技能 Runtime 的已知漂移。
 
 ## 历史：S1 知识入库受理

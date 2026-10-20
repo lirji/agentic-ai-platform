@@ -1,0 +1,14 @@
+{
+  "slice": "S4",
+  "frontend": {
+    "repository": "https://github.com/lirji/agentic-ai-platform-web",
+    "private": true,
+    "taskBranch": "feat/knowledge-workbench-20261020",
+    "main": "51dc652f1734586d8fb0fe38e1175f3d246622b9",
+    "remoteVerified": true,
+    "extraWorktrees": []
+  },
+  "backendDocs": "validated S4 documentation; commit is the Git object containing this record",
+  "productionDeploy": "NOT_EXECUTED",
+  "next": "Q01-Q03/T01 and durable AI runtime"
+}
