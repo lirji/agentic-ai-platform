@@ -5,15 +5,16 @@
 - 标识：`knowledge-ingestion-20261020`；用户最新指令“开始执行吧”，沿已确认路线连续完成契约、切片、实现、验证、进度与正常 Git 交付，无需逐步询问继续。
 - 目标：先形成独立网关、知识领域服务与项目级真实存储上的资料受理/查询路径，再按依赖推进真实向量处理及 React；没有实际完成的业务不标 DONE。
 - 当前状态：`S1 DONE / 后续等待必要模型输入`。26 项 Java 测试、45 项真实 HTTP（含重启）、5 项真实依赖故障与重复初始化检查通过；[S1 TEST_RESULT](../../qa/knowledge-ingestion-20261020/TEST_RESULT.md)已完成。全平台目标尚未完成，不把资料受理当成处理/发布。代码卫生工具限制和现存 Spring 公告适用性明确保留。
-- Git：`/Users/liruijun/personal/LLM/agentic-ai-platform`；任务分支 `feat/knowledge-ingestion-20261020`，起点 `b026187e44025709d768613e3136a469ca0d579c`。开始时工作树干净，原 `.idea/` 及 S0 环境/缓存保留。
+- Git：`/Users/liruijun/personal/LLM/agentic-ai-platform`；任务分支 `feat/knowledge-ingestion-20261020`，起点 `b026187e44025709d768613e3136a469ca0d579c`。实现提交 `05d17791e60c6fa98735a17c2d1202d2d28e262c` 已正常 fast-forward 合并并推送 `origin/main`，`ls-remote` 核对一致；[交付记录](../../qa/knowledge-ingestion-20261020/delivery-result.json)。文档收尾沿同一任务分支提交后回到 main，最新文档提交以 Git 为准。
 - 初始边界：共享 dev-infra 实例可复用，使用新项目数据库/账号/桶；不连接旧业务服务，不修改旧业务数据，不将 hash 作为默认或回退。Java 采用用户指定 JDK 21 / Boot 3.5 系列，具体补丁及维护风险按官方资料核验后登记。
 - 明确实施假设：首条资料路径先按上传者本人可见，租户和用户取自验证后的身份；共享/部门授权不按请求头或 UI 值自动放开。上传受理不代表解析、向量化或发布完成。
 - 已建立环境：JDK 21.0.11、Maven 3.9.12；共享 dev-infra 上新建 `agentic_knowledge` / `agentic_knowledge_test`、各自 app/migrate 账号和 `agentic-ai-knowledge` / `agentic-ai-knowledge-test` 桶。随机凭据/独立密钥仅在忽略的 `.local/`（0600）。V1 已应用，后续不得改写此迁移。
 - 任务清单：①源代码迁入闭包及契约；②有界 S1 与人工一致性检查；③Java/网关与受理/查询实现；④首次需要的真实存储运行配置；⑤独立验证与交付；⑥按剩余依赖继续。
-- 下一步：当前按授权执行 S1 的正常 Git 交付；[处理与发布准备](PROCESSING_READINESS.md)已核对状态机/worker/准备结果参考源码并列明下一片条件。已异步询问是否沿用 langchain 的百炼账号/地域、联调预算上限 1 元人民币；必要答复未到前不调用模型或假定跨地域传输许可。React、问答、研究和助手仍为后续路线。
+- 下一步：[处理与发布准备](PROCESSING_READINESS.md)已核对状态机/worker/准备结果参考源码并列明下一片条件。已异步询问是否沿用 langchain 的百炼账号/地域、联调预算上限 1 元人民币；必要答复未到前不调用模型或假定跨地域传输许可。答复到达后落实私密配置与额度检查，冻结准备/发布 schema、建立下一 S-ID，再实现真实处理与检索。React、问答、研究和助手仍为后续路线。
 - 验证记录：最终 54 个源码/配置文件摘要 `e9f8f566e697d98ff0fd1a1224af46f868f8cc63900144bbfc498e9e7ee02110`，证据在 S1 QA 目录；`.logs/s1-final-verify.log`、`s1-smoke-final.log`、`s1-fault-smoke.log`。早期编译、TIME_WAIT、Ruff/卫生失败均修复后通过，保留记录。原 S0 Python 源码未变，根忽略规则已变，不沿用旧全文件摘要作为当前版本证明。
 - 依赖：初始 17 个包命中已修复至 2 个 Spring 包/3 个公告；真实制品与上下文表明当前未启用受影响组合，详细适用性及官方修复路线见 TEST_RESULT。没有宣称零漏洞；Boot 3.5 商业补丁来源/后续维护、生产 IAM、容量与模型质量仍待落实。
 - 运行中任务：网关和知识服务均运行，PID 记录 `.local/{gateway,knowledge}.pid`，日志 `.logs/{gateway,knowledge}.log`。隔离故障进程已正常退出；没有后台构建、模型或迁移任务。旧平台已有容器保持运行，不停止或替换。
+- 收尾：16 份变更 Markdown、114 个本地链接/锚点、389 行表格通过；54 个暂存源码摘要与验收一致，78 个任务文件已交付，实际本机凭据/私钥未进入暂存。只有原工作目录，无额外 worktree；两个参考仓库仍干净。`.local/` 保存凭据/密钥及资源所有权必须保留，`.idea/` 为用户原文件；`.logs/`、各 `target/`、Ruff/构建缓存可在无需复现时清理，本次未删除任何目录或业务数据。
 - 采用规范：沿已有架构与技术选型；已读个人 Java/网关配套及架构业务建模、契约、持久化、并发安全规范，按实现触发补读技能专题。技能 Runtime 的已知全局漂移不擅自修复，继续保留手工路由与真实验证证据。
 
 ## 历史：S0 任务目标与完成记录
