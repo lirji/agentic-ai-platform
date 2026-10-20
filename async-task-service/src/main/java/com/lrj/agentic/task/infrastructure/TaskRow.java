@@ -2,7 +2,7 @@ package com.lrj.agentic.task.infrastructure;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.lrj.agentic.task.domain.TaskStatus;
+import com.lrj.agentic.contract.TaskStatus;
 import java.time.Instant;
 
 /** Mapper 专用不可变快照，不能直接返回公共接口。 */

@@ -44,8 +44,7 @@ public class InternalIdentityExchange implements GlobalFilter, Ordered {
                     var jwt = authentication.getToken();
                     Instant now = Instant.now();
                     var claims = JwtClaimsSet.builder().issuer(IdentityProtocol.INTERNAL_ISSUER)
-                            .audience(List.of(exchange.getRequest().getPath().value().startsWith("/api/v1/tasks/")
-                                    ? IdentityProtocol.TASK_AUDIENCE : IdentityProtocol.KNOWLEDGE_AUDIENCE))
+                            .audience(List.of(audience(exchange.getRequest().getPath().value())))
                             .subject(jwt.getSubject())
                             .issuedAt(now).expiresAt(now.plusSeconds(IdentityProtocol.INTERNAL_TTL_SECONDS))
                             .claim(IdentityProtocol.TENANT_CLAIM, jwt.getClaimAsString(properties.tenantClaim()))
@@ -73,4 +72,13 @@ public class InternalIdentityExchange implements GlobalFilter, Ordered {
     /** 在真正发往上游前执行，但位于 Spring Security 完成认证之后。 */
     @Override
     public int getOrder() { return -100; }
+
+    /** 按固定路由归属选受众，不能把某服务的令牌转用于其他领域。 */
+    private static String audience(String path) {
+        if (path.startsWith("/api/v1/tasks/")) { return IdentityProtocol.TASK_AUDIENCE; }
+        if (path.equals("/api/v1/conversations") || path.startsWith("/api/v1/conversations/")) {
+            return IdentityProtocol.CONVERSATION_AUDIENCE;
+        }
+        return IdentityProtocol.KNOWLEDGE_AUDIENCE;
+    }
 }

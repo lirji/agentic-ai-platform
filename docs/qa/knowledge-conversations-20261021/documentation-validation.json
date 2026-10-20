@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "markdownFiles": [
+    "CODEX_PROGRESS.md",
+    "README.md",
+    "deploy/README.md",
+    "docs/README.md",
+    "docs/design/knowledge-first-20261020/CONTRACTS.md",
+    "docs/design/knowledge-first-20261020/CONVERSATION_CONTRACTS.md",
+    "docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md",
+    "docs/design/knowledge-first-20261020/PROGRESS_STATE.md",
+    "docs/design/knowledge-first-20261020/TASK_CONTRACTS.md",
+    "docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md",
+    "docs/design/platform-selection-20261020/TECH_SELECTION.md",
+    "docs/doc-map.md",
+    "docs/qa/knowledge-conversations-20261021/IMPLEMENTATION_EVIDENCE.md",
+    "docs/qa/knowledge-conversations-20261021/TEST_RESULT.md"
+  ],
+  "localLinks": 148,
+  "codeFences": "PASS",
+  "diffCheck": "PASS",
+  "initialAttempt": "自引用输出尚未生成；生成后重新检查全部链接通过。"
+}

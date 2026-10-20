@@ -34,9 +34,11 @@ public class TaskSecurity {
     @Bean @Order(2)
     SecurityFilterChain submit(HttpSecurity http, ObjectMapper json,
             @Value("${task.identity.submit-public-key}") Resource key) throws Exception {
-        http.securityMatcher("/internal/v1/tasks")
+        http.securityMatcher("/internal/v1/tasks", "/internal/v1/tasks/**")
                 .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, "/internal/v1/tasks")
-                        .hasAuthority("SCOPE_" + TaskProtocol.SUBMIT).anyRequest().denyAll());
+                        .hasAuthority("SCOPE_" + TaskProtocol.SUBMIT)
+                        .requestMatchers(HttpMethod.GET, "/internal/v1/tasks/*")
+                        .hasAuthority("SCOPE_" + TaskProtocol.INSPECT).anyRequest().denyAll());
         return base(http, json, decoder(key, TaskProtocol.SUBMIT_ISSUER, TaskProtocol.SUBMIT_PARTY)).build();
     }
     @Bean @Order(3)

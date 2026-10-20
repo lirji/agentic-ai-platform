@@ -1,6 +1,6 @@
 # 项目文档
 
-当前阶段：资料入库、处理、发布、引用检索和独立 React 工作台已交付；真实北京百炼 1024 维调用通过。S5A 中央任务与 S5B PG 检查点联合恢复已验收，S5B Python 全量 150 项通过；问答、研究与助手待后续片。最终 Git 交付以当前进度为准。记录日期：2026-10-21。
+当前阶段：资料入库、处理、发布、引用检索和独立 React 工作台已交付；真实北京百炼 1024 维调用通过。S5A 中央任务与 S5B PG 检查点联合恢复已验收，S5B Python 全量 150 项通过；S5C 原问题与可靠交接完成 45 项 Java、40 项 HTTP 及重启验收。问答执行、研究与助手待后续片。最终 Git 交付以当前进度为准。记录日期：2026-10-21。
 
 ## 文档索引
 
@@ -19,6 +19,8 @@
 | [S5A 验证结果](qa/durable-ai-tasks-20261020/TEST_RESULT.md) | 29 项 Java、38 项 HTTP、重启与故障验收及证据边界 | 中央任务验证通过，问答执行尚未接通 |
 | [PG 检查点契约](design/knowledge-first-20261020/CHECKPOINT_CONTRACTS.md) | 不可变快照、代次隔离、中央凭据和安全解码 | S5B 已冻结并验证 |
 | [S5B 验证结果](qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md) | 150 项 Python、真实 PG/MySQL/HTTP 恢复、资源和身份界限 | 验收通过；无常驻图 worker、无聊天调用 |
+| [会话与交接契约](design/knowledge-first-20261020/CONVERSATION_CONTRACTS.md) | Q01–Q03 原问题、上下文、交接、查询；T01 owner 委托读取扩展 | S5C 冻结并验证，未宣称模型问答可用 |
+| [S5C 验证结果](qa/knowledge-conversations-20261021/TEST_RESULT.md) | 45 项 Java、40 项真实 HTTP、重启/依赖故障和 Python 恢复回归 | 会话与交接验收通过，无付费调用 |
 | [知识迁入清单](design/knowledge-first-20261020/KNOWLEDGE_MIGRATION.md) | 参考规则、依赖闭包及未迁入能力 | 源仓库只读；按新契约实现所需能力 |
 | [Java 本地运行](../deploy/README.md) | dev-infra 独立资源、分权账号、启动/停止、测试身份和故障验收 | 本机开发验证入口；无生产部署声明 |
 | [实施切片](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md) | S0 有界验收及后续依赖路线 | 唯一可执行切片清单 |

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.conversation.infrastructure.ConversationMapper">
+    <sql id="owner">tenant_id=#{owner.tenantId} AND owner_id=#{owner.userId}</sql>
+    <sql id="conversation">SELECT * FROM knowledge_conversation WHERE conversation_id=#{id} AND <include refid="owner"/></sql>
+    <select id="conversation" resultType="com.lrj.agentic.conversation.infrastructure.ConversationRow"><include refid="conversation"/></select>
+    <select id="lockConversation" resultType="com.lrj.agentic.conversation.infrastructure.ConversationRow"><include refid="conversation"/> FOR UPDATE</select>
+    <select id="conversationByKey" resultType="com.lrj.agentic.conversation.infrastructure.ConversationRow">
+        SELECT * FROM knowledge_conversation WHERE idempotency_hash=#{hash} AND <include refid="owner"/>
+    </select>
+    <select id="conversations" resultType="com.lrj.agentic.conversation.infrastructure.ConversationRow">
+        SELECT * FROM knowledge_conversation WHERE <include refid="owner"/>
+        <if test="at != null">AND (created_at&lt;#{at} OR (created_at=#{at} AND conversation_id&lt;#{id}))</if>
+        ORDER BY created_at DESC,conversation_id DESC LIMIT #{limit}
+    </select>
+    <insert id="insertConversation">
+        INSERT INTO knowledge_conversation(conversation_id,tenant_id,owner_id,title,idempotency_hash,request_hash)
+        VALUES(#{conversationId},#{tenantId},#{ownerId},#{title},#{idempotencyHash},#{requestHash})
+    </insert>
+    <update id="advance">
+        UPDATE knowledge_conversation SET revision=revision+1,updated_at=UTC_TIMESTAMP(6)
+        WHERE conversation_id=#{id} AND <include refid="owner"/> AND revision=#{revision} AND revision&lt;200
+    </update>
+    <sql id="turn">SELECT * FROM knowledge_turn WHERE turn_id=#{id} AND conversation_id=#{conversationId} AND <include refid="owner"/></sql>
+    <select id="turn" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow"><include refid="turn"/></select>
+    <select id="lockTurn" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow"><include refid="turn"/> FOR UPDATE</select>
+    <select id="turnByKey" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow">
+        SELECT * FROM knowledge_turn WHERE conversation_id=#{conversationId} AND idempotency_hash=#{hash}
+        AND <include refid="owner"/>
+    </select>
+    <select id="turns" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow">
+        SELECT * FROM knowledge_turn WHERE conversation_id=#{conversationId} AND sequence&gt;#{after}
+        AND <include refid="owner"/> ORDER BY sequence ASC LIMIT #{limit}
+    </select>
+    <insert id="insertTurn">
+        INSERT INTO knowledge_turn(turn_id,conversation_id,tenant_id,owner_id,sequence,question,document_ids,
+            context_turn_id,context_task_id,context_question,task_id,idempotency_hash,request_hash,dispatch_state)
+        VALUES(#{turnId},#{conversationId},#{tenantId},#{ownerId},#{sequence},#{question},#{documentIds},
+            #{contextTurnId},#{contextTaskId},#{contextQuestion},#{taskId},#{idempotencyHash},#{requestHash},'PENDING')
+    </insert>
+    <select id="nextDispatch" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow">
+        SELECT * FROM knowledge_turn WHERE tenant_id=#{tenant}
+        AND ((dispatch_state='PENDING' AND next_attempt_at&lt;=UTC_TIMESTAMP(6))
+            OR (dispatch_state='SENDING' AND lease_expires_at&lt;=UTC_TIMESTAMP(6)))
+        ORDER BY created_at,turn_id LIMIT 1 FOR UPDATE SKIP LOCKED
+    </select>
+    <update id="claim">
+        UPDATE knowledge_turn SET dispatch_state='SENDING',dispatch_attempts=dispatch_attempts+1,
+            lease_epoch=lease_epoch+1,lease_owner=#{worker},revision=revision+1,error_code=NULL,
+            lease_expires_at=TIMESTAMPADD(SECOND,#{leaseSeconds},UTC_TIMESTAMP(6)),updated_at=UTC_TIMESTAMP(6)
+        WHERE turn_id=#{id} AND tenant_id=#{tenant} AND dispatch_attempts&lt;5
+        AND ((dispatch_state='PENDING' AND next_attempt_at&lt;=UTC_TIMESTAMP(6))
+            OR (dispatch_state='SENDING' AND lease_expires_at&lt;=UTC_TIMESTAMP(6)))
+    </update>
+    <update id="exhausted">
+        UPDATE knowledge_turn SET dispatch_state='FAILED',lease_owner=NULL,lease_expires_at=NULL,
+            error_code=#{code},revision=revision+1,updated_at=UTC_TIMESTAMP(6)
+        WHERE turn_id=#{id} AND tenant_id=#{tenant} AND dispatch_attempts=5
+        AND ((dispatch_state='PENDING' AND next_attempt_at&lt;=UTC_TIMESTAMP(6))
+            OR (dispatch_state='SENDING' AND lease_expires_at&lt;=UTC_TIMESTAMP(6)))
+    </update>
+    <sql id="lease">
+        turn_id=#{row.turnId} AND tenant_id=#{row.tenantId} AND owner_id=#{row.ownerId}
+        AND dispatch_state='SENDING' AND lease_epoch=#{row.leaseEpoch} AND lease_owner=#{row.leaseOwner}
+        AND lease_expires_at&gt;UTC_TIMESTAMP(6)
+    </sql>
+    <update id="accepted">
+        UPDATE knowledge_turn SET dispatch_state='SUBMITTED',lease_owner=NULL,lease_expires_at=NULL,
+            error_code=NULL,revision=revision+1,updated_at=UTC_TIMESTAMP(6)
+        WHERE <include refid="lease"/>
+    </update>
+    <update id="failed">
+        UPDATE knowledge_turn SET dispatch_state=<choose><when test="terminal">'FAILED'</when><otherwise>'PENDING'</otherwise></choose>,
+            lease_owner=NULL,lease_expires_at=NULL,error_code=#{code},revision=revision+1,updated_at=UTC_TIMESTAMP(6),
+            next_attempt_at=TIMESTAMPADD(SECOND,#{delay},UTC_TIMESTAMP(6))
+        WHERE <include refid="lease"/>
+    </update>
+    <update id="retry">
+        UPDATE knowledge_turn SET dispatch_state='PENDING',dispatch_attempts=0,retry_count=retry_count+1,
+            error_code=NULL,revision=revision+1,next_attempt_at=UTC_TIMESTAMP(6),updated_at=UTC_TIMESTAMP(6)
+        WHERE turn_id=#{id} AND conversation_id=#{conversationId} AND <include refid="owner"/>
+            AND dispatch_state='FAILED' AND retry_count&lt;3 AND revision=#{revision}
+    </update>
+    <select id="pending" resultType="long">
+        SELECT COUNT(*) FROM knowledge_turn WHERE tenant_id=#{tenant} AND dispatch_state IN ('PENDING','SENDING')
+    </select>
+</mapper>

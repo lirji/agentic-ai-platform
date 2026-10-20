@@ -1,0 +1,21 @@
+{
+  "dev": [
+    "1\t1",
+    "0"
+  ],
+  "test": [
+    "1\t1",
+    "0"
+  ],
+  "metrics": [
+    "conversation_http_inflight",
+    "conversation_dispatch_active",
+    "executor_pool_size_threads"
+  ],
+  "status": "PASS",
+  "initializationReplay": {
+    "status": "PASS",
+    "credentialsUnchanged": true,
+    "countsUnchanged": true
+  }
+}

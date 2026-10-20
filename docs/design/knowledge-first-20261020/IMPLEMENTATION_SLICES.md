@@ -19,6 +19,16 @@ S1 已追加知识受理/查询的一致性审查与冻结契约，见下文。�
 | S2 | Knowledge 客户端经独立服务身份调用 Python，取得有来源定位和真实向量的版本化准备结果及查询向量 | S0/S1；PROCESSING_CONTRACTS P01/P02；模型账号/地域/1 元授权已确认 | backend：ai-runtime；runtime：deploy 本地 AI 启动/私密配置；docs：既有设计/QA | Python 只计算准备结果，不写 Knowledge/检索存储；无业务迁移 | no；首次跨语言准备契约 | 下列 S2-AC | 已选三框架、PyJWT RSA 验签、真实百炼；服务密钥独立 | DONE |
 | S3 | 上传资料经持久 worker、真实准备及双索引发布为 READY；所有者可检索、引用及按原输入重试 | S2；PROCESSING_CONTRACTS S3 与 K03/K04 | backend：knowledge-service、必要 API；ai-runtime 仅本机预算护栏；runtime：deploy 独立搜索与验证；docs：权威设计/QA | Knowledge V2/V3、准备对象、双索引；不修改已应用迁移 | no | 下列 S3-AC | 现有 MySQL/S3/AI；独立 Qdrant 1.19.2、ES 8.19.23 smartcn | DONE |
 
+### S5C：知识会话与可靠任务交接（DONE）
+
+- 依赖 S5B DONE；依据 [CONVERSATION_CONTRACTS](CONVERSATION_CONTRACTS.md) 的冻结 Q01/Q03 与 T01 兼容读取扩展，Q02 继续使用中央事件。当前唯一执行片，无并行 Agent。
+- 可观察结果：API 客户端创建会话、可靠提交问题、读取原问题及 taskId，并将中央已成功的前序回答关联到下一轮；重启/未知返回不丢失或重复创建任务。未接通模型的任务如实显示等待状态。
+- 允许路径：新 conversation-service；共享协议中的任务状态映射、platform-security audience、Gateway 路由；Tasks 增加受委托状态读取；deploy 项目专用资源/进程、相关测试及文档。原 Knowledge/Tasks/PG 已应用迁移不改。
+- 一致性检查：Java 会话拥有原始问题/上下文关系，中央拥有结果和执行状态；本地账本与任务创建按稳定 ID/幂等键恢复，远程调用不在 DB 事务中；不引入另一套任务执行图或答案写权威。
+- 验收：CONVERSATION_CONTRACTS 末节全部场景，必要 Java/共享协议与 Python 状态映射回归、Code Hygiene、文档和 Git。当前不含 UI 和模型质量，不以合成终态证明真实回答。
+- Runtime：本项目 MySQL 两个逻辑库、28088/29088 会话进程、已有网关与中央任务；聊天模型替代仍待用户答复，费用为零。
+- 验收通过：[S5C TEST_RESULT](../../qa/knowledge-conversations-20261021/TEST_RESULT.md)，45 项 Java、40 项真实 HTTP、2 项重启、21 项 Python 客户端与 11 项真实恢复回归；Code Hygiene 限制已列明。
+
 ### S5B：PG 检查点与中央恢复（DONE）
 
 - 依赖 S5A DONE；边界见 [CHECKPOINT_CONTRACTS](CHECKPOINT_CONTRACTS.md)，150 项 Python（含 11 项真实集成）和质量/构建检查通过，见 [TEST_RESULT](../../qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。这是原 S5 问答路线中的恢复前置，后续会话/模型/UI 继续按各自正式契约推进。
@@ -118,4 +128,4 @@ S1 不包含处理 worker、向量发布、问答或页面；完成后继续细�
 | 6 | 研究分析及业务助手 | Deep Agents 工具边界、累计预算、多 worker 恢复/取消、报告制品与 UI；写工具另定契约 |
 | 7 | 知识转换完善及 AgentScope 参考业务扩展 | 前述知识闭环验收，逐项业务需求和迁入边界明确 |
 
-S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。S4、S5A 与 S5B 已验收；下一步为问答执行，Q 契约冻结后继续。可并行集合：无；未授权多个 Agent 并行写入。前端仓库创建和真实模型调用在对应阶段落实，不由本片验收替代。
+S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。S4、S5A、S5B 与 S5C 已验收；会话 Q 契约已冻结，下一步细化答案/模型执行并接入问答 UI。可并行集合：无；未授权多个 Agent 并行写入。前端仓库创建和真实模型调用在对应阶段落实，不由本片验收替代。

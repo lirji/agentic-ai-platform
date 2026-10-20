@@ -1,0 +1,17 @@
+{
+  "status": "DELIVERED",
+  "commit": "3e0a626700c811b5cb4768f8e982cdef6f95174b",
+  "taskBranch": "feat/ai-checkpoint-recovery-20261021",
+  "target": "origin/main",
+  "merge": "fast-forward",
+  "remoteVerified": true,
+  "sourceSha256": "ac908dae32672abbca2c887ea7f640c1ab59644e33606b9e225228c9c98a9e4d",
+  "workingTreeAtDelivery": "clean",
+  "worktrees": "original project only",
+  "retained": [
+    ".local credentials/budgets/ownership/test records",
+    ".logs evidence",
+    "build and dependency caches"
+  ],
+  "productionDeployment": false
+}

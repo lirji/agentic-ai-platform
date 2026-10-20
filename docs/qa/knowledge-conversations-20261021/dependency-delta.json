@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "externalArtifactAdded": false,
+  "reason": "将已有 TaskStatus 共享到 platform-contracts，复用原已解析的 jackson-annotations；未新增外部版本。",
+  "artifacts": {
+    "knowledge-service": {
+      "artifact": "jackson-annotations-2.21.jar",
+      "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b"
+    },
+    "conversation-service": {
+      "artifact": "jackson-annotations-2.21.jar",
+      "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b"
+    }
+  }
+}

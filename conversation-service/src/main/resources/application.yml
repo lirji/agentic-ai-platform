@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: agentic-conversations
+  datasource:
+    url: ${CONVERSATION_DB_URL}
+    username: ${CONVERSATION_DB_USER}
+    password: ${CONVERSATION_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 6
+      minimum-idle: 1
+      connection-timeout: 3000
+      validation-timeout: 1000
+      data-source-properties:
+        connectTimeout: 3000
+        socketTimeout: 5000
+        connectionTimeZone: UTC
+        forceConnectionTimeZoneToSession: true
+  flyway:
+    user: ${CONVERSATION_MIGRATION_USER}
+    password: ${CONVERSATION_MIGRATION_PASSWORD}
+    clean-disabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+server:
+  address: ${CONVERSATION_BIND_ADDRESS:127.0.0.1}
+  port: ${CONVERSATION_PORT:28088}
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: 32
+      min-spare: 4
+    max-connections: 64
+    accept-count: 16
+    connection-timeout: 5s
+  error:
+    include-message: never
+    include-stacktrace: never
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    arg-name-based-constructor-auto-mapping: true
+    default-statement-timeout: 5
+  global-config:
+    banner: false
+conversation:
+  edge-public-key: ${INTERNAL_PUBLIC_KEY}
+  task-endpoint: ${CONVERSATION_TASK_ENDPOINT:http://127.0.0.1:28087}
+  submit-public-key: ${CONVERSATION_SUBMIT_PUBLIC_KEY}
+  submit-private-key: ${CONVERSATION_SUBMIT_PRIVATE_KEY}
+  worker-enabled: ${CONVERSATION_WORKER_ENABLED:false}
+  worker-tenant: ${CONVERSATION_WORKER_TENANT:local-dev}
+  poll-seconds: ${CONVERSATION_POLL_SECONDS:2}
+management:
+  server:
+    address: 127.0.0.1
+    port: ${CONVERSATION_MANAGEMENT_PORT:29088}
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLE_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      export:
+        enabled: ${OTEL_EXPORT_ENABLED:false}
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%thread] %logger{36} trace=%X{traceId:-} span=%X{spanId:-} request=%X{requestId:-} - %msg%n"

@@ -24,6 +24,11 @@ public class TaskController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public View submit(@AuthenticationPrincipal Jwt jwt, @RequestHeader("Idempotency-Key") String key,
             @Valid @RequestBody Submit command) { return tasks.submit(JwtTrust.caller(jwt), key, command); }
+    /** 会话只读取同一受委托 owner 的公共事实，不获得执行租约或 worker 权限。 */
+    @GetMapping("/internal/v1/tasks/{id}")
+    public View delegatedGet(@AuthenticationPrincipal Jwt jwt, @PathVariable String id) {
+        return tasks.get(JwtTrust.caller(jwt), id);
+    }
     /** 公共视图不暴露内部检查点和输入。 */
     @GetMapping("/api/v1/tasks/{id}")
     public View get(@AuthenticationPrincipal Jwt jwt, @PathVariable String id) { return tasks.get(JwtTrust.caller(jwt), id); }

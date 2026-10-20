@@ -193,3 +193,7 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 2026-10-21 复用 dev-infra PostgreSQL 16.15，创建本项目两个逻辑库和分权账号；保留原生 Checkpointer 结构，追加不可变触发器与中文注释。Python 的中央凭据/执行代次适配通过真实 LangGraph + PG + MySQL + HTTP 的接管、响应丢失与终态恢复验收；不是将原生 saver 当作中央租约保证。详见 [S5B 契约](../knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)与[验收](../../qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。
 
 宿主缺少 libpq，为原已锁定的 psycopg 3.3.6 补充官方 binary/pool extra，只新增 psycopg-binary 3.3.6；未升级框架或共享 PG。官方 wheel 与 lock 摘要一致，许可证 LGPL-3.0-only、PyPI 版本公告为空，本机 libpq 18.6 / OpenSSL 3.5.8；依赖增量和既有风险保留在验收记录，不宣称全部依赖零漏洞。无新 LiteLLM 实例、常驻图 worker 或聊天调用。
+
+## S5C 会话实施增量（2026-10-21）
+
+会话服务沿用 JDK 21、Boot 3.5.16、MyBatis-Plus/XML、MySQL 8.4 与既有观测组件；新建自己的逻辑库/账号，不引入 MQ。TaskStatus 共享至 platform-contracts，后者只新增对已解析 jackson-annotations 的直接声明，实际 jar 与原 Knowledge 制品内同一包完全一致；没有新外部版本。凭据引用、端口和资源界限见 [运行说明](../../../deploy/README.md)，依赖差异与验收见 [S5C](../../qa/knowledge-conversations-20261021/TEST_RESULT.md)。

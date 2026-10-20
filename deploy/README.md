@@ -87,10 +87,11 @@ python3 deploy/local.py stop
 | edge-gateway | 127.0.0.1:28080 | 29080 | JWT 验签及内部签名材料有效、进程接受请求 |
 | knowledge-service | 127.0.0.1:28084 | 29084 | 真实 DB/原文桶；处理启用时增加 AI 存活与双索引 schema |
 | async-task-service | 127.0.0.1:28087 | 29087 | 独立任务 MySQL 与三套身份公钥 |
+| conversation-service | 127.0.0.1:28088 | 29088 | 独立会话 MySQL；中央离线仍允许读取已保存原问题 |
 
 管理端点：`/actuator/health/liveness`、`/actuator/health/readiness`、`/actuator/prometheus`。health 不显示依赖细节；gateway readiness 不代替知识服务 readiness。链路由 Micrometer/OTel 传播，默认不开远程导出；当前不新增观测集群。
 
-应用日志在 `.logs/{knowledge,gateway,tasks}.log`；PID 与本地密钥在 `.local/`。`stop` 验证 PID 对应本仓库 jar 后发送 SIGTERM；不强杀，不清空数据。`start` 检查端口冲突并等待真实 readiness；进程未成功则保留日志供诊断。
+应用日志在 `.logs/{knowledge,gateway,tasks,conversations}.log`；PID 与本地密钥在 `.local/`。`stop` 验证 PID 对应本仓库 jar 后发送 SIGTERM；不强杀，不清空数据。`start` 检查端口冲突并等待真实 readiness；进程未成功则保留日志供诊断。
 
 本地测试 issuer 为 `urn:agentic-ai:local-test`，audience 为 `agentic-ai-api`；`token` 将短时令牌写到 `.local/test-token`，不输出令牌。测试 IAM 和内部签名使用不同 RSA 密钥，知识服务仅有内部公钥。**生产 IAM 接入尚未验证。**
 
@@ -134,5 +135,17 @@ AGENTIC_CHECKPOINT_IT=1 ai-runtime/.venv/bin/pytest ai-runtime/tests/test_task_c
 ```
 
 这 11 项真实测试每次创建专用合成租户/任务，记录 `.local/s5b-*.json`；不会触发模型或删除数据。其中租约故障只修改自己的合成任务行，不停共享 MySQL/PG。连接池、statement 时限、应用权限、重复迁移、并发接管、丢失响应、中央终态和解码拒绝均已验证。结果见 [S5B TEST_RESULT](../docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。
+
+## 知识会话与可靠交接（S5C）
+
+先完成 `init`、`init-tasks`，再运行 `python3 deploy/local.py init-conversations`，创建独立的 `agentic_conversations` / `agentic_conversations_test` 与各自 app/migrate 账号。所有权与随机凭据保存在 `.local/conversations.json`（0600）；重复初始化保留原凭据与问题。V1 已在两个库应用，后续新增迁移，不编辑旧 V1。
+
+构建后用 `python3 deploy/local.py start --service conversations`；启停与默认全服务命令均已接入。Gateway 路由 `/api/v1/conversations`，读写 scope 为 `conversation:read` / `conversation:write`。会话服务仅拿到自身数据库/提交签名与 Gateway 公钥；不会注入 Tasks worker 私钥或 Knowledge 数据库配置。详见 [Q01–Q03 契约](../docs/design/knowledge-first-20261020/CONVERSATION_CONTRACTS.md)。
+
+本地初始化默认启用 `local-dev` 单租户交接 worker；每次领取一个问题，HTTP 最多 2 在途、5 秒、256 KiB，15 秒数据库租约，5 次自动尝试和最多 3 次显式恢复。`SUBMITTED` 仅表示中央任务受理，最终回答仍由 Tasks API 返回；当前没有常驻模型问答 worker。Tasks 暂时不可用时原问题仍可读；需要前序答案的提问返回明确依赖错误，不保存伪造上下文。Actuator 提供交接活跃/积压/结果/耗时、HTTP 在途和执行池指标。
+
+`ai-runtime/.venv/bin/python deploy/conversation_smoke.py` 首次执行真实 Gateway/会话/Tasks 联合验收，恢复标识保存在 `.local/s5c-http-state.json`。此命令包含临时 28098/29098 隔离进程：使用专用合成租户、真实中央提交后丢弃响应、重启恢复、不可达 Tasks/数据库故障。完成后只终止自己创建的进程，不停止共享数据库；合成中央任务已完成或取消，不会被后续付费 worker 领取。重启会话后用 `--restart-check` 查询原记录；中途失败先核对私密状态与任务，不删除记录来重新跑未知命令。
+
+Java `-Pintegration` 覆盖真实数据库的并发/幂等/上下文/租约/次数上限，HTTP 联调和重启证据见 [S5C 验收](../docs/qa/knowledge-conversations-20261021/TEST_RESULT.md)。原问题与上下文没有自动清理策略；生产保留期、IAM、容量和部署仍未验收。回退会话制品前先停止交接 worker，保留数据库与中央任务；代码回退不会撤销已受理问题或生成任务。
 
 当前没有常驻图 worker；`run_claimed_graph` 是供后续业务装配的执行入口。PG 准备写可能留下孤立旧分支，但恢复只认中央凭据。生产保留期、备份恢复和容量另行落实；本轮保留数据与私密记录。

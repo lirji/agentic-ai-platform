@@ -1,8 +1,8 @@
-package com.lrj.agentic.task.domain;
+package com.lrj.agentic.contract;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-/** 持久状态使用稳定 code，终态只允许通过显式恢复规则推进。 */
+/** T01 的共享稳定状态编码；迁移裁决仍只归中央任务服务。 */
 public enum TaskStatus {
     QUEUED("QUEUED"), RUNNING("RUNNING"), SUCCEEDED("SUCCEEDED"),
     FAILED("FAILED"), CANCELLED("CANCELLED");

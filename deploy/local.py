@@ -27,7 +27,12 @@ MINIO = "dev-infra-minio-1"
 MC_IMAGE = "minio/mc:RELEASE.2025-08-13T08-35-41Z"
 NETWORK = "dev-infra"
 NAMES = {
-    "dev": ("agentic_knowledge", "agentic_app", "agentic_migrate", "agentic-ai-knowledge"),
+    "dev": (
+        "agentic_knowledge",
+        "agentic_app",
+        "agentic_migrate",
+        "agentic-ai-knowledge",
+    ),
     "test": (
         "agentic_knowledge_test",
         "agentic_test_app",
@@ -39,6 +44,7 @@ SERVICES = {
     "knowledge": ("knowledge-service", 28084, 29084),
     "gateway": ("edge-gateway", 28080, 29080),
     "tasks": ("async-task-service", 28087, 29087),
+    "conversations": ("conversation-service", 28088, 29088),
 }
 
 
@@ -84,7 +90,16 @@ def minio(script: str, extra: dict[str, str] | None = None) -> bytes:
     env = os.environ.copy()
     env.update({name: admin[name] for name in ("MINIO_ROOT_USER", "MINIO_ROOT_PASSWORD")})
     env.update(extra or {})
-    args = ["docker", "run", "--rm", "-i", "--network", NETWORK, "--entrypoint", "/bin/sh"]
+    args = [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "--network",
+        NETWORK,
+        "--entrypoint",
+        "/bin/sh",
+    ]
     for name in ("MINIO_ROOT_USER", "MINIO_ROOT_PASSWORD", *(extra or {})):
         args.extend(["-e", name])
     prefix = (
@@ -190,7 +205,14 @@ def init() -> None:
             private(
                 key,
                 run(
-                    ["openssl", "genpkey", "-algorithm", "RSA", "-pkeyopt", "rsa_keygen_bits:2048"]
+                    [
+                        "openssl",
+                        "genpkey",
+                        "-algorithm",
+                        "RSA",
+                        "-pkeyopt",
+                        "rsa_keygen_bits:2048",
+                    ]
                 ).decode(),
             )
         if not public.exists():
@@ -239,11 +261,20 @@ def environment(mode: str = "dev") -> dict[str, str]:
 
     if task_local.CONFIG.exists():
         env.update(task_local.environment(mode))
+    import conversation_local
+
+    if conversation_local.CONFIG.exists():
+        env.update(conversation_local.environment(mode))
     return env
 
 
 def token(
-    tenant: str, user: str, scope: str, *, claims: dict | None = None, internal: bool = False
+    tenant: str,
+    user: str,
+    scope: str,
+    *,
+    claims: dict | None = None,
+    internal: bool = False,
 ) -> str:
     """本地测试签名器；外部 IAM 与内部服务使用不同密钥，不提供免验证旁路。"""
 
@@ -326,13 +357,30 @@ def start(service: str | None = None) -> None:
         jar = ROOT / module / "target" / f"{module}-0.1.0-SNAPSHOT.jar"
         if not jar.exists():
             raise RuntimeError("缺少制品，请先运行 mvn -B -ntp package")
+        # 新的会话提交私钥和数据库密码仅交给其所属进程。
+        process_env = {
+            key: value
+            for key, value in env.items()
+            if not key.startswith("CONVERSATION_") or key == "CONVERSATION_SERVICE_URL"
+        }
+        if name == "conversations":
+            import conversation_local
+
+            process_env = conversation_local.service_environment()
         with (LOGS / f"{name}.log").open("ab") as log:
             process = subprocess.Popen(
-                ["java", "-Xms64m", "-Xmx384m", "-XX:ActiveProcessorCount=4", "-jar", str(jar)],
+                [
+                    "java",
+                    "-Xms64m",
+                    "-Xmx384m",
+                    "-XX:ActiveProcessorCount=4",
+                    "-jar",
+                    str(jar),
+                ],
                 stdout=log,
                 stderr=subprocess.STDOUT,
                 cwd=ROOT,
-                env=env,
+                env=process_env,
                 start_new_session=True,
             )
         private(STATE / f"{name}.pid", str(process.pid))
@@ -373,13 +421,18 @@ def main() -> None:
             "init-search",
             "init-tasks",
             "init-checkpoints",
+            "init-conversations",
             "stop-search",
         ],
     )
     parser.add_argument("--service", choices=SERVICES)
     parser.add_argument("--reference-env", type=Path, help="已获授权的来源模型环境文件")
     args = parser.parse_args()
-    if args.command == "init-checkpoints":
+    if args.command == "init-conversations":
+        import conversation_local
+
+        conversation_local.init()
+    elif args.command == "init-checkpoints":
         import checkpoint_local
 
         checkpoint_local.init()
@@ -420,12 +473,15 @@ def main() -> None:
     elif args.command == "token":
         load()
         private(
-            STATE / "test-token", token("local-dev", "developer", "knowledge:read knowledge:write")
+            STATE / "test-token",
+            token("local-dev", "developer", "knowledge:read knowledge:write"),
         )
         print("本地测试令牌已写入 .local/test-token，有效期 15 分钟；勿提交或转发。")
     else:
         result = subprocess.run(
-            ["mvn", "-B", "-ntp", "-Pintegration", "verify"], cwd=ROOT, env=environment("test")
+            ["mvn", "-B", "-ntp", "-Pintegration", "verify"],
+            cwd=ROOT,
+            env=environment("test"),
         )
         raise SystemExit(result.returncode)
 

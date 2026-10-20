@@ -1,17 +1,18 @@
 # T01：持久 AI 任务（S5A 冻结）
 
-本契约细化已批准的中央任务边界。S5A 先交付 Java/MySQL 权威及协议，S5B 才接入 PostgreSQL Checkpointer 与真实执行器；中央协议通过不代表跨库恢复通过。用户侧问题/会话的 Q01–Q03 另行冻结，当前没有可用问答页面。
+本契约细化已批准的中央任务边界。S5A 交付 Java/MySQL 权威及协议，S5B 已验证 PostgreSQL Checkpointer 联合恢复；用户侧 Q01–Q03 已在 [会话契约](CONVERSATION_CONTRACTS.md) 冻结，S5C 兼容增加 owner 委托读取。当前没有可用问答页面。
 
 ## 所有权与来源
 
 `async-task-service` 独占任务输入、执行租约、用户可见进度/结果、持久事件及检查点提交凭据。复用参考仓库 `langchain4j-platform@468cec425dd160e80cfc3ab378d3440a8767e4d5` 中 AsyncTaskStore / JdbcAsyncTaskStore / AsyncTaskEventJournal 的中央租约、条件终态与事件语义；按本项目 MyBatis-Plus/XML、身份和有界协议裁剪。不迁入默认内存库、旧 DAG 执行器、Kafka/webhook、旧业务表或数据。
 
-原始会话消息未来归 conversation 领域；这里的输入是某次执行的不可变副本，不成为长期记忆。首个 kind=`KNOWLEDGE_QA`，runtimeVersion=`langgraph-v1`、graphVersion=`knowledge-qa-v1`。未知版本/类型拒绝；研究和助手在后续契约扩展。
+原始会话问题归 conversation 领域；这里的输入是某次执行的不可变副本，不成为长期记忆。首个 kind=`KNOWLEDGE_QA`，runtimeVersion=`langgraph-v1`、graphVersion=`knowledge-qa-v1`。未知版本/类型拒绝；研究和助手在后续契约扩展。
 
 ## 身份与传输
 
 - 外部 `/api/v1/tasks/**` 只接收网关换发的 RS256 JWT，issuer=`urn:agentic-ai:edge`、audience=`agentic-ai-tasks`，读 `task:read`，取消/恢复 `task:write`。tenant/sub 来自验签 claim，所有查询含租户和所有者谓词；不存在或不属于当前人统一 404。
 - 内部创建 `/internal/v1/tasks` 使用独立 conversation 公钥，issuer=`urn:agentic-ai:conversation`，azp=`conversation-service`，audience 同上，scope=`task:submit`，sub 为委托用户。
+- S5C 内部读取 `/internal/v1/tasks/{id}` 使用同一 conversation 签名角色与 scope=`task:inspect`，同时约束 tenant/owner；不会授予 worker 权限，submit scope 不能代替 inspect。
 - worker `/internal/v1/task-worker/**` 使用独立 worker 公钥，issuer=`urn:agentic-ai:runtime-worker`、azp=`ai-runtime-worker`、scope=`task:worker`，sub 为固定 worker 标识，tenant 为部署授予的处理租户。worker 不接用户 JWT，也不能请求其他租户。
 - 内部服务 JWT 必须有 iat/nbf/exp，TTL≤60 秒，无时间宽限。内部接口不经网关公开。验签材料独立；任何用户正文/模型参数不能改变 worker 或 owner。
 - 单个请求最多 96 KiB UTF-8，JSON 未知字段、重复字段、数字/字符串强转拒绝。错误形状沿用 `ApiError {code,message,traceId}`，不返回原始异常。
@@ -23,6 +24,7 @@ JSON 时间均 UTC ISO8601。UUID 为规范小写带连字符格式；revision/e
 | 接口 | 请求 | 成功 |
 | --- | --- | --- |
 | POST `/internal/v1/tasks` | `Idempotency-Key` 1–128 个 ASCII `[A-Za-z0-9._:-]`；`{taskId,kind,runtimeVersion,graphVersion,input}`，input 为对象、序列化≤64 KiB | 202 Task；同租户/owner/幂等键同规范 JSON 重放原 task，同键异参 409 |
+| GET `/internal/v1/tasks/{id}` | conversation 签名、`task:inspect` 与原 owner 委托 | 200 同一公共 Task；不存在/异 owner 统一 404，不暴露原始输入或租约 |
 | GET `/api/v1/tasks/{id}` | 读 scope | 200 Task（不含输入、租约 owner 或检查点） |
 | GET `/api/v1/tasks/{id}/events?after=0&limit=100` | after≥0，limit 1–100 | 200 `{events,nextCursor,terminal}` |
 | GET `/api/v1/tasks/{id}/stream` | `Last-Event-ID`，默认 0 | 200 SSE，当前最多 100 条，id=sequence，event=稳定 code；批次末发送 heartbeat 注释与 retry=1000 后关闭，客户端带游标重连；不创建任务 |

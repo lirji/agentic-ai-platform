@@ -2,9 +2,9 @@
 
 同步日期：2026-10-21。
 
-本项目已有 Python AI 运行时与独立 Java Gateway/Knowledge/Tasks 服务。知识资料和中央任务按参考规则独立实现，旧数据和旧部署未迁入；以下原项目映射仍是固定取证证据。
+本项目已有 Python AI 运行时与独立 Java Gateway/Knowledge/Tasks/Conversations 服务。知识资料和中央任务按参考规则独立实现，旧数据和旧部署未迁入；以下原项目映射仍是固定取证证据。
 
-本轮同步基线 `a7c245b0180b39d9e49574f0fc0ad3f2957de17d` → S5B 工作树：Python 中央协议、PG 不可变快照与恢复、匹配 binary 驱动、分权初始化及真实验收同步至契约/选型/运行说明。[S5B 证据](qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)绑定实际源码；S2 历史三框架与真实模型证据仍保留于 [S2 验收](qa/knowledge-processing-20261020/TEST_RESULT.md)，当前验收和交付状态见唯一进度。
+本轮同步基线 `3e0a626700c811b5cb4768f8e982cdef6f95174b` → S5C 工作树：会话与原问题、持久交接、Gateway 受众/路由、Tasks owner 委托读取、共享状态编码、分权初始化和实际验收同步至契约/架构/运行说明。[S5C 证据](qa/knowledge-conversations-20261021/TEST_RESULT.md)绑定当前源码；S2–S5B 历史证据保留，当前状态见唯一进度。
 
 ## 权威文档
 

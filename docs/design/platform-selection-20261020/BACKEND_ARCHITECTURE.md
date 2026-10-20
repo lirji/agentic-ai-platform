@@ -4,11 +4,13 @@
 
 **已确认基线：独立知识平台，采用全新 React 前端、Python AI 核心与按需迁入本项目的 Java 领域能力。LangGraph 统一执行与恢复，Deep Agents 承载复杂 Agent，LlamaIndex 承载知识处理与 RAG。**
 
-S2 的 LangGraph/LlamaIndex 准备图已接入真实 Embedding；S3 由 Java 持久化准备包、执行带代次的租约处理、提交 Qdrant/ES 并原子发布文档/任务，提供授权检索和原文引用。跨进程故障恢复已验证，Python 不持有业务库或索引写权限。当前短图无 checkpoint；Deep Agents 仅完成隔离兼容验证，PG 长任务恢复和研究 Agent 尚未交付。契约见 [P01/P02 与 S3](../knowledge-first-20261020/PROCESSING_CONTRACTS.md)。
+S2 的 LangGraph/LlamaIndex 准备图已接入真实 Embedding；S3 由 Java 持久化准备包、执行带代次的租约处理、提交 Qdrant/ES 并原子发布文档/任务，提供授权检索和原文引用。跨进程故障恢复已验证，Python 不持有业务库或索引写权限。知识准备短图仍无 checkpoint；S5B 已交付独立的持久图执行与 PG 恢复适配层，Deep Agents 目前只有隔离兼容验证，研究 Agent 尚未接通。契约见 [P01/P02 与 S3](../knowledge-first-20261020/PROCESSING_CONTRACTS.md)。
 
 这是新项目 `agentic-ai-platform` 的目标设计；已开始实施 S0 AI 运行基础与 S1 知识资料受理/查询，尚未完成三框架业务闭环。用户已确认架构与组件，并进一步明确独立运行、全新 React 前端、知识业务优先及按需迁入资产，见[首期业务与工程约定](../knowledge-first-20261020/BRIEF.md)。下文事实表中的“已有/当前”指参考项目；“迁入/沿用”表示复用代码与能力，不表示必须依赖旧项目正在运行的业务服务。组件、版本、候选取舍见 [TECH_SELECTION](TECH_SELECTION.md)，历史背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)，真实实施/验证状态见[当前进度](../knowledge-first-20261020/PROGRESS_STATE.md)。
 
-S5A 已实现本项目 `async-task-service`：独立 MySQL 任务库、租约代次、持久事件、显式取消/恢复和幂等终态报告。参考旧中央任务语义按范围裁剪，未迁入内存权威、旧 DAG、Kafka 或 webhook。检查点提交凭据由有效租约保护；PG 准备写仍未接入，联合 fencing 与图恢复必须在 S5B 通过真实验证。契约见 [T01](../knowledge-first-20261020/TASK_CONTRACTS.md)。
+S5A 已实现本项目 `async-task-service`：独立 MySQL 任务库、租约代次、持久事件、显式取消/恢复和幂等终态报告。参考旧中央任务语义按范围裁剪，未迁入内存权威、旧 DAG、Kafka 或 webhook。S5B 已接入独立 PG 库的原生 AsyncPostgresSaver：每个 epoch 物理隔离、不可变快照、中央凭据确认后才恢复，拒绝未知 pending writes 与不安全解码；真实 PG/MySQL/HTTP 的接管、丢失响应及终态对账已验收。契约见 [T01](../knowledge-first-20261020/TASK_CONTRACTS.md)、[检查点](../knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)。
+
+S5C 实现 `conversation-service`：独立 MySQL 保存会话、原问题、版本和持久交接，引用中央 taskId，不复制答案权威。分派使用有界 HTTP 和同一幂等命令；上下文仅关联同 owner、同会话、同知识范围的已成功轮次，网络核验在本地事务外。Gateway 为会话换发独立受众，Tasks 的 owner 委托 GET 与 worker 身份分离。稳定 TaskStatus 编码位于 platform-contracts，状态迁移仍由 Tasks 独占。验收状态见当前进度，契约见 [Q01–Q03](../knowledge-first-20261020/CONVERSATION_CONTRACTS.md)。
 
 ## 1. 目标、主作业与范围
 

@@ -1,7 +1,7 @@
 package com.lrj.agentic.task.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.lrj.agentic.task.domain.TaskStatus;
+import com.lrj.agentic.contract.TaskStatus;
 import jakarta.validation.constraints.*;
 import java.time.Instant;
 import java.util.List;

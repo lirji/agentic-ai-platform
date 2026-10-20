@@ -2,7 +2,7 @@
 
 版本：`v1-foundation`，2026-10-20。依据：[首期约定](BRIEF.md)、[后端架构](../platform-selection-20261020/BACKEND_ARCHITECTURE.md)、[React 设计](FRONTEND_ARCHITECTURE.md)。
 
-本文件是新项目的契约权威。**R01/H01、K01–K04 与 P01/P02 已冻结；Q/T 仍需在对应实施切片前冻结完整 schema。** 不把未来 API 清单冒充已经实现或已完成联调。
+本文件是新项目的契约入口。**R01/H01、K01–K04、P01/P02、T01、PG 恢复和 Q01–Q03 会话/交接已冻结。** 带引用答案 schema 和模型执行在后续切片冻结；不把会话受理当作问答已可用。
 
 知识契约细化见 [KNOWLEDGE_CONTRACTS](KNOWLEDGE_CONTRACTS.md)：S1 冻结受理、查询及身份/错误边界；S3 已补齐 K03 重试和 K04 检索/引用。此增补不改变 R01/H01。
 
@@ -88,4 +88,4 @@ R01 用受控 HTTP 测试服务/transport 验证协议、分批、顺序、拒�
 
 ## T01 中央任务细化
 
-S5A 的任务创建、租约、事件、取消/恢复、检查点凭据和完成对账以 [TASK_CONTRACTS](TASK_CONTRACTS.md) 为准。Q01–Q03 与真实 PostgreSQL 图恢复仍须后续切片冻结和验证，不能因中央协议完成把问答标为可用。
+S5A 的任务创建、租约、事件、取消/恢复、检查点凭据和完成对账以 [TASK_CONTRACTS](TASK_CONTRACTS.md) 为准。S5B 的 PostgreSQL 不可变快照、安全解码与中央凭据恢复以 [CHECKPOINT_CONTRACTS](CHECKPOINT_CONTRACTS.md) 为准，真实联合恢复已通过。S5C 的 Q01–Q03 会话、问题、上下文关联与可靠交接以 [CONVERSATION_CONTRACTS](CONVERSATION_CONTRACTS.md) 为准；其中 T01 兼容增加 owner 委托读取。模型执行与前端问答尚未接通，不能因任务受理成功把答案标为完成。

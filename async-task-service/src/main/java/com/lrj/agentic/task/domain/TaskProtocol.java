@@ -4,6 +4,7 @@ import java.util.Set;
 
 /** 当前正式协议的有限集合；后续图版本必须先扩展契约。 */
 public final class TaskProtocol {
+    public static final String INSPECT = "task:inspect";
     public static final String AUDIENCE = "agentic-ai-tasks";
     public static final String SUBMIT_ISSUER = "urn:agentic-ai:conversation";
     public static final String WORKER_ISSUER = "urn:agentic-ai:runtime-worker";

@@ -10,7 +10,7 @@ import com.lrj.agentic.task.application.TaskValues;
 import com.lrj.agentic.task.domain.TaskError;
 import com.lrj.agentic.task.domain.TaskFailure;
 import com.lrj.agentic.task.domain.TaskProtocol;
-import com.lrj.agentic.task.domain.TaskStatus;
+import com.lrj.agentic.contract.TaskStatus;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

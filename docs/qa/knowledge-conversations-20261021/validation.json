@@ -1,0 +1,217 @@
+{
+  "slice": "S5C",
+  "status": "PASS",
+  "baseline": "3e0a626700c811b5cb4768f8e982cdef6f95174b",
+  "branch": "feat/knowledge-conversations-20261021",
+  "sourceSha256": "c72876ea815661b6b48803cbbc5237b4513928eb5430c109bb44e2d231d911ab",
+  "sourceFiles": [
+    {
+      "path": "ai-runtime/tests/test_task_client.py",
+      "sha256": "ae6c6dd9ffcd692309c135ac0bb0ac69245edb13647aeeaaef2614b2adaa61ea"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/api/TaskController.java",
+      "sha256": "5b027505b927b826a3fa8b99d15e40838d9771595cd1a7e5fdebeaef833c216c"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/api/TaskDtos.java",
+      "sha256": "35fc441be38d8ed3547d2883fe7a34c426b9b2116ce76ab824db0a10acb5b601"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskService.java",
+      "sha256": "860e27eeaf3a3f1e451394c3650feb56110f6154b733dfa8e0daf98b4058a820"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/config/TaskSecurity.java",
+      "sha256": "d169b8308fdf9c9bb178ee764c3ff6ff8d2bf1c6d9fb09ad89f6e765108b0b0a"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskProtocol.java",
+      "sha256": "61bd8314008c5af3c63175172372c604e929f98f85df6971ee3f2fe9633fa147"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskStatus.java",
+      "sha256": "DELETED"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/infrastructure/TaskRow.java",
+      "sha256": "9c2f0e12b08b4de3a8639e3c2ada2c137ede86025300c6e3d1cf34672129ff5c"
+    },
+    {
+      "path": "async-task-service/src/test/java/com/lrj/agentic/task/TaskPersistenceIT.java",
+      "sha256": "bb107fd845cd9ba4d9c61fd960c1d78742ca4a99c606b8b4c4bfe15cbf5148c6"
+    },
+    {
+      "path": "conversation-service/pom.xml",
+      "sha256": "8b3e54e4f7acfc61f920046818359cc540d711214919ab2bfa92f5fc732b6ee9"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/ConversationApplication.java",
+      "sha256": "23cbf007fc859bd0589ec8017530ab9334667a606b09d04deb989ffdfd78bcaa"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/api/ConversationBodyLimit.java",
+      "sha256": "8d4ca08b1a63071719b76371960d2aa3c7c914b0648d1fd2446432d8c9488490"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/api/ConversationController.java",
+      "sha256": "e5f68dcd8a2096e50a2a80115a953dd1a86c23df0adc3392674414b324a40ff3"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/api/ConversationDtos.java",
+      "sha256": "7568ac2b84ca4124bf98cd698bb51da181bb2c299743a788ef67b15ef4262829"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/api/ConversationErrors.java",
+      "sha256": "f7f0f8fd0e03a2930b795db370f400091385f6d68cf1e14a3d5416f5b6513d61"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/api/RequestCorrelation.java",
+      "sha256": "0f4500f01fcacdcecb3de25bdf27e0386667a46ede038f8341de78bd534aafa5"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationService.java",
+      "sha256": "22c662675d3ad4dfe6ee3bbbd216b286787c804f75272ff11c41b056e4586f2e"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationValues.java",
+      "sha256": "0f11bbcc6e2707f06117fd60343a8f33ab1132f7b6769327b1b2ecda9fe2cf28"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/DispatchService.java",
+      "sha256": "3184ba94a175ac896f33d100603ba1955bd6b56b34627079d3809d218fdbdfb9"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/config/ConversationJson.java",
+      "sha256": "02a3fb3939d28f66cf6696559e9292fd9acb1d5a0e83bb231a141ce97fc90e0d"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/config/ConversationProperties.java",
+      "sha256": "9318ad46a7bb701e3def42ed0c4d76975aa3ccb1665f29031ffaebe3e4f371af"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/config/ConversationSecurity.java",
+      "sha256": "612ea81486046c7af502b6c5e9dc5fc4ee95003fdc67fc8ee3d26d0848769936"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationError.java",
+      "sha256": "5f9da27ab716493f8e115ebb5ba42d9e4580ad4cee93841eb73e51c8f4f34d95"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationFailure.java",
+      "sha256": "1666cc8f079435842d7a5a792d8f048850c8f57557b5938fc6bdfa3c1bf1ee5b"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java",
+      "sha256": "c437706014e9a31ed54f21b80f3dca7719716298db7d9980c3375c4af95db76e"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/DispatchState.java",
+      "sha256": "68fca8e2af8effcceff5b1a0d2c921f6e718ddde5f5b421d93d90482b9d7c95f"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/TaskGateway.java",
+      "sha256": "a9a4af71c9fe7ca1eccb8e7076d1e69aeba07ebd0da71e0e313da87fa89025a8"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/CentralTaskGateway.java",
+      "sha256": "30f2911fb93eb94246249582a0669778e553d4039a181de011b60732b05028b9"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/ConversationMapper.java",
+      "sha256": "ba273e222a0273a4754713ecd9066f5decc77f99bcde0d3f4e9e88093a641a68"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/ConversationRow.java",
+      "sha256": "4a6c4d837a6f6798682a9501f187880a3551252b17228b05e6a3928ae0f11bcb"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/DispatchWorker.java",
+      "sha256": "ade3334938908cbcb8858fa3afeca2e2cbc2f0d2285eef6edde3069abaae428f"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/TaskHttp.java",
+      "sha256": "83aaacceb635b50e742294599602f4404064602d67fc9f75e7a98324b946f4a5"
+    },
+    {
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/TurnRow.java",
+      "sha256": "5690956ecf5ef899fb57ca6ee295fdeafdc77defacb954bea3f7f1e2c74dba2e"
+    },
+    {
+      "path": "conversation-service/src/main/resources/application.yml",
+      "sha256": "ea535967b3e9d9eff025db9dcd83961289c8e8ee4f48a6c349c679b1447498da"
+    },
+    {
+      "path": "conversation-service/src/main/resources/db/migration/V1__conversations_and_dispatch.sql",
+      "sha256": "e76cc9373689d740a408cf1c7113754420e6f746da482ba507e4d13cb6579a3f"
+    },
+    {
+      "path": "conversation-service/src/main/resources/mapper/ConversationMapper.xml",
+      "sha256": "ae7f0401411bbee022cbe5f60622db36f49abef608979855e94e7ff4edc90552"
+    },
+    {
+      "path": "conversation-service/src/test/java/com/lrj/agentic/conversation/CentralTaskGatewayTest.java",
+      "sha256": "a208cd456fb128b2b408db94a7e1552a6b8fb50efc5b6c150c58871457b8129f"
+    },
+    {
+      "path": "conversation-service/src/test/java/com/lrj/agentic/conversation/ConversationPersistenceIT.java",
+      "sha256": "d81abb521d767d9ba53bdc3a4673f60049ae8c7f7a890a33ff7f73853a050303"
+    },
+    {
+      "path": "conversation-service/src/test/java/com/lrj/agentic/conversation/config/ConversationJsonTest.java",
+      "sha256": "03ae966f6cccdacab6f9027f9ef68ce150a82f645d46bb1f3d5bb3804152e45e"
+    },
+    {
+      "path": "deploy/conversation_local.py",
+      "sha256": "435c3075bf908358abf3df693b9f682ad45715814f421442475468e2ea6b1ff4"
+    },
+    {
+      "path": "deploy/conversation_smoke.py",
+      "sha256": "e3d150c5876f2766a39b911b632673282986e6147e476a31281aa0369763666e"
+    },
+    {
+      "path": "deploy/env.example",
+      "sha256": "ae3d902cd4d73a2fab459bd8fb8251bc1044b3012f818410bc305243034d5d5d"
+    },
+    {
+      "path": "deploy/local.py",
+      "sha256": "32bcdd0df83e58bb5810c08cbb24a9ab700fcd4c717059fe2519a6cb5edd2ae6"
+    },
+    {
+      "path": "edge-gateway/src/main/java/com/lrj/agentic/gateway/GatewaySecurity.java",
+      "sha256": "bc10ed532a785e6e47c0a92a3d62df28bc5644515902b8168ba1f6fed3a26a81"
+    },
+    {
+      "path": "edge-gateway/src/main/java/com/lrj/agentic/gateway/InternalIdentityExchange.java",
+      "sha256": "a308ca09fb8bf4719c15cbf3388ab2ebe882fb9c146da0fd469907bffa77f271"
+    },
+    {
+      "path": "edge-gateway/src/main/resources/application.yml",
+      "sha256": "b678f17048bf80f230e7cedc907f3f9486401de3bffc840d6d015a85dd26c2cf"
+    },
+    {
+      "path": "platform-contracts/pom.xml",
+      "sha256": "7d1df8449a2a3deb2d48aac65915046238e4d2f4eb3d4a20567d8f66be00fbcc"
+    },
+    {
+      "path": "platform-contracts/src/main/java/com/lrj/agentic/contract/TaskStatus.java",
+      "sha256": "3842e4c0ce00c6df2e8135b9e8fc666c213da42faa971bf371c45a3e6572122a"
+    },
+    {
+      "path": "platform-security/src/main/java/com/lrj/agentic/security/IdentityProtocol.java",
+      "sha256": "34f991a9634c16704a7f42a5860fc8e1124393fbc8740d9b69c6940e510312ed"
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "be8f3c67098fe906e3ed5b5a3545526716eb1d0d37fd1799b0f1b839c58d8090"
+    }
+  ],
+  "checks": {
+    "java": 45,
+    "conversationHttp": 40,
+    "conversationRestart": 2,
+    "pythonClient": 21,
+    "postgresRecovery": 11
+  },
+  "modelCalls": 0
+}

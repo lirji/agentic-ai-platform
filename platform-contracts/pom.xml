@@ -5,4 +5,7 @@
     <parent><groupId>com.lrj.agentic</groupId><artifactId>agentic-ai-platform</artifactId><version>0.1.0-SNAPSHOT</version></parent>
     <artifactId>platform-contracts</artifactId>
     <description>不依赖 Web 或持久化框架的公共协议</description>
+    <dependencies>
+        <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-annotations</artifactId></dependency>
+    </dependencies>
 </project>

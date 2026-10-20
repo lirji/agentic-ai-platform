@@ -1,0 +1,351 @@
+{
+  "protocol": "code-hygiene-gate/v1",
+  "finalStatus": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "checks": [
+    {
+      "checkId": "FORMAT",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "command passed"
+    },
+    {
+      "checkId": "STATIC_ANALYSIS",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "command passed"
+    },
+    {
+      "checkId": "CODE_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "REPO_CONVENTION",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "DIFF_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "COMPILE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    },
+    {
+      "checkId": "UNIT_TEST",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    }
+  ],
+  "limitations": [
+    {
+      "code": "FORMAT_TOOL_NOT_AVAILABLE",
+      "check": "FORMAT"
+    }
+  ],
+  "findings": [
+    {
+      "findingId": "HF-001",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationService.java",
+      "line": 13,
+      "excerpt": "import org.springframework.transaction.support.TransactionTemplate;",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-002",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationService.java",
+      "line": 21,
+      "excerpt": "private final TransactionTemplate tx;",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-003",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationService.java",
+      "line": 27,
+      "excerpt": "tx = new TransactionTemplate(manager);",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-004",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/DispatchService.java",
+      "line": 9,
+      "excerpt": "import org.springframework.transaction.support.TransactionTemplate;",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-005",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/DispatchService.java",
+      "line": 17,
+      "excerpt": "private final TransactionTemplate tx;",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-006",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/DispatchService.java",
+      "line": 22,
+      "excerpt": "tx = new TransactionTemplate(manager); tx.setTimeout(5);",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-007",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java",
+      "line": 15,
+      "excerpt": "public static final int MAX_BODY = 32 * 1024;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-008",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java",
+      "line": 16,
+      "excerpt": "public static final int MAX_RESPONSE = 256 * 1024;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-009",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java",
+      "line": 17,
+      "excerpt": "public static final int MAX_TITLE = 100;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-010",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java",
+      "line": 18,
+      "excerpt": "public static final int MAX_QUESTION = 2000;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-011",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java",
+      "line": 19,
+      "excerpt": "public static final int MAX_DOCUMENTS = 20;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-012",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java",
+      "line": 20,
+      "excerpt": "public static final int MAX_TURNS = 200;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-013",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java",
+      "line": 21,
+      "excerpt": "public static final int MAX_PAGE = 50;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-014",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/conversation_smoke.py",
+      "line": 108,
+      "excerpt": "process.wait(timeout=15)",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-015",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/conversation_smoke.py",
+      "line": 189,
+      "excerpt": "with httpx.Client(timeout=12, trust_env=False) as client:",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-016",
+      "ruleId": "HYG-SIMILAR-ERROR-CODE",
+      "check": "REPO_CONVENTION",
+      "area": "error-code",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationError.java",
+      "line": 6,
+      "excerpt": "ConversationError.INPUT_INVALID",
+      "message": "INPUT_INVALID also exists in TaskError; reuse if semantics match"
+    },
+    {
+      "findingId": "HF-017",
+      "ruleId": "HYG-SIMILAR-ERROR-CODE",
+      "check": "REPO_CONVENTION",
+      "area": "error-code",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationError.java",
+      "line": 6,
+      "excerpt": "ConversationError.NOT_FOUND",
+      "message": "NOT_FOUND also exists in TaskError; reuse if semantics match"
+    },
+    {
+      "findingId": "HF-018",
+      "ruleId": "HYG-SIMILAR-ERROR-CODE",
+      "check": "REPO_CONVENTION",
+      "area": "error-code",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationError.java",
+      "line": 6,
+      "excerpt": "ConversationError.IDEMPOTENCY_CONFLICT",
+      "message": "IDEMPOTENCY_CONFLICT also exists in KnowledgeError; reuse if semantics match"
+    },
+    {
+      "findingId": "HF-019",
+      "ruleId": "HYG-SIMILAR-ERROR-CODE",
+      "check": "REPO_CONVENTION",
+      "area": "error-code",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationError.java",
+      "line": 6,
+      "excerpt": "ConversationError.BUSY",
+      "message": "BUSY also exists in KnowledgeError; reuse if semantics match"
+    },
+    {
+      "findingId": "HF-020",
+      "ruleId": "HYG-SIMILAR-ERROR-CODE",
+      "check": "REPO_CONVENTION",
+      "area": "error-code",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationError.java",
+      "line": 6,
+      "excerpt": "ConversationError.STORAGE_UNAVAILABLE",
+      "message": "STORAGE_UNAVAILABLE also exists in KnowledgeError; reuse if semantics match"
+    },
+    {
+      "findingId": "HF-021",
+      "ruleId": "HYG-SIMILAR-ENUM",
+      "check": "REPO_CONVENTION",
+      "area": "enum",
+      "severity": "ADVISORY",
+      "file": "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/DispatchState.java",
+      "line": 6,
+      "excerpt": "DispatchState",
+      "message": "DispatchState overlaps existing State (ai-runtime/.venv/lib/python3.12/site-packages/websockets/protocol.py)"
+    }
+  ],
+  "report": [
+    {
+      "area": "Repository conventions",
+      "status": "PASS"
+    },
+    {
+      "area": "Formatting",
+      "status": "PASS"
+    },
+    {
+      "area": "Error-code governance",
+      "status": "PASS_WITH_ADVISORY"
+    },
+    {
+      "area": "Enum/domain modeling",
+      "status": "PASS_WITH_ADVISORY"
+    },
+    {
+      "area": "Magic value inspection",
+      "status": "PASS_WITH_ADVISORY"
+    },
+    {
+      "area": "Exception handling",
+      "status": "PASS"
+    },
+    {
+      "area": "Validation",
+      "status": "NOT_AUTOMATED"
+    },
+    {
+      "area": "Logging",
+      "status": "PASS"
+    },
+    {
+      "area": "Transaction review",
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "area": "Static analysis",
+      "status": "PASS"
+    },
+    {
+      "area": "Compilation",
+      "status": "PASS"
+    },
+    {
+      "area": "Tests",
+      "status": "PASS"
+    },
+    {
+      "area": "Diff hygiene",
+      "status": "PASS"
+    }
+  ],
+  "canonicalCommands": {
+    "FORMAT": {
+      "status": "NO_FORMATTER",
+      "limitation": "FORMAT_TOOL_NOT_AVAILABLE",
+      "resolutionLevel": "SURROUNDING_SOURCE_STYLE"
+    },
+    "STATIC_ANALYSIS": {
+      "status": "NOT_CONFIGURED"
+    }
+  }
+}

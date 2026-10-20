@@ -175,7 +175,7 @@ def test_task_status_wire_codes_match_central_java_contract():
     """防止跨语言消费者独自添加/改名状态，中央服务是状态机权威。"""
     root = Path(__file__).resolve().parents[2]
     source = (
-        root / "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskStatus.java"
+        root / "platform-contracts/src/main/java/com/lrj/agentic/contract/TaskStatus.java"
     ).read_text()
     central_codes = dict(re.findall(r'([A-Z_]+)\("([A-Z_]+)"\)', source))
     assert central_codes

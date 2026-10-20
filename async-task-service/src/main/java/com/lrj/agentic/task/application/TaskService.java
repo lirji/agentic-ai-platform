@@ -1,5 +1,6 @@
 package com.lrj.agentic.task.application;
 
+import com.lrj.agentic.contract.TaskStatus;
 import com.lrj.agentic.security.Caller;
 import com.lrj.agentic.task.api.TaskDtos.*;
 import com.lrj.agentic.task.domain.*;
