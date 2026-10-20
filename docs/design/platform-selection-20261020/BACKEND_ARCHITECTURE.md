@@ -2,9 +2,9 @@
 
 日期：2026-10-20。Java 取证基线：`468cec4`；关联 Python 仓库取证基线：`7738cb7`。
 
-**用户已确定：目标架构以 LangGraph、Deep Agents、LlamaIndex 为主。建议采用 Python AI 核心 + 现有 Java 领域服务：LangGraph 统一执行与恢复，Deep Agents 承载复杂 Agent，LlamaIndex 承载知识处理与 RAG。**
+**已确认基线：独立知识平台，采用全新 React 前端、Python AI 核心与按需迁入本项目的 Java 领域能力。LangGraph 统一执行与恢复，Deep Agents 承载复杂 Agent，LlamaIndex 承载知识处理与 RAG。**
 
-这是新项目 `agentic-ai-platform` 的目标设计，参考两个既有平台的能力，尚未实施。三个框架的主线地位和新项目位置是用户约束；下面的模块组织、Java 服务复用、状态存储、迁移顺序是设计建议。文中的“已有/当前”均指参考项目，不表示新项目已经拥有相应服务。当前线上/本机路由仍以原项目部署配置为准。组件、版本、候选取舍见 [TECH_SELECTION](TECH_SELECTION.md)，背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)，任务状态见 [PROGRESS_STATE](PROGRESS_STATE.md)。
+这是新项目 `agentic-ai-platform` 的目标设计，尚未实施。用户已确认架构与组件，并进一步明确独立运行、全新 React 前端、知识业务优先及按需迁入资产，见[首期业务与工程约定](../knowledge-first-20261020/BRIEF.md)。文中的“已有/当前”事实均指参考项目；“迁入/沿用”表示复用代码与能力，不表示必须依赖旧项目正在运行的业务服务。组件、版本、候选取舍见 [TECH_SELECTION](TECH_SELECTION.md)，历史背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)，当前状态见[准备进度](../knowledge-first-20261020/PROGRESS_STATE.md)。版本运行兼容与具体契约仍需验证。
 
 ## 1. 目标、主作业与范围
 
@@ -15,9 +15,9 @@
 | 用户基于企业资料提问 | LlamaIndex 组织检索、重排、证据与回答 | 检索与引用不能跨租户、跨当前授权范围；生成文本不能伪装原文 |
 | 用户提交复杂研究/分析任务 | Deep Agents 规划与委派，LangGraph 保存执行状态 | 预算有界；取消、恢复、重复请求不能产生非法业务效果 |
 | 管理员上传或更新文档 | LlamaIndex 逐步承担知识转换，复用成熟解析与发布链路 | 内容去重、版本、来源、逐存储目标状态、失败恢复继续有效 |
-| 用户通过 Agent 查询订单或办理流程 | Python 调用受控领域工具 | Java 拥有业务规则、事务与最终权限；审批和幂等不能依靠模型自律 |
+| 用户通过业务助手查询资料、解释业务或准备任务材料 | Python 调用本项目受控领域工具；首轮具体工具清单需细化 | Java 拥有业务规则、事务与最终权限；审批和幂等不能依靠模型自律 |
 
-本次交付技术与架构选型文档，不执行依赖升级、数据库变更、路由切换、服务拆分或生产部署。首期建议兼容现有门户与业务 API；新建独立管理后台时遵循 React 默认配套，具体范围见 T29。完整平台独立运行所需的领域服务与数据迁移尚未定案。
+首期优先覆盖知识入库、知识问答、研究分析和业务助手，前端使用全新 React 工程并遵循既定配套。所需 Java 领域代码、依赖、迁移和测试按功能迁入；后续业务参考 AgentScope。独立性以不访问旧业务部署也能完成本项目闭环为验收方向，允许显式接入 dev_infra、身份平台及模型等外部基础服务。真实历史业务数据迁移尚未确定；本轮完成准备文档同步，未执行代码迁入、数据库变更或部署。
 
 ## 2. 事实、假设与约束
 
@@ -32,11 +32,14 @@
 | F07 | Fact | Java 模型工厂通过 LangChain4j 接 LiteLLM，并附加租户归因与监听器，见[模型工厂](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/platform-gateway-client/src/main/java/com/lrj/platform/gateway/GatewayChatModelFactory.java) |
 | F08 | Fact | 现有 AI/领域所有权及跨语言契约门禁见[边界文档](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/%E6%9E%B6%E6%9E%84%E8%BE%B9%E7%95%8C/ai-runtime-boundaries.md)；外部 Casdoor 默认严格模式，文档 ReBAC 默认关闭 |
 | C01 | User constraint | LangGraph、Deep Agents、LlamaIndex 是新 AI 主架构；AgentScope、LangChain4j 退出目标主框架地位 |
-| C02 | Compatibility | 用户新要求优先；保留未被要求改变的领域规则、租户约束、接口兼容和已有数据 |
-| A01 | Assumption | 本次更换 AI 核心，不整体重写 Java 业务服务。若后续要求纯 Python，须重新评估业务迁移与事务边界 |
+| C02 | Compatibility | 迁入能力保留适用领域规则和租户约束；公开接口按正式契约确定兼容范围，旧项目已有数据不因新项目建设被改写 |
+| A01 | Decision（原假设已细化） | 独立项目按需要从 langchain4j-platform 迁入 Java 领域能力；不要求复刻旧平台所有服务 |
 | C03 | User constraint | 选型文档及后续新项目位于 `/Users/liruijun/personal/LLM/agentic-ai-platform`；原两个项目作为参考资产，不在本轮修改其产品实现 |
-| A02 | Assumption | 在新项目建设 Python AI 核心，借鉴现有 API/worker 模式并通过版本化 HTTP 契约复用 Java 服务；先采用逻辑模块，不为三个框架分别建立服务 |
+| A02 | Decision（原假设已细化） | 在新项目建设 Python AI 核心，借鉴 API/worker 模式，通过版本化 HTTP 契约调用本项目迁入或实现的 Java 服务；三个框架属于同一 AI 运行时 |
 | A03 | Unknown | 目标并发、租户数、语料规模、P95/P99、RTO/RPO、模型月预算、生产维护预算尚未确认；本方案不声称容量达标 |
+| C04 | User constraint | 全新 React 前端，前后端分仓；不复用旧 Vue 前端工程，代码组织遵循适用技能和个人规范 |
+| C05 | User constraint | 知识入库、知识问答、研究分析和业务助手优先；后期参考 AgentScope 业务，模型及数据资产参考 langchain4j-platform |
+| C06 | User constraint | 不使用默认 HashEmbedding；按参考项目真实模型路线落地，选取 text-embedding-v4 / 1024 维为默认，缺配置或失败不回退 hash |
 
 ## 3. 架构决策
 
@@ -44,11 +47,11 @@
 
 | 选项 | 判断 | 取舍 |
 | --- | --- | --- |
-| Python AI 核心 + Java 领域服务 | **建议采用**；满足 C01，复用 F04–F08 | 保留跨语言契约、超时及故障恢复成本 |
-| 保持 AgentScope 为主，仅加三框架试验 | 不作为目标 | 与 C01 不一致；AgentScope 只用于迁移对照和限期兼容 |
+| Python AI 核心 + 本项目 Java 领域服务 | **已选**；满足 C01，按需迁入 F04–F08 所述能力 | 承担迁入依赖闭包、跨语言契约、超时及故障恢复成本 |
+| 保持 AgentScope 为主，仅加三框架试验 | 不作为目标 | 与 C01 不一致；AgentScope 用于业务参考和隔离对照 |
 | AI 与全部业务改为 Python 单体 | 本轮不采用 | 将框架迁移扩大为 IAM、任务、流程、订单和持久化重写，缺少收益依据 |
 
-建议先在新项目建设 AI 核心，通过契约复用既有领域分工。尚未决定将 Java 服务源码迁入新仓库、合并现有服务或要求新项目全量独立部署。未来如果改变 Knowledge 或任务中心的物理边界，再进行专门的边界评估；本次不虚构拆分评分。
+先围绕知识闭环迁入必要领域能力及其依赖，再由 Python AI 核心通过契约调用。新平台必须具备独立构建与运行能力；具体迁入模块以首条路径需要为准，不能将旧平台全部服务自动列为首期。迁入不隐式改变 Knowledge 或任务中心的业务所有权，若需调整服务边界则单独评估。
 
 服务内部按 API → 应用用例 → 领域规则组织，框架、数据库与远程服务放在适配层。简单转换不增加无意义接口；框架 `State`、`Document`、`Node` 和事件类型不直接进入公共协议。
 
@@ -70,11 +73,11 @@ Deep Agents 的规划工具在当前 0.7 系列需显式启用，不假定创建
 
 ### D03：目标关系图
 
-下图表示拟实施关系；框架模块框不是独立部署单元，虚线是后续阶段才建立的知识转换契约。
+下图表示拟实施关系；Java 业务节点由本项目拥有，参考代码按需迁入；框架模块框不是独立部署单元，虚线是后续知识转换契约。
 
 ```mermaid
 flowchart TB
-    UI["现有门户 / API 客户端：首期接入建议"] --> Edge["edge-gateway / Casdoor 身份交换"]
+    UI["全新 React 知识工作台 / API 客户端"] --> Edge["本项目 edge-gateway / Casdoor 身份交换"]
     Edge --> API
     subgraph AI["agentic-ai-platform：Python AI 逻辑模块"]
         API["FastAPI 接入与契约适配"] --> Graph["LangGraph：执行与恢复"]
@@ -89,44 +92,46 @@ flowchart TB
     Graph --> Tasks
     RAG --> Knowledge["knowledge-service：授权、版本、检索与发布"]
     Knowledge -. "版本化准备请求与结果" .-> RAG
-    Tools --> Domain["订单 / 分析 / Flowable 流程 / 其他领域服务"]
+    Tools --> Domain["业务助手所需领域服务 / 后续扩展"]
     Deep --> Model["LiteLLM：模型出口"]
     RAG --> Model
     Knowledge --> Search["Qdrant + Elasticsearch"]
     Knowledge --> Source[("S3：不可变原文与派生对象")]
-    Knowledge --> Data[("MySQL / Redis：各自既有数据职责")]
+    Knowledge --> Data[("本项目 MySQL / Redis 数据命名空间")]
     Tasks --> TaskDB[("MySQL：中央任务")]
     Domain --> BizDB[("领域数据库")]
 ```
 
-图中的 AI 模块拟在 `agentic-ai-platform` 实现，目前该仓库只有文档。`agentscope-platform` 保持为对照与兼容来源，旧运行版本在迁移期保留；不在同一请求中叠加 AgentScope 和 Deep Agents 两套循环。共享服务、实例和身份接入需验证权限、容量及版本契约，引用旧部署配置不等于新项目已接入。
+图中的后端能力在 `agentic-ai-platform` 建设，React 前端使用独立新仓库，目前尚无应用实现。`agentscope-platform` 保持为后续业务参考与隔离对照来源，不作为新平台必需运行时。共享基础设施与身份接入需验证权限、容量、项目级命名空间及版本契约，引用旧部署配置不等于已经接入。
 
 ## 4. 数据权威与模块边界
 
-| 数据/状态 | 权威所有者与建议存储 | 允许的交互 |
+| 数据/状态 | 目标权威所有者与存储 | 允许的交互 |
 | --- | --- | --- |
-| 外部身份、角色、文档授权 | 现有 IAM/Casdoor/auth-platform；内部令牌由现有安全边界校验 | AI 使用已验证身份；权限变化后恢复必须重验 |
-| 订单、审批、SQL 执行、业务副作用 | 对应 Java 服务；原 MySQL/Flowable 等 | 经受控 API 调用，不给模型业务库连接或任意 SQL 权限 |
+| 外部身份、角色、文档授权 | 已选 IAM/Casdoor/auth-platform 接入；本项目网关及服务验证内部身份 | AI 使用已验证身份；权限变化后恢复必须重验 |
+| 业务工具与副作用 | 本项目对应 Java 服务；业务数据库及按需流程能力 | 经受控 API 调用，不给模型业务库连接或任意 SQL 权限；具体写工具另定 |
 | 用户可见任务、owner、租约、取消、终态、持久事件、webhook | `async-task-service` / MySQL | AI 作为受约束执行器；框架完成事件不能直接替代中央终态 |
 | 图节点状态、消息、interrupt、下一执行位置 | 新 AI 运行时 / PostgreSQL 独立库的 LangGraph Checkpointer | 只存图执行事实；旧中央 DAG 检查点仍供旧运行时使用 |
 | 线程工作文件 | Deep Agents StateBackend，随同线程检查点持久化；大对象使用受控 S3 引用 | 不挂载宿主项目目录；不同 tenant/user/thread 不共享默认命名空间 |
-| 长期用户画像 | 现有 conversation 的受治理记忆存储 | AI 通过记忆 API 读写；不再复制一套可随意修改的用户画像 |
+| 长期用户画像 | 有需求时迁入 conversation 的受治理记忆能力 | AI 通过记忆 API 读写；不默认迁入历史画像或建立第二写权威 |
 | 原文、文档版本、内容去重、入库任务、发布可见性 | `knowledge-service`；既有 S3/JDBC/Registry 职责分别保留 | LlamaIndex 提供转换结果；发布者仍唯一 |
 | Qdrant/ES/GraphRAG 数据 | Knowledge 管理的检索数据与投影 | 当前 Registry/Graph 数据不能因“投影”名称而被直接清空；重建完备性须实测 |
 | LlamaIndex docstore/cache | 仅按需作为派生转换状态/缓存 | 不替代平台内容去重、版本账本或可见性权威 |
 
-LangGraph 官方提供数据库 Checkpointer；建议复用 PostgreSQL 基础设施，减少自行开发 MySQL Saver 的维护成本。新项目使用独立逻辑库，具体库名和账号在运行环境设计时确定，**尚未创建**；应用/迁移身份分离，连接池与 LiteLLM 库独立预算。[官方持久记忆示例](https://docs.langchain.com/oss/python/langgraph/add-memory)
+表中业务数据归本项目迁入或实现的服务；旧项目数据不自动成为新项目数据。LangGraph Checkpointer 已选 PostgreSQL 独立逻辑库，具体库名和账号在运行环境设计时确定，**尚未创建**；应用/迁移身份分离，连接池与 LiteLLM 库独立预算。[官方持久记忆示例](https://docs.langchain.com/oss/python/langgraph/add-memory)
 
 ## 5. LlamaIndex 的实际接入与目标职责
 
 LlamaIndex 提供可组合的[检索器](https://developers.llamaindex.ai/python/framework/module_guides/querying/retriever/)与[入库流水线](https://developers.llamaindex.ai/python/framework/module_guides/loading/ingestion_pipeline/)。本平台选择其 RAG 与数据处理能力，不购买 LlamaCloud/LlamaParse 作为必要前置。
 
-1. **接入阶段**：自定义 Retriever 调用已有受授权的 Java 检索 API，将返回的原文、doc/version、来源和评分映射为 Node；LlamaIndex 组织证据与回答。此时 Java 仍执行原融合/重排，Python 不重复再做相同排名。
+1. **接入阶段**：自定义 Retriever 调用本项目迁入并验证的受授权 Java 检索 API，将返回的原文、doc/version、来源和评分映射为 Node；LlamaIndex 组织证据与回答。此时 Java 执行原融合/重排，Python 不重复再做相同排名；该服务需要随本项目交付。
 2. **目标查询阶段**：在语言中立契约具备后，由 LlamaIndex 负责查询变换、多路检索组合、融合/重排与引用。Java 提供经过租户、部门/文档权限过滤的检索原语和可见版本校验；迁移路径上关闭已移交的 Java 同类 AI 逻辑。该检索原语契约尚未实现。
 3. **目标入库阶段**：LlamaIndex 接受已登记的文档版本与受限原文引用，复用现有 Tika/Tesseract 解析能力，承担分块、元信息抽取和 embedding 编排；输出有界、可验证的准备结果。Java 验证身份、原文指纹、处理版本、数量/维度、幂等键后写入各目标并发布可见版本。该跨语言准备结果契约尚未实现。
 4. **索引写权限**：本轮目标仍由 Knowledge 统一提交；不让原 Java worker 和 LlamaIndex VectorStoreIndex 对同一集合并发维护相同文档。未来若要 Python 直接拥有索引写入，须另立数据所有权迁移决策。
 
 LlamaIndex 的文档哈希/缓存去重不能覆盖平台的并发唯一约束、租户内重复上传反馈和版本状态。Node ID、embedding 模型/维度、分词、元数据白名单发生变化时使用新索引版本，执行回填/追平/质量对照后切换，不混写旧向量集合。
+
+真实文本 Embedding 默认采用参考标准栈的百炼 `text-embedding-v4`、1024 维和受控 OpenAI 兼容接口；Java 准备链与后续 LlamaIndex 转换链保持相同模型及处理版本。HashEmbedding 不进入业务默认、演示或自动回退路径；依赖失败如实记录并按有界重试处理，不能换用 hash 后宣称入库/检索成功。具体来源和验证范围见[首期约定](../knowledge-first-20261020/BRIEF.md#embedding-落地基线)。
 
 ## 6. 任务、检查点与失败恢复
 
@@ -163,11 +168,11 @@ LangGraph interrupt 恢复会重新进入节点，interrupt 之前的代码可�
 
 ## 8. 契约交接要求
 
-本文件提出约束，不新建与现有 JSON Schema 竞争的正式契约。后续 CONTRACTS 阶段需要承接：
+本文件提出约束，不新建与拟迁入 JSON Schema 竞争的正式契约。正式契约须明确本项目的权威位置、来源版本和兼容范围，不能直接假定旧门户或旧 API 客户端必须兼容。后续 CONTRACTS 阶段需要承接：
 
 | 契约族 | 必须明确 |
 | --- | --- |
-| Agent 请求/结果/SSE | 保持当前外部兼容面；框架事件转现有业务语义；工具、进度、暂停和失败不能伪装 token 或成功 |
+| Agent 请求/结果/SSE | 定义新 React 客户端与后端的版本化协议，逐项登记确需保留的兼容面；工具、进度、暂停和失败不能伪装 token 或成功 |
 | 持久分派与 resume | runtime/graph/checkpoint 版本、输入指纹、tenant/user/thread/run 绑定、取消与 lease epoch；旧 AgentScope 任务不交给 LangGraph 反序列化 |
 | 中央完成报告 | 幂等、结果指纹、中央终态确认、重复/迟到提交与对账；普通用户与 worker 授权面分开 |
 | 人工批准与业务工具 | 批准人、工具、参数指纹、权限、时效、幂等；图 interrupt 不等于 Flowable 审批或业务 grant |
@@ -177,19 +182,21 @@ LangGraph interrupt 恢复会重新进入节点，interrupt 之前的代码可�
 
 现有 AgentScope 契约副本和 manifest 保留。新运行时发布独立版本化契约制品，Java 消费固定版本；不能直接改旧 manifest 将新结构伪装成兼容升级。
 
-## 9. 建议演进顺序与退出条件
+## 9. 独立知识平台的阶段顺序与退出条件
+
+P0–P4 沿用阶段标识，按本轮独立项目和知识优先要求更新范围；它们不是已冻结的实施切片。P1 的入库由迁入能力先提供，P3 再移交转换算法，不把知识入库推迟到 P3。
 
 | 阶段 | 有界范围 | 进入下一阶段所需证据 |
 | --- | --- | --- |
-| P0：兼容与契约试验 | 固定依赖；假模型；PostgreSQL Checkpointer；可信上下文；现有 Java RAG Retriever；租约/终态恢复试验 | 编译/import 与序列化、真实 PG 重启恢复、双 worker 争用、跨租户恢复拒绝、终态对账通过；比较快慢分支、汇合与失败的调度语义；冻结契约和阈值 |
-| P1：三框架只读闭环 | 新版本 Deep Agents 执行知识问答/查单组合；LlamaIndex 证据回答；AgentScope 仅作隔离对照 | 同模型/数据/工具/预算的质量、延迟、费用、越权及取消对照；明确无副作用复制流量 |
-| P2：持久任务与灰度 | 接中央 api/worker、SSE、人工暂停；按租户和任务创建时绑定运行版本 | fencing、进程退出、批准后恢复、重复完成报告和回滚演练；不将未知结果自动转旧引擎重试 |
-| P3：RAG 主线迁移 | LlamaIndex 接管查询编排与知识转换；保留 Java 解析、授权、版本和提交；分开实施查询与入库 | 质量集、引用、OCR/格式样本、去重、重索引、权限撤销和逐存储目标恢复通过；旧在途任务排空 |
-| P4：主线收口 | 按能力迁移普通 Chat 与剩余 Agent 场景，退出 AgentScope 主路由；逐项消除对应 LangChain4j AI 职责 | 契约/能力覆盖、恢复与成本目标通过；旧任务/会话处理完毕，回滚窗口结束才另行退役代码 |
+| P0：独立基线与契约验证 | 最小迁入依赖、正式契约、独立构建与依赖锁；LLM 协议测试替身、真实 Embedding 接入、可信上下文、PG 与中央任务联合恢复 | 在不访问旧业务部署的环境验证；真实向量维度、import/序列化、PG 重启恢复、双 worker 争用、跨租户恢复拒绝和终态对账通过；协议替身不作为模型质量证据 |
+| P1：知识入库与问答闭环 | React 知识工作台；迁入知识入库、版本与检索能力；LangGraph + LlamaIndex 提供有引用的问答 | 新资料登记、处理、发布、问答及引用可实际操作；权限、重复上传、失败恢复和流式行为通过；样例及评测记录归属新项目 |
+| P2：研究分析与业务助手 | Deep Agents 复杂任务；本项目中央 api/worker、SSE、进度与取消恢复；建议先落地只读工具和草稿辅助 | 多资料报告、证据及任务结果可追溯；fencing、退出恢复、重复完成报告、权限变化与累计预算通过；写工具按独立契约验收 |
+| P3：知识处理主线完善 | LlamaIndex 接管查询编排与知识转换；Java 保留解析、授权、版本和唯一提交；分开实施查询与入库算法移交 | 质量集、引用、OCR/格式、去重、重索引、撤权与逐存储目标恢复通过；本项目旧版本在途任务按兼容规则处理 |
+| P4：后续业务扩展 | 参考 AgentScope 业务逐项实施；按需迁入更多领域能力，收敛迁入代码中的旧 AI 依赖 | 每项具备业务契约、权限与恢复验证、质量/成本结果；不将旧平台全部能力或退役旧项目作为默认验收项 |
 
 每阶段依赖前阶段验收，不按日期承诺工期。只读 Shadow 也会重复模型调用和数据读取，需单独的执行授权与预算；本次没有运行模型评测。
 
-回退按新任务路由恢复到保留的旧运行版本；已有 LangGraph 任务继续由兼容新 worker 收尾或显式取消。不得将 PostgreSQL 检查点交给 AgentScope、回滚数据库后丢失新任务，或假定代码回退撤销已发生的业务效果。
+回退使用本项目已验证的兼容版本；首次交付尚无前版本时停止受影响入口并按恢复流程处理，不虚构回退制品。已有 LangGraph 任务由兼容 worker 收尾或显式取消。旧项目不是自动回退目标；不得将 PostgreSQL 检查点交给 AgentScope、回滚数据库后丢失新任务，或假定代码回退撤销已发生的业务效果。
 
 ## 10. 风险与未决事项
 
@@ -204,5 +211,6 @@ LangGraph interrupt 恢复会重新进入节点，interrupt 之前的代码可�
 | R07 | SLA、容量、数据保留、部署规模和补丁预算未知 | 设计可供评审；生产容量与维护方案不能据此宣称已确定 |
 | R08 | 第三方 Checkpointer 初始化与升级 | 受控迁移身份执行；记录版本与回退边界，补齐表/字段说明；应用运行身份不自动拥有建表权限 |
 | R09 | 旧 DAG 依赖就绪调度与 LangGraph super-step 语义不同 | 不照搬节点后推定性能等价；P0 比较快慢分支、汇合、失败与关键路径，见[可行性分析 R1](../../feasibility/AI平台升级可行性分析.md#r1dag-调度语义不同性能收益不能直接推定) |
+| R10 | 迁入代码隐含依赖旧业务部署、旧数据或旧前端 | 按迁入依赖清单重绑定配置、schema 和契约；在隔离环境验证独立闭环；React 工程从零建设 |
 
-架构设计产物已给出；实施前仍需完成 P0 验证、契约冻结和容量/成本阈值确认。本方案不构成生产就绪或新框架已接入的证据。
+架构与组件基线已确认，独立项目、React 和业务优先级已明确；后续按首条路径落实契约、迁入清单及 P0 验证，容量与成本目标按实际场景细化。设计确认不构成生产就绪或新框架已接入的证据。

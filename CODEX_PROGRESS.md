@@ -1,8 +1,10 @@
 # Codex Progress
 
-- 当前任务：`platform-selection-20261020`；按用户要求，将架构、技术选型及证据迁入本项目。
-- 当前唯一状态与恢复入口：[选型与迁移进度](docs/design/platform-selection-20261020/PROGRESS_STATE.md)。
-- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`。本轮为文档交付，不开展产品实现、数据迁移或部署。
+- 当前任务：`knowledge-first-baseline-20261020`；固化独立项目、全新 React 前端、知识库优先和参考资产约定。
+- 当前唯一状态与恢复入口：[独立知识平台准备进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+- 业务与交付基线：[首期约定](docs/design/knowledge-first-20261020/BRIEF.md)；架构与选型继续在原权威文档维护。
+- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`。当前同步准备文档；产品实现、数据导入与运行验证单独记录。
+- 上一任务：[选型与迁移进度](docs/design/platform-selection-20261020/PROGRESS_STATE.md)，已完成；保留历史事实与证据。
 
 ## 前期可行性任务记录
 

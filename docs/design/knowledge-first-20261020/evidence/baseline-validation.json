@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "scope": "current Markdown integrity, local links/anchors, fixed source objects and preservation of selection evidence",
+  "markdown_files": 11,
+  "local_links": 66,
+  "table_rows": 357,
+  "unique_source_objects": 39,
+  "historical_evidence_unchanged": true,
+  "errors": [],
+  "runtime_validation": "NOT_RUN",
+  "model_calls": "NOT_RUN",
+  "mermaid": {
+    "result": "PASS_SYNTAX",
+    "changed_diagrams": 1,
+    "rendered": false,
+    "initial_failure": "DOMPurify required DOM; added JSDOM in task-local temporary validator and reran"
+  }
+}

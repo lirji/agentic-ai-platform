@@ -2,21 +2,21 @@
 
 日期：2026-10-20。适用范围：新项目 `agentic-ai-platform` 的整体选型，参考既有 Java/Python 平台资产。目标架构见 [BACKEND_ARCHITECTURE](BACKEND_ARCHITECTURE.md)。
 
-**选型主线：Python 3.12 + LangGraph + Deep Agents + LlamaIndex，复用 Java 领域服务、LiteLLM、MySQL、Qdrant、Elasticsearch、S3 与既有 IAM；为图检查点复用 PostgreSQL 实例中的独立数据库。**
+**已确认选型主线：全新 React 前端 + Python 3.12 + LangGraph + Deep Agents + LlamaIndex，按需迁入 Java 领域能力；沿用已选 LiteLLM、MySQL、Qdrant、Elasticsearch、S3 与 IAM 接入方式，为图检查点使用 PostgreSQL 独立数据库。**
 
-用户已选定三个主框架，并指定文档迁入新项目。本文件重点决定组合方式、持久化、基础组件及迁移边界。表中“选择”是设计建议；“已有/当前/沿用”指参考项目及拟复用资产，不表示新项目已安装或接入这些组件。当前版本依据为 Java `468cec4`、Python `7738cb7`；官方资料核对日期同上。
+用户已确认架构与组件，并明确本项目独立运行、React 前端重新建设、知识业务优先及参考资产来源，见[首期约定](../knowledge-first-20261020/BRIEF.md)。本文件所选方向作为实施基线；暂缓项和按需项仍按触发条件处理。“已有/当前/沿用”以及阶段列的“已存在”指参考资产，不表示新项目已安装、迁入或接入，也不要求旧业务部署持续运行。版本依据为 Java `468cec4`、Python `7738cb7`；保留原选型的官方核对记录，具体版本仍需 P0 运行验证。
 
 ## 1. 主框架与运行方式
 
 | ID / 决策 | 当前/约束 | 候选与选择 | 理由与取舍 | 引入阶段 |
 | --- | --- | --- | --- | --- |
-| T01 AI 执行 | 用户指定 LangGraph；当前 AgentScope | **LangGraph**；保留自研调度/AgentScope 仅作迁移兼容 | 统一图状态、分支、检查点与恢复；需要对接中央任务和 fencing，不能直接复用旧 DAG 序列化 | P0–P2 |
-| T02 复杂 Agent | 用户指定 Deep Agents | **Deep Agents**；纯 StateGraph 用于确定性短流程 | 复用子 Agent、上下文和工作文件能力；限制内置工具，显式启用规划，控制额外模型开销 | P1 |
+| T01 AI 执行 | 用户指定 LangGraph；参考项目使用 AgentScope | **LangGraph**；自研调度/AgentScope 仅作参考与隔离对照 | 统一图状态、分支、检查点与恢复；需要对接本项目中央任务和 fencing，不能直接复用旧 DAG 序列化 | P0–P2 |
+| T02 复杂 Agent | 用户指定 Deep Agents | **Deep Agents**；纯 StateGraph 用于确定性短流程 | 复用子 Agent、上下文和工作文件能力；限制内置工具，显式启用规划，控制额外模型开销 | P0 验证/P2 业务 |
 | T03 RAG | 用户指定 LlamaIndex | **LlamaIndex Core + 按需集成**；不再新建 LangChain RAG 主线 | 接管知识转换与检索编排；初期用受授权 Java Retriever，后续移交查询/准备算法 | P1/P3 |
 | T04 Python 服务 | 参考项目 FastAPI/Pydantic/HTTPX/uv | **新项目采用 Python 3.12 + FastAPI/Pydantic/HTTPX/uv**；借鉴现有服务模式 | 独立依赖与运行版本；不与 AgentScope 全套依赖混装；新图状态、数据库连接和 async 生命周期需验证 | P0 |
-| T05 模型出口 | 现有 LiteLLM | **继续统一 LiteLLM**；直接厂商 SDK、增加第二网关均暂缓 | 复用路由、凭据与归因；OpenAI-compatible 并不保证全部模型参数、工具和流式语义兼容 | 已存在/P0 |
+| T05 模型出口 | 参考项目 LiteLLM 与独立 Embedding 配置 | **聊天/Agent 继续统一 LiteLLM**；文本 Embedding 沿参考栈的受控 OpenAI 兼容客户端接百炼 | 参考路由与归因，新环境独立落实凭据和权限；不增加厂商专用 SDK 或第二网关，不假定 LiteLLM 已有 Embedding 路由 | 已存在/P0 |
 | T06 AI 部署 | 现有 Python inline / api-worker 与中央任务 | **自托管库 + 现有 API/worker 模式**；托管 Agent 平台备选 | 控制内部身份、数据和 Java 契约；承担运行适配、恢复、运维与升级成本 | P0/P2 |
-| T07 旧 AI 技术 | AgentScope 和 LangChain4j 已在使用 | **迁移兼容与回退基线** | 新 AI 用例优先三框架；按能力移交普通 Chat/RAG 后减少旧依赖，避免长期双主线 | P1–P4 |
+| T07 旧 AI 技术 | AgentScope 和 LangChain4j 在参考项目使用 | **业务/代码参考与隔离对照** | 新 AI 用例使用三框架；迁入功能若仍依赖局部 LangChain4j 适配，登记并逐步替换；AgentScope 不作为新项目必需运行时或默认回退目标 | P1–P4 |
 
 Deep Agents 构建在 LangChain Agent 基础之上，使用 LangGraph 执行；LangChain 是必要依赖，不需要再设计一个同级“LangChain 服务”。LlamaIndex 的 Agent/Workflow 不作为顶层执行器，以免叠加调度、恢复和预算。[Deep Agents 官方架构说明](https://docs.langchain.com/oss/python/deepagents/overview)
 
@@ -59,9 +59,9 @@ Deep Agents 0.7 的规划为显式能力，升级中也有 backend API 变化。
 | ID / 能力 | 当前/候选 | 建议选择及原因 | 代价、否决原因与兼容影响 | 阶段 |
 | --- | --- | --- | --- | --- |
 | T08 图检查点 | PostgreSQL 官方适配 / MySQL 自研适配 / Redis / SQLite | **PostgreSQL 16 共享实例、独立库 + AsyncPostgresSaver** | 新增逻辑库与备份、池预算；自研 MySQL Saver 维护成本高，SQLite 不作为多副本运行基线；Redis 不因已存在就替代关系型恢复存储 | P0 |
-| T09 中央任务 | 现有 MySQL 任务服务 / 新调度平台 | **复用 async-task-service** | 保留任务、取消、租约、持久事件和 webhook；图状态另归 T08，必须验证跨库完成报告和 fencing | 已存在/P2 |
+| T09 中央任务 | 现有 MySQL 任务服务 / 新调度平台 | **按需迁入 async-task-service 及依赖** | 保留任务、取消、租约、持久事件和 webhook；绑定本项目配置与数据，图状态另归 T08，验证跨库完成报告和 fencing | P0 验证/P2 完整接入 |
 | T10 Agent 工作文件 | StateBackend / StoreBackend / 宿主文件系统 | **StateBackend 优先，必要时 CompositeBackend 接受控适配器** | 大结果存 S3 引用，限制 checkpoint 大小；不默认安装共享可写目录或额外用户记忆库 | P1 |
-| T11 用户长期记忆 | 既有治理 API / 新 PostgresStore 画像 | **沿用受治理画像 API** | 避免双写权威；跨线程 Agent 工作资料将来可单独用 StoreBackend，不冒充业务画像 | 已存在/P1 |
+| T11 用户长期记忆 | 既有治理 API / 新 PostgresStore 画像 | **有需求时迁入受治理画像能力** | 避免双写权威；历史画像不默认导入，跨线程 Agent 工作资料不冒充业务画像 | 按知识会话需求 |
 | T12 Java 业务数据库 | 当前 MySQL 8.4 / 全迁 PostgreSQL | **继续 MySQL 8.4** | AI 图状态使用 PG 不构成业务表迁库理由；现有 SQL、Flowable、数据迁移保持兼容 | 已存在 |
 | T13 Java 持久化 | 已有 MyBatis-Plus/XML/Flyway | **沿用** | 自定义 SQL 放 XML；新表和字段有注释，迁移不改历史。Python Checkpointer 使用自身适配，不强行套 Java ORM | 已存在/P0 |
 | T14 向量检索 | 当前 Qdrant / pgvector / ES 向量 | **保留 Qdrant** | 降低现有集合/过滤语义迁移面；pgvector/单 ES 可在明确缩减运维成本时做对照，不同时更换框架与检索引擎 | 已存在/P3 |
@@ -70,7 +70,7 @@ Deep Agents 0.7 的规划为显式能力，升级中也有 backend API 变化。
 | T17 缓存与 Registry | 当前 Redis 7 / 新 L1+L2 / 无缓存 | **沿用既有 Redis 职责** | Registry 不是可随意丢弃的普通缓存；新 RAG 响应缓存需绑定权限、文档版本、模型版本，暂不增加多级缓存 | 已存在 |
 | T18 可靠消息 | 现有 Kafka/Outbox / RabbitMQ / 新工作队列 | **按已有事件链复用 Kafka 和 Outbox** | LangGraph 节点和子 Agent 不全部发 MQ；不新增 RabbitMQ/Celery 来重复中央任务与图调度 | 已存在 |
 | T19 业务审批 | 现有 Flowable 7.1.0 / 图 interrupt | **Flowable 保持业务流程权威** | LangGraph interrupt 只是 AI 执行暂停，不能替代业务审批记录和事务；不增加 Temporal/Camunda | 已存在 |
-| T20 文档解析/OCR | 已有 Tika/Tesseract / LlamaIndex readers / LlamaParse | **先复用已验证解析器，LlamaIndex 管转换** | Reader 按格式补入；复杂版面质量不足才单独评估云解析、成本与数据出境边界 | 已存在/P3 |
+| T20 文档解析/OCR | 已有 Tika/Tesseract / LlamaIndex readers / LlamaParse | **先迁入所需解析能力，LlamaIndex 逐步接管转换** | P1 必须支持首期资料入库；Reader 按格式补入，复杂版面不足再评估云解析与数据边界 | P1 入库/P3 转换移交 |
 
 T08 采用官方数据库 Checkpointer 能减少自研存储协议工作，但框架不负责本平台中央租约 fencing。[官方数据库示例](https://docs.langchain.com/oss/python/langgraph/add-memory)
 
@@ -82,7 +82,7 @@ T14 的候选均具备技术可行性：Qdrant 有[过滤能力](https://qdrant.
 
 | ID / 能力 | 选择 | 对比、边界与引入条件 |
 | --- | --- | --- |
-| T21 业务入口 | 沿用 Spring Cloud Gateway | 与 LiteLLM 分工：一个处理业务入口/身份，一个处理模型出口；不让 Python 内重复实现完整业务网关 |
+| T21 业务入口 | 迁入本项目所需 Spring Cloud Gateway 能力 | 与 LiteLLM 分工：一个处理业务入口/身份，一个处理模型出口；独立配置路由，不默认转发到旧业务部署 |
 | T22 认证授权 | 沿用 Casdoor + auth-platform + 内部 JWT；文档权限按目标启用 ReBAC | 不更换 Keycloak 或再建 SSO。当前 edge 使用自定义 GlobalFilter + Spring Security JOSE，不能写成完整 Resource Server 已接入；后者若迁移需单独验证 CORS/401/旧认证行为 |
 | T23 配置/发现 | 当前环境配置 + 可选 Config Server + 部署 DNS | Nacos Config/Discovery 分别按动态配置、多实例发现需求评估；既有寻址可用时不再叠加注册中心，不形成同键双配置权威 |
 | T24 调用保护 | 保留 HTTPX/Java 现有超时、连接池及隔离；按缺口选择 Resilience4j | 不全链统一加多层重试；先定义总 deadline、幂等和依赖预算；Python 不套 Java 组件 |
@@ -90,25 +90,27 @@ T14 的候选均具备技术可行性：Qdrant 有[过滤能力](https://qdrant.
 | T26 状态机 | 现有状态模型；新简单流程用稳定 code/迁移表，复杂生命周期按需评估 COLA | LangGraph 图状态、Flowable 流程状态、领域状态各归其主；COLA 不取代图运行时或数据库条件更新 |
 | T27 可观测/评测 | OTel + 现有 Prometheus/采集端；复用固定 RAG/Agent 评测资产 | LangSmith 可选作独立诊断工具，须评估数据与费用，不作为三框架运行硬依赖；不同时新建多套观测平台 |
 | T28 API 与协议 | HTTP/JSON/SSE；沿用 MCP/A2A 边界 | 不引入 gRPC/GraphQL 作为此次框架迁移前置；SDK 事件只在内部使用，对外发布语言中立版本契约 |
-| T29 前端 | 首期可复用现有 Vue 门户/API 客户端；新建独立管理后台默认 React + TypeScript + Vite + Ant Design | 复用与新建分别处理；React Router、TanStack Query、Axios、Ant Design Form/主题、CSS Modules、pnpm 为默认配套，Zustand 按需；具体版本与前端交付范围待单独设计，不迁改旧 Vue 项目 |
-| T30 部署 | 本地 Compose + dev_infra；按部署需求参考既有 Helm 能力 | 新项目尚无部署文件；共享实例落实库/账号/前缀与资源隔离，当前命名隔离不等于生产 ACL；不将选型解释为立即上 K8s |
+| T29 前端 | **全新 React + TypeScript + Vite + Ant Design 前端，独立 Git 仓库** | 用户明确不复用旧前端；React Router、TanStack Query、Axios、Ant Design Form/主题、CSS Modules、pnpm 为默认配套，Zustand 按需；围绕知识库、问答、研究和助手完成页面/状态设计，具体版本及仓库位置在建项时落实 |
+| T30 部署 | 本项目独立 Compose + dev_infra；按需求参考 Helm 能力 | 所需业务服务随本项目交付；共享实例落实库/账号/前缀与资源权限隔离；不启动或访问旧业务部署也能完成当前业务闭环，尚无本项目部署文件 |
 | T31 工程验证 | Python pytest/Ruff/mypy + Java 现有测试 + 契约一致性 | 增加与真实风险对应的检查点、恢复、租户和版本共存测试；不改现有 Coding Agent 工具或触发真实模型 benchmark |
 
 基础设施与版本事实来自 [dev_infra 说明](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/dev-infra/README.md)、[Compose](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/docker-compose.yml)、[edge POM](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/edge-gateway/pom.xml)、[共享观测模块](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/platform-observability/pom.xml)、[前端依赖](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/capability-showcase-frontend/package.json)。现有配置不等于本次已验证服务运行版本。
 
 ## 5. 模型与检索策略选择
 
-框架主线已经确定，模型按角色选择，复用 LiteLLM 的逻辑模型名与凭据机制。[LiteLLM 官方入口](https://docs.litellm.ai/docs/proxy/quick_start)
+框架主线已经确定，模型按角色配置。用户已明确模型及数据可借鉴 langchain 项目；已定位路由配置、知识数据模型与评测资产，见[首期约定第 5 节](../knowledge-first-20261020/BRIEF.md#5-已核对的参考资产)。参考 LiteLLM 的逻辑模型名与凭据机制，在新项目环境独立配置实际权限和额度。[LiteLLM 官方入口](https://docs.litellm.ai/docs/proxy/quick_start)
 
 | 角色 | 本次建议 | 冻结具体模型前的证据 |
 | --- | --- | --- |
 | 主 Agent/规划 | 先用现有可用且支持工具调用的主模型作为迁移对照 | 工具选择、参数 schema、长任务成功率、循环/幻觉、模型接口兼容 |
 | 摘要/轻任务 | 在语义相同前提下单独配置低成本模型 | 摘要事实保真、长上下文压缩和总调用成本；不能只比较单 token 单价 |
-| Embedding | 迁移框架时先保持同模型、维度和规范化 | 中文/业务语料 Recall@k、过滤后召回、向量维度、旧索引共存 |
+| Embedding | **默认百炼 `text-embedding-v4`，1024 维，OpenAI 兼容接口**；来自参考项目标准 Compose；不使用 HashEmbedding | 真实调用、中文/业务 Recall@k、过滤后召回、入库与查询模型一致性；模型/维度变化创建新索引并重建 |
 | Rerank | 先保留当前模型与排序策略，再单变量对照 | nDCG/MRR、引用质量、P95、超时回退；避免 Java 与 LlamaIndex 重复 rerank |
 | 视觉/语音 | 现有领域适配继续提供能力 | 本次不同时切换 ASR/TTS/视觉供应商，后续按真实缺口评估 |
 
-真实业务模型型号、数据使用条件、峰值额度和预算仍待确认。本次不凭公开榜单承诺某型号更好，也不运行计费模型。Hash embedding 只能用于管道/契约测试，不能作为语义检索质量证据。
+参考配置中 `chat-default` 声明为 `deepseek/deepseek-chat`，这是来源事实，未验证本项目账号可用性或运行效果。初始 RAG 资产含 200 条合成问题与 20 条语料清单记录，需重绑定新项目文档/权限并补充业务样本；旧评测结果不作为新项目验收结果。
+
+用户明确不采用默认 HashEmbedding。本项目统一使用上述真实语义默认，包括本地业务运行、演示、Compose 与 RAG 验收；迁入时检查应用和各覆盖配置，移除 hash 业务默认及回退。参考模型的 1024 维和 OpenAI 兼容接口已核对[官方规格](https://www.alibabacloud.com/help/en/model-studio/embedding)与[同步接口](https://www.alibabacloud.com/help/en/model-studio/text-embedding-synchronous-api)。接入参数、地域、账号、额度与预算仍需在实际环境验证；未配置或调用失败时明确报错。Ollama `nomic-embed-text` 作为来源已有备选，按显式配置和独立索引验证启用，禁止自动混用向量。
 
 ## 6. 复杂度预算与获取方式
 
@@ -116,9 +118,9 @@ T14 的候选均具备技术可行性：Qdrant 有[过滤能力](https://qdrant.
 | --- | --- | --- | --- |
 | LangGraph/Deep Agents/LlamaIndex | INTEGRATE | 用户已确定 AI 主框架；继续自研会保留原调度/上下文维护负担 | 适配与升级、113 包候选依赖面；框架类型限制在内部，公开协议独立 |
 | 图持久化 | REUSE_EXISTING 基础设施 + INTEGRATE Checkpointer | 仅内存不能支持多进程恢复；自研 MySQL Saver 增加存储语义维护 | 新 PG 逻辑库、备份、迁移、连接预算；保留版本绑定，替换需显式状态迁移 |
-| 中央任务和 Java 工具 | REUSE_EXISTING + BUILD 跨运行时适配 | 已有任务/权限/副作用能力；新框架不具备本平台业务约束 | fencing、终态对账、事件映射；不建立第二任务后台 |
+| 中央任务和 Java 工具 | MIGRATE 所需参考代码 + BUILD 跨运行时适配 | 已有任务/权限/副作用能力可借鉴；新框架不具备本平台业务约束 | 迁入依赖闭包、独立数据、fencing、终态对账和事件映射；不建立第二任务后台 |
 | RAG 连接与准备协议 | BUILD 小范围领域适配 | 通用 vector store 插件不能表达现有内容去重、发布版本与外部授权 | Retriever/准备 DTO/提交协议与回归；存储仍由 Knowledge 管理 |
-| 检索、对象存储、身份、流程、观测 | REUSE_EXISTING | 已有明确职责和接入证据，无本次替换收益 | 保留原运维成本；新增流量先计入共享容量 |
+| 检索、对象存储、身份、流程、观测 | REUSE 基础设施 + MIGRATE 所需接入代码 | 参考项目已有明确职责和接入证据，按当前知识业务需要接入 | 项目级权限与命名空间、共享容量预算；业务服务不能隐式依赖旧部署 |
 | LlamaParse/LlamaCloud、托管 Agent 平台 | DEFER | 当前无必须采购或向外发送文档的需求 | 有真实格式/运维缺口后评估价格、数据边界、许可和退出能力 |
 | 新 MQ、图数据库、专用记忆平台、第二配置中心 | DEFER | 当前要求未证明必须新增 | 写清触发问题后再选，不为架构图完整而引入 |
 
@@ -141,16 +143,17 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 
 ## 8. 设计后的验证清单
 
-按架构文档 P0→P4 推进，先解决两个关键接缝：**中央租约与 LangGraph 检查点；Java 文档治理与 LlamaIndex Node/准备结果**。
+按已更新的架构文档 P0→P4 推进，先验证独立运行基线和两个关键接缝：**中央租约与 LangGraph 检查点；Java 文档治理与 LlamaIndex Node/准备结果**。知识入库与 React 问答闭环在 P1 落地，LlamaIndex 转换算法的进一步移交在 P3 完成。
 
 | 验证 | 通过依据 | 当前状态 |
 | --- | --- | --- |
 | Python 3.12/Linux 候选依赖解析 | 固定直接依赖可解析，无源码构建 | 已通过，113 包；仅元数据层 |
+| 真实文本 Embedding | text-embedding-v4 返回 1024 维；入库/查询一致；缺配置和调用失败不回退 hash；批量限制及模型变更索引隔离 | 设计默认已定，运行未验证 |
 | 框架与模型接口 | import、假模型、结构化工具、流式、取消、预算；再做获授权真实模型对照 | 未执行 |
 | LangGraph 持久化 | 真实 PG 进程退出、重复 resume、丢租约旧 worker、终态写回未知结果 | 未执行，上线前置 |
 | RAG 迁移 | 同模型/语料对照；租户/文档授权、撤权、引用、去重、处理版本、索引回滚 | 未执行 |
 | 内置工具与记忆 | 子 Agent、filesystem、Skills、checkpoint、跨线程读写和审批绕过用例 | 未执行 |
 | 性能与成本 | 先确认峰值/SLA/预算，再测总调用链、共享 DB 连接与下游额度 | 目标值待确认 |
-| 发布与回退 | 新旧任务按运行版本分流；旧任务排空；新状态不交给旧引擎解释 | 未执行 |
+| 独立运行与发布回退 | 不访问旧业务部署；本项目任务按运行版本处理，回退制品兼容检查点；旧项目不是自动回退目标 | 未执行 |
 
-本次完成的是选型方案、源码/官方依据核对和候选依赖可解性检查；没有实现三框架集成，也没有给出生产可用结论。
+选型及本轮独立项目范围已确认；已有证据仍为来源核对和候选依赖可解性检查，尚未实现三框架集成或运行验收。新增业务边界的确认不扩大历史验证结论。

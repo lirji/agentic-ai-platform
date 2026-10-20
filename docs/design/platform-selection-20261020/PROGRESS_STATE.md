@@ -1,5 +1,7 @@
 # 平台整体选型进度
 
+> 历史任务记录：本文件保留选型与文档迁入任务完成时的状态。用户随后确认的独立项目、全新 React 前端、知识优先与真实 Embedding 要求见[首期约定](../knowledge-first-20261020/BRIEF.md)；当前任务状态见[准备进度](../knowledge-first-20261020/PROGRESS_STATE.md)。下文当时的未决项不覆盖后续决定，历史验证证据保持原样。
+
 - 任务：`platform-selection-20261020`。
 - 用户范围：当前平台整体选型，覆盖架构、AI 框架、基础组件；2026-10-20 已明确。最新约束：**项目目标架构以 LangGraph、Deep Agents、LlamaIndex 三个为主**。
 - 最新要求：将本批新文档迁移到 `/Users/liruijun/personal/LLM/agentic-ai-platform`；当前目标是文档迁移与索引衔接，不在原项目继续实现。
