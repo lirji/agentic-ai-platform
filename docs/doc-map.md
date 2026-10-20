@@ -4,7 +4,7 @@
 
 本项目已有 `ai-runtime/` 基础代码及 Java Gateway/Knowledge 四模块。知识资料受理与查询按参考规则独立实现，旧数据和旧部署未迁入；以下原项目映射仍是固定取证证据。
 
-本轮同步基线 `1b02f504dd8af5ee49a9036762722f58fb887f36` → S2 工作树：`ai-runtime/processing` 与 P01/P02、三框架正式锁、本地 AI 启停及真实模型证据同步到运行 README、架构/选型、契约与 QA。历史候选解析仍保留原范围；当前三框架运行与真实模型状态以 [S2 验收](qa/knowledge-processing-20261020/TEST_RESULT.md)为准。
+本轮同步基线 `3b3674613c138f89e902265b5b634e06de5aba6d` → S3 工作树：Java 租约处理、不可变准备、双索引与 K03/K04，Python 本机预算护栏，以及独立搜索 Runtime 同步至契约、选型与运行说明。当前验收状态见唯一进度；S2 历史三框架与真实模型证据保留于 [S2 验收](qa/knowledge-processing-20261020/TEST_RESULT.md)。
 
 ## 权威文档
 
@@ -49,7 +49,7 @@
 | S0 真实 Embedding 与本地存活服务 | CONTRACTS R01/H01、ai-runtime 源码与测试、S0 验证结果 | 68 项本地测试通过；HTTPX 模型协议替身不能证明真实语义效果 |
 | S1 知识资料受理与查询 | KNOWLEDGE_CONTRACTS、KNOWLEDGE_MIGRATION、Java 四模块、deploy | 独立网关 JWT、MyBatis XML/Flyway、项目 MySQL/S3；当前状态和真实测试证据见进度 |
 | 模型、数据模型和评测资产 | 首期约定第 5 节、选型第 5 节 | 固定提交只读核对：模型路由、知识迁移、200 条不同合成问题、20 条语料记录、20 条 Agent 目标及 1 条冒烟 case |
-| 阶段顺序与剩余风险 | 目标架构第 9–10 节、实施切片与当前进度 | P0–P4 按知识优先推进；处理/发布、Q/T schema、SLA 与模型预算待落实 |
+| 阶段顺序与剩余风险 | 目标架构第 9–10 节、实施切片与当前进度 | P0–P4 按知识优先推进；处理/发布已验证；Q/T schema、SLA 待落实，Embedding/聊天各 1 元已授权 |
 
 ## 能力与来源对应
 

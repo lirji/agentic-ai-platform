@@ -1,6 +1,6 @@
 # AI 运行时
 
-当前实现 S0/S2：Python 3.12、存活端点、真实 Embedding，以及经服务身份认证的知识准备/查询向量接口。契约权威为 [R01/H01](../docs/design/knowledge-first-20261020/CONTRACTS.md)和 [P01/P02](../docs/design/knowledge-first-20261020/PROCESSING_CONTRACTS.md)。Java 索引发布、完整问答和 React 页面仍在后续切片。
+当前实现 S0/S2：Python 3.12、存活端点、真实 Embedding，以及经服务身份认证的知识准备/查询向量接口。契约权威为 [R01/H01](../docs/design/knowledge-first-20261020/CONTRACTS.md)和 [P01/P02](../docs/design/knowledge-first-20261020/PROCESSING_CONTRACTS.md)。Java S3 已实现索引发布与检索，完整真实链路验收以项目进度为准；问答和 React 页面仍在后续切片。
 
 ## 本地启动
 
@@ -40,7 +40,7 @@ uv run --frozen agentic-ai check-config
 
 默认 `provider=openai` 代表兼容协议，模型为百炼 `text-embedding-v4`，维度为 `1024`。基础地址应是账号所属地域的 HTTPS API 根地址（通常含兼容接口版本路径），客户端追加 `/embeddings`；账号、地域和网络可用性需单独核对。配置检查仅输出协议、模型和维度，不请求模型，也不证明凭据有效。
 
-`hash`、未实现的提供方、缺失密钥和非法参数会明确失败。修改模型或维度需要另建匹配的索引配置，不能混用旧向量。真实模型调用需要对应任务授权及预算；本轮授权上限 1 元，测试工具按保守额度先预留，账单金额未读取。
+`hash`、未实现的提供方、缺失密钥和非法参数会明确失败。修改模型或维度需要另建匹配的索引配置，不能混用旧向量。真实模型调用需要对应任务授权及预算。本轮 Embedding 上限 1 元，聊天另限 1 元。AI 启动入口注入 `AI_EMBEDDING_BUDGET_FILE` 与 `AI_EMBEDDING_BUDGET_LIMIT_CNY=1`，每个实际 HTTP 批次发送前加锁、预留、落盘；文件缺失/损坏/争锁/耗尽拒绝发送，未知结果不返还额度。通用直接装配可以不启用本机护栏，此时由宿主提供预算控制；本项目付费验收不得绕过。账单金额未读取。
 
 ## 内部调用
 

@@ -12,6 +12,7 @@ import httpx
 
 from agentic_ai.rag.errors import EmbeddingError, EmbeddingErrorCode
 from agentic_ai.rag.ports import EmbeddingResult
+from agentic_ai.runtime.embedding_budget import EmbeddingBudget
 from agentic_ai.runtime.embedding_config import EmbeddingConfig
 
 RESPONSE_CHUNK_BYTES = 65536
@@ -25,8 +26,10 @@ class OpenAIEmbeddingAdapter:
         config: EmbeddingConfig,
         *,
         transport: httpx.AsyncBaseTransport | None = None,
+        budget: EmbeddingBudget | None = None,
     ) -> None:
         self._config = config
+        self._budget = budget
         self._client = httpx.AsyncClient(
             timeout=httpx.Timeout(config.deadline_seconds),
             limits=httpx.Limits(
@@ -97,6 +100,8 @@ class OpenAIEmbeddingAdapter:
         return inputs
 
     async def _request_batch(self, texts: tuple[str, ...]) -> tuple[tuple[float, ...], ...]:
+        if self._budget is not None:
+            self._budget.reserve(texts)
         payload = {
             "model": self._config.model,
             "input": texts,

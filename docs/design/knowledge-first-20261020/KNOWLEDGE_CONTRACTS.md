@@ -1,6 +1,6 @@
 # 知识资料契约 v1
 
-2026-10-20。本文细化 [CONTRACTS](CONTRACTS.md) 的 K01–K04；S1 实现 K01、K02、K03 查询及入口身份边界，K03 重试、K04 在处理/发布切片实现。未实现路由不能返回伪成功。
+2026-10-20。本文细化 [CONTRACTS](CONTRACTS.md) 的 K01–K04；S1 实现受理、查询及入口身份边界，S3 实现重试、发布、检索与引用。[处理契约](PROCESSING_CONTRACTS.md)补充持久准备、租约和双索引恢复语义。Q/T 尚未实现，不返回伪成功。
 
 ## 身份与错误
 
@@ -84,15 +84,15 @@
 
 S1 新任务保持 `RECEIVED/ACCEPTED`、errorCode=null、retryable=false；没有 worker 时不得假装完成。
 
-后续 `POST /api/v1/knowledge/ingestions/{jobId}/retry` 要求写权限、原所有者和 JSON `{expectedRevision:integer}`。只接受 FAILED + retryable 的原任务，将状态置 RECEIVED、revision/retryCount 加一，保留原输入；其他状态或版本冲突 409。受理返回 202 和当前 IngestionView。不接受新文件或修改原提交编号。
+`POST /api/v1/knowledge/ingestions/{jobId}/retry` 要求写权限、原所有者和 JSON `{expectedRevision:integer}`。只接受 FAILED + retryable 且 retryCount<3 的原任务，将状态置 RECEIVED、revision/retryCount 加一，保留原输入、准备结果和成功索引；其他状态或版本冲突 409。受理返回 202 和当前 IngestionView。不接受新文件或修改原提交编号。
 
 ## K04：发布后检索与引用
 
-后续实现 `POST /api/v1/knowledge/search`，读权限，请求 `{query:string,topK?:integer,documentIds?:string[]}`：query 为 1–2000 个非空白字符；topK 缺省 5、范围 1–20；documentIds 至多 20 个 UUID。返回 `{hits:KnowledgeHit[]}`，找不到资料返回空数组，模型/检索依赖失败返回稳定 503 错误，不伪装成无结果。
+`POST /api/v1/knowledge/search`，读权限，请求 `{query:string,topK?:integer,documentIds?:string[]}`：query 为 1–2000 个 Unicode 码点、整体非空白且无 NUL；topK 缺省 5、范围 1–20；documentIds 提供时必须为 1–20 个不重复 UUID。未知字段和标量类型强制转换被拒绝。返回 `{hits:KnowledgeHit[]}`，找不到资料返回空数组，模型/检索依赖失败返回稳定 503 错误，不伪装成无结果。
 
 `KnowledgeHit={documentId:string,version:integer,chunkId:string,text:string,score:number,source:{displayName:string,locator:string}}`。score 为有限数；locator 表示原文段落位置，不使用生成文本伪造出处。仅返回当前可见已发布版本，预发布/失败版本不能检索。
 
-`GET /api/v1/knowledge/documents/{documentId}/versions/{version}/chunks/{chunkId}` 返回同形 KnowledgeHit（score=0 表示直接引用读取，不作排名）；重新检查所有者与已发布版本，不可访问或版本已失效返回 404。K04 详细索引提交/恢复与检索错误码，在 S2 前作为契约增补冻结，不由客户端猜测。
+`GET /api/v1/knowledge/documents/{documentId}/versions/{version}/chunks/{chunkId}` 返回同形 KnowledgeHit（score=0 表示直接引用读取，不作排名）；重新检查所有者与已发布版本，不可访问或版本已失效返回 404。K04 详细索引提交/恢复与检索错误码已在 [S3 增补](PROCESSING_CONTRACTS.md#s3java-提交恢复与读取)冻结，不由客户端猜测。
 
 ## 验证与运行边界
 

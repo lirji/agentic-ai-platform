@@ -17,6 +17,18 @@ S1 已追加知识受理/查询的一致性审查与冻结契约，见下文。�
 | S0 | 开发者可启动 AI 运行时存活端点、验证真实模型配置；内部 Embedding 客户端正确分批并拒绝错误响应及 hash 配置 | D0 文档基线已交付；R01/H01 已冻结 | backend：`ai-runtime/`，根 `.gitignore`；必要 CI 与文档由对应 Owner 同步 | R01/H01；无数据库迁移 | no；首次定义共享运行入口与错误目录 | 下列 S0-AC 全部满足 | Python 3.12、HTTPX、FastAPI；本片不启动数据库/模型服务 | DONE |
 | S1 | API 客户端通过独立网关鉴权提交资料，原文与受理状态真实持久化，并能分页查询自己的资料与任务 | S0；KNOWLEDGE_CONTRACTS K01/K02/K03 查询与身份边界 | backend：根 Maven、platform-contracts/security、knowledge-service、edge-gateway；runtime：deploy；doc：当前设计/验证/进度 | Knowledge 独占本项目数据库 V1、S3 桶；不导入旧数据 | no；首次共享安全/迁移与 Runtime | 下列 S1-AC | JDK 21、独立 IAM/内部密钥、dev-infra MySQL/S3 | DONE |
 | S2 | Knowledge 客户端经独立服务身份调用 Python，取得有来源定位和真实向量的版本化准备结果及查询向量 | S0/S1；PROCESSING_CONTRACTS P01/P02；模型账号/地域/1 元授权已确认 | backend：ai-runtime；runtime：deploy 本地 AI 启动/私密配置；docs：既有设计/QA | Python 只计算准备结果，不写 Knowledge/检索存储；无业务迁移 | no；首次跨语言准备契约 | 下列 S2-AC | 已选三框架、PyJWT RSA 验签、真实百炼；服务密钥独立 | DONE |
+| S3 | 上传资料经持久 worker、真实准备及双索引发布为 READY；所有者可检索、引用及按原输入重试 | S2；PROCESSING_CONTRACTS S3 与 K03/K04 | backend：knowledge-service、必要 API；ai-runtime 仅本机预算护栏；runtime：deploy 独立搜索与验证；docs：权威设计/QA | Knowledge V2/V3、准备对象、双索引；不修改已应用迁移 | no | 下列 S3-AC | 现有 MySQL/S3/AI；独立 Qdrant 1.19.2、ES 8.19.23 smartcn | DONE |
+
+### S3 有限验收
+
+人工一致性检查：Java 继续拥有任务/索引/发布，Python 只准备；既有 K03/K04 补齐恢复语义。验证使用项目独立资源，新增组件限已批准搜索能力。
+
+1. **S3-AC1**：真实 MySQL 并发领取、租约接管、旧 owner 拒绝、条件重试与双表发布原子性成立；V1 不变，V2 全部列/表有注释。
+2. **S3-AC2**：跨语言准备逐项重算；原文或向量/摘要篡改拒绝。已持久准备包跨进程恢复复用，不重复消耗模型。
+3. **S3-AC3**：真实 Qdrant/ES 写入和搜索；单 sink 故障不发布，恢复不重做已完成 sink，Bulk 部分失败和未知提交可重放。
+4. **S3-AC4**：真实网关受理→处理→READY→检索→引用闭环；跨用户/租户/未发布/旧版本不泄露，依赖失败不是假空结果。
+5. **S3-AC5**：并发/响应大小/期限/退出有界，重启可恢复；模型账本延续，超预算和损坏拒绝发送，累计不超过用户授权。
+6. **S3-AC6**：Java/Python 构建和测试、真实链路/故障、Code Hygiene、依赖/文档检查通过，进度及 Git 交付可追溯。
 
 ### S2 有限验收
 
@@ -75,4 +87,4 @@ S1 不包含处理 worker、向量发布、问答或页面；完成后继续细�
 | 6 | 研究分析及业务助手 | Deep Agents 工具边界、累计预算、多 worker 恢复/取消、报告制品与 UI；写工具另定契约 |
 | 7 | 知识转换完善及 AgentScope 参考业务扩展 | 前述知识闭环验收，逐项业务需求和迁入边界明确 |
 
-S1 已验收；下一步的源代码依赖与处理/发布条件已整理到 [PROCESSING_READINESS](PROCESSING_READINESS.md)。真实模型账号、地域与本轮预算尚待必要答复，后续片尚未标 READY。可并行集合：无；未授权多个 Agent 并行写入。前端仓库创建和真实模型调用在对应阶段落实，不由本片验收替代。
+S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。下一片为基于 K 契约的 React 知识工作台，Q/T 在各自契约冻结后继续。可并行集合：无；未授权多个 Agent 并行写入。前端仓库创建和真实模型调用在对应阶段落实，不由本片验收替代。

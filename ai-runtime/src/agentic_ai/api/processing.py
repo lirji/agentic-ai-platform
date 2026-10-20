@@ -28,6 +28,7 @@ EMBEDDING_HTTP_STATUS = {
     EmbeddingErrorCode.UPSTREAM_REJECTED: 502,
     EmbeddingErrorCode.UPSTREAM_UNAVAILABLE: 503,
     EmbeddingErrorCode.RESPONSE_INVALID: 502,
+    EmbeddingErrorCode.BUDGET_REJECTED: 503,
 }
 
 

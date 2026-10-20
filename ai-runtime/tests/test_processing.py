@@ -78,6 +78,26 @@ def command(text="知识平台将原文与发布版本分开管理。"):
     )
 
 
+def test_java_golden_package_matches_actual_llamaindex():
+    """同一固定协议包同时由 Java 读取和真实分块器重算，防止两端 Unicode/位置规则漂移。"""
+    fixture = (
+        Path(__file__).parents[2] / "knowledge-service/src/test/resources/processing-golden.json"
+    )
+    golden = json.loads(fixture.read_text())
+    request = PrepareRequest(
+        tenant_id=golden["prepared"]["tenantId"],
+        owner_id=golden["prepared"]["ownerId"],
+        document_id=golden["prepared"]["documentId"],
+        job_id=golden["prepared"]["jobId"],
+        document_version=1,
+        source_hash=digest(golden["sourceText"].encode()),
+        content_type="text/plain",
+        source_text=golden["sourceText"],
+    )
+    prepared = asyncio.run(PreparationPipeline(TestEmbedding()).prepare(request))
+    assert prepared.model_dump(mode="json", by_alias=True) == golden["prepared"]
+
+
 @pytest.fixture(scope="module")
 def signing_key():
     return rsa.generate_private_key(public_exponent=65537, key_size=2048)

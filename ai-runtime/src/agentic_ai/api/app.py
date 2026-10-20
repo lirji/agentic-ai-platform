@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from agentic_ai.adapters.openai_embedding import OpenAIEmbeddingAdapter
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL
+from agentic_ai.runtime.embedding_budget import EmbeddingBudget
 from agentic_ai.runtime.embedding_config import EmbeddingConfig
 from agentic_ai.runtime.processing_config import ProcessingConfig
 
@@ -53,7 +54,7 @@ def create_app() -> FastAPI:
         embedding = EmbeddingConfig.from_environment()
         if embedding.model != EMBEDDING_MODEL or embedding.dimensions != EMBEDDING_DIMENSIONS:
             raise ProcessingError(ProcessingCode.CONFIGURATION_INVALID)
-        client = OpenAIEmbeddingAdapter(embedding)
+        client = OpenAIEmbeddingAdapter(embedding, budget=EmbeddingBudget.from_environment())
         app.include_router(processing_router(PreparationPipeline(client), verifier, config))
 
     @app.get("/health/live", response_model=LivenessReply)

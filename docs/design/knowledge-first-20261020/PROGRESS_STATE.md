@@ -2,17 +2,17 @@
 
 ## 当前任务：知识处理与检索实施
 
-- 标识：`knowledge-processing-20261020`；最新指令“继续后续的实施”，延续知识平台完整目标与正常 Git 交付授权。
-- 当前状态：`S2 DONE / S3 契约细化`。S0/S1 已交付；S2 三框架正式锁、Python 准备/查询向量、独立服务身份与真实模型验收通过。下一步 Java 领取、索引提交、发布及检索，完整知识平台尚未完成。
-- 模型授权：用户已明确答复“沿用原配置，上限 1 元”。仅沿用 `langchain4j-platform` 百炼账号、接口地域、`text-embedding-v4 / 1024`；本轮累计费用 ≤1 元。少量合成测试文本；不自动迁入旧业务语料，不授权其他付费聊天/Agent 调用。凭据仅进入本项目忽略配置，调用前核对价格、用量及预算。
-- Git：原项目目录，任务分支 `feat/knowledge-processing-20261020`，起点 `1b02f504dd8af5ee49a9036762722f58fb887f36`；开始时工作树干净，无新 worktree。
-- 任务清单：①冻结准备结果、处理/恢复、索引与检索契约；②Python LangGraph/LlamaIndex 准备接口及三框架兼容验证；③Java 持久 worker 与版本化索引提交；④真实受理→处理→发布→检索和故障恢复验收；⑤文档、进度与 Git 交付；⑥继续下一依赖满足的知识路径。
-- 边界：Java 仍为资料、权限、任务与发布权威；Python 不直写业务数据库或检索索引；新项目资源隔离，旧 `lc4j-*` 专属检索实例不自动当成公共实例。无生产部署或旧数据变更。
-- 已完成证据：[S2 TEST_RESULT](../../qa/knowledge-processing-20261020/TEST_RESULT.md)；103 项测试、Ruff/mypy/构建、真实 HTTP 身份拒绝及百炼 1024 维准备/查询通过。30 个源码/配置摘要 `2cff0d78383caea8b91635d37be28346c49ae83573c1956ca27de5dd785b3125`，167 个文档本地链接通过；依赖 118 包公告无跳过，NLTK 公告当前路径不触发的范围例外已记录；Code Hygiene 工具发现限制保留。
-- 修改范围：`ai-runtime` P01/P02/框架锁/测试、`deploy` AI 私密初始化与启停/真实模型验证、当前设计/QA/README。Java 产品代码本片未改。
-- 运行中任务：原 Gateway/Knowledge 与本项目 AI 进程运行；AI PID `.local/ai-runtime.pid`，日志 `.logs/ai-runtime.log`。无未完成构建/模型调用；模型累计 2 次，保守预留 0.02 元（非实际账单），剩余预留预算 0.98 元。原账号配置、专用密钥和预算账本位于 `.local/`，必须保留；无新 worktree。
-- 下一步：S2 正常 Git 交付后，补齐 PROCESSING_CONTRACTS 的 Java 提交/恢复与检索细节、建立 S3，随后连续实现。Qdrant/ES 采用本项目独立数据资源；不直接复用旧 lc4j 专属实例。PG 长任务恢复/问答/研究/React 仍待后续。
-- 采用规范：`continue-approved-delivery`、`implementation-slicing`、`backend-implementation`、`update-progress-docs`、`task-git-delivery`；架构规范的业务建模、持久化、契约、并发安全、容量演进与发布治理。沿用原手工工程 pass，未改全局技能/Runtime 状态。
+- 标识：`knowledge-processing-20261020`；延续“继续后续的实施”，完整目标包含知识资料、问答、研究、助手与独立 React 前端。
+- 状态：`S2 DONE / S3 DONE`，S3 必需验证通过，Git 交付待执行；完整平台尚未完成。下一步立即进入 S4 知识工作台，不等待再次确认继续。
+- 模型授权：Embedding 沿用原 langchain4j-platform 百炼北京账号、text-embedding-v4 / 1024，上限 1 元；聊天沿用原聊天配置，另限 1 元。当前 Embedding 共 11 次保守预留、0.11 元（含 S2，非账单）；聊天未接入、未调用。两个预算独立，凭据只进忽略配置，不迁入旧语料。
+- Git：原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`；分支 `feat/knowledge-processing-20261020`，HEAD `3b3674613c138f89e902265b5b634e06de5aba6d`；S3 实现/验证/文档未提交，均属本任务，无新 worktree。用户授权验证后按逻辑单元提交、正常合并推送 main，无生产部署。
+- 已完成：Java 持久租约 worker、不可变准备复用、双索引确认后原子发布、失败 CAS 重试、授权检索与引用；Python 持久预算护栏；本项目隔离 Qdrant/ES、版本和中文分析插件；loopback S3 关闭错误的代理继承。
+- 验证：[S3 TEST_RESULT](../../qa/knowledge-publication-20261020/TEST_RESULT.md)；Java 41 项（ES 8.19.23，`.logs/s3-java-tests-upgraded.log`）、Python 113 项、Ruff/mypy/构建通过；真实网关/模型/数据库/对象与索引完整链路、Knowledge 真重启、权限隔离及故障恢复通过。源码摘要见同目录 validation.json；Code Hygiene 限制与历史失败保留。
+- 迁移：V1/V2/V3 已在 dev/test 应用，禁止改写。准备包、索引和发布事实仍由 Java/MySQL 决定，Python 不直写业务存储。worker 本机仅领取 local-dev。
+- 运行：Gateway 28080、Knowledge 28084、AI 28085 均运行，readiness UP；Qdrant 1.19.2（26333）、ES 8.19.23 smartcn（29200）。ES 官方制品下载失败已通过分段下载及 digest 校验恢复，构建升级与新增真实资料查询通过；无运行中下载、迁移、模型或测试任务。PID/log 在 `.local/` / `.logs/`。
+- 保留：`.local/` 中运行凭据/签名密钥/预算/恢复编号必须保留；搜索快照在本项目卷和 `.local/search-backups/20261020-prepatch/`，未做恢复演练；OCI 缓存和诊断目录可经授权清理，本轮不删。旧平台与 `.idea/` 未改。
+- 下一步：完成文档核对与分批 Git 交付；按已批准前端架构冻结 S4（真实列表、上传、状态/重试、检索/引用），创建独立 React 仓库。之后继续 Q/T 与 PG 恢复。业务助手已异步询问具体场景，尚无答复；可逆默认候选为基于资料生成清单、摘要和草稿，不自动接入外部写工具。
+- 采用规范：continue-approved-delivery、backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；全局架构业务建模、持久化、契约、并发安全、容量和发布治理。沿用手工专业 pass，未改全局技能 Runtime 的已知漂移。
 
 ## 历史：S1 知识入库受理
 

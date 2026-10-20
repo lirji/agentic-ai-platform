@@ -1,0 +1,25 @@
+{
+  "slice": "S3",
+  "checks": {
+    "input_and_scope": "PASS",
+    "published_search_and_citation": "PASS",
+    "owner_and_tenant_isolation": "PASS",
+    "partial_sink_failure": "PASS",
+    "restart_and_reuse_preparation": "PASS",
+    "recovered_document_search": "PASS"
+  },
+  "documents": [
+    "06c6dd4d-2c54-4f05-b14e-790c27e7a064",
+    "defa57a2-6689-40bb-88c1-20b484d5ddf4"
+  ],
+  "model": "text-embedding-v4",
+  "dimensions": 1024,
+  "searchVersions": {
+    "qdrant": "1.19.2",
+    "elasticsearch": "8.15.3"
+  },
+  "cumulativeReservations": 9,
+  "reservedCny": "0.09",
+  "actualBilledCny": null,
+  "note": "累计包含 S2；预留不是实际账单，恢复未增加模型预留。"
+}

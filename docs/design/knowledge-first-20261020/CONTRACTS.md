@@ -2,11 +2,11 @@
 
 版本：`v1-foundation`，2026-10-20。依据：[首期约定](BRIEF.md)、[后端架构](../platform-selection-20261020/BACKEND_ARCHITECTURE.md)、[React 设计](FRONTEND_ARCHITECTURE.md)。
 
-本文件是新项目的契约权威。**R01/H01 与首批知识受理/查询契约已冻结；其余 K/Q/T 仍需在对应实施切片前冻结完整 schema。** 不把未来 API 清单冒充已经实现或已完成联调。
+本文件是新项目的契约权威。**R01/H01、K01–K04 与 P01/P02 已冻结；Q/T 仍需在对应实施切片前冻结完整 schema。** 不把未来 API 清单冒充已经实现或已完成联调。
 
-后续知识契约细化见 [KNOWLEDGE_CONTRACTS](KNOWLEDGE_CONTRACTS.md)：S1 已冻结 K01 受理、K02 资料查询、K03 状态查询及身份/错误边界；K03 重试、K04 处理/发布细节仍随对应切片补齐。此增补不改变 R01/H01。
+知识契约细化见 [KNOWLEDGE_CONTRACTS](KNOWLEDGE_CONTRACTS.md)：S1 冻结受理、查询及身份/错误边界；S3 已补齐 K03 重试和 K04 检索/引用。此增补不改变 R01/H01。
 
-S2 的 Python 内部准备与查询向量契约 P01/P02 已在 [PROCESSING_CONTRACTS](PROCESSING_CONTRACTS.md) 冻结；启用开关关闭时维持原 H01 行为。S3 的索引/发布仍需续补后实施。
+S2 的 Python P01/P02 与 S3 的领取、持久准备、双索引发布及检索约束见 [PROCESSING_CONTRACTS](PROCESSING_CONTRACTS.md)；启用开关关闭时维持原 H01 行为。实现与验收范围以当前进度为准。
 
 ## 1. 通用约定
 

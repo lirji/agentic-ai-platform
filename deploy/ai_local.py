@@ -79,6 +79,14 @@ def init(reference_env: Path) -> None:
         "LANGCHAIN_TRACING_V2": "false",
     }
     private(CONFIG, json.dumps(environment, indent=2))
+    budget = STATE / "embedding-budget-20261020.json"
+    if not budget.exists():
+        # 仅首次账号初始化建立本轮已授权账本；已有账号缺失账本时上方直接返回，不重置额度。
+        descriptor = os.open(budget, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(descriptor, "w") as file:
+            json.dump({"limitCny": "1", "reservedCny": "0", "calls": []}, file)
+            file.flush()
+            os.fsync(file.fileno())
     print("AI 凭据与独立服务密钥已保存至 .local/（0600），未调用模型。")
     print("已沿用来源 HTTPS 接口与地域；型号 text-embedding-v4 / 1024。")
 
@@ -87,7 +95,12 @@ def environment() -> dict[str, str]:
     """启动环境不从旧业务进程继承，只消费本项目明确保存的配置。"""
     if not CONFIG.exists():
         raise RuntimeError("尚未执行 init-ai")
-    return {**os.environ, **json.loads(CONFIG.read_text())}
+    return {
+        **os.environ,
+        **json.loads(CONFIG.read_text()),
+        "AI_EMBEDDING_BUDGET_FILE": str(STATE / "embedding-budget-20261020.json"),
+        "AI_EMBEDDING_BUDGET_LIMIT_CNY": "1",
+    }
 
 
 def alive() -> int | None:

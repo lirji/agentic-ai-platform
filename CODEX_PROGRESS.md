@@ -3,7 +3,7 @@
 - 当前任务：`knowledge-processing-20261020`；用户要求继续后续实施，推进三框架接入与知识处理、发布、检索。
 - 当前唯一状态与恢复入口：[独立知识平台准备进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 - 业务与交付基线：[首期约定](docs/design/knowledge-first-20261020/BRIEF.md)；架构与选型继续在原权威文档维护。
-- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`。当前任务分支 `feat/knowledge-processing-20261020`，起点 `1b02f504dd8af5ee49a9036762722f58fb887f36`。用户已确认沿用原百炼账号/地域，本轮真实 Embedding 调用费用上限 1 元。先冻结准备结果与处理契约，再连续实现和验证；完整知识库和 React 尚未完成。运行状态、任务清单、授权和证据见唯一进度文档。
+- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`。当前任务分支 `feat/knowledge-processing-20261020`，S2 已合并推送 `3b36746`；S3 实现与必需验证通过，Git 交付待执行；随后继续 React 工作台。已授权沿用原百炼 Embedding 配置，上限 1 元；沿用原聊天配置，另限 1 元。完整知识库和 React 尚未完成。运行状态、任务清单、授权和证据见唯一进度文档。
 - 上一任务：[选型与迁移进度](docs/design/platform-selection-20261020/PROGRESS_STATE.md)，已完成；保留历史事实与证据。
 
 ## 前期可行性任务记录

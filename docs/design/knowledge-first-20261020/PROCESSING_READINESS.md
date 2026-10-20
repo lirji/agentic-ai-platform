@@ -1,15 +1,15 @@
 # 知识处理与发布：下一阶段准备
 
-承接 S1；这是后续实施的依赖盘点，不是已冻结接口或已实现 worker。总体路线仍见 [IMPLEMENTATION_SLICES](IMPLEMENTATION_SLICES.md)，S1 受理接口见 [KNOWLEDGE_CONTRACTS](KNOWLEDGE_CONTRACTS.md)。
+本文保留承接 S1 时的依赖盘点。S2/S3 现已落实下表要求，worker、双索引发布及真实恢复证据见 [S3 验证](../../qa/knowledge-publication-20261020/TEST_RESULT.md)。正式契约以 [KNOWLEDGE_CONTRACTS](KNOWLEDGE_CONTRACTS.md)和 [PROCESSING_CONTRACTS](PROCESSING_CONTRACTS.md)为准，不从旧准备记录推断当前状态。
 
 ## 已具备
 
 - 独立 Gateway 身份边界、Knowledge 原文/文档/持久任务，S3 原文可按完整性摘要核对。
-- 任务 revision、文档版本、所有者、原文指纹与请求指纹；当前只允许 RECEIVED/ACCEPTED。
+- 任务 revision、文档版本、所有者、原文指纹与请求指纹；S1 当时仅受理，S3 已实现 PROCESSING/READY/FAILED 及受控恢复。
 - S0 的真实 OpenAI 兼容 Embedding 客户端：text-embedding-v4 / 1024 维，批量和总期限有界，失败不回退 hash。
 - 固定参考源码已核对：`IngestionJobStateMachine` 的逐 sink 状态、`IngestionJobWorker` 的 claim/心跳/revision 检查、`PreparedIngestionDocument` 的非空分块及向量数量约束。来源仍为 `langchain4j-platform@468cec425dd160e80cfc3ab378d3440a8767e4d5`。
 
-## 下一片必须完成的设计与实现依赖
+## 已由 S2/S3 落实的设计与实现依赖
 
 | 依赖 | 约束与落点 | 进入实施的条件 |
 | --- | --- | --- |

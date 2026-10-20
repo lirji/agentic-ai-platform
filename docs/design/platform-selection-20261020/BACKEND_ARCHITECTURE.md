@@ -4,7 +4,7 @@
 
 **已确认基线：独立知识平台，采用全新 React 前端、Python AI 核心与按需迁入本项目的 Java 领域能力。LangGraph 统一执行与恢复，Deep Agents 承载复杂 Agent，LlamaIndex 承载知识处理与 RAG。**
 
-S2 已实现 Python 内部准备图和查询向量接口，LangGraph/LlamaIndex 实际参与处理；Deep Agents 仅完成隔离兼容验证。接口经 Knowledge 专用服务密钥鉴权，Python 不持有业务数据库或检索索引写权限。当前短准备图无 checkpoint，返回结果待 Java 持久化后提交索引；不能据此宣称长任务恢复、知识发布或研究 Agent 已完成。契约见 [P01/P02](../knowledge-first-20261020/PROCESSING_CONTRACTS.md)。
+S2 的 LangGraph/LlamaIndex 准备图已接入真实 Embedding；S3 由 Java 持久化准备包、执行带代次的租约处理、提交 Qdrant/ES 并原子发布文档/任务，提供授权检索和原文引用。跨进程故障恢复已验证，Python 不持有业务库或索引写权限。当前短图无 checkpoint；Deep Agents 仅完成隔离兼容验证，PG 长任务恢复和研究 Agent 尚未交付。契约见 [P01/P02 与 S3](../knowledge-first-20261020/PROCESSING_CONTRACTS.md)。
 
 这是新项目 `agentic-ai-platform` 的目标设计；已开始实施 S0 AI 运行基础与 S1 知识资料受理/查询，尚未完成三框架业务闭环。用户已确认架构与组件，并进一步明确独立运行、全新 React 前端、知识业务优先及按需迁入资产，见[首期业务与工程约定](../knowledge-first-20261020/BRIEF.md)。下文事实表中的“已有/当前”指参考项目；“迁入/沿用”表示复用代码与能力，不表示必须依赖旧项目正在运行的业务服务。组件、版本、候选取舍见 [TECH_SELECTION](TECH_SELECTION.md)，历史背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)，真实实施/验证状态见[当前进度](../knowledge-first-20261020/PROGRESS_STATE.md)。
 
@@ -128,7 +128,7 @@ LlamaIndex 提供可组合的[检索器](https://developers.llamaindex.ai/python
 
 1. **接入阶段**：自定义 Retriever 调用本项目迁入并验证的受授权 Java 检索 API，将返回的原文、doc/version、来源和评分映射为 Node；LlamaIndex 组织证据与回答。此时 Java 执行原融合/重排，Python 不重复再做相同排名；该服务需要随本项目交付。
 2. **目标查询阶段**：在语言中立契约具备后，由 LlamaIndex 负责查询变换、多路检索组合、融合/重排与引用。Java 提供经过租户、部门/文档权限过滤的检索原语和可见版本校验；迁移路径上关闭已移交的 Java 同类 AI 逻辑。该检索原语契约尚未实现。
-3. **目标入库阶段**：LlamaIndex 接受已登记的文档版本与受限原文引用，复用现有 Tika/Tesseract 解析能力，承担分块、元信息抽取和 embedding 编排；输出有界、可验证的准备结果。Java 验证身份、原文指纹、处理版本、数量/维度、幂等键后写入各目标并发布可见版本。该跨语言准备结果契约尚未实现。
+3. **目标入库阶段**：LlamaIndex 承担分块、元信息抽取和 embedding 编排，输出有界、可验证的准备结果，Java 验证后写入各目标并发布可见版本。S2/S3 已实现 UTF-8 TXT/Markdown 的准备与发布；Tika/Tesseract、多格式解析和丰富元信息仍是后续能力，当前不得冒充已支持。
 4. **索引写权限**：本轮目标仍由 Knowledge 统一提交；不让原 Java worker 和 LlamaIndex VectorStoreIndex 对同一集合并发维护相同文档。未来若要 Python 直接拥有索引写入，须另立数据所有权迁移决策。
 
 LlamaIndex 的文档哈希/缓存去重不能覆盖平台的并发唯一约束、租户内重复上传反馈和版本状态。Node ID、embedding 模型/维度、分词、元数据白名单发生变化时使用新索引版本，执行回填/追平/质量对照后切换，不混写旧向量集合。

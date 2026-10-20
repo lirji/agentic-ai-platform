@@ -1,0 +1,42 @@
+name: agentic-ai-search
+services:
+  qdrant:
+    image: qdrant/qdrant@sha256:b7b0444c4c351c970b98e90a6f89c2ee4287c65b44e52b4cb503fa5b2aa927ad
+    mem_limit: 512m
+    cpus: 1
+    environment:
+      QDRANT__SERVICE__API_KEY: ${AGENTIC_QDRANT_KEY:?required}
+      QDRANT__TELEMETRY_DISABLED: "true"
+      QDRANT__SERVICE__MAX_REQUEST_SIZE_MB: "6"
+    ports: ["127.0.0.1:26333:6333"]
+    volumes: [qdrant-data:/qdrant/storage]
+    networks: [search]
+  elasticsearch:
+    image: agentic-ai/elasticsearch:8.19.23-smartcn
+    build:
+      context: .
+      dockerfile: Dockerfile
+    mem_limit: 1024m
+    cpus: 1
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.enabled: "false"
+      xpack.security.transport.ssl.enabled: "false"
+      ELASTIC_PASSWORD: ${AGENTIC_ELASTIC_ADMIN_PASSWORD:?required}
+      ES_JAVA_OPTS: -Xms384m -Xmx384m
+      http.max_content_length: 6mb
+      path.repo: /usr/share/elasticsearch/snapshots
+    ports: ["127.0.0.1:29200:9200"]
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+      - elastic-snapshots:/usr/share/elasticsearch/snapshots
+    networks: [search]
+networks:
+  search:
+    external: true
+    name: dev-infra
+volumes:
+  qdrant-data: {}
+  elastic-data: {}
+  elastic-snapshots: {}

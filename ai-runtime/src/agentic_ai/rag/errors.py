@@ -12,6 +12,7 @@ class EmbeddingErrorCode(StrEnum):
     UPSTREAM_REJECTED = "EMBEDDING_UPSTREAM_REJECTED"
     UPSTREAM_UNAVAILABLE = "EMBEDDING_UPSTREAM_UNAVAILABLE"
     RESPONSE_INVALID = "EMBEDDING_RESPONSE_INVALID"
+    BUDGET_REJECTED = "EMBEDDING_BUDGET_REJECTED"
 
 
 ERROR_MESSAGES = MappingProxyType(
@@ -21,6 +22,7 @@ ERROR_MESSAGES = MappingProxyType(
         EmbeddingErrorCode.UPSTREAM_REJECTED: "向量服务拒绝请求，请检查模型配置或配额。",
         EmbeddingErrorCode.UPSTREAM_UNAVAILABLE: "向量服务暂不可用，请稍后重试。",
         EmbeddingErrorCode.RESPONSE_INVALID: "向量服务响应格式或维度不符合约定。",
+        EmbeddingErrorCode.BUDGET_REJECTED: "本轮模型调用预算不可用，请检查授权账本。",
     }
 )
 

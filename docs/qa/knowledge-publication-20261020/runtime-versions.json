@@ -1,0 +1,29 @@
+{
+  "versions": {
+    "qdrant": "1.19.2",
+    "elasticsearch": "8.19.23"
+  },
+  "images": {
+    "qdrant/qdrant@sha256:b7b0444c4c351c970b98e90a6f89c2ee4287c65b44e52b4cb503fa5b2aa927ad": {
+      "id": "sha256:b7b0444c4c351c970b98e90a6f89c2ee4287c65b44e52b4cb503fa5b2aa927ad",
+      "digests": [
+        "qdrant/qdrant@sha256:b7b0444c4c351c970b98e90a6f89c2ee4287c65b44e52b4cb503fa5b2aa927ad"
+      ],
+      "architecture": "arm64"
+    },
+    "docker.io/library/elasticsearch@sha256:3f4d63c59ca5a05b535179dfcced47a514119e351fa81653f69902beacae90c9": {
+      "id": "sha256:3f4d63c59ca5a05b535179dfcced47a514119e351fa81653f69902beacae90c9",
+      "digests": [
+        "elasticsearch@sha256:3f4d63c59ca5a05b535179dfcced47a514119e351fa81653f69902beacae90c9"
+      ],
+      "architecture": "arm64"
+    },
+    "agentic-ai/elasticsearch:8.19.23-smartcn": {
+      "id": "sha256:cef48cf3e1c91d60896cf84f3d4c4b43d93df846b379161af6d8b0cde61ebcf3",
+      "digests": [
+        "agentic-ai/elasticsearch@sha256:cef48cf3e1c91d60896cf84f3d4c4b43d93df846b379161af6d8b0cde61ebcf3"
+      ],
+      "architecture": "arm64"
+    }
+  }
+}

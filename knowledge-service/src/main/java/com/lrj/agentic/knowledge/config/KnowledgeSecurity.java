@@ -41,8 +41,11 @@ public class KnowledgeSecurity {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/ingestions")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/ingestions",
+                                "/api/v1/knowledge/ingestions/*/retry")
                         .hasAuthority("SCOPE_" + IdentityProtocol.WRITE_SCOPE)
+                        .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/search")
+                        .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)
                         .requestMatchers(HttpMethod.GET, "/api/v1/knowledge/**")
                         .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)
                         .anyRequest().denyAll())

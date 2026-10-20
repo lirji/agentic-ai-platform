@@ -1,6 +1,6 @@
 # 项目文档
 
-当前阶段：S0/S1 已交付；S2 已实现三框架接入与鉴权准备/查询向量接口，真实北京百炼 1024 维调用通过。索引发布与完整知识路径继续推进；最终验收与 Git 交付以当前进度为准。记录日期：2026-10-20。
+当前阶段：S0/S1 已交付；S2 已实现三框架接入与鉴权准备/查询向量接口，真实北京百炼 1024 维调用通过。S3 持久 worker、双索引发布和可引用检索已实现并通过真实组件集成测试，完整真实链路、故障恢复和搜索补丁升级验收通过；最终验收与 Git 交付以当前进度为准。记录日期：2026-10-20。
 
 ## 文档索引
 
@@ -11,9 +11,9 @@
 | [技术与组件选型](design/platform-selection-20261020/TECH_SELECTION.md) | 31 项决策、候选版本、基础组件、真实 Embedding 默认与引入条件 | 组件方向已确认；联合依赖解析通过，运行兼容与业务效果未验证 |
 | [选型证据](design/platform-selection-20261020/evidence/README.md) | 候选依赖输入/输出、包元数据与原项目事实核对 | 随文档迁入；不是应用锁文件 |
 | [React 架构](design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md) | 全新前端的任务、路由、模块、状态与视觉验收方向 | 已形成设计；独立前端仓库待创建 |
-| [契约基线](design/knowledge-first-20261020/CONTRACTS.md) | 内部 Embedding、存活端点及 K/Q/T 契约入口 | R01/H01、K01/K02/K03 查询冻结；处理/检索及 Q/T 仍待细化 |
+| [契约基线](design/knowledge-first-20261020/CONTRACTS.md) | 内部 Embedding、存活端点及 K/Q/T 契约入口 | R01/H01、P01/P02、K01–K04 已冻结；Q/T 待细化 |
 | [知识资料契约](design/knowledge-first-20261020/KNOWLEDGE_CONTRACTS.md) | 身份、受理、资料/任务查询与后续发布检索语义 | S1 的权威 API；当前不把 RECEIVED 当作 READY |
-| [知识处理契约](design/knowledge-first-20261020/PROCESSING_CONTRACTS.md) | 服务身份、准备结果、查询向量与跨语言摘要 | S2 P01/P02 已冻结并实现；Java 发布仍待 S3 |
+| [知识处理契约](design/knowledge-first-20261020/PROCESSING_CONTRACTS.md) | 服务身份、准备结果、查询向量与跨语言摘要 | S2 P01/P02 与 S3 领取/准备/发布/检索契约已冻结；S3 验收通过 |
 | [S2 验证结果](qa/knowledge-processing-20261020/TEST_RESULT.md) | 三框架、准备/查询、授权与取消、真实模型及依赖适用性 | 范围与实际证据见报告 |
 | [知识迁入清单](design/knowledge-first-20261020/KNOWLEDGE_MIGRATION.md) | 参考规则、依赖闭包及未迁入能力 | 源仓库只读；按新契约实现所需能力 |
 | [Java 本地运行](../deploy/README.md) | dev-infra 独立资源、分权账号、启动/停止、测试身份和故障验收 | 本机开发验证入口；无生产部署声明 |

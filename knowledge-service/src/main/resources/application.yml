@@ -49,6 +49,26 @@ mybatis-plus:
   global-config:
     banner: false
 knowledge:
+  processing:
+    enabled: ${KNOWLEDGE_PROCESSING_ENABLED:false}
+    worker-enabled: ${KNOWLEDGE_WORKER_ENABLED:false}
+    worker-tenant: ${KNOWLEDGE_WORKER_TENANT:}
+    ai-endpoint: ${KNOWLEDGE_AI_ENDPOINT:http://127.0.0.1:28085}
+    private-key: ${KNOWLEDGE_AI_PRIVATE_KEY:}
+    public-key: ${KNOWLEDGE_AI_PUBLIC_KEY:}
+    qdrant-endpoint: ${KNOWLEDGE_QDRANT_ENDPOINT:http://127.0.0.1:26333}
+    qdrant-key: ${KNOWLEDGE_QDRANT_KEY:}
+    collection: ${KNOWLEDGE_QDRANT_COLLECTION:agentic_knowledge_text_v1}
+    elastic-endpoint: ${KNOWLEDGE_ELASTIC_ENDPOINT:http://127.0.0.1:29200}
+    elastic-user: ${KNOWLEDGE_ELASTIC_USER:}
+    elastic-password: ${KNOWLEDGE_ELASTIC_PASSWORD:}
+    index: ${KNOWLEDGE_ELASTIC_INDEX:agentic-knowledge-text-v1}
+    lease-seconds: ${KNOWLEDGE_LEASE_SECONDS:60}
+    heartbeat-seconds: ${KNOWLEDGE_HEARTBEAT_SECONDS:10}
+    poll-seconds: ${KNOWLEDGE_POLL_SECONDS:2}
+    job-seconds: ${KNOWLEDGE_JOB_SECONDS:120}
+    ai-seconds: ${KNOWLEDGE_AI_SECONDS:45}
+    index-seconds: ${KNOWLEDGE_INDEX_SECONDS:8}
   transaction-timeout-seconds: ${KNOWLEDGE_TRANSACTION_TIMEOUT_SECONDS:5}
   identity:
     public-key: ${INTERNAL_PUBLIC_KEY}
@@ -76,7 +96,7 @@ management:
         enabled: true
       group:
         readiness:
-          include: readinessState,db,sourceStore
+          include: readinessState,db,sourceStore,processingDependencies
   tracing:
     sampling:
       probability: ${TRACING_SAMPLE_PROBABILITY:1.0}

@@ -1,0 +1,15 @@
+{
+  "slice": "S3",
+  "searchVersions": {
+    "qdrant": "1.19.2",
+    "elasticsearch": "8.19.23"
+  },
+  "checks": {
+    "new_real_publication": "PASS",
+    "new_real_search": "PASS",
+    "old_citation_and_projection_retained": "PASS"
+  },
+  "documentId": "dc5df0c3-6b87-40c3-97fa-0441bc9c5434",
+  "reservedCny": "0.11",
+  "actualBilledCny": null
+}

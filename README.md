@@ -2,7 +2,7 @@
 
 独立建设的知识与 Agent 平台，优先实现**知识入库、知识问答、研究分析和业务助手**。架构与组件已确认：**全新 React 前端 + LangGraph、Deep Agents、LlamaIndex AI 核心 + 按需迁入的 Java 领域能力**。
 
-**已实现独立资料受理/查询，以及 Python 的鉴权知识准备与查询向量接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证；Java 资料仍只到 `RECEIVED`，索引发布、问答和 React 页面尚未接通；验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+**已实现独立资料受理、持久处理、双索引发布与可引用检索，以及 Python 的鉴权知识准备接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证，Java 双索引处理与恢复已通过真实组件集成测试，S3 完整真实链路、重启恢复和搜索补丁升级验收通过。问答和 React 页面尚未接通；验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 
 ## 阅读入口
 

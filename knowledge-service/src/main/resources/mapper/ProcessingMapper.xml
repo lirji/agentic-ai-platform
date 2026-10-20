@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingMapper">
+    <sql id="processingColumns">tenant_id, owner_id, job_id, lease_owner, lease_epoch, attempt_count,
+        prepared_key, prepared_hash, prepared_bytes, batch_digest, vector_state, keyword_state</sql>
+    <sql id="owned">tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND job_id = #{id}</sql>
+    <sql id="fence">tenant_id = #{claim.job.tenantId} AND owner_id = #{claim.job.ownerId}
+        AND job_id = #{claim.job.jobId} AND document_version = #{claim.job.documentVersion}
+        AND lease_owner = #{claim.worker} AND lease_epoch = #{claim.epoch}
+        AND status = 'PROCESSING' AND lease_until &gt; UTC_TIMESTAMP(6)</sql>
+    <select id="lockNext" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingRow">
+        SELECT <include refid="processingColumns"/> FROM knowledge_ingestion
+        WHERE next_attempt_at &lt;= UTC_TIMESTAMP(6)
+        AND (status = 'RECEIVED' OR (status = 'PROCESSING' AND lease_until &lt;= UTC_TIMESTAMP(6)))
+        <if test="tenant != null and tenant != ''">AND tenant_id = #{tenant}</if>
+        ORDER BY next_attempt_at, created_at, job_id LIMIT 1 FOR UPDATE SKIP LOCKED
+    </select>
+    <select id="find" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingRow">
+        SELECT <include refid="processingColumns"/> FROM knowledge_ingestion WHERE <include refid="owned"/>
+    </select>
+    <update id="claim">
+        UPDATE knowledge_ingestion SET status = 'PROCESSING',
+            stage = CASE WHEN prepared_key IS NULL THEN 'PREPARING' ELSE 'PUBLISHING' END,
+            lease_owner = #{worker}, lease_epoch = lease_epoch + 1,
+            lease_until = TIMESTAMPADD(SECOND, #{lease}, UTC_TIMESTAMP(6)),
+            attempt_count = attempt_count + 1, revision = revision + 1, error_code = NULL,
+            retryable = FALSE, updated_at = UTC_TIMESTAMP(6)
+        WHERE job_id = #{row.jobId} AND tenant_id = #{row.tenantId} AND owner_id = #{row.ownerId}
+            AND lease_epoch = #{row.leaseEpoch}
+            AND (status = 'RECEIVED' OR (status = 'PROCESSING' AND lease_until &lt;= UTC_TIMESTAMP(6)))
+    </update>
+    <update id="heartbeat">
+        UPDATE knowledge_ingestion SET lease_until = TIMESTAMPADD(SECOND, #{lease}, UTC_TIMESTAMP(6))
+        WHERE <include refid="fence"/>
+    </update>
+    <update id="prepare">
+        UPDATE knowledge_ingestion SET prepared_key = #{ref.key}, prepared_hash = #{ref.hash},
+            prepared_bytes = #{ref.sizeBytes}, batch_digest = #{ref.batchDigest},
+            stage = 'PUBLISHING', revision = revision + 1, updated_at = UTC_TIMESTAMP(6)
+        WHERE <include refid="fence"/> AND prepared_key IS NULL
+    </update>
+    <insert id="chunks">
+        INSERT INTO knowledge_chunk (chunk_id, tenant_id, owner_id, document_id, document_version,
+            job_id, batch_digest, ordinal, text, text_hash, start_byte, end_byte) VALUES
+        <foreach collection="doc.chunks" item="c" separator=",">
+            (#{c.chunkId}, #{claim.job.tenantId}, #{claim.job.ownerId}, #{claim.job.documentId},
+             #{claim.job.documentVersion}, #{claim.job.jobId}, #{doc.batchDigest}, #{c.ordinal},
+             #{c.text}, #{c.textHash}, #{c.startByte}, #{c.endByte})
+        </foreach>
+    </insert>
+    <update id="sink">
+        UPDATE knowledge_ingestion SET
+        <choose>
+            <when test="sink == 'VECTOR'">vector_state = 'DONE',</when>
+            <otherwise>keyword_state = 'DONE',</otherwise>
+        </choose>
+        revision = revision + 1, updated_at = UTC_TIMESTAMP(6)
+        WHERE <include refid="fence"/> AND prepared_key IS NOT NULL
+            AND batch_digest = #{claim.prepared.batchDigest}
+    </update>
+    <update id="publish">
+        UPDATE knowledge_ingestion SET status = 'READY', stage = 'COMPLETE', error_code = NULL,
+            retryable = FALSE, lease_owner = NULL, lease_until = NULL,
+            revision = revision + 1, updated_at = UTC_TIMESTAMP(6)
+        WHERE <include refid="fence"/> AND vector_state = 'DONE' AND keyword_state = 'DONE'
+            AND batch_digest = #{claim.prepared.batchDigest}
+    </update>
+    <update id="fail">
+        UPDATE knowledge_ingestion SET status = 'FAILED', error_code = #{code}, retryable = #{retryable},
+            lease_owner = NULL, lease_until = NULL, revision = revision + 1, updated_at = UTC_TIMESTAMP(6)
+        WHERE <include refid="fence"/>
+    </update>
+    <update id="documentState">
+        UPDATE knowledge_document SET status = #{state},
+            <if test="state == 'READY'">published_version = version,</if>
+            updated_at = UTC_TIMESTAMP(6)
+        WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND document_id = #{id}
+            AND version = #{version} AND ingestion_job_id = #{jobId} AND status &lt;&gt; 'READY'
+    </update>
+    <update id="retry">
+        UPDATE knowledge_ingestion SET status = 'RECEIVED', retry_count = retry_count + 1,
+            error_code = NULL, retryable = FALSE, attempt_count = 0,
+            next_attempt_at = TIMESTAMPADD(SECOND, #{delay}, UTC_TIMESTAMP(6)),
+            revision = revision + 1, updated_at = UTC_TIMESTAMP(6)
+        WHERE <include refid="owned"/> AND revision = #{revision} AND status = 'FAILED'
+            AND retryable = TRUE AND retry_count &lt; #{maximum}
+    </update>
+    <insert id="event">
+        INSERT INTO knowledge_ingestion_event
+            (event_id, job_id, actor, action, status, stage, lease_epoch, revision, error_code, created_at)
+        SELECT #{eventId}, job_id, #{actor}, #{action}, status, stage, lease_epoch, revision,
+            error_code, UTC_TIMESTAMP(6) FROM knowledge_ingestion WHERE <include refid="owned"/>
+    </insert>
+    <sql id="publishedFrom">
+        SELECT c.document_id, c.document_version AS version, c.chunk_id, c.batch_digest, c.text,
+            c.start_byte, c.end_byte, d.display_name
+        FROM knowledge_chunk c
+        JOIN knowledge_document d ON d.document_id = c.document_id
+            AND d.tenant_id = c.tenant_id AND d.owner_id = c.owner_id
+        JOIN knowledge_ingestion j ON j.job_id = c.job_id
+            AND j.tenant_id = c.tenant_id AND j.owner_id = c.owner_id
+        WHERE c.tenant_id = #{caller.tenantId} AND c.owner_id = #{caller.userId}
+            AND d.status = 'READY' AND d.published_version = c.document_version
+            AND d.version = c.document_version AND d.ingestion_job_id = j.job_id
+            AND j.status = 'READY' AND j.batch_digest = c.batch_digest
+    </sql>
+    <select id="published" resultType="com.lrj.agentic.knowledge.domain.processing.ProcessingRepository$PublishedChunk">
+        <include refid="publishedFrom"/> AND c.chunk_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+    </select>
+    <select id="citation" resultType="com.lrj.agentic.knowledge.domain.processing.ProcessingRepository$PublishedChunk">
+        <include refid="publishedFrom"/> AND c.document_id = #{documentId}
+            AND c.document_version = #{version} AND c.chunk_id = #{chunkId}
+    </select>
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM knowledge_ingestion WHERE status = #{status}
+    </select>
+</mapper>

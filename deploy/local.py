@@ -230,6 +230,10 @@ def environment(mode: str = "dev") -> dict[str, str]:
             "KNOWLEDGE_SERVICE_URL": "http://127.0.0.1:28084",
         }
     )
+    import search_local
+
+    if search_local.CONFIG.exists():
+        env.update(search_local.environment(mode))
     return env
 
 
@@ -361,12 +365,21 @@ def main() -> None:
             "init-ai",
             "start-ai",
             "stop-ai",
+            "init-search",
+            "stop-search",
         ],
     )
     parser.add_argument("--service", choices=SERVICES)
     parser.add_argument("--reference-env", type=Path, help="已获授权的来源模型环境文件")
     args = parser.parse_args()
-    if args.command in {"init-ai", "start-ai", "stop-ai"}:
+    if args.command in {"init-search", "stop-search"}:
+        import search_local
+
+        if args.command == "init-search":
+            search_local.init()
+        else:
+            search_local.compose("stop")
+    elif args.command in {"init-ai", "start-ai", "stop-ai"}:
         import ai_local
 
         if args.command == "init-ai":

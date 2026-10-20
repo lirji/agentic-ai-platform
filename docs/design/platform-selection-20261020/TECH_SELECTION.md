@@ -77,7 +77,7 @@ Deep Agents 0.7 的规划为显式能力，升级中也有 backend API 变化。
 | T12 Java 业务数据库 | 当前 MySQL 8.4 / 全迁 PostgreSQL | **继续 MySQL 8.4** | AI 图状态使用 PG 不构成业务表迁库理由；现有 SQL、Flowable、数据迁移保持兼容 | 已存在 |
 | T13 Java 持久化 | 已有 MyBatis-Plus/XML/Flyway | **沿用** | 自定义 SQL 放 XML；新表和字段有注释，迁移不改历史。Python Checkpointer 使用自身适配，不强行套 Java ORM | 已存在/P0 |
 | T14 向量检索 | 当前 Qdrant / pgvector / ES 向量 | **保留 Qdrant** | 降低现有集合/过滤语义迁移面；pgvector/单 ES 可在明确缩减运维成本时做对照，不同时更换框架与检索引擎 | 已存在/P3 |
-| T15 关键词检索 | ES 8.15.3 + smartcn / 数据库全文 / 只保留向量 | **保留 Elasticsearch BM25** | 复用既有中文精确词检索与混排证据；LlamaIndex 接管编排不自动保证数据库全文或向量检索等价 | 已存在/P3 |
+| T15 关键词检索 | 参考 ES 8.15.3 + smartcn / 数据库全文 / 只保留向量 | **保留 Elasticsearch BM25；新实例采用 8.19.23 + smartcn** | 复用中文精确词检索与混排语义；本项目安全补丁决策见下文，旧平台实例不变 | 已存在/P3 |
 | T16 原文/派生对象 | 已有 S3-compatible / 本地磁盘 | **复用现有对象存储** | 原文不可变；Agent 附件和派生结果独立前缀/权限；不公开 bucket，不让框架直接持有全桶权限 | 已存在/P0 |
 | T17 缓存与 Registry | 当前 Redis 7 / 新 L1+L2 / 无缓存 | **沿用既有 Redis 职责** | Registry 不是可随意丢弃的普通缓存；新 RAG 响应缓存需绑定权限、文档版本、模型版本，暂不增加多级缓存 | 已存在 |
 | T18 可靠消息 | 现有 Kafka/Outbox / RabbitMQ / 新工作队列 | **按已有事件链复用 Kafka 和 Outbox** | LangGraph 节点和子 Agent 不全部发 MQ；不新增 RabbitMQ/Celery 来重复中央任务与图调度 | 已存在 |
@@ -87,6 +87,8 @@ Deep Agents 0.7 的规划为显式能力，升级中也有 backend API 变化。
 T08 采用官方数据库 Checkpointer 能减少自研存储协议工作，但框架不负责本平台中央租约 fencing。[官方数据库示例](https://docs.langchain.com/oss/python/langgraph/add-memory)
 
 T14 的候选均具备技术可行性：Qdrant 有[过滤能力](https://qdrant.tech/documentation/search/filtering/)，pgvector 提供[PostgreSQL 向量检索](https://github.com/pgvector/pgvector)，Elasticsearch 提供[混合检索](https://www.elastic.co/docs/solutions/search/hybrid-search)。**保留当前双检索引擎是基于已有集成与迁移成本的工程判断，不是性能排名。** 未开展三者基准测试；具体 ES 功能还须核对所选版本和许可，不能把当前官网能力全部套到 8.15.3。
+
+S3 搜索运行版本决策（2026-10-20）：本项目独立实例采用 **Qdrant 1.19.2、Elasticsearch 8.19.23 + 同版本 analysis-smartcn**。组件与双索引契约不变；在首次业务验收前修正从 dev_infra 参考的旧镜像补丁，避免新实例继续锁定已有修复的版本。Qdrant 的 [GHSA-3gph-6c29-p29v](https://github.com/qdrant/qdrant/security/advisories/GHSA-3gph-6c29-p29v) 于 1.19.2 修复，本地单节点未启用受影响的内部认证模式；Elastic 的 [8.19.23 发布说明](https://www.elastic.co/guide/en/elasticsearch/reference/8.19/release-notes-8.19.23.html)包含安全校验和依赖更新，[smartcn 官方安装方式](https://www.elastic.co/guide/en/elasticsearch/plugins/8.19/analysis-smartcn.html)仍适用。锁定实际拉取的 digest，项目自行构建 smartcn 镜像，不修改旧 `lc4j-*` 实例。升级前保存项目资源快照，升级后必须重验 schema、Bulk 单项结果、查询和真实发布；备份存在不等于已验证恢复或承诺 RTO/RPO。
 
 `llama-index-vector-stores-qdrant 0.10.4` 已读取发布元数据，但不包含在上述 113 包解析集合中，也不在 P1 开启直接索引写入。P3 默认仍走 Knowledge 提交边界；确有直接读连接需求再单独验证过滤、数据格式和授权能力。
 

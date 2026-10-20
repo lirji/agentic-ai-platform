@@ -73,9 +73,36 @@ R01 错误沿用其 code/文案；输入错误为 400，配置错误为 503，�
 
 `AI_PROCESSING_ENABLED` 默认 `false`；关闭时保持 H01，仅有存活端点，内部业务路由不存在。启用时必须配置 `AI_SERVICE_PUBLIC_KEY`（本机 PEM 公钥路径）、合法 R01 配置和固定模型/维度，错误启动失败；`AI_PROCESSING_MAX_CONCURRENT` 默认 2，`AI_PROCESSING_DEADLINE_SECONDS` 默认 40。长任务或外部部署另行验收。
 
-## 下游 Java 提交约束（S3 前补齐）
+## S3：Java 提交、恢复与读取
 
-Knowledge 是唯一 MySQL/S3/Qdrant/ES 写入者。S3 准备结果、逐 sink 状态、带 epoch 的领取/心跳/提交、已发布版本和失败恢复需通过 V2/Mapper XML 及真实存储验收，不能用 Python 准备成功替代发布。K04 索引、检索与恢复细节在 S3 实施前在本文件续补。
+### 领取与持久准备
+
+- 原 `knowledge_ingestion` 是可靠交接账本；V2 增加 lease owner/epoch/deadline、attempt/nextAttempt、不可变准备对象指针/摘要、双 sink 状态；V3 显式禁止非空准备指针搭配 NULL 长度，避免 MySQL CHECK 的 UNKNOWN 放行。不增加 MQ 或第二套任务中心，不改写已应用迁移。
+- 每实例一个独立处理线程，内部领取轮询默认 2 秒；心跳默认 10 秒、租约 60 秒。短事务 `FOR UPDATE SKIP LOCKED` 领取，数据库 UTC 时间裁定过期，每次领取增加 epoch/attempt/revision。HTTP、S3 和索引调用均在事务外。
+- 默认关闭处理；显式启用并配置 AI/搜索端点后，自动领取 RECEIVED 及租约过期的 PROCESSING。最多连续领取 5 次，超过上限进入 FAILED，可由所有者显式重试。普通远程失败直接进入 FAILED，不无限后台重试；K03 重试最多 3 次，按次数采用 2/4/8 秒加 0–1 秒抖动。重试 CAS 且不改变原输入；取消不在本片接口范围。
+- 状态更新匹配 tenant/owner/job/version、lease owner/epoch、PROCESSING 和未到期租约。心跳只续租，不制造用户 revision 变化。失去租约停止后续工作；迟到外部请求可能已执行，不能把取消当回滚。
+- Java 从本项目 S3 读原文并核验大小/哈希，完整核验 P01 身份、版本、UTF-8 定位、chunk/vector/batch 摘要，再序列化为至多 6 MiB 的准备对象。对象路径绑定 job 和内容摘要；条件事务首次接受该指针，同时保存无向量的规范 chunk 与事件。接收过的准备结果不可替换，恢复只读并复核该对象，不重新调用模型。
+- 准备对象写成功但数据库未知/失败时先查任务；未接受的对象不能驱动索引。重启后仍无准备指针可能再次调用模型，费用不承诺 exactly-once。本机付费验证由 Python 可选持久预算护栏在每次真实 Embedding 批次前预留，文件锁/落盘失败或额度不足拒绝发送；沿用已有 1 元账本，不清零。
+
+### 双索引与发布
+
+- Qdrant 使用独立 `agentic_knowledge_text_v1` 集合，1024 维 Cosine；ES 使用独立 `agentic-knowledge-text-v1` 索引，strict mapping、smartcn、1 主分片、本机 0 副本。测试另用 `_test` / `-test`，不访问旧 lc4j 数据。
+- payload 身份字段为 tenantId/ownerId/documentId/version/processorVersion/chunkId/batchDigest；ES 另含 text。每批最多 100 块。Qdrant point ID 为 SHA-256(`chunkId + ":" + batchDigest`) 前 128 位的 UUID 表达；ES ID 为 `chunkId:batchDigest`。冻结准备包使重复/迟到 upsert 写入相同内容，不能覆盖另一批次。
+- Qdrant `wait=true` 且确认 completed 后才记 DONE；ES Bulk `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE。超时或部分失败保持 PENDING，显式重试幂等重放该 sink；已 DONE 的 sink 不重写。未完成发布的数据即使在索引可见也不能从 API 返回。
+- 两个 sink DONE 后，在带租约条件的短事务中将任务 READY/COMPLETE 和文档 READY/publishedVersion=version 一起提交并记事件。旧 owner、错误批次和单 sink 完成均无法发布。发布响应未知时重读权威账本。
+- 事件仅存任务、状态、阶段、执行者、epoch/revision 与安全错误码，不保存令牌/原文。当前保留所有任务、引用块和事件，无自动删除或归档；生产保留期限待业务决定。
+
+### K03/K04 增补
+
+- K03 重试沿用原 `{expectedRevision}`；只接受 FAILED + retryable 且 retryCount<3，版本冲突或终态重试 409。保留准备对象、块和已完成 sink。
+- K04 验证 query（1–2000 Unicode 码点、严格 Unicode、非空白、无 NUL）、topK（1–20）及可选 documentIds（1–20 个不重复 UUID），禁止未知字段及 JSON 标量类型强制转换。
+- 两路依赖均须成功，不静默降级为空结果。Qdrant/ES 均先限定 tenant/owner/处理版本/可选文档，各最多 100 个候选；Java 按 RRF `Σ1/(60+rank)` 合并，平分按 chunkId 排序。一次有界 MySQL 查询重新校验所有者、READY、publishedVersion、chunkId 与 batchDigest，只输出规范块文本及 `utf8-bytes:start-end` 来源定位。分数不是概率；不承诺候选窗口外全量召回。
+- 直接引用从同一 MySQL 权威块/发布记录读取，score=0；失效版本、不可见块与不存在均 404。不回显搜索投影文本或 S3 路径。
+- 新错误：`KNOWLEDGE_PROCESSING_DISABLED`（503）、`KNOWLEDGE_PROCESSOR_UNAVAILABLE`（503，可重试）、`KNOWLEDGE_PREPARATION_INVALID`（502，不可重试）、`KNOWLEDGE_SOURCE_INVALID`（502，不可重试）、`KNOWLEDGE_INDEX_UNAVAILABLE`（503，可重试）、`KNOWLEDGE_PROCESSING_EXHAUSTED`（503，可显式重试）、`KNOWLEDGE_BUSY`（429）。预算拒绝映射 processor unavailable，不回显金额/凭据。
+- 查询同实例最多 2 个在途请求，不排队；worker 最多 1 个。AI 默认 45 秒、索引每次 8 秒，HTTP 响应上限 6 MiB，连接期限 2 秒，无内部重试。任务总期限 120 秒，心跳不延长总期限；退出停止领取、中断当前等待，未完成任务靠租约回收。
+- worker 创建独立追踪 span，以 jobId 关联恢复，不持久化用户 JWT 或跨线程事务。上下文显式传参，无自定义 ThreadLocal。指标覆盖领取/成功/失败/失租、处理时长、在途、待领取/失败数，高基数身份不作指标标签。
+
+人工一致性结论：S3 保留 Java 数据所有权及既有 K 契约，追加迁移和处理开关兼容 S1，短准备图继续不落 PG checkpoint。轮询/心跳属于内部执行维护，不是新增业务定时任务。运行时按 TECH_SELECTION 的 S3 安全补丁决策，新建本项目 Qdrant 1.19.2 / ES 8.19.23 smartcn 实例、卷与认证，不操作旧业务数据。
 
 ## 依据
 

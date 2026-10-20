@@ -1,0 +1,241 @@
+{
+  "protocol": "code-hygiene-gate/v1",
+  "finalStatus": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "checks": [
+    {
+      "checkId": "FORMAT",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "command passed"
+    },
+    {
+      "checkId": "STATIC_ANALYSIS",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "command passed"
+    },
+    {
+      "checkId": "CODE_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "REPO_CONVENTION",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "DIFF_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "COMPILE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    },
+    {
+      "checkId": "UNIT_TEST",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    }
+  ],
+  "limitations": [
+    {
+      "code": "FORMAT_TOOL_NOT_AVAILABLE",
+      "check": "FORMAT"
+    }
+  ],
+  "findings": [
+    {
+      "findingId": "HF-001",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/runtime/embedding_budget.py",
+      "line": 12,
+      "excerpt": "MAX_LEDGER_BYTES = 262144",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-002",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/publication_smoke.py",
+      "line": 52,
+      "excerpt": "with httpx.Client(timeout=80, trust_env=False) as client:",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-003",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/publication_smoke.py",
+      "line": 231,
+      "excerpt": "with httpx.Client(timeout=80, trust_env=False, headers=headers) as client:",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-004",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/search_local.py",
+      "line": 46,
+      "excerpt": "timeout=1800 if arguments[0] in {\"build\", \"pull\"} else 180,",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-005",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/search_local.py",
+      "line": 69,
+      "excerpt": "with urllib.request.urlopen(req, timeout=10) as response:",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-006",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeProcessingController.java",
+      "line": 28,
+      "excerpt": "private static final int MAX_JSON_BYTES = 32768;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-007",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingProtocol.java",
+      "line": 9,
+      "excerpt": "public static final int MAX_CHUNKS = 100;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-008",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlProcessingRepository.java",
+      "line": 23,
+      "excerpt": "import org.springframework.transaction.support.TransactionTemplate;",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-009",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlProcessingRepository.java",
+      "line": 30,
+      "excerpt": "private final TransactionTemplate transaction;",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-010",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlProcessingRepository.java",
+      "line": 37,
+      "excerpt": "this.transaction = new TransactionTemplate(manager);",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-011",
+      "ruleId": "HYG-SIMILAR-ENUM",
+      "check": "REPO_CONVENTION",
+      "area": "enum",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingClaim.java",
+      "line": 16,
+      "excerpt": "SinkState",
+      "message": "SinkState overlaps existing State (ai-runtime/.venv/lib/python3.12/site-packages/websockets/protocol.py)"
+    }
+  ],
+  "report": [
+    {
+      "area": "Repository conventions",
+      "status": "PASS"
+    },
+    {
+      "area": "Formatting",
+      "status": "PASS"
+    },
+    {
+      "area": "Error-code governance",
+      "status": "PASS"
+    },
+    {
+      "area": "Enum/domain modeling",
+      "status": "PASS_WITH_ADVISORY"
+    },
+    {
+      "area": "Magic value inspection",
+      "status": "PASS_WITH_ADVISORY"
+    },
+    {
+      "area": "Exception handling",
+      "status": "PASS"
+    },
+    {
+      "area": "Validation",
+      "status": "NOT_AUTOMATED"
+    },
+    {
+      "area": "Logging",
+      "status": "PASS"
+    },
+    {
+      "area": "Transaction review",
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "area": "Static analysis",
+      "status": "PASS"
+    },
+    {
+      "area": "Compilation",
+      "status": "PASS"
+    },
+    {
+      "area": "Tests",
+      "status": "PASS"
+    },
+    {
+      "area": "Diff hygiene",
+      "status": "PASS"
+    }
+  ],
+  "canonicalCommands": {
+    "FORMAT": {
+      "status": "NO_FORMATTER",
+      "limitation": "FORMAT_TOOL_NOT_AVAILABLE",
+      "resolutionLevel": "SURROUNDING_SOURCE_STYLE"
+    },
+    "STATIC_ANALYSIS": {
+      "status": "NOT_CONFIGURED"
+    }
+  }
+}
