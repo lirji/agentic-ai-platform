@@ -4,6 +4,8 @@
 
 文档状态：**可行性分析已记录，目标架构仍为建议；尚未完成新项目原型验证。**
 
+后续更新（2026-10-20）：用户已确定三框架为主，并将[目标架构](../design/platform-selection-20261020/BACKEND_ARCHITECTURE.md)与[技术选型](../design/platform-selection-20261020/TECH_SELECTION.md)迁入本项目；候选联合依赖解析已通过。下文保留可行性阶段记录，第 6.3、10、11 节关于版本与验证的描述是当时快照；当前决策及状态以新设计和[选型进度](../design/platform-selection-20261020/PROGRESS_STATE.md)为准。运行与业务原型仍未验证。
+
 本文保存本次讨论，重点以 `langchain4j-platform` 和 `agentscope-platform` 的现有能力为参照，分析在新项目中使用三个框架升级的可行性。这里的 DeepAgent 指 LangChain 官方的 **Deep Agents（Python 包 `deepagents`）**，与旧 Java 项目中的 `DeepAgentService` 类分别理解。
 
 ## 1. 用户目标与本次范围

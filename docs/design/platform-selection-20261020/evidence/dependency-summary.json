@@ -1,0 +1,28 @@
+{
+  "result": "PASS_METADATA_RESOLUTION_ONLY",
+  "python": "3.12",
+  "platform": "x86_64-unknown-linux-gnu",
+  "uv": "0.11.3",
+  "package_count": 113,
+  "packages": {
+    "deepagents": "0.7.28",
+    "langgraph": "1.2.16",
+    "langchain": "1.4.6",
+    "langchain-core": "1.6.12",
+    "langgraph-checkpoint": "4.3.0",
+    "langgraph-checkpoint-postgres": "3.2.0",
+    "llama-index-core": "0.14.25",
+    "llama-index-workflows": "2.26.0",
+    "langchain-openai": "1.7.2",
+    "llama-index-llms-openai-like": "0.8.1",
+    "llama-index-embeddings-openai-like": "0.4.0",
+    "fastapi": "0.150.0",
+    "pydantic": "2.14.1",
+    "httpx": "0.28.1",
+    "psycopg": "3.3.6",
+    "psycopg-pool": "3.3.3",
+    "numpy": "2.5.4"
+  },
+  "runtime_tested": false,
+  "installed": false
+}

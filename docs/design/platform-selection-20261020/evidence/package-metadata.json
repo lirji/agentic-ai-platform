@@ -1,0 +1,182 @@
+{
+  "checked_at": "2026-10-20T07:21:35.413547+00:00",
+  "packages": [
+    {
+      "name": "deepagents",
+      "version": "0.7.28",
+      "requires_python": "<4.0,>=3.11",
+      "requires_dist": [
+        "langchain<2.0.0,>=1.4.6",
+        "langchain-core<2.0.0,>=1.6.11",
+        "langchain-anthropic<2.0.0,>=1.7.6",
+        "langchain-google-genai<5.0.0,>=4.4.2",
+        "langsmith>=0.14.11",
+        "packaging>=23.2",
+        "wcmatch>=11.0",
+        "langchain-aws<2.0.0,>=1.9.0; extra == \"aws\"",
+        "langchain-quickjs>=0.3.9; extra == \"quickjs\"",
+        "av<19.0.0,>=18.0.0; extra == \"video\"",
+        "pillow<13.0.0,>=12.3.0; extra == \"video\""
+      ],
+      "source": "https://pypi.org/pypi/deepagents/json",
+      "project_urls": {
+        "Documentation": "https://reference.langchain.com/python/deepagents/",
+        "Homepage": "https://docs.langchain.com/oss/python/deepagents/overview",
+        "Issues": "https://github.com/langchain-ai/deepagents/issues",
+        "Reddit": "https://www.reddit.com/r/LangChain/",
+        "Repository": "https://github.com/langchain-ai/deepagents",
+        "Slack": "https://www.langchain.com/join-community",
+        "Twitter": "https://x.com/langchain_oss"
+      },
+      "upload_time": "2026-10-16T20:21:10.381792Z"
+    },
+    {
+      "name": "langgraph",
+      "version": "1.2.16",
+      "requires_python": ">=3.10",
+      "requires_dist": [
+        "langchain-core<2,>=1.4.7",
+        "langgraph-checkpoint<5.0.0,>=4.3.0",
+        "langgraph-prebuilt<1.2.0,>=1.1.0",
+        "langgraph-sdk<0.5.0,>=0.4.6",
+        "pydantic>=2.7.4",
+        "xxhash>=3.5.0"
+      ],
+      "source": "https://pypi.org/pypi/langgraph/json",
+      "project_urls": {
+        "Changelog": "https://github.com/langchain-ai/langgraph/releases",
+        "Documentation": "https://reference.langchain.com/python/langgraph/",
+        "Homepage": "https://docs.langchain.com/oss/python/langgraph/overview",
+        "Reddit": "https://www.reddit.com/r/LangChain/",
+        "Slack": "https://www.langchain.com/join-community",
+        "Source": "https://github.com/langchain-ai/langgraph/tree/main/libs/langgraph",
+        "Twitter": "https://x.com/langchain_oss"
+      },
+      "upload_time": "2026-10-16T22:11:14.147680Z"
+    },
+    {
+      "name": "llama-index-core",
+      "version": "0.14.25",
+      "requires_python": "<4.0,>=3.10",
+      "requires_dist": [
+        "aiohttp<4,>=3.8.6",
+        "aiosqlite",
+        "banks<3,>=2.3.0",
+        "dataclasses-json",
+        "deprecated>=1.2.9.3",
+        "dirtyjson<2,>=1.0.8",
+        "eval-type-backport<0.3,>=0.2.0; python_version < \"3.10\"",
+        "filetype<2,>=1.2.0",
+        "fsspec>=2023.5.0",
+        "httpx",
+        "llama-index-workflows<3,>=2.14.0",
+        "nest-asyncio<2,>=1.5.8",
+        "networkx>=3.0",
+        "nltk>=3.9.3",
+        "numpy",
+        "pillow>=9.0.0",
+        "platformdirs",
+        "pydantic>=2.8.0",
+        "pyyaml>=6.0.1",
+        "requests>=2.31.0",
+        "setuptools>=80.9.0",
+        "sqlalchemy[asyncio]>=1.4.49",
+        "tenacity!=8.4.0,<10.0.0,>=8.2.0",
+        "tiktoken>=0.7.0",
+        "tinytag>=2.2.0",
+        "tqdm<5,>=4.66.1",
+        "typing-extensions>=4.5.0",
+        "typing-inspect>=0.8.0",
+        "wrapt"
+      ],
+      "source": "https://pypi.org/pypi/llama-index-core/json",
+      "project_urls": {
+        "Documentation": "https://docs.llamaindex.ai/en/stable/",
+        "Homepage": "https://llamaindex.ai",
+        "Repository": "https://github.com/run-llama/llama_index"
+      },
+      "upload_time": "2026-09-21T16:21:51.975681Z"
+    },
+    {
+      "name": "langgraph-checkpoint-postgres",
+      "version": "3.2.0",
+      "requires_python": ">=3.10",
+      "requires_dist": [
+        "langgraph-checkpoint<5.0.0,>=4.3.0",
+        "orjson>=3.11.5",
+        "psycopg-pool>=3.2.0",
+        "psycopg>=3.2.0"
+      ],
+      "source": "https://pypi.org/pypi/langgraph-checkpoint-postgres/json",
+      "project_urls": {
+        "Reddit": "https://www.reddit.com/r/LangChain/",
+        "Slack": "https://www.langchain.com/join-community",
+        "Source": "https://github.com/langchain-ai/langgraph/tree/main/libs/checkpoint-postgres",
+        "Twitter": "https://x.com/langchain_oss"
+      },
+      "upload_time": "2026-10-14T19:54:41.116475Z"
+    },
+    {
+      "name": "langchain-openai",
+      "version": "1.7.2",
+      "requires_python": "<4.0.0,>=3.10.0",
+      "requires_dist": [
+        "certifi>=2024.6.2",
+        "langchain-core<2.0.0,>=1.6.10",
+        "openai<4.0.0,>=2.45.0",
+        "tiktoken<1.0.0,>=0.7.0",
+        "aiohttp<4.0.0,>=3.11.0; extra == \"azure-identity\"",
+        "azure-identity<2.0.0,>=1.25.0; extra == \"azure-identity\""
+      ],
+      "source": "https://pypi.org/pypi/langchain-openai/json",
+      "project_urls": {
+        "Changelog": "https://github.com/langchain-ai/langchain/releases?q=%22langchain-openai%22",
+        "Documentation": "https://reference.langchain.com/python/integrations/langchain_openai/",
+        "Homepage": "https://docs.langchain.com/oss/python/integrations/providers/openai",
+        "Issues": "https://github.com/langchain-ai/langchain/issues",
+        "Reddit": "https://www.reddit.com/r/LangChain/",
+        "Repository": "https://github.com/langchain-ai/langchain",
+        "Slack": "https://www.langchain.com/join-community",
+        "Twitter": "https://x.com/langchain_oss"
+      },
+      "upload_time": "2026-10-14T13:50:59.956384Z"
+    },
+    {
+      "name": "llama-index-llms-openai-like",
+      "version": "0.8.1",
+      "requires_python": "<4.0,>=3.10",
+      "requires_dist": [
+        "llama-index-core<0.15,>=0.14.3",
+        "llama-index-llms-openai<0.9,>=0.8.0",
+        "transformers<6,>=4.37.0; extra == \"transformers\""
+      ],
+      "source": "https://pypi.org/pypi/llama-index-llms-openai-like/json",
+      "project_urls": null,
+      "upload_time": "2026-10-01T18:03:07.079975Z"
+    },
+    {
+      "name": "llama-index-embeddings-openai-like",
+      "version": "0.4.0",
+      "requires_python": "<4.0,>=3.10",
+      "requires_dist": [
+        "llama-index-embeddings-openai<0.7,>=0.6.0"
+      ],
+      "source": "https://pypi.org/pypi/llama-index-embeddings-openai-like/json",
+      "project_urls": null,
+      "upload_time": "2026-08-31T15:53:08.791907Z"
+    },
+    {
+      "name": "llama-index-vector-stores-qdrant",
+      "version": "0.10.4",
+      "requires_python": "<4.0,>=3.10",
+      "requires_dist": [
+        "grpcio<2,>=1.60.0",
+        "llama-index-core<0.15,>=0.13.0",
+        "qdrant-client>=1.16.0"
+      ],
+      "source": "https://pypi.org/pypi/llama-index-vector-stores-qdrant/json",
+      "project_urls": null,
+      "upload_time": "2026-10-08T20:46:36.704846Z"
+    }
+  ]
+}

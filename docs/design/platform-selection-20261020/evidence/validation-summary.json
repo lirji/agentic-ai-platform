@@ -1,0 +1,52 @@
+{
+  "checked_on": "2026-10-20",
+  "documentation": {
+    "result": "PASS",
+    "markdown_files": 9,
+    "local_links_and_anchors": 48,
+    "table_rows": 311,
+    "fixed_source_references": 31,
+    "unique_source_files": 27,
+    "selection_decisions": 31,
+    "resolved_packages": 113,
+    "evidence_files_identical": 6,
+    "historical_feasibility_body_preserved": true,
+    "errors": [],
+    "scope": "document integrity, source object existence and recorded dependency evidence only; not runtime validation"
+  },
+  "mermaid": {
+    "result": "PASS_SYNTAX",
+    "count": 2,
+    "diagrams": [
+      {
+        "file": "docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md",
+        "result": {
+          "diagramType": "flowchart-v2",
+          "config": {}
+        }
+      },
+      {
+        "file": "docs/feasibility/AI平台升级可行性分析.md",
+        "result": {
+          "diagramType": "flowchart-v2",
+          "config": {}
+        }
+      }
+    ],
+    "rendered": false
+  },
+  "migration": {
+    "documents_moved": 3,
+    "source_indexes_restored": 3,
+    "source_head": "468cec425dd160e80cfc3ab378d3440a8767e4d5",
+    "source_worktree_clean": true,
+    "source_implementation_changes": false,
+    "evidence_files_copied_unchanged": 6
+  },
+  "limits": [
+    "No application implementation or runtime tests",
+    "No dependency installation, database connection or model invocation",
+    "Mermaid syntax only; no rendering acceptance",
+    "No data migration or deployment"
+  ]
+}

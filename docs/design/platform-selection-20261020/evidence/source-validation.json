@@ -1,0 +1,19 @@
+{
+  "facts": {
+    "java": "21",
+    "boot": "3.3.5",
+    "cloud": "2023.0.3",
+    "langchain4j": "1.13.1",
+    "mybatis_plus": "3.5.17",
+    "agentscope": "agentscope==2.0.5",
+    "python_range": ">=3.12,<3.14"
+  },
+  "checks": {
+    "default_agent_route": true,
+    "interop_route": true,
+    "qdrant_latest_base": true,
+    "edge_security_jose": true,
+    "user_three_frameworks": true
+  },
+  "result": "PASS"
+}
