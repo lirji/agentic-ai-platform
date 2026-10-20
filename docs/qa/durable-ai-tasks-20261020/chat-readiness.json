@@ -1,0 +1,15 @@
+{
+  "sourceConfig": "langchain4j-platform chat-default -> deepseek/deepseek-chat",
+  "inventoryEndpoint": "https://api.deepseek.com/models",
+  "httpStatus": 200,
+  "modelIds": [
+    "deepseek-flash",
+    "deepseek-v4-pro"
+  ],
+  "legacyRetiredSource": "https://api-docs.deepseek.com/news/news260424/",
+  "modelCalls": 0,
+  "chatBudgetCny": "1.00",
+  "chatReservedCny": "0.00",
+  "replacementDecision": "AWAITING_USER_REPLY",
+  "credentialsCopied": false
+}

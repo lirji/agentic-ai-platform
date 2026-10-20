@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "checks": [
+    "claim_storage_503",
+    "readiness_down",
+    "safe_error_body"
+  ],
+  "sharedDatabaseModified": false
+}

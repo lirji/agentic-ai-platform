@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "checks": [
+    "restart_result_persists",
+    "restart_events_persist"
+  ],
+  "count": 2,
+  "modelCalls": 0,
+  "taskId": "d5c5a4b2-9c52-4f9b-ac5b-0a3c9e307637"
+}

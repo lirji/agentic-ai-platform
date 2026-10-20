@@ -58,6 +58,7 @@ ai-runtime/.venv/bin/python deploy/publication_smoke.py
 
 ```bash
 python3 deploy/local.py init
+python3 deploy/local.py init-tasks
 mvn -B -ntp package
 python3 deploy/local.py test
 python3 deploy/local.py start
@@ -85,10 +86,11 @@ python3 deploy/local.py stop
 | --- | --- | --- | --- |
 | edge-gateway | 127.0.0.1:28080 | 29080 | JWT 验签及内部签名材料有效、进程接受请求 |
 | knowledge-service | 127.0.0.1:28084 | 29084 | 真实 DB/原文桶；处理启用时增加 AI 存活与双索引 schema |
+| async-task-service | 127.0.0.1:28087 | 29087 | 独立任务 MySQL 与三套身份公钥 |
 
 管理端点：`/actuator/health/liveness`、`/actuator/health/readiness`、`/actuator/prometheus`。health 不显示依赖细节；gateway readiness 不代替知识服务 readiness。链路由 Micrometer/OTel 传播，默认不开远程导出；当前不新增观测集群。
 
-应用日志在 `.logs/{knowledge,gateway}.log`；PID 与本地密钥在 `.local/`。`stop` 验证 PID 对应本仓库 jar 后发送 SIGTERM；不强杀，不清空数据。`start` 检查端口冲突并等待真实 readiness；进程未成功则保留日志供诊断。
+应用日志在 `.logs/{knowledge,gateway,tasks}.log`；PID 与本地密钥在 `.local/`。`stop` 验证 PID 对应本仓库 jar 后发送 SIGTERM；不强杀，不清空数据。`start` 检查端口冲突并等待真实 readiness；进程未成功则保留日志供诊断。
 
 本地测试 issuer 为 `urn:agentic-ai:local-test`，audience 为 `agentic-ai-api`；`token` 将短时令牌写到 `.local/test-token`，不输出令牌。测试 IAM 和内部签名使用不同 RSA 密钥，知识服务仅有内部公钥。**生产 IAM 接入尚未验证。**
 
@@ -110,3 +112,13 @@ curl --fail-with-body http://127.0.0.1:28080/api/v1/knowledge/ingestions \
 S1 的身份、时间、幂等键与 revision 记录受理；S3 通过 `knowledge_ingestion_event` 记录系统执行者、领取代次、动作和状态变化，不用原上传者冒充 worker。当前保留任务、准备包、引用块和事件；生产保留期限与清理传播需后续确定。
 
 `local.py test` 将测试专用资源传给 Maven Failsafe；测试产生的记录保留在独立测试库，使用随机租户避免覆盖原数据。不提供 drop、truncate 或跨项目清理命令。
+
+## 持久 AI 任务（S5A）
+
+`python3 deploy/local.py init-tasks` 在 dev-infra MySQL 创建 `agentic_tasks` / `agentic_tasks_test`，分别使用 `agentic_task_app` / `agentic_task_test_app` 与对应 migrate 账号；应用只有库内 DML，迁移账号无 DROP。随机凭据及独立 task-submit/task-worker RSA 密钥保存在忽略的 `.local/`（0600）。重复初始化不改已有数据或轮换密码；无所有权记录时不接管同名资源。
+
+`mvn -B -ntp package` 后使用 `python3 deploy/local.py start --service tasks`；停止仍走同一入口 `stop --service tasks`，只终止本项目进程。该模块不需要模型、PG、S3 或旧业务服务即可验收中央协议。T01 见 [任务契约](../docs/design/knowledge-first-20261020/TASK_CONTRACTS.md)。目前只接收内部会话服务的任务，尚未启动真正 AI worker，也不宣称可通过 UI 问答。
+
+`ai-runtime/.venv/bin/python deploy/task_smoke.py` 验证真实网关、三类签名身份、输入拒绝、任务/事件/完成幂等；保存 `.local/s5a-http-state.json` 以便中断后先核对原任务，不能删除该文件后盲目重做未知结果。完成后重启本项目 tasks，再运行同脚本 `--restart-check`。`deploy/task_fault_smoke.py` 仅启动临时故障进程 28097/29097，连接不可达地址验证 503 与 readiness DOWN，不中断共享 DB；测试结束终止自己创建的子进程。
+
+MySQL V1 已在两个任务库应用，后续必须新增迁移；任务及事件暂不自动清理，生产保留期和删除传播另行确认。SSE 使用持久事件有界批次，携带游标重连，断线不会新建任务或重置预算。PostgreSQL 准备写、中央凭据提交与真实 LangGraph 恢复在 S5B 接入并验证。

@@ -19,6 +19,14 @@ S1 已追加知识受理/查询的一致性审查与冻结契约，见下文。�
 | S2 | Knowledge 客户端经独立服务身份调用 Python，取得有来源定位和真实向量的版本化准备结果及查询向量 | S0/S1；PROCESSING_CONTRACTS P01/P02；模型账号/地域/1 元授权已确认 | backend：ai-runtime；runtime：deploy 本地 AI 启动/私密配置；docs：既有设计/QA | Python 只计算准备结果，不写 Knowledge/检索存储；无业务迁移 | no；首次跨语言准备契约 | 下列 S2-AC | 已选三框架、PyJWT RSA 验签、真实百炼；服务密钥独立 | DONE |
 | S3 | 上传资料经持久 worker、真实准备及双索引发布为 READY；所有者可检索、引用及按原输入重试 | S2；PROCESSING_CONTRACTS S3 与 K03/K04 | backend：knowledge-service、必要 API；ai-runtime 仅本机预算护栏；runtime：deploy 独立搜索与验证；docs：权威设计/QA | Knowledge V2/V3、准备对象、双索引；不修改已应用迁移 | no | 下列 S3-AC | 现有 MySQL/S3/AI；独立 Qdrant 1.19.2、ES 8.19.23 smartcn | DONE |
 
+### S5A：持久 AI 任务（DONE）
+
+- 依赖 S4 DONE；[T01](TASK_CONTRACTS.md) 已完成中央任务部分的一致性审查。S5A 已通过真实验收，见 [TEST_RESULT](../../qa/durable-ai-tasks-20261020/TEST_RESULT.md)；PG Checkpointer 和问答仍属 S5B。
+- 允许路径：async-task-service、必要 platform-security/edge-gateway 路由、根 Maven；runtime 的 deploy/task_local.py、独立 MySQL dev/test；当前设计和 QA。保留知识服务已应用迁移与既有数据。
+- API 由 T01 冻结；中央 MySQL 短事务 + Mapper XML，不引入第二执行图、内存权威、MQ 或未用的调度平台。
+- 验收：T01 末节真实数据库/HTTP/重启项目，以及 Maven 构建、必要单元/集成测试、Code Hygiene、文档与 Git 交付。中央凭据只是联合 fencing 的一部分，完整 PG 恢复在 S5B 验证。
+- 运行：JDK 21 / Boot 3.5.16；独立 28087 / 管理 29087；共享 MySQL 8.4 中本项目 task dev/test 数据库。S5A 不发模型请求。
+
 ### S4：React 知识工作台（DONE）
 
 - 目标：用户在独立 React 工作台完成真实资料分页、上传、状态/失败重试、已发布内容检索和授权引用核对。依赖 S3 DONE；本片不冒充 Q 聊天回答。
@@ -102,4 +110,4 @@ S1 不包含处理 worker、向量发布、问答或页面；完成后继续细�
 | 6 | 研究分析及业务助手 | Deep Agents 工具边界、累计预算、多 worker 恢复/取消、报告制品与 UI；写工具另定契约 |
 | 7 | 知识转换完善及 AgentScope 参考业务扩展 | 前述知识闭环验收，逐项业务需求和迁入边界明确 |
 
-S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。下一片为基于 K 契约的 React 知识工作台，Q/T 在各自契约冻结后继续。可并行集合：无；未授权多个 Agent 并行写入。前端仓库创建和真实模型调用在对应阶段落实，不由本片验收替代。
+S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。S4 与 S5A 已验收；下一步为 PG 检查点与问答执行，Q 契约冻结后继续。可并行集合：无；未授权多个 Agent 并行写入。前端仓库创建和真实模型调用在对应阶段落实，不由本片验收替代。

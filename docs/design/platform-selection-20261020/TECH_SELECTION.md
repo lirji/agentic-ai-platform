@@ -181,3 +181,9 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 | 独立运行与发布回退 | 不访问旧业务部署；本项目任务按运行版本处理，回退制品兼容检查点；旧项目不是自动回退目标 | S0/S1 本地独立运行已验证；部署/版本回退未验证 |
 
 选型及本轮独立项目范围已确认；S0/S1 的实际证据见 [S1 验收](../../qa/knowledge-ingestion-20261020/TEST_RESULT.md)及其中引用，不能扩大为三框架集成、生产运维或完整知识库验收。历史候选依赖解析证据保持原时间与范围。
+
+## S5A 实施核对
+
+中央任务沿既定 JDK 21 / Boot 3.5.16、MyBatis-Plus/XML、MySQL 8.4 实现；新模块运行依赖与此前已审查制品逐 jar SHA256 一致，没有新增外部依赖版本。详见 [依赖复用证据](../../qa/durable-ai-tasks-20261020/dependency-reuse.json)。
+
+原聊天路由 `chat-default → deepseek/deepseek-chat` 已核对。2026-10-20 原账号 GET /models 返回 200，仅列出 deepseek-flash / deepseek-v4-pro；官方声明 deepseek-chat 于 2026-07-24 停用。[官方公告](https://api-docs.deepseek.com/news/news260424/)。已询问是否改用 deepseek-flash，在用户答复前不调用聊天模型；已批准的聊天 1 元与 Embedding 1 元分别累计，跨自然日不重置本轮额度。LiteLLM 与 PG 尚未因 S5A 创建。

@@ -48,7 +48,7 @@ public class GatewaySecurity {
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authorizeExchange(auth -> auth
                         .pathMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
-                        .pathMatchers("/api/v1/knowledge/**").authenticated()
+                        .pathMatchers("/api/v1/knowledge/**", "/api/v1/tasks/**").authenticated()
                         .anyExchange().denyAll())
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> { })
                         .authenticationEntryPoint((exchange, failure) ->

@@ -38,6 +38,7 @@ NAMES = {
 SERVICES = {
     "knowledge": ("knowledge-service", 28084, 29084),
     "gateway": ("edge-gateway", 28080, 29080),
+    "tasks": ("async-task-service", 28087, 29087),
 }
 
 
@@ -234,6 +235,10 @@ def environment(mode: str = "dev") -> dict[str, str]:
 
     if search_local.CONFIG.exists():
         env.update(search_local.environment(mode))
+    import task_local
+
+    if task_local.CONFIG.exists():
+        env.update(task_local.environment(mode))
     return env
 
 
@@ -366,13 +371,18 @@ def main() -> None:
             "start-ai",
             "stop-ai",
             "init-search",
+            "init-tasks",
             "stop-search",
         ],
     )
     parser.add_argument("--service", choices=SERVICES)
     parser.add_argument("--reference-env", type=Path, help="已获授权的来源模型环境文件")
     args = parser.parse_args()
-    if args.command in {"init-search", "stop-search"}:
+    if args.command == "init-tasks":
+        import task_local
+
+        task_local.init()
+    elif args.command in {"init-search", "stop-search"}:
         import search_local
 
         if args.command == "init-search":

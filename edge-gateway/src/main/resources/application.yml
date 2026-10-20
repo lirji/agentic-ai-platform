@@ -8,6 +8,10 @@ spring:
       server:
         webflux:
           routes:
+            - id: tasks
+              uri: ${TASK_SERVICE_URL:http://127.0.0.1:28087}
+              predicates:
+                - Path=/api/v1/tasks/**
             - id: knowledge-search
               uri: ${KNOWLEDGE_SERVICE_URL:http://127.0.0.1:28084}
               predicates:

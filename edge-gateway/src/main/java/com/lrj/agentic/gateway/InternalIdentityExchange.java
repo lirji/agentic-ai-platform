@@ -44,7 +44,9 @@ public class InternalIdentityExchange implements GlobalFilter, Ordered {
                     var jwt = authentication.getToken();
                     Instant now = Instant.now();
                     var claims = JwtClaimsSet.builder().issuer(IdentityProtocol.INTERNAL_ISSUER)
-                            .audience(List.of(IdentityProtocol.KNOWLEDGE_AUDIENCE)).subject(jwt.getSubject())
+                            .audience(List.of(exchange.getRequest().getPath().value().startsWith("/api/v1/tasks/")
+                                    ? IdentityProtocol.TASK_AUDIENCE : IdentityProtocol.KNOWLEDGE_AUDIENCE))
+                            .subject(jwt.getSubject())
                             .issuedAt(now).expiresAt(now.plusSeconds(IdentityProtocol.INTERNAL_TTL_SECONDS))
                             .claim(IdentityProtocol.TENANT_CLAIM, jwt.getClaimAsString(properties.tenantClaim()))
                             .claim(IdentityProtocol.SCOPE_CLAIM,

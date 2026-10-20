@@ -8,6 +8,8 @@ S2 的 LangGraph/LlamaIndex 准备图已接入真实 Embedding；S3 由 Java 持
 
 这是新项目 `agentic-ai-platform` 的目标设计；已开始实施 S0 AI 运行基础与 S1 知识资料受理/查询，尚未完成三框架业务闭环。用户已确认架构与组件，并进一步明确独立运行、全新 React 前端、知识业务优先及按需迁入资产，见[首期业务与工程约定](../knowledge-first-20261020/BRIEF.md)。下文事实表中的“已有/当前”指参考项目；“迁入/沿用”表示复用代码与能力，不表示必须依赖旧项目正在运行的业务服务。组件、版本、候选取舍见 [TECH_SELECTION](TECH_SELECTION.md)，历史背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)，真实实施/验证状态见[当前进度](../knowledge-first-20261020/PROGRESS_STATE.md)。
 
+S5A 已实现本项目 `async-task-service`：独立 MySQL 任务库、租约代次、持久事件、显式取消/恢复和幂等终态报告。参考旧中央任务语义按范围裁剪，未迁入内存权威、旧 DAG、Kafka 或 webhook。检查点提交凭据由有效租约保护；PG 准备写仍未接入，联合 fencing 与图恢复必须在 S5B 通过真实验证。契约见 [T01](../knowledge-first-20261020/TASK_CONTRACTS.md)。
+
 ## 1. 目标、主作业与范围
 
 本方案面向新平台的知识问答、研究与分析 Agent、业务助手和知识入库，复用参考项目中的业务与治理能力：

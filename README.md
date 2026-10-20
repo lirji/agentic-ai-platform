@@ -2,7 +2,7 @@
 
 独立建设的知识与 Agent 平台，优先实现**知识入库、知识问答、研究分析和业务助手**。架构与组件已确认：**全新 React 前端 + LangGraph、Deep Agents、LlamaIndex AI 核心 + 按需迁入的 Java 领域能力**。
 
-**已实现独立资料受理、持久处理、双索引发布与可引用检索，以及 Python 的鉴权知识准备接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证，Java 双索引处理与恢复已通过真实组件集成测试，S3 完整真实链路、重启恢复和搜索补丁升级验收通过。[独立 React 工作台](https://github.com/lirji/agentic-ai-platform-web)已接通资料、状态、检索和引用，本机入口 http://127.0.0.1:28086；问答、研究和助手尚未接通；验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+**已实现独立资料受理、持久处理、双索引发布与可引用检索，以及 Python 的鉴权知识准备接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证，Java 双索引处理与恢复已通过真实组件集成测试，S3 完整真实链路、重启恢复和搜索补丁升级验收通过。[独立 React 工作台](https://github.com/lirji/agentic-ai-platform-web)已接通资料、状态、检索和引用，本机入口 http://127.0.0.1:28086；中央任务、租约、事件重放与终态对账已通过 S5A 验收，问答、研究和助手尚未接通；验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 
 ## 阅读入口
 
@@ -10,6 +10,7 @@
 - [目标架构](docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md)：三框架职责、模块与数据所有权、任务恢复、安全边界及 P0–P4 演进建议。
 - [技术与组件选型](docs/design/platform-selection-20261020/TECH_SELECTION.md)：31 项决策、候选版本、基础组件、取舍与验证条件；附可复现的依赖解析证据。
 - [React 前端设计](docs/design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md)、[契约](docs/design/knowledge-first-20261020/CONTRACTS.md)及[实施切片](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md)：首片范围与后续业务依赖。
+- [中央 AI 任务](docs/design/knowledge-first-20261020/TASK_CONTRACTS.md)：执行租约、持久事件、取消/恢复与检查点提交凭据；[S5A 验收](docs/qa/durable-ai-tasks-20261020/TEST_RESULT.md)。
 - [知识 API](docs/design/knowledge-first-20261020/KNOWLEDGE_CONTRACTS.md)与[迁入清单](docs/design/knowledge-first-20261020/KNOWLEDGE_MIGRATION.md)：身份、幂等、原文、分页、持久任务及参考规则边界。
 - [AI 平台升级可行性分析](docs/feasibility/AI平台升级可行性分析.md)：前期讨论记录；第 4 节说明框架优势、选择理由与业务用途，第 8 节说明收益及衡量方法。
 - [文档索引](docs/README.md)：文档职责与状态。

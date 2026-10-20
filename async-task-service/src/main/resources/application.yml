@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: agentic-tasks
+  datasource:
+    url: ${TASK_DB_URL}
+    username: ${TASK_DB_USER}
+    password: ${TASK_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: ${TASK_DB_POOL_SIZE:10}
+      minimum-idle: 1
+      connection-timeout: 3000
+      validation-timeout: 1000
+      data-source-properties:
+        connectTimeout: 3000
+        socketTimeout: 5000
+        connectionTimeZone: UTC
+        forceConnectionTimeZoneToSession: true
+  flyway:
+    user: ${TASK_MIGRATION_USER}
+    password: ${TASK_MIGRATION_PASSWORD}
+    clean-disabled: true
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+server:
+  address: ${TASK_BIND_ADDRESS:127.0.0.1}
+  port: ${TASK_PORT:28087}
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: ${TASK_HTTP_THREADS:64}
+      min-spare: 4
+    max-connections: 128
+    accept-count: 32
+    connection-timeout: 5s
+  error:
+    include-message: never
+    include-stacktrace: never
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    arg-name-based-constructor-auto-mapping: true
+    default-statement-timeout: 5
+  global-config:
+    banner: false
+task:
+  identity:
+    edge-public-key: ${INTERNAL_PUBLIC_KEY}
+    submit-public-key: ${TASK_SUBMIT_PUBLIC_KEY}
+    worker-public-key: ${TASK_WORKER_PUBLIC_KEY}
+  lease-seconds: ${TASK_LEASE_SECONDS:60}
+management:
+  server:
+    address: 127.0.0.1
+    port: ${TASK_MANAGEMENT_PORT:29087}
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLE_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      export:
+        enabled: ${OTEL_EXPORT_ENABLED:false}
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%thread] %logger{36} trace=%X{traceId:-} span=%X{spanId:-} request=%X{requestId:-} - %msg%n"

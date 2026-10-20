@@ -10,6 +10,7 @@ public final class IdentityProtocol {
     public static final String WRITE_SCOPE = "knowledge:write";
     public static final String INTERNAL_ISSUER = "urn:agentic-ai:edge";
     public static final String KNOWLEDGE_AUDIENCE = "agentic-ai-knowledge";
+    public static final String TASK_AUDIENCE = "agentic-ai-tasks";
     public static final int INTERNAL_TTL_SECONDS = 60;
     public static final int MAX_TOKEN_LENGTH = 8192;
 

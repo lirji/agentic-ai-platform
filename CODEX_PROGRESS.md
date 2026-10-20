@@ -1,9 +1,9 @@
 # Codex Progress
 
-- 当前任务：`knowledge-workbench-20261020`；用户要求继续后续实施，推进三框架接入与知识处理、发布、检索。
+- 当前任务：`durable-ai-tasks-20261020`；用户要求继续后续实施，推进三框架接入与知识处理、发布、检索。
 - 当前唯一状态与恢复入口：[独立知识平台准备进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 - 业务与交付基线：[首期约定](docs/design/knowledge-first-20261020/BRIEF.md)；架构与选型继续在原权威文档维护。
-- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`。当前任务分支 `feat/knowledge-workbench-20261020`，S3 已合并推送 `32bc3b4`；独立 React 知识工作台已通过验收，Git 交付中。已授权沿用原百炼 Embedding 配置，上限 1 元；沿用原聊天配置，另限 1 元。问答、研究和业务助手尚未完成。运行状态、任务清单、授权和证据见唯一进度文档。
+- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`；分支 `feat/durable-ai-tasks-20261020`。S0–S4 已交付，S5A 持久任务已验证、Git 交付中，随后实现 PG 恢复并接通问答与研究助手。Embedding / 聊天分别获批 1 元上限；旧聊天模型停用的替代项待答复。具体事实、证据与恢复入口只在权威进度维护。
 - 上一任务：[选型与迁移进度](docs/design/platform-selection-20261020/PROGRESS_STATE.md)，已完成；保留历史事实与证据。
 
 ## 前期可行性任务记录

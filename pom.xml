@@ -18,6 +18,7 @@
         <module>platform-contracts</module>
         <module>platform-security</module>
         <module>knowledge-service</module>
+        <module>async-task-service</module>
         <module>edge-gateway</module>
     </modules>
     <properties>

@@ -1,9 +1,22 @@
 # 独立知识平台准备进度
 
-## 当前任务：React 知识工作台实施
+## 当前任务：持久 AI 任务与知识问答
+
+- 标识：`durable-ai-tasks-20261020`，继承用户“继续后续的实施”；完整目标仍为知识、问答、研究及只读助手。
+- 当前：S0–S4 DONE。后端 main `2cefd2267fc3cd82c5f2d8276dee63523a3152b1`、前端私有 main `51dc652f1734586d8fb0fe38e1175f3d246622b9` 已推送并核对。任务分支 `feat/durable-ai-tasks-20261020`，原目录、无新 worktree。
+- 当前切片 S5A：DONE，T01 中央任务、租约、事件、检查点凭据与终态对账实现及验收通过；Git 交付中。随后 S5B 连接 PG/LangGraph/LlamaIndex/聊天，S5C 问答 UI；再继续研究和助手。只有当前可执行切片冻结，后续不冒充已完成。
+- 模型：Embedding 保守累计预留 0.16 / 1 元，16 批；聊天 0 / 1 元。原 DeepSeek 账号 GET /models 返回 200，只有 deepseek-flash / deepseek-v4-pro。原 deepseek-chat 已停用，已异步请求确认改用 deepseek-flash；答复前不发聊天请求，继续无模型依赖实现。GET 模型清单未生成内容。
+- 业务助手无另行场景答复，采用既有 BRIEF 只读资料解释/清单/草稿建议，不接外部写操作。
+- 工作清单：①–④ S5A 契约/实现/Runtime/验收已通过；⑤文档/Git 收尾；⑥继续 PG Checkpointer 实现与联合 fencing 验证，再接 Q 问答/前端与研究助手。当前聊天替代模型待答复，不阻止无模型依赖工作。
+- 当前代码：S5A 验收通过：29 项 Maven（含 15 项真实 MySQL）、38 项真实 HTTP、2 项重启、3 项数据库故障断言；Code Hygiene COMPLETE_WITH_LIMITATIONS（无 Java formatter，Python 配置显式检查）。证据 docs/qa/durable-ai-tasks-20261020/TEST_RESULT.md，最终源码摘要 4b78da72e2cc443f01f1b1d8b77295714c01e774999861054763fcd76fd6116b。任务 V1 已在 dev/test 应用，禁止改写；独立任务数据库/三套验签身份已配置。Gateway 28080、Knowledge 28084、AI 28085、Web 28086、Tasks 28087 运行。PG 16.15 仍只读核对，尚未创建项目资源。
+- 授权：沿既有计划本地实施、隔离共享基础设施资源、必要模型联调；验证后正常合并推送 main，未授权生产部署。凭据/预算/恢复记录继续保留于忽略 .local，不进入检查点。
+- 规范：backend-implementation、implementation-slicing、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；已读架构业务建模/事务/接口/并发/容量/发布，个人线程与追踪规范。技能 Runtime 漂移仍按手工专业 pass 留证，不修全局文件。
+- 恢复：先核对本节、T01 契约、切片和 Git/实际进程。S5A 不声称已完成 PostgreSQL 联合 fencing；PG 写入与中央提交凭据的真实恢复由 S5B 验证。
+
+## 历史：S4 知识工作台交付
 
 - 标识：`knowledge-workbench-20261020`；延续“继续后续的实施”，完整目标包含知识资料、问答、研究、助手与独立 React 前端。
-- 状态：`S2 DONE / S3 DONE`，S3 必需验证通过，已正常合并推送 main `32bc3b4`；S4 DONE（前端已交付，后端文档交付中）；完整平台尚未完成。已冻结 S4，继续知识工作台，不等待再次确认继续。
+- 状态：`S2 DONE / S3 DONE`，S3 必需验证通过，已正常合并推送 main `32bc3b4`；S4 DONE（前后端记录均已交付）；完整平台尚未完成。已冻结 S4，继续知识工作台，不等待再次确认继续。
 - 模型授权：Embedding 沿用原 langchain4j-platform 百炼北京账号、text-embedding-v4 / 1024，上限 1 元；聊天沿用原聊天配置，另限 1 元。当前 Embedding 共 16 次保守预留、0.16 元（含 S2，非账单）；聊天未接入、未调用。两个预算独立，凭据只进忽略配置，不迁入旧语料。
 - Git：原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`；分支 `feat/knowledge-workbench-20261020`，HEAD `2ac00ce`；S3 交付记录已单独提交，当前未提交为 S4 设计/进度与验收指针，无新 worktree。用户授权验证后按逻辑单元提交、正常合并推送 main，无生产部署。
 - 已完成：Java 持久租约 worker、不可变准备复用、双索引确认后原子发布、失败 CAS 重试、授权检索与引用；Python 持久预算护栏；本项目隔离 Qdrant/ES、版本和中文分析插件；loopback S3 关闭错误的代理继承。

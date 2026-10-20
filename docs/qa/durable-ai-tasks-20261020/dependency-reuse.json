@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "newExternalDependencies": 0,
+  "taskRuntimeLibraries": 96,
+  "byteIdenticalToPreviouslyAuditedModules": true,
+  "priorAudit": "../knowledge-ingestion-20261020/dependency-audit.json",
+  "limitations": [
+    "Spring 6.2.19 announcements retained; SSE view-fragment applicability separately reviewed",
+    "No new full ecosystem advisory scan claimed"
+  ]
+}
