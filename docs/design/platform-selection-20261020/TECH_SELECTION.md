@@ -38,7 +38,9 @@ Deep Agents 构建在 LangChain Agent 基础之上，使用 LangGraph 执行；L
 
 本次使用 `uv 0.11.3`、Python 3.12/Linux x86_64 目标、官方 PyPI 索引、禁止源码构建的依赖解析，以上包加 FastAPI、Pydantic、HTTPX、Psycopg 共解析出 **113 个包**。关键传递依赖解析为 `langchain 1.4.6`、`langchain-core 1.6.12`、`langgraph-checkpoint 4.3.0`、`llama-index-workflows 2.26.0`。这验证了依赖约束可共同满足。
 
-**没有安装依赖、修改现有锁文件、import 运行框架、连接数据库或调用模型。** 不等于与当前 AgentScope 全套依赖可以混装，不等于流式输出、工具执行或恢复兼容，也未验证 Linux ARM64/本机 ARM64。P0 应在独立运行环境生成带哈希的正式锁文件，验证许可证、漏洞、目标 CPU/镜像和真实运行，再冻结部署制品。
+**以上选型解析当时没有安装依赖、修改现有锁文件、import 运行框架、连接数据库或调用模型。** 不等于与当前 AgentScope 全套依赖可以混装，不等于流式输出、工具执行或恢复兼容，也未验证 Linux ARM64/本机 ARM64 的三框架组合。P0 应在独立运行环境生成带哈希的正式锁文件，验证许可证、漏洞、目标 CPU/镜像和真实运行，再冻结部署制品。
+
+后续 S0 已为实际使用的服务基座生成 [uv.lock](../../../ai-runtime/uv.lock)，在 macOS ARM64 / Python 3.12.13 安装并验证 FastAPI 0.151.0、Pydantic 2.14.1、HTTPX 0.28.1、Uvicorn 0.54.0；开发检查使用 Ruff 0.17.1、mypy 1.20.2、pytest 9.1.1。该锁仅包含 S0 运行与开发依赖，不包含上述三框架候选组合。68 项测试、本地 HTTP、构建及当前平台 27 个运行/开发依赖的漏洞与许可证核对结果见 [S0 验证](../../qa/runtime-foundation-20261020/TEST_RESULT.md)；Linux、容器、真实模型和业务集成仍待后续验证。
 
 复现输入和解析输出随文档迁入 [evidence](evidence/README.md)：[包元数据](evidence/package-metadata.json)、[候选输入](evidence/candidate-requirements.in)、[解析输出](evidence/candidate-requirements.txt)、[结果摘要](evidence/dependency-summary.json)、[解析日志](evidence/dependency-resolution.log)。它们是选型证据，不是应用安装清单或正式锁文件。以下命令在项目根目录运行，将新结果放入临时目录，保留本轮历史输出；重做时传递依赖可能变化，应比较完整结果。
 

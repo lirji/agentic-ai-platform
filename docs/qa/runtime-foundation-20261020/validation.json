@@ -1,0 +1,120 @@
+{
+  "slice_id": "S0",
+  "date": "2026-10-20",
+  "base_commit": "44ffff58bf6eb63beede27bf08644ba4015b9b01",
+  "revision_kind": "working_tree_sha256",
+  "revision": "14914ff75803dac28f28ccf97b3f9be08f3b582d4ad046e38d703f4cf7efb57b",
+  "files": {
+    ".gitignore": "51d68e649a04580c1fe38d10266d2e3929aa2693ec7c50330f217ed292e5b574",
+    "ai-runtime/.env.example": "ce9efbd5673f517cd16ccce48bc514b13c679b4b23f25ed2f1688f11d0eb39cc",
+    "ai-runtime/.python-version": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d",
+    "ai-runtime/pyproject.toml": "0cec6a5086e51003bab3d3cadc08f0e7ee701e323b20a9f44320d40f7593ccbf",
+    "ai-runtime/src/agentic_ai/__init__.py": "79f73549e17372045759a0b3afab298f10403b9bf5a39ba05ff05903c18988b4",
+    "ai-runtime/src/agentic_ai/adapters/__init__.py": "f30902c8ac3207cf2ad9c2dd750312ec24e328cfaee79e1bd9877c320c14dfd6",
+    "ai-runtime/src/agentic_ai/adapters/openai_embedding.py": "eb96684dda328f3509dbedebdcdb98c44345b73eb612d3b6de13626f9de22982",
+    "ai-runtime/src/agentic_ai/api/__init__.py": "8d83f36a273430995eb45cf45fc4bcb09b1683e2f8b6cd94049f36bf8785bec1",
+    "ai-runtime/src/agentic_ai/api/app.py": "247b11beb6135cda1b09b65ae69bf217ea1faf84e22b64bf559b49cc4dccc983",
+    "ai-runtime/src/agentic_ai/cli.py": "1845293b57d684c460d26c3168d8578a7280b7ff2f83175642c84c043640a8d9",
+    "ai-runtime/src/agentic_ai/rag/__init__.py": "e2a6c40222be61e85821e0d6e5efcb35cf9bb5c4c7b25bcb8490b45bf64abbd9",
+    "ai-runtime/src/agentic_ai/rag/errors.py": "acecf04d1fdd1e50e9599913e6cbd61d61cb6875fd2c40f8e7382cedbbf816c8",
+    "ai-runtime/src/agentic_ai/rag/ports.py": "875dcb8326ac317fcaafd24ea798a4827e5f93ead779af7488360ec2763335dc",
+    "ai-runtime/src/agentic_ai/runtime/__init__.py": "e5211bf19ec6a30b1463d96559a65ccb545ffde481666323a0b46c758d48301a",
+    "ai-runtime/src/agentic_ai/runtime/embedding_config.py": "7a9857ceefa83b33803493095a1dd0b89cc01a7d00b4dbcfbcfe886c99acacc7",
+    "ai-runtime/tests/conftest.py": "494554e0e8e0e93a80c70fbcaa1a31bcc09e97982430768ca7d11e092f08608d",
+    "ai-runtime/tests/test_config_and_entrypoints.py": "812ad850a0eb1dbd3646cda76004c9e7a7469a1c6f532325fbaeb9be9c95496c",
+    "ai-runtime/tests/test_embedding_adapter.py": "05d3c73b81ea1060600aac34d1e9faeb12227690afb338abf3a43b98bb4105ad",
+    "ai-runtime/tests/test_http_process.py": "b140a4a79455a867005c0acc9079c548c82750a1e812cfda4855ea8988392d88",
+    "ai-runtime/uv.lock": "4a6998472ee9ccac63de5d04c395eeb9cade4f9fbbb4220f0e883473019bd495"
+  },
+  "environment": {
+    "os": "Darwin",
+    "machine": "arm64",
+    "python": "3.12.13"
+  },
+  "overall": "PASS",
+  "checks": [
+    {
+      "name": "format",
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "ruff",
+        "format",
+        "--check",
+        "src",
+        "tests"
+      ],
+      "exit_code": 0,
+      "seconds": 0.15,
+      "log": "ai-runtime/.logs/format.log",
+      "output": "15 files already formatted\n"
+    },
+    {
+      "name": "static",
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "ruff",
+        "check",
+        "src",
+        "tests"
+      ],
+      "exit_code": 0,
+      "seconds": 0.06,
+      "log": "ai-runtime/.logs/static.log",
+      "output": "All checks passed!\n"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "mypy"
+      ],
+      "exit_code": 0,
+      "seconds": 0.3,
+      "log": "ai-runtime/.logs/typecheck.log",
+      "output": "Success: no issues found in 11 source files\n"
+    },
+    {
+      "name": "tests",
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "-q"
+      ],
+      "exit_code": 0,
+      "seconds": 1.26,
+      "log": "ai-runtime/.logs/tests.log",
+      "output": "....................................................................     [100%]\n68 passed in 0.95s\n"
+    },
+    {
+      "name": "build",
+      "command": [
+        "uv",
+        "build",
+        "--no-sources"
+      ],
+      "exit_code": 0,
+      "seconds": 0.53,
+      "log": "ai-runtime/.logs/build.log",
+      "output": "Building source distribution...\nBuilding wheel from source distribution...\nSuccessfully built dist/agentic_ai_runtime-0.1.0.tar.gz\nSuccessfully built dist/agentic_ai_runtime-0.1.0-py3-none-any.whl\n"
+    }
+  ],
+  "test_count": 68,
+  "external_model_calls": 0,
+  "real_http_process_smoke": "PASS",
+  "quality_report": "code-hygiene.json",
+  "dependency_audit": "dependency-audit.json",
+  "license_metadata": "license-metadata.json",
+  "limitations": [
+    "全局 Skill Runtime 因漂移未启动；使用专业技能逐项手工路由。",
+    "代码卫生工具只在仓库根发现格式配置，未识别 ai-runtime/pyproject.toml；实际 Ruff format/check 均通过。",
+    "HTTPX 模型协议替身不代表真实账号、语义质量或业务集成验证。"
+  ]
+}
