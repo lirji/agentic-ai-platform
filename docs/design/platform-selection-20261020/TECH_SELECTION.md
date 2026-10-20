@@ -187,3 +187,9 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 中央任务沿既定 JDK 21 / Boot 3.5.16、MyBatis-Plus/XML、MySQL 8.4 实现；新模块运行依赖与此前已审查制品逐 jar SHA256 一致，没有新增外部依赖版本。详见 [依赖复用证据](../../qa/durable-ai-tasks-20261020/dependency-reuse.json)。
 
 原聊天路由 `chat-default → deepseek/deepseek-chat` 已核对。2026-10-20 原账号 GET /models 返回 200，仅列出 deepseek-flash / deepseek-v4-pro；官方声明 deepseek-chat 于 2026-07-24 停用。[官方公告](https://api-docs.deepseek.com/news/news260424/)。已询问是否改用 deepseek-flash，在用户答复前不调用聊天模型；已批准的聊天 1 元与 Embedding 1 元分别累计，跨自然日不重置本轮额度。LiteLLM 与 PG 尚未因 S5A 创建。
+
+## S5B 实施核对
+
+2026-10-21 复用 dev-infra PostgreSQL 16.15，创建本项目两个逻辑库和分权账号；保留原生 Checkpointer 结构，追加不可变触发器与中文注释。Python 的中央凭据/执行代次适配通过真实 LangGraph + PG + MySQL + HTTP 的接管、响应丢失与终态恢复验收；不是将原生 saver 当作中央租约保证。详见 [S5B 契约](../knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)与[验收](../../qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。
+
+宿主缺少 libpq，为原已锁定的 psycopg 3.3.6 补充官方 binary/pool extra，只新增 psycopg-binary 3.3.6；未升级框架或共享 PG。官方 wheel 与 lock 摘要一致，许可证 LGPL-3.0-only、PyPI 版本公告为空，本机 libpq 18.6 / OpenSSL 3.5.8；依赖增量和既有风险保留在验收记录，不宣称全部依赖零漏洞。无新 LiteLLM 实例、常驻图 worker 或聊天调用。

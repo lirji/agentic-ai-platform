@@ -1,0 +1,136 @@
+{
+  "slice": "S5B",
+  "status": "PASS",
+  "baseline": "a7c245b0180b39d9e49574f0fc0ad3f2957de17d",
+  "branch": "feat/ai-checkpoint-recovery-20261021",
+  "sourceSha256": "ac908dae32672abbca2c887ea7f640c1ab59644e33606b9e225228c9c98a9e4d",
+  "sourceFiles": [
+    {
+      "path": "ai-runtime/pyproject.toml",
+      "sha256": "5cfb0fcafcce08f8db6fdcba83c28553ebc62f56875a62d3c0f580aedaa2f8a5"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/tasks/__init__.py",
+      "sha256": "07e36eee641e2e97f8b662b64599aa39da677bd634798654b21100b66e7fb6af"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/tasks/checkpointer.py",
+      "sha256": "9d5c9392241eef24020ca561ed36e0ceaffb0f253f066d8335a2f67bfbf52cb5"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/tasks/client.py",
+      "sha256": "d5aab65eca4408986e996fda7c66eb498836d4b93c6ec157d7d0d22e6e4bee6a"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/tasks/errors.py",
+      "sha256": "98d0e2858049e2e1e67205b6d2d4b20e292137af6ae097462f8187684d87102a"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/tasks/execution.py",
+      "sha256": "dcf15272dd0e6aa33859c5fd5bd0c4fe74d09cbd45a30957d5716e28ccce9c03"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/tasks/models.py",
+      "sha256": "be91ff35283a6d951d6d6db20eb3f55e209eb06e92d850ba5dbc26a2f6613807"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/tasks/postgres.py",
+      "sha256": "b895f1fd762d83eb4efe152df07ac592a85e1117697f60cf8598f97fbf7b6035"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/tasks/serialization.py",
+      "sha256": "22d17fa0c49e5bc2589139843594197dac720385dcb1dcbdb7d5ff59e5fade92"
+    },
+    {
+      "path": "ai-runtime/tests/test_task_checkpoints_integration.py",
+      "sha256": "093e7c5d760a73f105ca45d9e081d04753d8d763bb269a3027d2bc38b8b352e2"
+    },
+    {
+      "path": "ai-runtime/tests/test_task_client.py",
+      "sha256": "74483d6015488649289949c2e41ad5c4f44b031a3bf0c8455865850f3feeb9a6"
+    },
+    {
+      "path": "ai-runtime/tests/test_task_serialization.py",
+      "sha256": "1b5c95f8832fb230dba6741571b77876b7000c472399b18108a5e0752999e7ee"
+    },
+    {
+      "path": "ai-runtime/uv.lock",
+      "sha256": "e9751dfe7d66d46ec98963a6910c74ee43fc1ac28def0687be0e2a8b0ad230cb"
+    },
+    {
+      "path": "deploy/checkpoint_local.py",
+      "sha256": "61d287889572bdd07597ca813e3421a130fa5e7d38a5d213ef8db7c6effbeb97"
+    },
+    {
+      "path": "deploy/checkpoints/V1__immutable_snapshots.sql",
+      "sha256": "187e96d2c044c2c6299379d202995179a73899b811c8cfddf0c4102840f81a92"
+    },
+    {
+      "path": "deploy/local.py",
+      "sha256": "9c0e0906c22d581ca2da2d813cdeeebe18bcc306e4819adac01230ba58aa5654"
+    }
+  ],
+  "tests": {
+    "total": 150,
+    "existing": 113,
+    "newUnit": 26,
+    "realIntegration": 11,
+    "paidModelCalls": 0
+  },
+  "commands": [
+    {
+      "command": "AGENTIC_CHECKPOINT_IT=1 .venv/bin/pytest -q --tb=short",
+      "cwd": "ai-runtime",
+      "result": "PASS"
+    },
+    {
+      "command": ".venv/bin/ruff check src tests ../deploy/checkpoint_local.py ../deploy/local.py",
+      "cwd": "ai-runtime",
+      "result": "PASS"
+    },
+    {
+      "command": ".venv/bin/ruff format --check src tests ../deploy/checkpoint_local.py ../deploy/local.py",
+      "cwd": "ai-runtime",
+      "result": "PASS",
+      "files": 39
+    },
+    {
+      "command": ".venv/bin/mypy src",
+      "cwd": "ai-runtime",
+      "result": "PASS",
+      "files": 27
+    },
+    {
+      "command": "uv build --no-sources",
+      "cwd": "ai-runtime",
+      "result": "PASS"
+    }
+  ],
+  "logs": [
+    {
+      "path": ".logs/s5b-python-final.log",
+      "sha256": "99fb3ed5ced7478fd4a46a460866bb2a4e70baf3c80d4542e55ac18874ef9adf"
+    },
+    {
+      "path": ".logs/s5b-build-final.log",
+      "sha256": "300f5c8756d41b1524fc720943d2280d38c2c0cfd4664e9b92e27088841ff88b"
+    },
+    {
+      "path": ".logs/s5b-pg-init.log",
+      "sha256": "f7c8dfc29c2b8dac7cb4957626d815d4e900660df873213cabf8faf0def4cfbf"
+    }
+  ],
+  "quality": "code-hygiene.json",
+  "dependencies": "dependency-delta.json",
+  "limitations": [
+    "root formatter auto-discovery misses nested Python config; explicit Ruff checks passed",
+    "no production capacity or backup restore claim",
+    "no paid model or permanent graph worker"
+  ],
+  "environment": {
+    "postgres": "16.15 shared dev-infra project-owned databases",
+    "central": "28087 actual Java/MySQL",
+    "python": "3.12.13",
+    "migration": "native 0..9 and platform V1 applied dev/test"
+  }
+}

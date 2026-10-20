@@ -1,6 +1,6 @@
 # AI 运行时
 
-当前实现 S0/S2：Python 3.12、存活端点、真实 Embedding，以及经服务身份认证的知识准备/查询向量接口。契约权威为 [R01/H01](../docs/design/knowledge-first-20261020/CONTRACTS.md)和 [P01/P02](../docs/design/knowledge-first-20261020/PROCESSING_CONTRACTS.md)。Java S3 已实现索引发布与检索，完整真实链路验收以项目进度为准；问答和 React 页面仍在后续切片。
+当前实现 S0/S2/S5B：Python 3.12、存活端点、真实 Embedding、鉴权知识准备/查询向量，以及受控 PG 检查点和中央恢复协议。契约权威为 [R01/H01](../docs/design/knowledge-first-20261020/CONTRACTS.md)、[P01/P02](../docs/design/knowledge-first-20261020/PROCESSING_CONTRACTS.md)和 [S5B](../docs/design/knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)。Java 已实现索引发布与检索，独立 React 工作台已接通知识路径；问答与研究业务尚未接通。
 
 ## 本地启动
 
@@ -17,7 +17,7 @@ uv run --frozen agentic-ai serve --host 127.0.0.1 --port 8000
 {"status":"alive","service":"agentic-ai-runtime"}
 ```
 
-该端点只证明进程可响应，无需模型凭据。不存在声明业务可用的 readiness 端点。三框架已正式锁定并安装：LangGraph 1.2.16 编排准备图、LlamaIndex Core 0.14.25 分块；Deep Agents 0.7.28 已通过隔离工具/流式循环验证，业务研究 Agent 尚未交付。PG checkpoint 适配已安装，持久恢复尚未验证。
+该端点只证明进程可响应，无需模型凭据。不存在声明业务可用的 readiness 端点。三框架已正式锁定并安装：LangGraph 1.2.16 编排准备图、LlamaIndex Core 0.14.25 分块；Deep Agents 0.7.28 已通过隔离工具/流式循环验证，业务研究 Agent 尚未交付。PG 完整快照已通过真实 LangGraph 和中央任务联合恢复验收，不代表问答 worker 已启动。
 
 ## 启用知识准备
 
@@ -61,6 +61,7 @@ async def embed_authorized_texts(texts: list[str]):
 - `src/agentic_ai/rag/`：无 HTTP 框架依赖的领域端口、不可变结果与稳定错误。
 - `src/agentic_ai/adapters/`：OpenAI 兼容 HTTP 实现。
 - `src/agentic_ai/processing/`：准备契约、摘要、服务身份及固定处理图。
+- `src/agentic_ai/tasks/`：中央任务客户端、受控 PG saver、严格序列化和终态优先执行入口。
 - `src/agentic_ai/runtime/`：有界配置；`api/` 与 `cli.py`：当前运行入口。
 - `tests/`：配置、协议成功/失败、分批、时限、取消及真实本地 HTTP 进程测试。模型响应使用 HTTPX transport 替身，不能作为真实语义质量证据。
 
@@ -72,4 +73,10 @@ uv run --frozen pytest -q
 uv build --no-sources
 ```
 
-`uv.lock` 锁定运行及开发依赖；构建后端由 `pyproject.toml` 声明。测试只绑定本机临时端口，不访问真实模型或旧业务服务。
+`uv.lock` 锁定运行及开发依赖；构建后端由 `pyproject.toml` 声明。默认测试不调用模型或真实业务存储。S5B 真实测试须先按[运行说明](../deploy/README.md)初始化 PG 并启动中央任务，再显式运行：
+
+```bash
+AGENTIC_CHECKPOINT_IT=1 uv run --frozen pytest -q
+```
+
+当前 150 项全量验证通过（含 11 项真实 PG/MySQL/中央 HTTP），见 [S5B 验收](../docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。测试只新增本项目合成数据，保留 `.local/s5b-*.json` 归属记录，不调用任何真实模型。执行入口未暴露为用户 API；不接受用户 threadId，不支持子图、历史回放或删除。

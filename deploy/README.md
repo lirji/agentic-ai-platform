@@ -122,3 +122,17 @@ S1 的身份、时间、幂等键与 revision 记录受理；S3 通过 `knowledg
 `ai-runtime/.venv/bin/python deploy/task_smoke.py` 验证真实网关、三类签名身份、输入拒绝、任务/事件/完成幂等；保存 `.local/s5a-http-state.json` 以便中断后先核对原任务，不能删除该文件后盲目重做未知结果。完成后重启本项目 tasks，再运行同脚本 `--restart-check`。`deploy/task_fault_smoke.py` 仅启动临时故障进程 28097/29097，连接不可达地址验证 503 与 readiness DOWN，不中断共享 DB；测试结束终止自己创建的子进程。
 
 MySQL V1 已在两个任务库应用，后续必须新增迁移；任务及事件暂不自动清理，生产保留期和删除传播另行确认。SSE 使用持久事件有界批次，携带游标重连，断线不会新建任务或重置预算。PostgreSQL 准备写、中央凭据提交与真实 LangGraph 恢复在 S5B 接入并验证。
+
+## PG 检查点恢复（S5B）
+
+`python3 deploy/local.py init-checkpoints` 复用 `dev-infra-postgres16-1`（16.15 / 127.0.0.1:45432），仅创建本项目 `agentic_checkpoints` / `agentic_checkpoints_test` 与各自 app/migrate 角色。所有权和随机密码存 `.local/checkpoints.json`（0600），无记录不接管同名资源。原生迁移由迁移身份运行，平台 V1 补齐全部表列中文注释和不可变保护，摘要写入账本；已应用迁移不得改写。应用无 DDL/DELETE 权限，两个项目库各自撤销 PUBLIC CONNECT。
+
+先运行 `uv sync --frozen` 安装匹配的 psycopg binary/pool，再启动 tasks。项目根目录执行：
+
+```bash
+AGENTIC_CHECKPOINT_IT=1 ai-runtime/.venv/bin/pytest ai-runtime/tests/test_task_checkpoints_integration.py -q
+```
+
+这 11 项真实测试每次创建专用合成租户/任务，记录 `.local/s5b-*.json`；不会触发模型或删除数据。其中租约故障只修改自己的合成任务行，不停共享 MySQL/PG。连接池、statement 时限、应用权限、重复迁移、并发接管、丢失响应、中央终态和解码拒绝均已验证。结果见 [S5B TEST_RESULT](../docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。
+
+当前没有常驻图 worker；`run_claimed_graph` 是供后续业务装配的执行入口。PG 准备写可能留下孤立旧分支，但恢复只认中央凭据。生产保留期、备份恢复和容量另行落实；本轮保留数据与私密记录。

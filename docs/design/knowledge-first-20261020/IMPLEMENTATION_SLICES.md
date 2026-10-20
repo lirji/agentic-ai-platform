@@ -19,9 +19,17 @@ S1 已追加知识受理/查询的一致性审查与冻结契约，见下文。�
 | S2 | Knowledge 客户端经独立服务身份调用 Python，取得有来源定位和真实向量的版本化准备结果及查询向量 | S0/S1；PROCESSING_CONTRACTS P01/P02；模型账号/地域/1 元授权已确认 | backend：ai-runtime；runtime：deploy 本地 AI 启动/私密配置；docs：既有设计/QA | Python 只计算准备结果，不写 Knowledge/检索存储；无业务迁移 | no；首次跨语言准备契约 | 下列 S2-AC | 已选三框架、PyJWT RSA 验签、真实百炼；服务密钥独立 | DONE |
 | S3 | 上传资料经持久 worker、真实准备及双索引发布为 READY；所有者可检索、引用及按原输入重试 | S2；PROCESSING_CONTRACTS S3 与 K03/K04 | backend：knowledge-service、必要 API；ai-runtime 仅本机预算护栏；runtime：deploy 独立搜索与验证；docs：权威设计/QA | Knowledge V2/V3、准备对象、双索引；不修改已应用迁移 | no | 下列 S3-AC | 现有 MySQL/S3/AI；独立 Qdrant 1.19.2、ES 8.19.23 smartcn | DONE |
 
+### S5B：PG 检查点与中央恢复（DONE）
+
+- 依赖 S5A DONE；边界见 [CHECKPOINT_CONTRACTS](CHECKPOINT_CONTRACTS.md)，150 项 Python（含 11 项真实集成）和质量/构建检查通过，见 [TEST_RESULT](../../qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。这是原 S5 问答路线中的恢复前置，后续会话/模型/UI 继续按各自正式契约推进。
+- 允许路径：ai-runtime 受控任务客户端、Checkpointer、配置/测试/必要驱动 extra；deploy 项目 PG 初始化及平台 SQL；设计/QA。不改 S5A 已应用 V1，不迁移旧业务数据，不启用真实聊天。
+- 人工一致性检查：中央仍为唯一租约/结果权威；PG 只保存图执行快照，孤立写不可见于恢复。官方 saver 原生结构保留，支持范围与未覆盖子图/DeltaChannel 显式拒绝。
+- 验收：CHECKPOINT_CONTRACTS 末节全部真实跨库、并发、指纹、未知响应和权限项目；Python 锁/类型/格式/测试、Code Hygiene、文档/Git。
+- Runtime：现有中央任务 + 独立项目 PG16 逻辑库，4 连接有界池；当前使用受控测试图，无付费模型、常驻新 worker 或前端改动。
+
 ### S5A：持久 AI 任务（DONE）
 
-- 依赖 S4 DONE；[T01](TASK_CONTRACTS.md) 已完成中央任务部分的一致性审查。S5A 已通过真实验收，见 [TEST_RESULT](../../qa/durable-ai-tasks-20261020/TEST_RESULT.md)；PG Checkpointer 和问答仍属 S5B。
+- 依赖 S4 DONE；[T01](TASK_CONTRACTS.md) 已完成中央任务部分的一致性审查。S5A 已通过真实验收，见 [TEST_RESULT](../../qa/durable-ai-tasks-20261020/TEST_RESULT.md)；PG Checkpointer 由 S5B 验收，问答继续后续切片。
 - 允许路径：async-task-service、必要 platform-security/edge-gateway 路由、根 Maven；runtime 的 deploy/task_local.py、独立 MySQL dev/test；当前设计和 QA。保留知识服务已应用迁移与既有数据。
 - API 由 T01 冻结；中央 MySQL 短事务 + Mapper XML，不引入第二执行图、内存权威、MQ 或未用的调度平台。
 - 验收：T01 末节真实数据库/HTTP/重启项目，以及 Maven 构建、必要单元/集成测试、Code Hygiene、文档与 Git 交付。中央凭据只是联合 fencing 的一部分，完整 PG 恢复在 S5B 验证。
@@ -110,4 +118,4 @@ S1 不包含处理 worker、向量发布、问答或页面；完成后继续细�
 | 6 | 研究分析及业务助手 | Deep Agents 工具边界、累计预算、多 worker 恢复/取消、报告制品与 UI；写工具另定契约 |
 | 7 | 知识转换完善及 AgentScope 参考业务扩展 | 前述知识闭环验收，逐项业务需求和迁入边界明确 |
 
-S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。S4 与 S5A 已验收；下一步为 PG 检查点与问答执行，Q 契约冻结后继续。可并行集合：无；未授权多个 Agent 并行写入。前端仓库创建和真实模型调用在对应阶段落实，不由本片验收替代。
+S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。S4、S5A 与 S5B 已验收；下一步为问答执行，Q 契约冻结后继续。可并行集合：无；未授权多个 Agent 并行写入。前端仓库创建和真实模型调用在对应阶段落实，不由本片验收替代。

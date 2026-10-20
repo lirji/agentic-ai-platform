@@ -2,16 +2,19 @@
 
 ## 当前任务：持久 AI 任务与知识问答
 
-- 标识：`durable-ai-tasks-20261020`，继承用户“继续后续的实施”；完整目标仍为知识、问答、研究及只读助手。
-- 当前：S0–S4 DONE。后端 main `2cefd2267fc3cd82c5f2d8276dee63523a3152b1`、前端私有 main `51dc652f1734586d8fb0fe38e1175f3d246622b9` 已推送并核对。任务分支 `feat/durable-ai-tasks-20261020`，原目录、无新 worktree。
-- 当前切片 S5A：DONE，T01 中央任务、租约、事件、检查点凭据与终态对账实现及验收通过；Git 交付中。随后 S5B 连接 PG/LangGraph/LlamaIndex/聊天，S5C 问答 UI；再继续研究和助手。只有当前可执行切片冻结，后续不冒充已完成。
+- 标识：`ai-checkpoint-recovery-20261021`，继承用户“继续后续的实施”；完整目标仍为知识、问答、研究及只读助手。
+- 当前：S0–S5B DONE（S5B 验收通过，正在文档/Git 交付）。后端 main `a7c245b0180b39d9e49574f0fc0ad3f2957de17d`、前端私有 main `51dc652f1734586d8fb0fe38e1175f3d246622b9` 已推送并核对。任务分支 `feat/ai-checkpoint-recovery-20261021`，原目录、无新 worktree。
+- 当前切片：S5B PostgreSQL Checkpointer 与中央凭据恢复已通过验收。文档/Git 后立即冻结 Q01–Q03 并实现带引用问答/聊天预算及 UI，最后研究与助手。后续实现尚未开始，不冒充已完成。
 - 模型：Embedding 保守累计预留 0.16 / 1 元，16 批；聊天 0 / 1 元。原 DeepSeek 账号 GET /models 返回 200，只有 deepseek-flash / deepseek-v4-pro。原 deepseek-chat 已停用，已异步请求确认改用 deepseek-flash；答复前不发聊天请求，继续无模型依赖实现。GET 模型清单未生成内容。
 - 业务助手无另行场景答复，采用既有 BRIEF 只读资料解释/清单/草稿建议，不接外部写操作。
-- 工作清单：①–④ S5A 契约/实现/Runtime/验收已通过；⑤文档/Git 收尾；⑥继续 PG Checkpointer 实现与联合 fencing 验证，再接 Q 问答/前端与研究助手。当前聊天替代模型待答复，不阻止无模型依赖工作。
-- 当前代码：S5A 验收通过：29 项 Maven（含 15 项真实 MySQL）、38 项真实 HTTP、2 项重启、3 项数据库故障断言；Code Hygiene COMPLETE_WITH_LIMITATIONS（无 Java formatter，Python 配置显式检查）。证据 docs/qa/durable-ai-tasks-20261020/TEST_RESULT.md，最终源码摘要 4b78da72e2cc443f01f1b1d8b77295714c01e774999861054763fcd76fd6116b。任务 V1 已在 dev/test 应用，禁止改写；独立任务数据库/三套验签身份已配置。Gateway 28080、Knowledge 28084、AI 28085、Web 28086、Tasks 28087 运行。PG 16.15 仍只读核对，尚未创建项目资源。
+- 工作清单：①–⑤ S5A 已交付；⑥ PG 恢复、真实联合 fencing、资源/安全/回归已通过；⑦正在文档/Git，随后接 Q 问答/前端与研究助手。当前聊天替代模型待答复，不阻止无模型依赖工作。
+- 当前代码：S5A 验收通过：29 项 Maven（含 15 项真实 MySQL）、38 项真实 HTTP、2 项重启、3 项数据库故障断言；Code Hygiene COMPLETE_WITH_LIMITATIONS（无 Java formatter，Python 配置显式检查）。证据 docs/qa/durable-ai-tasks-20261020/TEST_RESULT.md，最终源码摘要 4b78da72e2cc443f01f1b1d8b77295714c01e774999861054763fcd76fd6116b。任务 V1 已在 dev/test 应用，禁止改写；独立任务数据库/三套验签身份已配置。Gateway 28080、Knowledge 28084、AI 28085、Web 28086、Tasks 28087 运行。
+- S5B 验证通过：[TEST_RESULT](../../qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)；150 项 Python（113 既有、26 新单元、11 真实集成）、Ruff 39 文件、mypy 27 源码、sdist/wheel 通过，Code Hygiene COMPLETE_WITH_LIMITATIONS（根级发现限制，已显式 Ruff）。16 个源码/配置/测试摘要 `ac908dae32672abbca2c887ea7f640c1ab59644e33606b9e225228c9c98a9e4d`。真实并发接管、孤立 PG 写、丢失响应、最终快照和中央终态不重跑、不可变内容、指纹先行、安全解码、池界限与取消均通过。日志 .logs/s5b-python-final.log / s5b-build-final.log；没有进行中的测试/模型任务。
+- S5B Runtime：新增匹配驱动 psycopg-binary 3.3.6；PG16.15 本项目 agentic_checkpoints / agentic_checkpoints_test 和各自 app/migrate 角色，原生迁移 0–9、平台 V1 已应用且不可改写；中文表列注释、不可变触发器和权限已核验。首次组合 DDL 预编译限制、严格 msgpack 降级为 dict、跨语言状态命名与 CLI 构建参数失败均已修正并留证，未删除/重置。必须保留 .local/checkpoints.json / s5b-*.json；新增恢复库不等于常驻问答 worker 已运行。
+- 下一具体操作：核对文档和暂存源码摘要，正常合并推送本片后开始 Q 契约与会话/任务交接。保留全部测试数据和忽略资源记录，无模型费用变化。
 - 授权：沿既有计划本地实施、隔离共享基础设施资源、必要模型联调；验证后正常合并推送 main，未授权生产部署。凭据/预算/恢复记录继续保留于忽略 .local，不进入检查点。
 - 规范：backend-implementation、implementation-slicing、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；已读架构业务建模/事务/接口/并发/容量/发布，个人线程与追踪规范。技能 Runtime 漂移仍按手工专业 pass 留证，不修全局文件。
-- 恢复：先核对本节、T01 契约、切片和 Git/实际进程。S5A 不声称已完成 PostgreSQL 联合 fencing；PG 写入与中央提交凭据的真实恢复由 S5B 验证。
+- 恢复：先核对本节、T01/CHECKPOINT_CONTRACTS、切片、Git 和实际进程。S5B 只支持根图完整快照，45 秒/32 步，恢复依据中央凭据；不声称物理无孤立行、模型 exactly-once、生产容量或备份恢复已验证。
 
 ## 历史：S4 知识工作台交付
 

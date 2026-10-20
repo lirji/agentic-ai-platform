@@ -372,13 +372,18 @@ def main() -> None:
             "stop-ai",
             "init-search",
             "init-tasks",
+            "init-checkpoints",
             "stop-search",
         ],
     )
     parser.add_argument("--service", choices=SERVICES)
     parser.add_argument("--reference-env", type=Path, help="已获授权的来源模型环境文件")
     args = parser.parse_args()
-    if args.command == "init-tasks":
+    if args.command == "init-checkpoints":
+        import checkpoint_local
+
+        checkpoint_local.init()
+    elif args.command == "init-tasks":
         import task_local
 
         task_local.init()

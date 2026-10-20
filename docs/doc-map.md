@@ -1,10 +1,10 @@
 # 文档来源映射
 
-同步日期：2026-10-20。
+同步日期：2026-10-21。
 
-本项目已有 `ai-runtime/` 基础代码及 Java Gateway/Knowledge 四模块。知识资料受理与查询按参考规则独立实现，旧数据和旧部署未迁入；以下原项目映射仍是固定取证证据。
+本项目已有 Python AI 运行时与独立 Java Gateway/Knowledge/Tasks 服务。知识资料和中央任务按参考规则独立实现，旧数据和旧部署未迁入；以下原项目映射仍是固定取证证据。
 
-本轮同步基线 `3b3674613c138f89e902265b5b634e06de5aba6d` → S3 工作树：Java 租约处理、不可变准备、双索引与 K03/K04，Python 本机预算护栏，以及独立搜索 Runtime 同步至契约、选型与运行说明。当前验收状态见唯一进度；S2 历史三框架与真实模型证据保留于 [S2 验收](qa/knowledge-processing-20261020/TEST_RESULT.md)。
+本轮同步基线 `a7c245b0180b39d9e49574f0fc0ad3f2957de17d` → S5B 工作树：Python 中央协议、PG 不可变快照与恢复、匹配 binary 驱动、分权初始化及真实验收同步至契约/选型/运行说明。[S5B 证据](qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)绑定实际源码；S2 历史三框架与真实模型证据仍保留于 [S2 验收](qa/knowledge-processing-20261020/TEST_RESULT.md)，当前验收和交付状态见唯一进度。
 
 ## 权威文档
 

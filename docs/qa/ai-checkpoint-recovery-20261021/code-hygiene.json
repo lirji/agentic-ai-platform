@@ -1,0 +1,219 @@
+{
+  "protocol": "code-hygiene-gate/v1",
+  "finalStatus": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "checks": [
+    {
+      "checkId": "FORMAT",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "command passed"
+    },
+    {
+      "checkId": "STATIC_ANALYSIS",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "command passed"
+    },
+    {
+      "checkId": "CODE_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "REPO_CONVENTION",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "DIFF_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "COMPILE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    },
+    {
+      "checkId": "UNIT_TEST",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    }
+  ],
+  "limitations": [
+    {
+      "code": "FORMAT_TOOL_NOT_AVAILABLE",
+      "check": "FORMAT"
+    }
+  ],
+  "findings": [
+    {
+      "findingId": "HF-001",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/tasks/checkpointer.py",
+      "line": 27,
+      "excerpt": "MAX_PENDING_WRITES = 100",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-002",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/tasks/client.py",
+      "line": 23,
+      "excerpt": "MAX_RESPONSE_BYTES = 256 * 1024",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-003",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/tasks/client.py",
+      "line": 24,
+      "excerpt": "MAX_PRIVATE_KEY_BYTES = 16384",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-004",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/tasks/execution.py",
+      "line": 17,
+      "excerpt": "MAX_EXECUTION_SECONDS = 45",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-005",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/tasks/execution.py",
+      "line": 18,
+      "excerpt": "MAX_GRAPH_STEPS = 32",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-006",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/tasks/models.py",
+      "line": 66,
+      "excerpt": "thread_id: str = Field(max_length=80)",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-007",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/tasks/postgres.py",
+      "line": 20,
+      "excerpt": "MAX_METADATA_BYTES = 8192",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-008",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/tasks/postgres.py",
+      "line": 96,
+      "excerpt": "\"options\": \"-c statement_timeout=3000 -c lock_timeout=3000\",",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-009",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/checkpoint_local.py",
+      "line": 83,
+      "excerpt": "options=\"-c statement_timeout=10000 -c lock_timeout=3000\",",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    }
+  ],
+  "report": [
+    {
+      "area": "Repository conventions",
+      "status": "PASS"
+    },
+    {
+      "area": "Formatting",
+      "status": "PASS"
+    },
+    {
+      "area": "Error-code governance",
+      "status": "PASS"
+    },
+    {
+      "area": "Enum/domain modeling",
+      "status": "PASS"
+    },
+    {
+      "area": "Magic value inspection",
+      "status": "PASS_WITH_ADVISORY"
+    },
+    {
+      "area": "Exception handling",
+      "status": "PASS"
+    },
+    {
+      "area": "Validation",
+      "status": "NOT_AUTOMATED"
+    },
+    {
+      "area": "Logging",
+      "status": "PASS"
+    },
+    {
+      "area": "Transaction review",
+      "status": "N/A"
+    },
+    {
+      "area": "Static analysis",
+      "status": "PASS"
+    },
+    {
+      "area": "Compilation",
+      "status": "PASS"
+    },
+    {
+      "area": "Tests",
+      "status": "PASS"
+    },
+    {
+      "area": "Diff hygiene",
+      "status": "PASS"
+    }
+  ],
+  "canonicalCommands": {
+    "FORMAT": {
+      "status": "NO_FORMATTER",
+      "limitation": "FORMAT_TOOL_NOT_AVAILABLE",
+      "resolutionLevel": "SURROUNDING_SOURCE_STYLE"
+    },
+    "STATIC_ANALYSIS": {
+      "status": "NOT_CONFIGURED"
+    }
+  }
+}
