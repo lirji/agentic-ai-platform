@@ -3,7 +3,7 @@
 - 当前任务：`knowledge-runtime-foundation-20261020`；已固化独立知识平台约定，继续实施准备与首个代码切片 S0。
 - 当前唯一状态与恢复入口：[独立知识平台准备进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 - 业务与交付基线：[首期约定](docs/design/knowledge-first-20261020/BRIEF.md)；架构与选型继续在原权威文档维护。
-- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`。D0 已交付 `44ffff5`；当前分支 `feat/knowledge-runtime-foundation-20261020`，S0 验证通过、待 Git 交付；无运行中服务。
+- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`。D0 `44ffff5`、S0 `1634605` 已验证并合并推送 main；本批完成，收尾记录沿同一任务分支交付；无运行中服务。
 - 上一任务：[选型与迁移进度](docs/design/platform-selection-20261020/PROGRESS_STATE.md)，已完成；保留历史事实与证据。
 
 ## 前期可行性任务记录

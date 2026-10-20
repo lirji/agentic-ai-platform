@@ -12,9 +12,9 @@
 
 ## 当前状态
 
-- `DELIVERING`：`D0` 已验证并交付；React 架构、首片 R01/H01 契约与实施切片已写入。S0 的 68 项本地测试、格式/静态/类型、构建与必需独立验收通过，代码卫生无阻断项；剩余文档检查与 Git 交付。
+- `COMPLETED`（本批）：准备基线、React 架构、首片 R01/H01 契约与实施切片已完成；S0 开始 Coding 并通过必需验收，代码已交付。完整知识业务、真实模型联调与 React 页面仍属后续路线，不代表全平台完成。
 - 工作目录：`/Users/liruijun/personal/LLM/agentic-ai-platform`。
-- 分支：`feat/knowledge-runtime-foundation-20261020`；当前提交 `44ffff58bf6eb63beede27bf08644ba4015b9b01`，与已核对的远程 main 一致。原有 `.idea/` 保留并加入忽略，不提交。
+- 任务分支：`feat/knowledge-runtime-foundation-20261020`；代码提交 `1634605c03a685801e3a113e0911229e6e7655c9`，已正常合并并推送 main，`ls-remote` 核对一致。收尾进度记录沿同一分支追加提交后回到 main；最新文档提交以 Git 为准。原有 `.idea/` 保留并忽略，不提交。
 - 参考基线：`langchain4j-platform@468cec425dd160e80cfc3ab378d3440a8767e4d5`、`platform-agentscope@7738cb7bedd1a31fd4260aa66b74572ca48d9ade`；只读参考，不修改源项目。
 
 ## 任务清单
@@ -27,7 +27,7 @@
 6. 已完成：`FRONTEND_ARCHITECTURE.md`、`CONTRACTS.md` 与 `IMPLEMENTATION_SLICES.md`。一致性人工审查仅覆盖 S0 / R01 / H01；K/Q/T 业务 schema 仍须在后续业务切片前冻结。
 7. 验证通过：`ai-runtime/` Python 包、真实 OpenAI 兼容 Embedding 适配器、有界配置与稳定错误、存活探针和 CLI；根 `.gitignore`。Python 3.12.13、`uv.lock` 已安装锁定；68 项测试包含真实本地 HTTP 进程启动和退出，未调用模型。Ruff、mypy、sdist/wheel 构建均通过。
 8. 验证通过：[S0 独立验收](../../qa/runtime-foundation-20261020/TEST_RESULT.md)，源码摘要 `14914ff75803dac28f28ccf97b3f9be08f3b582d4ad046e38d703f4cf7efb57b`，逐文件及命令证据同目录 `validation.json`。27 个当前平台运行/开发依赖漏洞检查无已知漏洞、无跳过，许可证元数据已保存。Code Hygiene 无阻断项，工具发现限制保留。
-9. 待完成：文档链接/差异检查、核对源码摘要后提交，正常合并和推送，再记录交付结果。
+9. 已交付：文档链接/锚点、表格、围栏与 diff 检查通过，结果见 [文档验证](../../qa/runtime-foundation-20261020/document-validation.json)。暂存区 20 个源码/测试/配置摘要与验证完全一致；仅本任务 37 个文件进入代码提交 `1634605`，已正常 fast-forward 合并、推送并核对远程 main。
 
 ## 恢复与边界
 
@@ -41,7 +41,8 @@
 - S0 验证调整：初次格式/静态检查与追加测试中的超长行已修正；TestClient 弃用警告改用现有 HTTPX ASGITransport 消除。复核补齐安全异常上下文、空 query/fragment、非序列输入等拒绝后，最终 68 项无警告通过。详细失败、修正及工具限制见 TEST_RESULT。
 - 公共 Runtime：`entry.py resolve` 返回 `MULTI_CLIENT_DRIFT_BLOCKED`（`frontend-design/SKILL.md` CORE_DRIFT 和 scan-input MANIFEST_DRIFT），未创建受治理 Run、未改全局技能/指纹；依据 public-engineering-workflow 的手工路由兼容规则，按已读取专业技能和原有用户授权逐项执行，保留人工 Gate/验证，不能宣称机器 Runtime 通过。
 - 修改范围：`ai-runtime/`、`.gitignore`、当前设计/契约/切片与进度、README/索引/来源映射、选型中的 S0 运行证据、`docs/qa/runtime-foundation-20261020/`；没有修改参考仓库或全局技能。
-- 下一步：完成本批交付。本批结束后的业务入口为知识领域迁入依赖盘点、完整 K01–K04 契约与 S1；真实模型账号调用、知识链路、数据库迁移与 React 页面尚未执行，不计入本片通过范围。
+- 目录保留：未创建额外 worktree；`.idea/` 属用户文件。忽略的 `.venv/` 用于继续开发，`.logs/` 保存本地验证输出，`dist/` 及 Ruff/mypy/pytest/Python 缓存可在不需要复现时清理，本次保留且未执行删除。两个参考仓库最终仍干净。
+- 后续业务入口：知识领域迁入依赖盘点、完整 K01–K04 契约与 S1；随后真实存储/Embedding 集成、独立 React 知识路径及 Q/T 契约。真实模型账号调用、知识链路、数据库迁移与 React 页面尚未执行，不计入本片通过范围。
 
 ## 历史入口
 
