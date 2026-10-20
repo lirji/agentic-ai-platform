@@ -2,7 +2,9 @@
 
 版本：`v1-foundation`，2026-10-20。依据：[首期约定](BRIEF.md)、[后端架构](../platform-selection-20261020/BACKEND_ARCHITECTURE.md)、[React 设计](FRONTEND_ARCHITECTURE.md)。
 
-本文件是新项目的契约权威。**R01、H01 是当前首片可执行契约；K/Q/T 是已识别的业务契约族及迁入约束，需要在对应实施切片前冻结完整 schema。** 不把未来 API 清单冒充已经实现或已完成联调。
+本文件是新项目的契约权威。**R01/H01 与首批知识受理/查询契约已冻结；其余 K/Q/T 仍需在对应实施切片前冻结完整 schema。** 不把未来 API 清单冒充已经实现或已完成联调。
+
+后续知识契约细化见 [KNOWLEDGE_CONTRACTS](KNOWLEDGE_CONTRACTS.md)：S1 已冻结 K01 受理、K02 资料查询、K03 状态查询及身份/错误边界；K03 重试、K04 处理/发布细节仍随对应切片补齐。此增补不改变 R01/H01。
 
 ## 1. 通用约定
 

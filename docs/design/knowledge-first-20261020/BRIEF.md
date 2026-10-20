@@ -57,11 +57,11 @@
 | 通用代码规则 | 中文原因注释、稳定状态 code、统一错误码及提示、配置化参数；按实际路径落实权限、幂等、取消与恢复 | 用户规范、前后端实现技能 |
 | 交付 | 正式契约 → 有界纵向切片 → 实现 → 独立验证 → 进度 → Git；运行组件在首次需要时接入 | `implementation-slicing`、`implementation-validation`、`runtime-and-deploy`、`task-git-delivery` |
 
-技能定义职责和依赖方向，具体目录见 [前端架构](FRONTEND_ARCHITECTURE.md)与[实施切片](IMPLEMENTATION_SLICES.md)。`ai-runtime/` 已实现首片所需 `rag`、`adapters`、`runtime`、`api` 和 CLI；尚未创建前端仓库、Java 服务或无当前用例的空模块。
+技能定义职责和依赖方向，具体目录见 [前端架构](FRONTEND_ARCHITECTURE.md)与[实施切片](IMPLEMENTATION_SLICES.md)。`ai-runtime/` 已实现基础 `rag`、`adapters`、`runtime`、`api` 和 CLI；S1 已建立 `platform-contracts`、`platform-security`、`knowledge-service`、`edge-gateway`。前端独立仓库尚未创建，不为无当前用例的能力建立空模块。
 
 ## 5. 已核对的参考资产
 
-Java 来源固定为 `lirji/langchain4j-platform@468cec425dd160e80cfc3ab378d3440a8767e4d5`。下列内容仅做只读核对，未迁入代码、执行脚本、连接实例或调用模型。
+Java 来源固定为 `lirji/langchain4j-platform@468cec425dd160e80cfc3ab378d3440a8767e4d5`。下表保留前期只读资产核对结果；S1 已按[迁入清单](KNOWLEDGE_MIGRATION.md)独立实现所需规则并建立本项目存储资源。没有执行旧数据导入、复用旧业务服务或调用真实模型。
 
 | 资产 | 已核对事实 | 迁入用途及限制 |
 | --- | --- | --- |

@@ -2,13 +2,13 @@
 
 同步日期：2026-10-20。
 
-本项目已新增 `ai-runtime/` 基础代码。以下原项目映射仍只代表参考证据；Java 业务代码、数据和旧部署尚未迁入新项目。
+本项目已有 `ai-runtime/` 基础代码及 Java Gateway/Knowledge 四模块。知识资料受理与查询按参考规则独立实现，旧数据和旧部署未迁入；以下原项目映射仍是固定取证证据。
 
 ## 权威文档
 
 - 当前需求：[首期业务与工程约定](design/knowledge-first-20261020/BRIEF.md)；当前进度：[准备与实施进度](design/knowledge-first-20261020/PROGRESS_STATE.md)。
 - 当前设计：[目标架构](design/platform-selection-20261020/BACKEND_ARCHITECTURE.md)、[技术与组件选型](design/platform-selection-20261020/TECH_SELECTION.md)。
-- 实施依据：[React 架构](design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md)、[契约](design/knowledge-first-20261020/CONTRACTS.md)、[切片](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md)；已实现入口：[AI 运行时](../ai-runtime/README.md)。
+- 实施依据：[React 架构](design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md)、[契约](design/knowledge-first-20261020/CONTRACTS.md)、[知识契约](design/knowledge-first-20261020/KNOWLEDGE_CONTRACTS.md)、[切片](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md)；已实现入口：[AI 运行时](../ai-runtime/README.md)、[Java 本地运行](../deploy/README.md)。
 - 前期分析：[AI 平台升级可行性分析](feasibility/AI平台升级可行性分析.md)。
 - 历史选型证据与状态：[证据目录](design/platform-selection-20261020/evidence/README.md)、[选型迁移进度](design/platform-selection-20261020/PROGRESS_STATE.md)。
 - 文档入口：[文档索引](README.md)。
@@ -45,8 +45,9 @@
 | 候选版本与解析 | 技术选型第 2 节、evidence | Python 3.12 / Linux x86_64 元数据解析；未安装、未启动、未调用模型 |
 | 独立性、React、知识优先与技能代码组织 | 首期约定第 1–4 节、React 架构 | 用户已确认；Python 基础运行时已创建，前端工程尚未创建 |
 | S0 真实 Embedding 与本地存活服务 | CONTRACTS R01/H01、ai-runtime 源码与测试、S0 验证结果 | 68 项本地测试通过；HTTPX 模型协议替身不能证明真实语义效果 |
+| S1 知识资料受理与查询 | KNOWLEDGE_CONTRACTS、KNOWLEDGE_MIGRATION、Java 四模块、deploy | 独立网关 JWT、MyBatis XML/Flyway、项目 MySQL/S3；当前状态和真实测试证据见进度 |
 | 模型、数据模型和评测资产 | 首期约定第 5 节、选型第 5 节 | 固定提交只读核对：模型路由、知识迁移、200 条不同合成问题、20 条语料记录、20 条 Agent 目标及 1 条冒烟 case |
-| 阶段顺序与剩余风险 | 目标架构第 9–10 节、实施切片与当前进度 | P0–P4 按知识优先更新；迁入依赖清单、K/Q/T schema、SLA 与预算待细化 |
+| 阶段顺序与剩余风险 | 目标架构第 9–10 节、实施切片与当前进度 | P0–P4 按知识优先推进；处理/发布、Q/T schema、SLA 与模型预算待落实 |
 
 ## 能力与来源对应
 

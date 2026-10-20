@@ -1,0 +1,55 @@
+CREATE TABLE knowledge_document (
+    document_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '服务器生成的文档标识',
+    tenant_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '已验证身份所属租户',
+    owner_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '资料所有者用户标识',
+    display_name VARCHAR(200) NOT NULL COMMENT '用户可见资料名称，不参与对象存储路径',
+    version BIGINT NOT NULL COMMENT '当前受理版本，从一开始',
+    published_version BIGINT NULL COMMENT '已发布可检索版本，未发布为空',
+    status VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '稳定资料状态编码',
+    content_type VARCHAR(64) CHARACTER SET ascii NOT NULL COMMENT '服务端规范化的原文媒体类型',
+    size_bytes BIGINT NOT NULL COMMENT '原文实际字节数',
+    content_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '原文SHA256完整性摘要，不是语义向量',
+    ingestion_job_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '当前版本对应持久入库任务',
+    created_at DATETIME(6) NOT NULL COMMENT 'UTC创建时间',
+    updated_at DATETIME(6) NOT NULL COMMENT 'UTC最近状态变更时间',
+    PRIMARY KEY (document_id),
+    UNIQUE KEY uk_document_scope (tenant_id, owner_id, document_id),
+    UNIQUE KEY uk_document_owner_content (tenant_id, owner_id, content_hash),
+    CONSTRAINT ck_document_version CHECK (version >= 1),
+    CONSTRAINT ck_document_size CHECK (size_bytes > 0),
+    CONSTRAINT ck_document_status CHECK (status IN ('RECEIVED', 'PROCESSING', 'READY', 'FAILED')),
+    CONSTRAINT ck_document_publication CHECK (
+        status <> 'READY' OR (published_version IS NOT NULL AND published_version = version)
+    )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='项目独立知识资料与可检索版本权威';
+
+CREATE TABLE knowledge_ingestion (
+    job_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '服务器生成的持久任务标识',
+    tenant_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '已验证身份所属租户',
+    owner_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '受理任务所有者',
+    document_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '本事务创建的资料标识',
+    document_version BIGINT NOT NULL COMMENT '原任务绑定的文档版本',
+    idempotency_key VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '所有者范围内的提交编号',
+    request_fingerprint CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '展示名格式与原文摘要绑定的请求指纹',
+    source_bucket VARCHAR(63) CHARACTER SET ascii NOT NULL COMMENT '服务器配置的项目原文桶',
+    source_key VARCHAR(512) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '服务器生成的隔离内容寻址键',
+    content_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '原文SHA256摘要',
+    content_type VARCHAR(64) CHARACTER SET ascii NOT NULL COMMENT '规范化原文媒体类型',
+    size_bytes BIGINT NOT NULL COMMENT '原文实际字节数',
+    status VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '持久任务状态编码',
+    stage VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '可观察的处理阶段编码',
+    error_code VARCHAR(64) CHARACTER SET ascii NULL COMMENT '最近失败的安全稳定错误码',
+    retryable BOOLEAN NOT NULL DEFAULT FALSE COMMENT '当前失败是否允许按原输入恢复',
+    retry_count INT NOT NULL DEFAULT 0 COMMENT '已接受的显式重试次数',
+    revision BIGINT NOT NULL DEFAULT 0 COMMENT '任务乐观并发修订号',
+    created_at DATETIME(6) NOT NULL COMMENT 'UTC受理时间',
+    updated_at DATETIME(6) NOT NULL COMMENT 'UTC最近状态变更时间',
+    PRIMARY KEY (job_id),
+    UNIQUE KEY uk_ingestion_idempotency (tenant_id, owner_id, idempotency_key),
+    UNIQUE KEY uk_ingestion_document_version (tenant_id, owner_id, document_id, document_version),
+    CONSTRAINT fk_ingestion_document FOREIGN KEY (tenant_id, owner_id, document_id)
+        REFERENCES knowledge_document (tenant_id, owner_id, document_id),
+    CONSTRAINT ck_ingestion_counters CHECK (document_version >= 1 AND retry_count >= 0 AND revision >= 0),
+    CONSTRAINT ck_ingestion_status CHECK (status IN ('RECEIVED', 'PROCESSING', 'READY', 'FAILED')),
+    CONSTRAINT ck_ingestion_stage CHECK (stage IN ('ACCEPTED', 'PREPARING', 'PUBLISHING', 'COMPLETE'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='知识资料可靠受理任务与幂等权威';

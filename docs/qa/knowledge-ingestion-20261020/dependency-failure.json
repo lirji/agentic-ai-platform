@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "checks": [
+    "liveness stays UP",
+    "readiness returns safe 503",
+    "upload returns storage unavailable",
+    "no document",
+    "no task"
+  ],
+  "tenant": "fault-8f97c507bed94f7c8cc2a542e1719ffc",
+  "sharedServicesChanged": false
+}

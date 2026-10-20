@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-20",
+  "status": "PASS",
+  "markdownFiles": 16,
+  "localLinksAndAnchors": 114,
+  "tableRows": 389,
+  "sourceHashesVerified": 54,
+  "candidateFilesCheckedForActualLocalSecrets": 115,
+  "errors": []
+}

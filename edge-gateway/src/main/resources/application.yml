@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: agentic-edge
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: knowledge
+              uri: ${KNOWLEDGE_SERVICE_URL:http://127.0.0.1:28084}
+              predicates:
+                - Path=/api/v1/knowledge/**
+          httpclient:
+            connect-timeout: 2000
+            response-timeout: 20s
+            pool:
+              type: fixed
+              max-connections: 32
+              acquire-timeout: 2000
+          forwarded:
+            enabled: false
+          x-forwarded:
+            enabled: false
+server:
+  address: ${GATEWAY_BIND_ADDRESS:127.0.0.1}
+  port: ${GATEWAY_PORT:28080}
+  shutdown: graceful
+  netty:
+    connection-timeout: 5s
+    idle-timeout: 30s
+gateway:
+  identity:
+    issuer: ${IAM_ISSUER}
+    audience: ${IAM_AUDIENCE}
+    tenant-claim: ${IAM_TENANT_CLAIM:tenant_id}
+    external-public-key: ${IAM_PUBLIC_KEY}
+    internal-public-key: ${INTERNAL_PUBLIC_KEY}
+    internal-private-key: ${INTERNAL_PRIVATE_KEY}
+management:
+  server:
+    address: 127.0.0.1
+    port: ${GATEWAY_MANAGEMENT_PORT:29080}
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLE_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      export:
+        enabled: ${OTEL_EXPORT_ENABLED:false}
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%thread] %logger{36} trace=%X{traceId:-} span=%X{spanId:-} - %msg%n"

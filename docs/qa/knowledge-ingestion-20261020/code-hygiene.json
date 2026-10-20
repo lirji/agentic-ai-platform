@@ -1,0 +1,274 @@
+{
+  "protocol": "code-hygiene-gate/v1",
+  "finalStatus": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "checks": [
+    {
+      "checkId": "FORMAT",
+      "status": "SKIPPED",
+      "skipReason": "TOOL_NOT_AVAILABLE",
+      "summary": "no canonical formatter; surrounding-style checks passed"
+    },
+    {
+      "checkId": "STATIC_ANALYSIS",
+      "status": "SKIPPED",
+      "skipReason": "NOT_APPLICABLE",
+      "summary": "no static analysis configured in repository"
+    },
+    {
+      "checkId": "CODE_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "REPO_CONVENTION",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "DIFF_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "COMPILE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    },
+    {
+      "checkId": "UNIT_TEST",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    }
+  ],
+  "limitations": [
+    {
+      "code": "FORMAT_TOOL_NOT_AVAILABLE",
+      "check": "FORMAT"
+    }
+  ],
+  "findings": [
+    {
+      "findingId": "HF-001",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/fault_smoke.py",
+      "line": 25,
+      "excerpt": "response = urllib.request.urlopen(request, timeout=15)",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-002",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/fault_smoke.py",
+      "line": 123,
+      "excerpt": "process.wait(timeout=20)",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-003",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/local.py",
+      "line": 46,
+      "excerpt": "result = subprocess.run(args, input=data, env=env, capture_output=True, cwd=ROOT, timeout=90)",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-004",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/smoke.py",
+      "line": 37,
+      "excerpt": "response = urllib.request.urlopen(call, timeout=25)",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-005",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/smoke.py",
+      "line": 250,
+      "excerpt": "for query in (\"limit=0\", \"limit=101\", \"limit=abc\", \"cursor=invalid\"):",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-006",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeService.java",
+      "line": 24,
+      "excerpt": "private static final int MAX_PAGE_SIZE = 100;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-007",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/UploadRules.java",
+      "line": 15,
+      "excerpt": "public static final int MAX_BYTES = 1024 * 1024;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-008",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/UploadRules.java",
+      "line": 16,
+      "excerpt": "public static final int MAX_DISPLAY_NAME = 200;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-009",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlKnowledgeRepository.java",
+      "line": 29,
+      "excerpt": "if (timeoutSeconds < 1 || timeoutSeconds > 10) {",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-010",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlKnowledgeRepository.java",
+      "line": 18,
+      "excerpt": "import org.springframework.transaction.support.TransactionTemplate;",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-011",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlKnowledgeRepository.java",
+      "line": 24,
+      "excerpt": "private final TransactionTemplate transaction;",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-012",
+      "ruleId": "HYG-TRANSACTION-TOUCHED",
+      "check": "CODE_HYGIENE",
+      "area": "transaction",
+      "severity": "ADVISORY",
+      "file": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlKnowledgeRepository.java",
+      "line": 33,
+      "excerpt": "this.transaction = new TransactionTemplate(manager);",
+      "message": "transaction boundary touched: review rollback, remote calls, MQ publication, idempotency and lock scope"
+    },
+    {
+      "findingId": "HF-013",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "platform-security/src/main/java/com/lrj/agentic/security/IdentityProtocol.java",
+      "line": 13,
+      "excerpt": "public static final int INTERNAL_TTL_SECONDS = 60;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    },
+    {
+      "findingId": "HF-014",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "platform-security/src/main/java/com/lrj/agentic/security/IdentityProtocol.java",
+      "line": 14,
+      "excerpt": "public static final int MAX_TOKEN_LENGTH = 8192;",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    }
+  ],
+  "report": [
+    {
+      "area": "Repository conventions",
+      "status": "PASS"
+    },
+    {
+      "area": "Formatting",
+      "status": "SKIPPED:TOOL_NOT_AVAILABLE"
+    },
+    {
+      "area": "Error-code governance",
+      "status": "PASS"
+    },
+    {
+      "area": "Enum/domain modeling",
+      "status": "PASS"
+    },
+    {
+      "area": "Magic value inspection",
+      "status": "PASS_WITH_ADVISORY"
+    },
+    {
+      "area": "Exception handling",
+      "status": "PASS"
+    },
+    {
+      "area": "Validation",
+      "status": "NOT_AUTOMATED"
+    },
+    {
+      "area": "Logging",
+      "status": "PASS"
+    },
+    {
+      "area": "Transaction review",
+      "status": "REVIEW_REQUIRED"
+    },
+    {
+      "area": "Static analysis",
+      "status": "N/A"
+    },
+    {
+      "area": "Compilation",
+      "status": "PASS"
+    },
+    {
+      "area": "Tests",
+      "status": "PASS"
+    },
+    {
+      "area": "Diff hygiene",
+      "status": "PASS"
+    }
+  ],
+  "canonicalCommands": {
+    "FORMAT": {
+      "status": "NO_FORMATTER",
+      "limitation": "FORMAT_TOOL_NOT_AVAILABLE",
+      "resolutionLevel": "SURROUNDING_SOURCE_STYLE"
+    },
+    "STATIC_ANALYSIS": {
+      "status": "NOT_CONFIGURED"
+    }
+  }
+}

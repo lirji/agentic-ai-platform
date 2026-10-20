@@ -1,0 +1,89 @@
+spring:
+  application:
+    name: agentic-knowledge
+  datasource:
+    url: ${KNOWLEDGE_DB_URL}
+    username: ${KNOWLEDGE_DB_USER}
+    password: ${KNOWLEDGE_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: ${KNOWLEDGE_DB_POOL_SIZE:10}
+      minimum-idle: 1
+      connection-timeout: 3000
+      validation-timeout: 1000
+      data-source-properties:
+        connectTimeout: 3000
+        socketTimeout: 5000
+        connectionTimeZone: UTC
+        forceConnectionTimeZoneToSession: true
+  flyway:
+    user: ${KNOWLEDGE_MIGRATION_USER}
+    password: ${KNOWLEDGE_MIGRATION_PASSWORD}
+    clean-disabled: true
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 2MB
+      file-size-threshold: 0
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+server:
+  address: ${KNOWLEDGE_BIND_ADDRESS:127.0.0.1}
+  port: ${KNOWLEDGE_PORT:28084}
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: ${KNOWLEDGE_HTTP_THREADS:64}
+      min-spare: 4
+    max-connections: 128
+    accept-count: 32
+    connection-timeout: 5s
+  error:
+    include-message: never
+    include-stacktrace: never
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    arg-name-based-constructor-auto-mapping: true
+    default-statement-timeout: 5
+  global-config:
+    banner: false
+knowledge:
+  transaction-timeout-seconds: ${KNOWLEDGE_TRANSACTION_TIMEOUT_SECONDS:5}
+  identity:
+    public-key: ${INTERNAL_PUBLIC_KEY}
+  source:
+    endpoint: ${KNOWLEDGE_S3_ENDPOINT}
+    region: ${KNOWLEDGE_S3_REGION:us-east-1}
+    bucket: ${KNOWLEDGE_S3_BUCKET}
+    access-key: ${KNOWLEDGE_S3_ACCESS_KEY}
+    secret-key: ${KNOWLEDGE_S3_SECRET_KEY}
+    max-connections: ${KNOWLEDGE_S3_MAX_CONNECTIONS:10}
+    connect-timeout-seconds: ${KNOWLEDGE_S3_CONNECT_TIMEOUT_SECONDS:2}
+    call-timeout-seconds: ${KNOWLEDGE_S3_CALL_TIMEOUT_SECONDS:10}
+management:
+  server:
+    address: 127.0.0.1
+    port: ${KNOWLEDGE_MANAGEMENT_PORT:29084}
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db,sourceStore
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLE_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      export:
+        enabled: ${OTEL_EXPORT_ENABLED:false}
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%thread] %logger{36} trace=%X{traceId:-} span=%X{spanId:-} request=%X{requestId:-} - %msg%n"

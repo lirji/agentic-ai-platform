@@ -1,0 +1,312 @@
+{
+  "date": "2026-10-20T09:40:27.645567+00:00",
+  "slice": "S1",
+  "baseCommit": "b026187e44025709d768613e3136a469ca0d579c",
+  "branch": "feat/knowledge-ingestion-20261020",
+  "status": "PASS",
+  "sourceDigest": "e9f8f566e697d98ff0fd1a1224af46f868f8cc63900144bbfc498e9e7ee02110",
+  "sourceFiles": [
+    {
+      "path": ".gitignore",
+      "sha256": "f81e6f0f09ac70061c224a567e87e1fa053d48daf3e3d49ba728148386601375"
+    },
+    {
+      "path": "deploy/env.example",
+      "sha256": "9e49f7cb6c2530f0ad97dc0ed00b3b7cdd6577e8dacf30c4a1f51175bf271b8d"
+    },
+    {
+      "path": "deploy/fault_smoke.py",
+      "sha256": "a397af6aaff808e14d6a60c0771e89b93119e4ec6fa76c8cb77ce59952f903c4"
+    },
+    {
+      "path": "deploy/local.py",
+      "sha256": "481046727d826f34786ea440d2f6bc5e503213eb39fe7667b963b32b5b1dade5"
+    },
+    {
+      "path": "deploy/smoke.py",
+      "sha256": "112a8406e4453a52dd33f69e6d8fba0653962de35ca605491c7460ce4d0da92d"
+    },
+    {
+      "path": "edge-gateway/pom.xml",
+      "sha256": "db2838c500e8eb1f4449128f8f1d43790cdf420f53ec3c3ecac8790e09afd2b3"
+    },
+    {
+      "path": "edge-gateway/src/main/java/com/lrj/agentic/gateway/GatewayApplication.java",
+      "sha256": "18e11cff4f0156e23afa472f9767612978eb7535292ed621f280530c4e00750b"
+    },
+    {
+      "path": "edge-gateway/src/main/java/com/lrj/agentic/gateway/GatewayErrors.java",
+      "sha256": "d323cddb0cbd9ec5226cc0d1b849d6477d7ef80945935fedf187e1c53a0f926a"
+    },
+    {
+      "path": "edge-gateway/src/main/java/com/lrj/agentic/gateway/GatewaySecurity.java",
+      "sha256": "fd04f94e4c54ea7999bee3ef76f963a23cfbc70b55246c135b7ce3790d18f000"
+    },
+    {
+      "path": "edge-gateway/src/main/java/com/lrj/agentic/gateway/IdentityProperties.java",
+      "sha256": "3d72b789655dacc2fa551c8ed33f6088e94211762a110f96d962822a7f9f42f1"
+    },
+    {
+      "path": "edge-gateway/src/main/java/com/lrj/agentic/gateway/InternalIdentityExchange.java",
+      "sha256": "53be9f3c33f8bcb3f50a2765260cdaecef8bcb36fe1607d96ca350f2997f6f35"
+    },
+    {
+      "path": "edge-gateway/src/main/resources/application.yml",
+      "sha256": "d09cd42c9c501978ffee23d6e84916cd2097f1c21df667285d0d3ded86273be1"
+    },
+    {
+      "path": "edge-gateway/src/test/java/com/lrj/agentic/gateway/GatewaySecurityTest.java",
+      "sha256": "2d891cad6d370ac6f62ca097870ea5039597ed24e7b7653419f3aa89581377dd"
+    },
+    {
+      "path": "knowledge-service/pom.xml",
+      "sha256": "0fde901409c408a117b6cab725d5c8370c55688c270804478577e05e8689066d"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/KnowledgeApplication.java",
+      "sha256": "00eed05adedb7feccfd9795b0803c78d3a80b9e33d9a8549f4abc457d2ce601e"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeController.java",
+      "sha256": "18c8a0d33161a14c9582283cf899b913882780ea1bb5217547b03249eed1dbb3"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeErrors.java",
+      "sha256": "1abe5b90b2efefa9fe5793559cbf29b57c60a9ecd4d8a6a57ab8b26bdbc432f6"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeViews.java",
+      "sha256": "59a318eaf41fc55825a04e3be2c573c29d9e9fb42af2e4856fcf05d4347c77de"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/RequestCorrelation.java",
+      "sha256": "bf9baa5d60768b6bb85828251883c53f78a38e75a348feebfa59322e98424bbe"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeService.java",
+      "sha256": "d0ae738dbd1bf1f2db14a19d8a9c08f6bca1678f8d761dac9d112cf9c069aa86"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/UploadRules.java",
+      "sha256": "04b23b112659fc034d8297098051b056d1d5c910b7843955bed0a0530e67e192"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/KnowledgeSecurity.java",
+      "sha256": "ed97b1be0110d8bc141b0c42c7c1c960d1e5b63effb4dd8b0d5b891aec31a633"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/ContentDigest.java",
+      "sha256": "8da56133a2e7a6ef41148ec7960256dea1bcafbd2d5a3e2d045ffabf9cc42e51"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/Document.java",
+      "sha256": "5abfa469c9a6970b8b78a9700a63a49980b831336e4d672be55ce8540ca4dc26"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/Ingestion.java",
+      "sha256": "9d44c0486da7389056b69c5e7c687684da79cecdfbc8da218ef3d2bd64200869"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/IngestionStage.java",
+      "sha256": "9e14d5a17bf1748850f85d51b6993217105b83789d4ab1bc8b16883bbf5f71ec"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/IngestionStatus.java",
+      "sha256": "bd7443906e1f505adfa7feda8d1e3b11ec2364945ff6894acc3f5e2e191b431d"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeError.java",
+      "sha256": "94b5155327c3470cf732c838462201f0d12fca3502a4f8c6bcc3408ea3b2562e"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeFailure.java",
+      "sha256": "6d5a7ae06d27c67e9c95fc7f93b9e656d800ab94509a6f14b2a60c104fe7e0e5"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeRepository.java",
+      "sha256": "f1aefbf95f780f038dfb62f1a70af5f077a3e9a1f91b9f616ef53241aae318be"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/SourceReference.java",
+      "sha256": "0ca76e79ff11e596c62fcacafcc8921bc9d288d5dbc6fcf61023b0afa984180a"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/SourceStore.java",
+      "sha256": "a34ad7ec68798f047f3050d608307cfa549f08710f5727d38a1056774081ce60"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/DocumentRow.java",
+      "sha256": "7093bbe0e1ffd754dc1691cd18a22275d20c8c28c44bdb5fcfba61f3043fa397"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/IngestionRow.java",
+      "sha256": "297324f519543924b49535c9ed9b0524eb29475283f58474d5904b8beb1c94af"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/KnowledgeMapper.java",
+      "sha256": "f9204482e5ea3d35ebd8846372ccb518c64be53fffab0637f2124c7fc802bf53"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlKnowledgeRepository.java",
+      "sha256": "c39bea626721bfa3960d2702519c1f65d38a735d7bf522df33876be9a34665e1"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/storage/S3SourceStore.java",
+      "sha256": "9e83e646374e54769283d4c01812a1a1d4474e42727cd741bc20b778c7e1b306"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/storage/SourceConfiguration.java",
+      "sha256": "6e6a7254632ed92d34a1adeddb82078d38a6d4d833a257dee13efd47753cf576"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/storage/SourceProperties.java",
+      "sha256": "38477c7addcbb1786c6673cd7654b50478e882a7919d601559c085623876bd0f"
+    },
+    {
+      "path": "knowledge-service/src/main/resources/application.yml",
+      "sha256": "72b17de46864b80cdac0c9a4be22bae1fa8ec906b9ed5c750d6b9a9cf688362d"
+    },
+    {
+      "path": "knowledge-service/src/main/resources/db/migration/V1__knowledge_registration.sql",
+      "sha256": "720159a60711e869841ce6c3d10433f3f1b646c1784afe9a1aa619102f999e8a"
+    },
+    {
+      "path": "knowledge-service/src/main/resources/mapper/KnowledgeMapper.xml",
+      "sha256": "28d793d3f415cb055856678b8a077eb61395e668b76870d926a8963a867fad2c"
+    },
+    {
+      "path": "knowledge-service/src/test/java/com/lrj/agentic/knowledge/KnowledgePersistenceIT.java",
+      "sha256": "cfe8d37c9edc11b4774e86f14aacc4f0d933f0259e91285dea3eac335440343a"
+    },
+    {
+      "path": "knowledge-service/src/test/java/com/lrj/agentic/knowledge/application/UploadRulesTest.java",
+      "sha256": "6f0eb03e1abe24b7119ef80fdcb313ad663fcd0a3df2246fdb5082b6c6ffd9aa"
+    },
+    {
+      "path": "platform-contracts/pom.xml",
+      "sha256": "97b2fd5f73b9cf6946b5192ae449892f1a13f3062313c82326b261d5c0f4165b"
+    },
+    {
+      "path": "platform-contracts/src/main/java/com/lrj/agentic/contract/ApiError.java",
+      "sha256": "4e8c4dd0bb8d3186187091d99f5b2c20f9abe650781acf1b4f1801b11313010e"
+    },
+    {
+      "path": "platform-contracts/src/main/java/com/lrj/agentic/contract/ErrorCode.java",
+      "sha256": "b63024ed6adfd144ba074e2342c92937a8a3ae115062907ab4f90c218d1e3e57"
+    },
+    {
+      "path": "platform-contracts/src/main/java/com/lrj/agentic/contract/PlatformError.java",
+      "sha256": "02392277627e2aa2da5b1b9294a3828e64f2f778b9bd9eecda4de5ba370c2a7c"
+    },
+    {
+      "path": "platform-security/pom.xml",
+      "sha256": "ed4ff7a4d2d03a7e109978c5c2aa84e8b9e4a28e9e7ee37183ff0f1acd6065ec"
+    },
+    {
+      "path": "platform-security/src/main/java/com/lrj/agentic/security/Caller.java",
+      "sha256": "77eafeed48c3c3e91a51d362a0a503d90397dddcbb7314f8f54810ac3dc72d16"
+    },
+    {
+      "path": "platform-security/src/main/java/com/lrj/agentic/security/IdentityProtocol.java",
+      "sha256": "1d4871d608b1f8c24c33a6d70c836311df47e7002726b924482d5e19e3f64623"
+    },
+    {
+      "path": "platform-security/src/main/java/com/lrj/agentic/security/JwtTrust.java",
+      "sha256": "3d12b09c0d17dfeb1095b4b02c05e92beca5358806ec52b50ad57e5b409c80c7"
+    },
+    {
+      "path": "platform-security/src/test/java/com/lrj/agentic/security/JwtTrustTest.java",
+      "sha256": "6245b25831aa0fd3310d3b68faa6866efd0d9e7314a0e37cda68b013810dff69"
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "19c36c7e5b521631a7bf85fd03df00b1c91fb19f76bb0f4f6d63ba4736b1a1ab"
+    }
+  ],
+  "javaTests": [
+    {
+      "suite": "com.lrj.agentic.security.JwtTrustTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.lrj.agentic.knowledge.application.UploadRulesTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.lrj.agentic.knowledge.KnowledgePersistenceIT",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.lrj.agentic.gateway.GatewaySecurityTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "commands": [
+    {
+      "command": "python3 deploy/local.py test",
+      "exitCode": 0,
+      "log": ".logs/s1-final-verify.log"
+    },
+    {
+      "command": "python3 deploy/smoke.py --restart",
+      "exitCode": 0,
+      "log": ".logs/s1-smoke-final.log"
+    },
+    {
+      "command": "python3 deploy/fault_smoke.py",
+      "exitCode": 0,
+      "log": ".logs/s1-fault-smoke.log"
+    },
+    {
+      "command": "repeat local.init with private state and table-count comparison",
+      "exitCode": 0,
+      "evidence": "runtime-idempotency.json"
+    },
+    {
+      "command": "ruff check deploy --config ai-runtime/pyproject.toml",
+      "exitCode": 0
+    },
+    {
+      "command": "ruff format --check deploy --config ai-runtime/pyproject.toml",
+      "exitCode": 0
+    },
+    {
+      "command": "code-hygiene.py gate --workspace . --base HEAD --evidence COMPILE=PASS --evidence UNIT_TEST=PASS",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "securityAssessment": {
+    "rawMatchedPackages": 2,
+    "uniqueAdvisories": 3,
+    "currentSlice": "NOT_AFFECTED_BY_APPLICABILITY_REVIEW",
+    "conditions": [
+      "Gateway jar has WebFlux and no MVC/DispatcherServlet; Knowledge jar has MVC and no WebFlux",
+      "No SSE fragment rendering in S1 controllers",
+      "No XsltView or XsltViewResolver configured; verified in real application context"
+    ],
+    "productionPatchRoute": "UNRESOLVED"
+  },
+  "modelCalls": 0,
+  "limitations": [
+    "No root Java formatter or static analyzer configured; not installed solely for gate",
+    "Flyway 11.7.2 warns about MySQL 8.4 although current migrations and runtime pass",
+    "Production IAM and Spring maintenance route not validated",
+    "Global skill runtime drift remains; manual owner routing, not a machine Runtime PASS"
+  ]
+}
