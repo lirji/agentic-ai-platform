@@ -4,8 +4,8 @@
 
 - 标识：`research-readonly-20261021`；用户已授权开始剩余研究与只读助手，继承P2、原模型/预算及正常合并推送main授权；无生产部署/清理。
 - 状态：S6 DONE / S7 DONE；本次实现、验收及两仓代码正常合并推送main均已完成，交付PASS。研究报告、解释/清单/草稿、空证据真实模型均PASS；292项Python、78项Java、38项前端单元、15组联合浏览器通过。窄屏未知提交提示改为说明下方操作后，7组相关浏览器/38项单元/构建/静态复验PASS，截图已实际核对。
-- 计划：S6受理/执行/恢复 → S6真实验证 → S7界面/引用 → 联合验收、文档及两仓正常合并推送；前三项已实现，第四项收尾中。契约 [WORK_TASK_CONTRACTS](WORK_TASK_CONTRACTS.md)，证据 [TEST_RESULT](../../qa/research-readonly-20261021/TEST_RESULT.md)。
-- Git：后端原目录，分支 `feat/research-readonly-20261021`，起点 `cb2f688`，S6实现提交 `8cf26a6`，验收收尾 `77f7f5c`；前端原目录 `../agentic-ai-platform-web` 同名分支，起点 `f68e660`，S7实现提交 `5835332`。两仓均已fast-forward合并并push origin/main，ls-remote核对一致；当前仅追加交付收据文档，收据自身提交以Git为准，无额外worktree。
+- 计划：S6受理/执行/恢复 → S6真实验证 → S7界面/引用 → 联合验收、文档及两仓正常合并推送；四项均已完成。契约 [WORK_TASK_CONTRACTS](WORK_TASK_CONTRACTS.md)，证据 [TEST_RESULT](../../qa/research-readonly-20261021/TEST_RESULT.md)。
+- Git：后端原目录，任务分支 `feat/research-readonly-20261021`，起点 `cb2f688`，S6实现提交 `8cf26a6`，验收收尾 `77f7f5c`，交付收据 `0669018`；前端原目录 `../agentic-ai-platform-web` 同名任务分支，起点 `f68e660`，S7实现提交 `5835332`。两仓均已fast-forward合并并push origin/main，ls-remote核对一致；已回到main，末次进度文档提交以Git为准，无额外worktree。
 - 决策：中央任务拥有不可变请求和结果；Deep Agents analyze为有界原子阶段，内部checkpoint关闭，外层JSON根图复用原PG/中央fencing，不放宽namespace/序列化。仅搜索/读证据，3轮模型/5次工具/2次额外搜索，单worker顺序领取两图；恢复可能再次计费。
 - 验证：真实MySQL/HTTP幂等、分页、隔离；4项真实PG/中央恢复/取消/撤权；五个真实模型案例、引用和重启重放通过。首次多工具响应拒绝及原任务保留；串行工具执行、网关备用错误Mono污染SSE头、前端缺CHECKPOINT事件及提交摘要竞态已修复并回归。
 - 预算：沿原两本累计账本，聊天 **0.510952/1元（14次）**，Embedding **0.26/1元（26批）**，非账单；重启配置/账本摘要不变，新增调用0。探针已完成不得重发；`.local/s6-work-smoke.json` 与前端 `.local/s7-ui-state.json` 必须保留。UI真实任务CANCELLED/attemptCount=0。
