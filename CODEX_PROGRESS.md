@@ -2,7 +2,7 @@
 
 - 当前任务：`capability-delivery-20261021`，用户已要求“开始实施”，按 20 项差距的 51 项方案连续推进。
 - 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；稳定任务：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
-- 当前 S8A/S8B 已验证并合并推送，S8C 实现及必需验收通过，正在两仓正常提交/合并/推送；之后进入S8D；两仓原目录分支 `feat/quality-runs-20261021`。恢复先读唯一状态与 E02，不重跑已交付 S8B。
+- 当前 S8A/S8B 已验证并合并推送，S8C 已验证并正常合并推送两仓main；下一项S8D；两仓原目录分支 `feat/quality-runs-20261021`。恢复先读唯一状态与 E02，不重跑已交付 S8B。
 - [已交付方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)继续有效；新要求已解除开发暂停，不重做 S0–S7。
 - 沿用已有模型预算和正常 Git 提交/合并/推送授权；不扩大到生产部署、旧数据清理或新增模型费用。详细检查点、运行证据和下一步见唯一状态。
 

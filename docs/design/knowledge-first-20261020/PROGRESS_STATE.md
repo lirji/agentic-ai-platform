@@ -3,10 +3,10 @@
 ## 当前任务：按能力深化方案连续实施
 
 - 标识：`capability-delivery-20261021`。用户已要求“开始实施”，按20项差距的51项计划连续推进，条件项仍按触发条件执行。
-- 状态：S8A/S8B已交付；S8C DONE / 必需验收PASS / 两仓Git交付待执行；完整计划未完成。下一项S8D人工评审、基线选择与逐题退化比较，不等待用户再说继续。
+- 状态：S8A/S8B已交付；S8C DONE / 必需验收PASS / 两仓已正常合并推送origin/main并核对远程；完整计划未完成。下一项S8D人工评审、基线选择与逐题退化比较，不等待用户再说继续。
 - 权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、QUALITY_CONTRACTS；本文件为唯一任务状态。S8C传输与恢复依据 [E02](EVALUATION_RUN_CONTRACTS.md)，S8D实施前补齐E03，不重做既有架构。
-- Git：两仓原目录 `feat/quality-runs-20261021`，后端起点`c810e959df28a44695e72f4dc67f1ed29ffdb17b`，前端起点`427bcb9451752a3fa5dbcbb77835339059e7b998`；当前未提交均为S8C产品/测试/运行/文档，无新worktree。S8B后端`02d2235`、前端`427bcb9`已合并推送。
-- 当前清单：①S8C契约/身份；②Knowledge运行账本/报告与Tasks失败凭据；③LangGraph逐题恢复/QA复用；④React运行/逐题结果；⑤验收与文档已完成；⑥两仓逻辑提交/正常合并推送；⑦进入S8D。
+- Git：两仓原目录 `feat/quality-runs-20261021`，后端起点`c810e959df28a44695e72f4dc67f1ed29ffdb17b`，前端起点`427bcb9451752a3fa5dbcbb77835339059e7b998`；S8C产品提交后端`32377f2`、前端`f811c99`均已交付，无新worktree；收据提交以Git历史为准。S8B后端`02d2235`、前端`427bcb9`已合并推送。
+- 当前清单：①S8C契约/身份；②Knowledge运行账本/报告与Tasks失败凭据；③LangGraph逐题恢复/QA复用；④React运行/逐题结果；⑤验收与文档已完成；⑥两仓逻辑提交/正常合并推送已完成；⑦进入S8D。
 - 决策：Knowledge拥有不可变定义/报告，Tasks拥有租约/终态，PG根图逐题保存候选引用。候选写入不宣称跨库原子fencing；只提升实际接受的中央proof。未知受理/取消/恢复沿原taskId和原CAS，恢复pending继续轮询；取消在未知恢复窗口409。正文按manifestDigest核对，避免新答案混旧汇总。
 - 质量口径：仍为当前生产两路RRF(60)/QA路径。空召回应答题0、无答案不适用、执行失败与未评审分开。正确引用不等于正确回答；缺失usage/金额保留未知。人工评审、基线/比较和真实模型基线尚未完成。
 - 用户样本决定：先用项目架构/操作文档；固定来源和样本见QUALITY_ACCEPTANCE。当前确定性浏览器夹具不是S8E机制质量基线，更不能作为业务达标结论。
