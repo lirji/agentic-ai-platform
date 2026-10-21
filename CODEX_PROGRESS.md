@@ -3,7 +3,7 @@
 - 当前任务：`research-readonly-20261021`；实现既定 P2 研究分析与只读助手。
 - 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 - 契约：[WORK_TASK_CONTRACTS](docs/design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)；后端/前端原目录均使用 `feat/research-readonly-20261021`，无新 worktree。
-- S0–S7 已完成验收；本轮 S6/S7 正常 Git 交付状态见权威进度。授权包含必要本地实现、测试、原累计额度内模型联调及正常合并推送 main；不含生产部署/清理。
+- S0–S7 已完成验收；本轮 S6/S7 已正常合并推送两仓 main，交付收据见权威进度。授权包含必要本地实现、测试、原累计额度内模型联调及正常合并推送 main；不含生产部署/清理。
 
 ## 前期可行性任务记录
 

@@ -1,0 +1,33 @@
+{
+  "protocol": "skill-contract/v1",
+  "task": "research-readonly-20261021",
+  "status": "COMPLETED",
+  "gate": "PASS",
+  "slices": [
+    "S6",
+    "S7"
+  ],
+  "branch": "feat/research-readonly-20261021",
+  "repositories": {
+    "backend": {
+      "implementationCommit": "8cf26a6c4952eb72da5bf86c464aca5a931a3e6a",
+      "verifiedPublishedMain": "77f7f5c8984d0440216307e488a2c331d6edacda",
+      "sourceFingerprint": "ba3cbb3adcbd62968d6845a197889ac4ed762c2bb50a8565e3ec9ed0762a8861"
+    },
+    "frontend": {
+      "implementationCommit": "5835332baa79032a1169130adc09b866a755abd0",
+      "verifiedPublishedMain": "5835332baa79032a1169130adc09b866a755abd0",
+      "sourceFingerprint": "9f16dc5c3e4b3cb31af756664b7e186d2b609f1f1272672055c4afe2d3c1cd99"
+    }
+  },
+  "merge": "FAST_FORWARD",
+  "push": "PASS: origin/main verified by ls-remote in both repositories",
+  "worktrees": "original directories only",
+  "sourceChecks": "29 backend and 18 frontend files unchanged from validation",
+  "testResult": "PASS",
+  "frontendToolchain": "Node 24.22.0, pnpm 12.14.0",
+  "productionDeployment": "NOT_EXECUTED",
+  "cleanup": "NOT_EXECUTED",
+  "blockers": [],
+  "note": "Published heads record code/validation publication; this documentation-only receipt is committed afterward."
+}

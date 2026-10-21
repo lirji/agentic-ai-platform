@@ -3,15 +3,16 @@
 ## 当前任务：研究分析与只读助手
 
 - 标识：`research-readonly-20261021`；用户已授权开始剩余研究与只读助手，继承P2、原模型/预算及正常合并推送main授权；无生产部署/清理。
-- 状态：S6 DONE / S7 DONE，必需验收PASS；两仓本地提交完成，正在正常Git交付。研究报告、解释/清单/草稿、空证据真实模型均PASS；292项Python、78项Java、38项前端单元、15组联合浏览器通过。窄屏未知提交提示改为说明下方操作后，7组相关浏览器/38项单元/构建/静态复验PASS，截图已实际核对。
+- 状态：S6 DONE / S7 DONE；本次实现、验收及两仓代码正常合并推送main均已完成，交付PASS。研究报告、解释/清单/草稿、空证据真实模型均PASS；292项Python、78项Java、38项前端单元、15组联合浏览器通过。窄屏未知提交提示改为说明下方操作后，7组相关浏览器/38项单元/构建/静态复验PASS，截图已实际核对。
 - 计划：S6受理/执行/恢复 → S6真实验证 → S7界面/引用 → 联合验收、文档及两仓正常合并推送；前三项已实现，第四项收尾中。契约 [WORK_TASK_CONTRACTS](WORK_TASK_CONTRACTS.md)，证据 [TEST_RESULT](../../qa/research-readonly-20261021/TEST_RESULT.md)。
-- Git：后端原目录，分支 `feat/research-readonly-20261021`，起点 `cb2f688`，S6本地提交 `8cf26a6`；前端原目录 `../agentic-ai-platform-web` 同名分支，起点 `f68e660`，S7本地提交 `5835332`。两仓实现均已本地提交，后端仅验收/进度收尾待提交；已fetch远程main并核对无分叉，无额外worktree；修改清单可从各仓git status与实现映射恢复。
+- Git：后端原目录，分支 `feat/research-readonly-20261021`，起点 `cb2f688`，S6实现提交 `8cf26a6`，验收收尾 `77f7f5c`；前端原目录 `../agentic-ai-platform-web` 同名分支，起点 `f68e660`，S7实现提交 `5835332`。两仓均已fast-forward合并并push origin/main，ls-remote核对一致；当前仅追加交付收据文档，收据自身提交以Git为准，无额外worktree。
 - 决策：中央任务拥有不可变请求和结果；Deep Agents analyze为有界原子阶段，内部checkpoint关闭，外层JSON根图复用原PG/中央fencing，不放宽namespace/序列化。仅搜索/读证据，3轮模型/5次工具/2次额外搜索，单worker顺序领取两图；恢复可能再次计费。
 - 验证：真实MySQL/HTTP幂等、分页、隔离；4项真实PG/中央恢复/取消/撤权；五个真实模型案例、引用和重启重放通过。首次多工具响应拒绝及原任务保留；串行工具执行、网关备用错误Mono污染SSE头、前端缺CHECKPOINT事件及提交摘要竞态已修复并回归。
 - 预算：沿原两本累计账本，聊天 **0.510952/1元（14次）**，Embedding **0.26/1元（26批）**，非账单；重启配置/账本摘要不变，新增调用0。探针已完成不得重发；`.local/s6-work-smoke.json` 与前端 `.local/s7-ui-state.json` 必须保留。UI真实任务CANCELLED/attemptCount=0。
 - 当前服务：Gateway28080、Knowledge28084、AI28085、Web28086、Tasks28087、Conversations28088、LiteLLM28089及worker运行；local-dev无QUEUED/RUNNING。无运行中的构建/测试/付费任务或迁移；最终日志 `.logs/s7-work-final.log`（前端）及 `.logs/s6-*`。
 - 新核对：终端默认Node24.12与项目.nvmrc/engines要求24.22不符，已保留现有通过证据，官方Node24.22.0已完整下载并通过SHA-256核验，装在前端忽略目录 `.local/toolchains/`；前端服务已切至该版本，38项单元/构建/静态/15组浏览器均PASS（`.logs/s7-node24-*`）；不修改全局Node或项目版本要求。
-- 下一步：两仓按后端→前端顺序fast-forward合并并push main，核对远程HEAD并记录交付收据。源码摘要后端29项/前端18项与暂存区一致，文档链接/真实密钥扫描PASS。QA在后端 `docs/qa/research-readonly-20261021/`、前端 `docs/qa/s7/`。
+- 交付：[DELIVERY_RESULT](../../qa/research-readonly-20261021/delivery-result.json)。源码摘要后端29项/前端18项与暂存区及已发布内容一致；19份Markdown/208处本地链接、真实密钥扫描139份PASS。末次Java readiness与Web会话通过；local-dev为8成功/2取消/1已保留失败，无排队或执行任务。
+- 下一步：本次功能无待补项；后续建设按用户新要求确定。保留所有原任务/凭据/预算，不能重发探针或删除状态重测。QA在后端 `docs/qa/research-readonly-20261021/`、前端 `docs/qa/s7/`。
 - 目录：无额外worktree。后端 `.local/` 凭据/账本/任务状态、前端 `.local/` 恢复状态与当前运行Node工具链需保留；`.idea/` 原用户文件保留。`.logs/`、target/dist、测试/编译缓存及下载压缩包可在不需复现时清理，本次无清理授权、未删除。
 - 限制：Java未配置独立格式器，后端卫生COMPLETE_WITH_LIMITATIONS（17建议已人工审）；Deep Agents无内部saver的已知durability警告；现有Vite包大小警告。少量合成资料/单worker验证不等于生产容量或系统性答案质量。
 - 规范：session-handoff、continue-approved-delivery、implementation-slicing、backend/frontend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；全局业务建模/持久化/契约/并发安全/容量/发布及日志规范。手工专业pass，不冒称机器Runtime Gate、独立Agent审查或用户视觉签收。
