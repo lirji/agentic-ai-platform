@@ -25,4 +25,6 @@ public interface EvaluationRepository {
     List<DocumentBinding> bindings(Caller caller, List<String> documentIds);
     /** 读取标注原文不经过索引/模型。 */
     List<EvidenceOption> evidence(Caller caller, String documentId, long version, String afterId, int limit);
+    /** 执行报告批量核对当前已发布证据身份，最多五条。 */
+    List<EvidenceOption> publishedEvidence(Caller caller, List<String> chunkIds);
 }

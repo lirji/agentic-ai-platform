@@ -34,6 +34,13 @@ public class MySqlEvaluationRepository implements EvaluationRepository {
     private final EvaluationJson json;
     private final TransactionTemplate transaction;
 
+    /** 同一发布谓词同时用于标注和报告复核，空集合不会生成无范围 SQL。 */
+    @Override
+    public List<EvidenceOption> publishedEvidence(Caller caller, List<String> chunkIds) {
+        EvaluationRules.require(chunkIds != null && chunkIds.size() <= 5);
+        return chunkIds.isEmpty() ? List.of() : access(() -> mapper.gold(caller, chunkIds).stream().map(EvidenceRow::option).toList());
+    }
+
     /** 沿用 Knowledge 的隔离级别与有界事务配置。 */
     public MySqlEvaluationRepository(EvaluationMapper mapper, EvaluationJson json, PlatformTransactionManager manager,
             @Value("${knowledge.transaction-timeout-seconds:5}") int timeout) {

@@ -238,7 +238,13 @@ class CentralTaskClient:
         )
 
     async def fail(
-        self, task_id: str, epoch: int, code: TaskFailureCode, *, retryable: bool
+        self,
+        task_id: str,
+        epoch: int,
+        code: TaskFailureCode,
+        *,
+        retryable: bool,
+        result: dict[str, object] | None = None,
     ) -> TaskView:
         """失败也携带原租约代次；迟到的 worker 不能覆盖取消或接管。"""
         return await self._request(
@@ -250,6 +256,7 @@ class CentralTaskClient:
                 "operationKey": f"failure:{epoch}",
                 "errorCode": code.value,
                 "retryable": retryable,
+                **({"result": result} if result is not None else {}),
             },
         )
 

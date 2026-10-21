@@ -1,0 +1,171 @@
+{
+  "slice": "S8C",
+  "status": "PASS",
+  "validatedAt": "2026-10-21T05:53:16.131466+00:00",
+  "repositories": [
+    {
+      "repository": "agentic-ai-platform",
+      "slice": "S8C",
+      "base": "c810e959df28a44695e72f4dc67f1ed29ffdb17b",
+      "fingerprint": "3e54f5eff6bab50e64dad5e70373d55eb5d3ede1fc8e5feecb96882f9884b828",
+      "files": {
+        "ai-runtime/src/agentic_ai/evaluation/__init__.py": "effa8a87b28000e0367b51cddb71565a48618fbe1531d4b81e6edf09310f425a",
+        "ai-runtime/src/agentic_ai/evaluation/client.py": "a56d7afc5ba666da217dfcf1dd0250e28e9bc2dc125d39ccb3b11bee110c97db",
+        "ai-runtime/src/agentic_ai/evaluation/metrics.py": "41a5aaa8d4e4c2258a2f2ac32a548e8e72e651427b3a43640a3906858ece5c08",
+        "ai-runtime/src/agentic_ai/evaluation/models.py": "a6b6a6ab99d86dc1a304689a1d5d28653d5abc10e1c9e3a0f2919f152f74fe82",
+        "ai-runtime/src/agentic_ai/evaluation/pipeline.py": "0da2fb22036221ee1895033b1ddcb47a388ea1a2b6c3a3dcec1731b280057a09",
+        "ai-runtime/src/agentic_ai/qa/errors.py": "2041b338a28d9391e42d2f394d11d2db02506a721358d54bf8501250ff3598fb",
+        "ai-runtime/src/agentic_ai/qa/pipeline.py": "2fdc9976e34c4d3c6fb3ec225844c660653cffa021059802a255a0027b250861",
+        "ai-runtime/src/agentic_ai/qa/worker.py": "088c724dca0f9514b2906921a24ba069003c871f481dc5695b3054936b278ae1",
+        "ai-runtime/src/agentic_ai/tasks/client.py": "48907295547467c6eaef639b98287e51e63a6a591f4744f279b515d0188e6f8a",
+        "ai-runtime/src/agentic_ai/tasks/execution.py": "28005765df8c0250991ae063bd01e793edcc6bd99de6d5865709111d34273bb8",
+        "ai-runtime/src/agentic_ai/tasks/models.py": "45c8ed8a3fde3e97c7ed6fbd13587e217c657e7dcc017ad700eb0bac93534b42",
+        "ai-runtime/tests/evaluation_ui_fixture.py": "2f24bde8f8ae2233354c007eff9c0fd396a9daac4ff97a283826e0a7ce45bfd1",
+        "ai-runtime/tests/test_evaluation_execution_integration.py": "9aed9060ee39fd1846949bd1bf0219d8bd16b8404c044dc48f0f16882b78b780",
+        "ai-runtime/tests/test_evaluation_identity_integration.py": "4c8c871a53601b65468bf49ce3a123c2bbc230b4bbcbc700d2ed451fa39bcb7d",
+        "ai-runtime/tests/test_evaluation_pipeline.py": "fa5e2580fe670d8d9e60d83e3a538c2204914b7d68b1f2d328039cfedef16b11",
+        "async-task-service/src/main/java/com/lrj/agentic/task/api/EvaluationTaskController.java": "6c6683ef7ce25e055f5c87f5eb640f9b7fe805a7412d4867498e2d73d4580029",
+        "async-task-service/src/main/java/com/lrj/agentic/task/api/TaskDtos.java": "d39dc0df121438cdcfde9180eb7d78924c5f74de68c229e72e9020180aff63fb",
+        "async-task-service/src/main/java/com/lrj/agentic/task/application/EvaluationTaskRequests.java": "c5ad8a773e8a634fdc007e4cee2e6f291f394a5a0809f96b66b694eebd779c57",
+        "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskService.java": "ee9f820df33d630bee712395faff36d3aebc1eeca010815d0c94f370a4afb42a",
+        "async-task-service/src/main/java/com/lrj/agentic/task/config/TaskSecurity.java": "a56f079d826192ceafa12e80e354b3c68e516cc3a60cce0252b3aaf9c5b66a76",
+        "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskProtocol.java": "4407deda3ccd683bba7c56c69db97d640700256984ba98ad1dec15e51c9d788e",
+        "async-task-service/src/main/resources/application.yml": "c7e7c5fad379ea978b288c97b18c0871b8a3f150d8fa9c856ae22c0d66d37ddd",
+        "async-task-service/src/main/resources/db/migration/V3__evaluation_failure_proof.sql": "a5bcbfc767a5c14baed64c2f560e7349e4e111f8671a578ea58ffa799541f262",
+        "async-task-service/src/main/resources/mapper/TaskMapper.xml": "461ee2f58278a46e18811b3ea413c83f2dc56f8a313037ef91a5868c790e7bbb",
+        "async-task-service/src/test/java/com/lrj/agentic/task/EvaluationTaskIT.java": "6c96a90755e7086ac2637d896e6a4f92377d638b68e43c4608105ea24478fc89",
+        "deploy/chat_local.py": "733402c36f1c25acb6bb870916db977340944bf689c4c894b6f1ce43c1032d5a",
+        "deploy/evaluation_local.py": "523b3a623285bd6c872a992ae74636add4f9f07559bd66c8252fb4560e66ad54",
+        "deploy/local.py": "70942972a7707a9cb5103f4756cb83bca96ede9d6d022c90fd8a43310039f201",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/EvaluationBody.java": "473169da83d47fd06327461e30b5c46c5045a7fae79796511643bbd892ff5ecf",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/EvaluationRunController.java": "da83c0feb6789a38556cac98c0e3ccf2c8e94375ce9c1c50d40c2946901c0ef7",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/EvaluationWorkerController.java": "fb6b3f140c011a3c7bf1c78128054167ff2013d89bfd7b40cb1c8bc64e20a499",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationRunService.java": "5f118f384b29087f818ba40dd98cf0ff98abf99b05c4e106df410978ec1bcfe8",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/EvaluationProperties.java": "740261955acac8eb8f78fa400869a1a9ffb51de4b2ed54cb2878664f9303126e",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/EvaluationWorkerSecurity.java": "7a10cc6ac751a6264bcb6950014c11ec79dd05968a65f1dc23f883569546e2c7",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/KnowledgeSecurity.java": "d296e12bcc8b95f105b3ce8850da6cd5deff4718ecfe737df7f754d9419cc17c",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeError.java": "c852bd0863876c32d92056035d796635fc67573a97e1733320d5761c756057b3",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationRepository.java": "b13196b2b10ee621283b16dee7230cbdded414725e5a41640250b80879d7844e",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationRunRepository.java": "bb034183fae6a43897e414e14717b9869b3841234d17fc48a4ef5cb0347937d8",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationTaskGateway.java": "f32b1969f1b08a517a7f8f3ea74a8c45acb467b833131398407510460cb574dc",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunModels.java": "9fe61c2bd3744a671a434ef4c0ab7f47de207b65d765b4241550f77ac9c73749",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunProtocol.java": "0290c63f744e291952d0051fb5a0bcff44af0849c55dcb2e4a4fb386401d6328",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunRules.java": "a40cadeedb5defb5c674788558c37b72a8bcf2f591c3af459a6f92565ee5d07a",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/evaluation/EvaluationDispatchWorker.java": "66ffb13086bdf9b8279c5237cf2b96a6600d3718afb41428f5cc51417cfdfa05",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/evaluation/EvaluationHttp.java": "6fc8c7e0d7ea8fe776190b3010784e3dcfdd97afe46eecbcc4dfdcfa88f76d98",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/evaluation/EvaluationTaskClient.java": "73b3f52f5fe693e5be6bc66ecc9952fa1dae260215eb1d8ef1a63e49532f0106",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationRunMapper.java": "03b3601389cf5d41c453a2b0269bbfbd2fe113d6cd1a4aa9dfa3a23ca9d19557",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationRunRow.java": "97737317f962c373cfcb19ea30e9c0c4bd420f345bbd38a823d0d07d72fe6704",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlEvaluationRepository.java": "1adec93bfd78d25c68ab6dc8671a4b65acd033cdfba27e66856107ff6f562ceb",
+        "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlEvaluationRunRepository.java": "0ddf9970c22f898b4266436ceaa31d58d88b864ed211f9144205d656c79a711d",
+        "knowledge-service/src/main/resources/application.yml": "2ff53829508d6b618d7f0673517deb579c2bf4257a939bb9232a74145e99d69c",
+        "knowledge-service/src/main/resources/db/migration/V5__evaluation_runs.sql": "7e5f60901e4cea01431d38bb9c3004498caa6150c2977cb5ed8f2ad0f9eecb68",
+        "knowledge-service/src/main/resources/mapper/EvaluationRunMapper.xml": "4835389df95ccb976033984329d6cf0b44db0a60269e6e5c5e59f2c9d362d6f9",
+        "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationRunIT.java": "4ff59c5afea7e2a4a22a864cd8ef466d7a18810ebb1c7723e431d9791472f1b5",
+        "knowledge-service/src/test/java/com/lrj/agentic/knowledge/infrastructure/evaluation/EvaluationHttpTest.java": "9979a302af2d1029ef53cb764c2b63c8c2bbf8897a91b5fac898e3649df51fe2"
+      }
+    },
+    {
+      "repository": "agentic-ai-platform-web",
+      "slice": "S8C",
+      "base": "427bcb9451752a3fa5dbcbb77835339059e7b998",
+      "fingerprint": "1a9a64dbfd28de0390d65a2961c0cc105380eb1e0be829da2d511f574166765d",
+      "files": {
+        "deploy/local-identity.test.ts": "1ad84d3c2888d1621c0d58c942eca579db43b08a5879ea0c168cfaf1e3e932ae",
+        "deploy/local-identity.ts": "1a90ce4e3367d7d95133776ef522f27817cb1f3a966553a1bd6d67372351b1a6",
+        "src/app/App.tsx": "bc0e1ed85af2221507b1acda2b1de2542a103edc0eb97999cd79576148cc8716",
+        "src/features/quality/Quality.module.css": "e9c2bf4b75963d4ea0debcce7c7a838a1136aff947f50bcdc5cf9553d8a4dbfb",
+        "src/features/quality/QuestionReportView.tsx": "8fe43f87bb2f7fb97d9f5ee59dcdd6ef67fca938a04839f7024bd67ba9d1bc6a",
+        "src/features/quality/RunPanel.tsx": "2a31d82ef0bac2cc227a580b478ecf8667bf78f60359b4272ac67f8a3d2c675b",
+        "src/features/quality/RunProgress.tsx": "37dd953b05cc7d1c7fd4488c87771477ca98726f0ee28c1875a7610afcd9d276",
+        "src/features/quality/run-api.test.ts": "354d442b32496ed6f72df42d33a342f7d2cda56b10f0a60ed6db4b884610d515",
+        "src/features/quality/run-api.ts": "d0958ce1894c856a253aafde673bc0c8191895f00dc15bbd1d9afb87222babe9",
+        "src/features/quality/run-messages.ts": "1cc7b9700836dd663b9132ac6806e8f50ea331433fa292d8ac392802ffd040dd",
+        "src/features/quality/run-model.ts": "b8aeaeec373df23d8380586666eb560971a2c366df662feb74af4360ca4947c8",
+        "src/pages/QualityDetailPage.tsx": "c9c51c6cab933111475d71f5358f9e0c0c664e9da836994f201ae7f57c8242e3",
+        "src/pages/QualityRunPage.tsx": "6b76f72fcd076e4491736be00f57e3271bc7ee7db19d321279a0a595f3011fbc",
+        "src/shared/api/errors.ts": "fadbeae4d4c88d17b0c0612f60d327b4b982b4f47730999bb5d92bb2614666c4",
+        "tests/quality-run-real.spec.ts": "adebc8c1be739257e7fbca6febd7535e26670e10da943776d93456c370b52112"
+      }
+    }
+  ],
+  "checks": {
+    "knowledgeDatabase": {
+      "status": "PASS",
+      "groups": 6,
+      "log": ".logs/s8c-run-persistence-refinement.log"
+    },
+    "manifestGuard": {
+      "status": "PASS",
+      "dbGroups": 1,
+      "httpCoveredIn": "frontend quality-run-real.spec.ts"
+    },
+    "taskDatabase": {
+      "status": "PASS",
+      "newGroups": 4,
+      "previousGroups": 17,
+      "log": ".logs/s8c-task-proof-verified.log"
+    },
+    "realHttpPgRecovery": {
+      "status": "PASS",
+      "groups": 3,
+      "refinementRerunGroups": 1,
+      "logs": [
+        ".logs/s8c-evaluation-real-initial.log",
+        ".logs/s8c-evaluation-resume-refinement.log"
+      ]
+    },
+    "identityHttp": {
+      "status": "PASS",
+      "groups": 3,
+      "log": ".logs/s8c-evaluation-identities.log"
+    },
+    "transportBounds": {
+      "status": "PASS",
+      "cases": 3,
+      "log": ".logs/s8c-hygiene-java-check.log"
+    },
+    "python": {
+      "status": "PASS",
+      "passed": 282,
+      "conditionalSkipped": 47,
+      "refinementNarrowPassed": 10,
+      "mypySources": 46
+    },
+    "frontend": {
+      "status": "PASS",
+      "unit": 50,
+      "browserGroups": 7,
+      "log": ".logs/s8c-e2e-final.log",
+      "screenshotsInspected": [
+        1440,
+        1024,
+        414
+      ]
+    },
+    "migrations": {
+      "status": "PASS",
+      "knowledgeV5": [
+        "dev",
+        "test"
+      ],
+      "tasksV3": [
+        "dev",
+        "test"
+      ]
+    },
+    "modelCalls": {
+      "newPaidCalls": 0,
+      "chatReservedCny": "0.510952",
+      "embeddingReservedCny": "0.26",
+      "eachLimitCny": "1"
+    }
+  },
+  "limitations": [
+    "No dedicated Java formatter/static analyzer",
+    "Provider usage and billed amounts remain unknown when absent",
+    "Deterministic fixtures are not S8E real-model quality evidence",
+    "Existing frontend shared chunk size warning retained"
+  ],
+  "reviewer": "current agent, no independent sub-agent review"
+}

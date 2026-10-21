@@ -15,6 +15,7 @@ import urllib.request
 from pathlib import Path
 
 import checkpoint_local
+import evaluation_local
 import local
 
 MODEL = "deepseek-flash"
@@ -114,6 +115,7 @@ def init() -> None:
             "knowledge_private_key": str(local.STATE / "runtime-knowledge-private.pem"),
             "chat_config": str(CHAT),
             "checkpoints": {"dsn": dsn},
+            **evaluation_local.worker_config(),
         },
     )
     check_worker()

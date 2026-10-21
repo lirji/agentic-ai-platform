@@ -197,7 +197,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | --- | --- | --- | --- | --- |
 | S8A | 冻结评测口径、样本和执行边界 | S7 | DESIGN | DONE |
 | S8B | 评测集创建、修订与标注界面 | S8A | IMPLEMENT | IN_PROGRESS |
-| S8C | 持久评测执行与逐题结果 | S8B | IMPLEMENT | PLANNED |
+| S8C | 持久评测执行与逐题结果 | S8B | IMPLEMENT | DONE |
 | S8D | 基线选择、逐题对照与退化门禁 | S8C | IMPLEMENT | PLANNED |
 | S8E | 运行当前两路链路的可追溯基线 | S8D | VALIDATE | PLANNED |
 | S8F | 最小跨语言与前端 CI | S8A | ENGINEERING | PLANNED |
@@ -275,7 +275,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-EVAL；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 同键重复只受理一次；旧 epoch 不改结果；有答案题空召回计未命中，无答案题按拒答口径计分；外部失败不得计成功；当前权限改变时中止或标失效；报告回写可对账。
 - **Pass / Runtime：** IMPLEMENT；复用现有 Tasks/MySQL、PG 与 worker；受控模型/索引按运行配置启用。
-- **状态 / 并行 / 对应缺口：** READY；parallel=no；G01 G13 G18。
+- **状态 / 并行 / 对应缺口：** DONE / 验收PASS；parallel=no；G01 G13 G18。
 
 ### S8D · 基线选择、逐题对照与退化门禁
 

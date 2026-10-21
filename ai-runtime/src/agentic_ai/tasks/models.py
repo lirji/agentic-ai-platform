@@ -55,7 +55,7 @@ class TaskView(WireModel):
     """中央用户可见结果，不包含执行凭据。"""
 
     task_id: CanonicalId
-    kind: Literal["KNOWLEDGE_QA", "RESEARCH", "READONLY_ASSISTANT"]
+    kind: Literal["KNOWLEDGE_QA", "RESEARCH", "READONLY_ASSISTANT", "KNOWLEDGE_EVALUATION"]
     status: TaskStatus
     revision: int = Field(ge=0)
     attempt_count: int = Field(ge=0, le=5)
@@ -86,7 +86,7 @@ class TaskLease(WireModel):
     owner_id: SubjectId
     input: dict[str, JsonValue]
     runtime_version: Literal["langgraph-v1"]
-    graph_version: Literal["knowledge-qa-v1", "knowledge-work-v1"]
+    graph_version: Literal["knowledge-qa-v1", "knowledge-work-v1", "knowledge-evaluation-v1"]
     epoch: int = Field(ge=0)
     worker_id: SubjectId | None
     lease_expires_at: AwareDatetime | None

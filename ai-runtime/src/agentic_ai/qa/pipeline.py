@@ -79,10 +79,18 @@ class QaPipeline:
         central: CentralTaskClient,
         knowledge: KnowledgePort,
         chat: ChatPort,
+        *,
+        evaluation_question: QaInput | None = None,
+        operation_scope: str = "qa",
+        emit_text: bool = True,
     ) -> None:
         self.binding, self.central, self.knowledge, self.chat = binding, central, knowledge, chat
+        # 评测只替换内部独立问题，中央 binding/input 原样保留用于每次续租核对。
+        if evaluation_question is not None and binding.graph_version != "knowledge-evaluation-v1":
+            raise QaError(QaCode.INPUT_REJECTED)
+        self.operation_scope, self.emit_text = operation_scope, emit_text
         try:
-            self.question = QaInput.model_validate(binding.input)
+            self.question = evaluation_question or QaInput.model_validate(binding.input)
         except ValidationError:
             raise QaError(QaCode.INPUT_REJECTED) from None
         if (
@@ -114,9 +122,12 @@ class QaPipeline:
         await self.central.event(
             self.binding.task.task_id,
             self.binding.epoch,
-            f"qa:{self.binding.epoch}:progress:{stage.value}",
+            f"{self.operation_scope}:{self.binding.epoch}:progress:{stage.value}",
             TaskEventType.PROGRESS,
-            {"stage": stage.value},
+            {
+                "stage": stage.value,
+                **({"questionId": self.question.turn_id} if self.operation_scope != "qa" else {}),
+            },
         )
 
     def _evidence(self, state: GraphState) -> list[KnowledgeHit]:
@@ -223,7 +234,9 @@ class QaPipeline:
         await self.assert_active()
         draft, pending, batch = "", "", 0
         async with aclosing(
-            self.chat.stream(messages, f"qa:{self.binding.task.task_id}:{self.binding.epoch}")
+            self.chat.stream(
+                messages, f"{self.operation_scope}:{self.binding.task.task_id}:{self.binding.epoch}"
+            )
         ) as stream:
             async for text in stream:
                 if not isinstance(text, str) or len(draft) + len(text) > MAX_ANSWER:
@@ -240,10 +253,12 @@ class QaPipeline:
 
     async def _delta(self, batch: int, text: str) -> None:
         await self.assert_active()
+        if not self.emit_text:
+            return
         await self.central.event(
             self.binding.task.task_id,
             self.binding.epoch,
-            f"qa:{self.binding.epoch}:text:{batch}",
+            f"{self.operation_scope}:{self.binding.epoch}:text:{batch}",
             TaskEventType.TEXT_DELTA,
             {"text": text},
         )

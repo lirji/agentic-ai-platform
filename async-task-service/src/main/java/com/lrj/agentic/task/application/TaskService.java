@@ -32,9 +32,21 @@ public class TaskService {
 
     /** 唯一约束争用必须先回滚败方事务，再读取已经提交的同键结果。 */
     public View submit(Caller owner, String key, Submit command) {
+        require(!TaskProtocol.EVALUATION_KIND.equals(command.kind()), TaskError.INPUT_INVALID);
+        return accept(owner, key, command);
+    }
+
+    /** 只有专用 Knowledge 路由可调用；通用会话/工作入口不能创建评测任务。 */
+    public View submitEvaluation(Caller owner, String key, Submit command) {
+        EvaluationTaskRequests.validate(command);
+        return accept(owner, key, command);
+    }
+
+    private View accept(Caller owner, String key, Submit command) {
         TaskValues.id(command.taskId()); TaskValues.key(key);
         versions(command.runtimeVersion(), command.graphVersion());
-        require(TaskProtocol.GRAPH.equals(command.graphVersion())
+        require(TaskProtocol.EVALUATION_GRAPH.equals(command.graphVersion())
+                ? TaskProtocol.EVALUATION_KIND.equals(command.kind()) : TaskProtocol.GRAPH.equals(command.graphVersion())
                 ? TaskProtocol.KIND.equals(command.kind())
                 : WorkKind.parse(command.kind()) != null, TaskError.INPUT_INVALID);
         String input = values.object(command.input(), TaskProtocol.MAX_VALUE);
@@ -89,6 +101,19 @@ public class TaskService {
 
     /** 公共查询在 SQL 中联合过滤所有者和租户，不返回执行内部材料。 */
     public View get(Caller owner, String id) { return view(owned(owner, id)); }
+
+    /** Knowledge 只能观察其受委托 owner 的评测租约；不获得其他运行输入。 */
+    public Lease inspectEvaluation(Caller owner, String id) {
+        var row = owned(owner, id);
+        require(TaskProtocol.EVALUATION_KIND.equals(row.kind()), TaskError.NOT_FOUND);
+        return lease(row);
+    }
+
+    /** 专用控制端点先限制类型，再沿用中央的取消竞争语义。 */
+    public View cancelEvaluation(Caller owner, String id, Revision command) {
+        inspectEvaluation(owner, id);
+        return cancel(owner, id, command);
+    }
 
     /** 内部对账可读中央终态，但读到运行状态不授予新的租约。 */
     public Lease inspect(Caller worker, String id) {
@@ -159,6 +184,9 @@ public class TaskService {
         TaskValues.key(command.operationKey());
         return tx.execute(ignored -> {
             var row = locked(worker, id);
+            if (TaskProtocol.EVALUATION_KIND.equals(row.kind())) {
+                EvaluationTaskRequests.proof(values.read(row.inputJson()), command.result(), command.epoch());
+            }
             if (row.status() == TaskStatus.SUCCEEDED) {
                 require(Objects.equals(row.completionKey(), command.operationKey())
                         && Objects.equals(row.resultSha256(), digest)
@@ -180,23 +208,34 @@ public class TaskService {
     public View fail(Caller worker, String id, Fail command) {
         TaskValues.key(command.operationKey());
         require(TaskProtocol.FAILURES.contains(command.errorCode()), TaskError.INPUT_INVALID);
+        String result = command.result() == null || command.result().isNull() ? null
+                : values.object(command.result(), TaskProtocol.MAX_VALUE);
+        String digest = result == null ? null : TaskValues.sha(result);
         return tx.execute(ignored -> {
             var row = locked(worker, id);
+            if (result != null) {
+                require(TaskProtocol.EVALUATION_KIND.equals(row.kind()), TaskError.INPUT_INVALID);
+                EvaluationTaskRequests.proof(values.read(row.inputJson()), command.result(), command.epoch());
+            }
             if (row.status() == TaskStatus.FAILED) {
                 require(Objects.equals(row.completionKey(), command.operationKey())
                         && Objects.equals(row.errorCode(), command.errorCode())
                         && row.retryable() == command.retryable()
+                        && Objects.equals(row.resultSha256(), digest)
                         && Objects.equals(row.workerId(), worker.userId())
                         && row.leaseEpoch() == command.epoch(), TaskError.CONFLICT);
                 return view(row);
             }
             assertActive(row, worker, command.epoch());
-            terminal(row, TaskStatus.FAILED, null, null, command.operationKey(),
+            terminal(row, TaskStatus.FAILED, result, digest, command.operationKey(),
                     command.errorCode(), command.retryable());
             var updated = mapper.read(row.tenantId(), row.taskId());
+            var payload = new java.util.LinkedHashMap<String, Object>(Map.of("status", updated.status(),
+                    "revision", updated.revision(), "errorCode", command.errorCode(), "retryable", command.retryable()));
+            // 恢复会清除当前结果；失败事件仍保留当时中央实际接受的凭据供审计。
+            if (result != null) { payload.put("resultSha256", digest); payload.put("result", command.result()); }
             append(updated, "w:" + command.operationKey(), TaskProtocol.STATUS_EVENT,
-                    values.write(Map.of("status", updated.status(), "revision", updated.revision(),
-                            "errorCode", command.errorCode(), "retryable", command.retryable())), true);
+                    values.write(payload), true);
             return view(mapper.read(row.tenantId(), row.taskId()));
         });
     }
@@ -219,8 +258,18 @@ public class TaskService {
 
     /** 恢复保留不可变输入、检查点和累积费用；下一次领取才建立新 epoch。 */
     public View resume(Caller owner, String id, Revision command) {
+        return resume(owner, id, command, false);
+    }
+
+    /** 评测恢复必须经过 Knowledge 当前绑定复核，公共任务入口不能绕过。 */
+    public View resumeEvaluation(Caller owner, String id, Revision command) {
+        return resume(owner, id, command, true);
+    }
+
+    private View resume(Caller owner, String id, Revision command, boolean evaluation) {
         return tx.execute(ignored -> {
             var row = lockOwned(owner, id);
+            require(evaluation == TaskProtocol.EVALUATION_KIND.equals(row.kind()), TaskError.NOT_FOUND);
             require(row.status() == TaskStatus.FAILED && row.retryable()
                     && row.resumeCount() < TaskProtocol.MAX_RESUMES
                     && row.revision() == command.expectedRevision(), TaskError.CONFLICT);
@@ -305,7 +354,8 @@ public class TaskService {
     }
     private static void versions(String runtime, String graph) {
         require(TaskProtocol.RUNTIME.equals(runtime)
-                && (TaskProtocol.GRAPH.equals(graph) || TaskProtocol.WORK_GRAPH.equals(graph)), TaskError.INPUT_INVALID);
+                && (TaskProtocol.GRAPH.equals(graph) || TaskProtocol.WORK_GRAPH.equals(graph)
+                    || TaskProtocol.EVALUATION_GRAPH.equals(graph)), TaskError.INPUT_INVALID);
     }
     private static void changed(int count) { require(count == 1, TaskError.CONFLICT); }
     private static void require(boolean valid, TaskError code) {

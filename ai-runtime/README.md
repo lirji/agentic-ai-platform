@@ -116,3 +116,12 @@ AGENTIC_WORK_IT=1 AGENTIC_QA_EXECUTION_IT=1 AGENTIC_CHECKPOINT_IT=1 uv run --fro
 ```
 
 真实恢复测试使用隔离合成身份和受控模型，不产生模型费用。Deep Agents 无内部 saver 时显式设置 durability=exit，以阻止继承父图 sync 持久设置；锁定版本会提示 durability 无效，属于已知无害警告，未放宽恢复器或序列化限制。
+
+
+## 持久质量评测（S8C）
+
+`evaluation/` 通过独立服务身份读取冻结的评测定义、保存不可变候选及报告清单；Java仍拥有权限、发布版本和正式报告。LangGraph根图按题调用既有QaPipeline的检索、生成和引用复核；标准答案/评分标准不会进入模型提示。每题成功后保存候选引用到原PG检查点，恢复仅重做未提交的题，中央终态凭据决定正式报告。
+
+LlamaIndex提供Recall/MRR适配；分级nDCG按已冻结公式计算。空召回应答题计0，无答案/执行失败不混入同一分母。真实费用未返回则记录未知，保守预留与供应商费用分开。每题事件/预算键包含题目身份，不复用第一题的操作键，也不向浏览器广播评测答案TEXT_DELTA。
+
+新图只在配置 `evaluation_private_key` 后领取；初始化见 [本机运行](../deploy/README.md)。本图600秒/202步，最多100题；既有QA/work期限保持。`tests/test_evaluation_pipeline.py`为确定性图/公式验证，`test_evaluation_execution_integration.py`在显式本机开关下验证真实服务/PG，测试前暂停模型worker，结果不等于真实模型质量。

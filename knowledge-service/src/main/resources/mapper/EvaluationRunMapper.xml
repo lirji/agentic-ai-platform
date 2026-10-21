@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunMapper">
+    <sql id="owned">tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId}</sql>
+    <sql id="rowOwned">tenant_id = #{row.tenantId} AND owner_id = #{row.ownerId} AND run_id = #{row.runId}</sql>
+    <sql id="columns">run_id, tenant_id, owner_id, key_hash, request_fingerprint, task_id, dataset_id,
+        dataset_revision, definition_digest, top_k, revision, dispatch_state, dispatch_attempts, lease_owner,
+        lease_generation, lease_until, next_attempt_at, last_error, cancel_requested, resume_revision,
+        last_control, observed_revision, observed_task_json, report_epoch, report_digest, profile_json,
+        profile_digest, settled, created_at, updated_at</sql>
+    <select id="byKey" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow">
+        SELECT <include refid="columns"/> FROM knowledge_evaluation_run WHERE <include refid="owned"/> AND key_hash = #{key}
+    </select>
+    <select id="get" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow">
+        SELECT <include refid="columns"/> FROM knowledge_evaluation_run WHERE <include refid="owned"/> AND run_id = #{id}
+        <if test="lock">FOR UPDATE</if>
+    </select>
+    <insert id="create">
+        INSERT INTO knowledge_evaluation_run (run_id, tenant_id, owner_id, key_hash, request_fingerprint,
+            task_id, dataset_id, dataset_revision, definition_digest, top_k, next_attempt_at, created_at, updated_at)
+        VALUES (#{row.runId}, #{row.tenantId}, #{row.ownerId}, #{row.keyHash}, #{row.requestFingerprint},
+            #{row.taskId}, #{row.datasetId}, #{row.datasetRevision}, #{row.definitionDigest}, #{row.topK},
+            UTC_TIMESTAMP(6), UTC_TIMESTAMP(6), UTC_TIMESTAMP(6))
+    </insert>
+    <select id="list" resultType="com.lrj.agentic.knowledge.domain.evaluation.RunModels$RunSummary">
+        SELECT run_id, dataset_id, dataset_revision, definition_digest, top_k, revision, dispatch_state,
+            cancel_requested, created_at FROM knowledge_evaluation_run
+        WHERE <include refid="owned"/> AND dataset_id = #{dataset}
+        <if test="after != null">AND run_id &gt; #{after}</if>
+        ORDER BY run_id LIMIT #{limit}
+    </select>
+    <update id="control">
+        UPDATE knowledge_evaluation_run SET revision = #{row.revision}, cancel_requested = #{row.cancelRequested},
+            resume_revision = #{row.resumeRevision}, last_control = #{row.lastControl}, settled = FALSE,
+            dispatch_state = #{row.dispatchState}, dispatch_attempts = #{row.dispatchAttempts}, last_error = NULL,
+            next_attempt_at = UTC_TIMESTAMP(6), updated_at = UTC_TIMESTAMP(6)
+        WHERE <include refid="rowOwned"/> AND revision = #{expected}
+    </update>
+    <update id="observe">
+        UPDATE knowledge_evaluation_run SET observed_revision = #{row.observedRevision},
+            observed_task_json = #{row.observedTaskJson}, report_epoch = #{row.reportEpoch}, report_digest = #{row.reportDigest},
+            resume_revision = #{row.resumeRevision}, settled = #{row.settled},
+            dispatch_state = 'SUBMITTED', last_error = NULL, updated_at = UTC_TIMESTAMP(6)
+        WHERE <include refid="rowOwned"/> AND observed_revision &lt;= #{row.observedRevision}
+    </update>
+    <update id="profile">
+        UPDATE knowledge_evaluation_run SET profile_json = #{row.profileJson}, profile_digest = #{row.profileDigest},
+            updated_at = UTC_TIMESTAMP(6) WHERE <include refid="rowOwned"/> AND profile_json IS NULL
+    </update>
+    <select id="next" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow">
+        SELECT <include refid="columns"/> FROM knowledge_evaluation_run
+        WHERE tenant_id = #{tenant} AND settled = FALSE AND dispatch_state IN ('PENDING', 'SUBMITTED')
+            AND next_attempt_at &lt;= UTC_TIMESTAMP(6) AND (lease_until IS NULL OR lease_until &lt;= UTC_TIMESTAMP(6))
+        ORDER BY next_attempt_at, run_id LIMIT 1 FOR UPDATE SKIP LOCKED
+    </select>
+    <update id="claim">
+        UPDATE knowledge_evaluation_run SET lease_owner = #{worker}, lease_generation = lease_generation + 1,
+            lease_until = TIMESTAMPADD(SECOND, #{seconds}, UTC_TIMESTAMP(6)), updated_at = UTC_TIMESTAMP(6)
+        WHERE <include refid="rowOwned"/> AND lease_generation = #{row.leaseGeneration}
+            AND (lease_until IS NULL OR lease_until &lt;= UTC_TIMESTAMP(6))
+    </update>
+    <update id="release">
+        UPDATE knowledge_evaluation_run SET
+            next_attempt_at = TIMESTAMPADD(SECOND,
+                CASE WHEN #{submitted} THEN 2 ELSE LEAST(60, POW(2, dispatch_attempts + 1)) + #{jitter} END, UTC_TIMESTAMP(6)),
+            dispatch_state = CASE WHEN #{submitted} THEN 'SUBMITTED'
+                WHEN dispatch_state = 'PENDING' AND dispatch_attempts + 1 &gt;= #{maximum} THEN 'FAILED' ELSE dispatch_state END,
+            dispatch_attempts = CASE WHEN #{submitted} THEN dispatch_attempts
+                ELSE LEAST(#{maximum}, dispatch_attempts + 1) END,
+            last_error = #{error}, lease_owner = NULL, lease_until = NULL, updated_at = UTC_TIMESTAMP(6)
+        WHERE tenant_id = #{claim.owner.tenantId} AND owner_id = #{claim.owner.userId} AND run_id = #{claim.runId}
+            AND lease_owner = #{claim.worker} AND lease_generation = #{claim.generation} AND lease_until &gt; UTC_TIMESTAMP(6)
+    </update>
+    <select id="candidate" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow$Stored">
+        SELECT digest, report_json AS body FROM knowledge_evaluation_candidate
+        WHERE <include refid="owned"/> AND run_id = #{id} AND epoch = #{receipt.epoch} AND question_id = #{receipt.questionId}
+    </select>
+    <select id="summaries" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow$Stored">
+        SELECT digest, summary_json AS body FROM knowledge_evaluation_candidate
+        WHERE <include refid="owned"/> AND run_id = #{id} AND
+        <foreach collection="receipts" item="receipt" separator=" OR " open="(" close=")">
+            (epoch = #{receipt.epoch} AND question_id = #{receipt.questionId} AND digest = #{receipt.digest})
+        </foreach>
+    </select>
+    <insert id="addCandidate">
+        INSERT INTO knowledge_evaluation_candidate (run_id, epoch, question_id, tenant_id, owner_id,
+            digest, report_json, summary_json, created_at)
+        VALUES (#{id}, #{receipt.epoch}, #{receipt.questionId}, #{caller.tenantId}, #{caller.userId},
+            #{receipt.digest}, #{body}, #{summary}, UTC_TIMESTAMP(6))
+    </insert>
+    <select id="manifest" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow$Stored">
+        SELECT digest, manifest_json AS body FROM knowledge_evaluation_manifest
+        WHERE <include refid="owned"/> AND run_id = #{id} AND epoch = #{epoch}
+    </select>
+    <insert id="addManifest">
+        INSERT INTO knowledge_evaluation_manifest (run_id, epoch, tenant_id, owner_id, digest, manifest_json, created_at)
+        VALUES (#{id}, #{epoch}, #{caller.tenantId}, #{caller.userId}, #{digest}, #{body}, UTC_TIMESTAMP(6))
+    </insert>
+</mapper>

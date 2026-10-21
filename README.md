@@ -31,4 +31,4 @@
 
 准备基线、React 架构、R01/H01、P01/P02、知识 K、中央 T 与会话 Q 契约已落盘。Java 使用 JDK 21、Boot 3.5、MyBatis-Plus/XML，Gateway 验签后换发内部 JWT；Knowledge、Tasks、Conversations 各自拥有独立数据库。Python 3.12 已锁定三框架：LangGraph/LlamaIndex 用于准备图，Deep Agents 完成隔离工具/流式兼容验证。真实北京百炼账号的 1024 维准备/查询和 PG 检查点联合恢复已验证；少量合成资料上的真实问答已验证；研究与三种只读助手已在合成资料上通过真实模型验收；系统性检索质量、容量与生产运行仍未验收。
 
-评测定义管理已接入 Knowledge 与独立 React `/quality`：保存问题、语料范围、正确证据和拒答标准，修改保留不可变修订；未知提交可查原回执，绑定失效隐藏正文。[S8B 验收](docs/qa/quality-datasets-20261021/TEST_RESULT.md)记录当前范围；持久评测执行和基线比较接续 S8C/D。
+质量评测已接入 Knowledge 与独立 React `/quality`：定义/证据按修订保存，可持久运行、取消和恢复，查看逐题回答、召回指标、引用与已知耗时/费用；未知提交核对原任务，失效绑定隐藏正文。执行采用现行问答链路与 LangGraph 检查点，[S8C 验收](docs/qa/quality-runs-20261021/TEST_RESULT.md)记录真实恢复与界面证据。人工评分、基线选择/比较和真实机制质量基线接续 S8D/E。

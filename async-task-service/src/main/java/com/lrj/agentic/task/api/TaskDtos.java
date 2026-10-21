@@ -27,7 +27,12 @@ public final class TaskDtos {
     public record Complete(@NotNull @Min(1) Long epoch, @NotNull String operationKey,
             @NotNull JsonNode result) { }
     public record Fail(@NotNull @Min(1) Long epoch, @NotNull String operationKey,
-            @NotNull String errorCode, @NotNull Boolean retryable) { }
+            @NotNull String errorCode, @NotNull Boolean retryable, JsonNode result) {
+        /** 旧问答/工作执行器不携带评测凭据，保留原构造和线上缺省语义。 */
+        public Fail(Long epoch, String operationKey, String errorCode, Boolean retryable) {
+            this(epoch, operationKey, errorCode, retryable, null);
+        }
+    }
     public record Receipt(String checkpointId, String checkpointNamespace, String threadId,
             long epoch, String sha256) { }
     public record View(String taskId, String kind, TaskStatus status, long revision,

@@ -2,6 +2,11 @@
 
 from enum import StrEnum
 
+from pydantic import ValidationError
+
+from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
+from agentic_ai.tasks.models import TaskFailureCode
+
 
 class QaCode(StrEnum):
     """安全编码不包含原问题、提供方正文或签名信息。"""
@@ -22,3 +27,26 @@ class QaError(RuntimeError):
     def __init__(self, code: QaCode) -> None:
         self.code = code
         super().__init__(code.value)
+
+
+def failure_code(error: Exception) -> tuple[TaskFailureCode, bool]:
+    """只把目录编码写入中央失败事实，预算/输入失败不开放自动额度恢复。"""
+    if isinstance(error, QaError):
+        if error.code == QaCode.BUDGET_EXCEEDED:
+            return TaskFailureCode.BUDGET_EXCEEDED, False
+        if error.code in {
+            QaCode.INPUT_REJECTED,
+            QaCode.EVIDENCE_REJECTED,
+            QaCode.ANSWER_INVALID,
+            QaCode.CONFIG_INVALID,
+        }:
+            return TaskFailureCode.INPUT_REJECTED, False
+        return TaskFailureCode.AI_UNAVAILABLE, True
+    if isinstance(error, TaskRuntimeError) and error.code in {
+        TaskRuntimeCode.UNAVAILABLE,
+        TaskRuntimeCode.CAPACITY_EXCEEDED,
+    }:
+        return TaskFailureCode.AI_UNAVAILABLE, True
+    if isinstance(error, ValidationError):
+        return TaskFailureCode.INPUT_REJECTED, False
+    return TaskFailureCode.EXECUTION_FAILED, False

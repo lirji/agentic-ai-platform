@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -24,6 +25,14 @@ import org.springframework.security.web.SecurityFilterChain;
 /** 用户委托、会话提交和 worker 三套身份分别验签，不共享可写服务身份。 */
 @Configuration
 public class TaskSecurity {
+    @Bean @Order(0)
+    @ConditionalOnProperty(name = "task.identity.evaluation-enabled", havingValue = "true")
+    SecurityFilterChain evaluation(HttpSecurity http, ObjectMapper json,
+            @Value("${task.identity.evaluation-public-key}") Resource key) throws Exception {
+        http.securityMatcher("/internal/v1/evaluation-tasks", "/internal/v1/evaluation-tasks/**")
+                .authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority("SCOPE_" + TaskProtocol.EVALUATION_SCOPE));
+        return base(http, json, decoder(key, TaskProtocol.EVALUATION_ISSUER, TaskProtocol.EVALUATION_PARTY)).build();
+    }
     @Bean @Order(1)
     SecurityFilterChain worker(HttpSecurity http, ObjectMapper json,
             @Value("${task.identity.worker-public-key}") Resource key) throws Exception {

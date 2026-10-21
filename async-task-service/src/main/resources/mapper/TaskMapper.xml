@@ -67,7 +67,8 @@
     </update>
     <update id="resume">
         UPDATE ai_task SET status='QUEUED',resume_count=resume_count+1,attempt_count=0,revision=revision+1,
-            worker_id=NULL,retryable=FALSE,error_code=NULL,completion_key=NULL,updated_at=UTC_TIMESTAMP(6)
+            worker_id=NULL,retryable=FALSE,error_code=NULL,completion_key=NULL,result_json=NULL,result_sha256=NULL,
+            updated_at=UTC_TIMESTAMP(6)
         WHERE task_id=#{id} AND status='FAILED' AND retryable=TRUE AND resume_count&lt;3
     </update>
     <update id="checkpoint">

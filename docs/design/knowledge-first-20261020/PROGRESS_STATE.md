@@ -2,19 +2,22 @@
 
 ## 当前任务：按能力深化方案连续实施
 
-- 标识：`capability-delivery-20261021`。用户最新要求“开始实施”，已解除上一轮开发暂停；按 51 项计划的依赖推进，条件项仍按触发条件执行，不默认全量扩业务或新增费用。
-- 当前：S8A DONE；S8B DONE / 必需验收 PASS / 两仓已正常合并推送；S8C READY。按原依赖继续 S8C–E 与 S8F，不将评测定义交付当作质量闭环完成。
-- 计划/权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、各正式 CONTRACTS；本文件为唯一进度。原 S0–S7 及计划文档有效证据保留。
-- Git：S8B 后端 `02d22359a2309074afc486fdc5fc37cfea233c96`、前端 `427bcb9451752a3fa5dbcbb77835339059e7b998` 已在独立任务分支验证后 fast-forward 合并推送 origin/main，远程核对一致；见 [交付收据](../../qa/quality-datasets-20261021/delivery-result.json)。原目录，无新 worktree；两仓产品工作树干净。收据文档提交以 Git 历史为准。
-- 当前清单：①核对代码/规范/恢复状态；②冻结质量定义、指标、接口与失败/权限语义；③文档验证与 S8A 交付；④S8B 数据集/标注后端与 UI；⑤真实 DB/HTTP/浏览器验收；⑥按依赖继续。
-- 关键决策：Knowledge 拥有不可变数据集修订与报告；复用 Tasks/LangGraph 执行，LlamaIndex 仅适配指标/检索。先保留当前检索排序；同源标注、空召回/无答案/执行失败及当前权限分开。标注读取已发布片段，不产生模型调用。
-- 样本决定：用户已选择项目架构/操作文档，U01 首批资料用途已明确；固定源提交与真实章节建立机制集，不据此宣称业务质量达标。模型调用前读取现有账本与在途状态，聊天/Embedding 原各 1 元累计上限不变，Reranker 未获新额度。
-- 规范：continue-approved-delivery、backend-implementation、frontend-implementation、implementation-validation、update-progress-docs、task-git-delivery；已读业务建模、持久化、API、并发安全、容量/版本和相关个人技术栈。无子 Agent 并行授权。
-- S8B 已验证：V4、E01 定义/修订/回执/证据、严格有界 JSON 和共享发布 SQL；26 Knowledge 单元、10 security 单元、21 真实 DB 集成、另 2 HTTP 组 PASS。前端真实列表/定义/历史/标注、未知保存恢复、并发核对、当前授权失效隐藏；44 单元、类型/构建/lint/format 与 8 浏览器组 PASS。最终证据：[S8B TEST_RESULT](../../qa/quality-datasets-20261021/TEST_RESULT.md)，两仓 source-fingerprint 固定提交范围。
-- 历史失败：焦点恢复、保存可访问名称、旧字段提示已修正；虚拟列表测试改用组件支持的键盘导航，原失败日志保留。Java 无 formatter/专用静态分析，Code Hygiene COMPLETE_WITH_LIMITATIONS；前端 COMPLETE，无阻断。没有声称独立 Agent 审查。
-- 运行：原七个后端/worker 与前端运行；Knowledge 新制品、dev/test V4/readiness 已验证。S8B 模型调用 0。浏览器真实数据集及原回执恢复状态在前端 `.local/s8b-quality-state.json`，不可清空盲目重试；私密配置、预算和旧任务保留。无在途付费调用。
-- S8A 证据：[质量契约](QUALITY_CONTRACTS.md)、[样本规范](QUALITY_ACCEPTANCE.md)、[验收](../../qa/quality-contracts-20261021/TEST_RESULT.md)。E01 已冻结；E02/E03 传输于对应片前补齐。文档检查通过，未运行应用/模型。
-- 下一步：立即进入 S8C，先基于现有 Tasks/Graph 冻结 E02 精确传输与报告凭据，再实施持久执行、逐题结果及 React 运行界面。无新增组件或额外模型额度授权。
+- 标识：`capability-delivery-20261021`。用户已要求“开始实施”，按20项差距的51项计划连续推进，条件项仍按触发条件执行。
+- 状态：S8A/S8B已交付；S8C DONE / 必需验收PASS / 两仓Git交付待执行；完整计划未完成。下一项S8D人工评审、基线选择与逐题退化比较，不等待用户再说继续。
+- 权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、QUALITY_CONTRACTS；本文件为唯一任务状态。S8C传输与恢复依据 [E02](EVALUATION_RUN_CONTRACTS.md)，S8D实施前补齐E03，不重做既有架构。
+- Git：两仓原目录 `feat/quality-runs-20261021`，后端起点`c810e959df28a44695e72f4dc67f1ed29ffdb17b`，前端起点`427bcb9451752a3fa5dbcbb77835339059e7b998`；当前未提交均为S8C产品/测试/运行/文档，无新worktree。S8B后端`02d2235`、前端`427bcb9`已合并推送。
+- 当前清单：①S8C契约/身份；②Knowledge运行账本/报告与Tasks失败凭据；③LangGraph逐题恢复/QA复用；④React运行/逐题结果；⑤验收与文档已完成；⑥两仓逻辑提交/正常合并推送；⑦进入S8D。
+- 决策：Knowledge拥有不可变定义/报告，Tasks拥有租约/终态，PG根图逐题保存候选引用。候选写入不宣称跨库原子fencing；只提升实际接受的中央proof。未知受理/取消/恢复沿原taskId和原CAS，恢复pending继续轮询；取消在未知恢复窗口409。正文按manifestDigest核对，避免新答案混旧汇总。
+- 质量口径：仍为当前生产两路RRF(60)/QA路径。空召回应答题0、无答案不适用、执行失败与未评审分开。正确引用不等于正确回答；缺失usage/金额保留未知。人工评审、基线/比较和真实模型基线尚未完成。
+- 用户样本决定：先用项目架构/操作文档；固定来源和样本见QUALITY_ACCEPTANCE。当前确定性浏览器夹具不是S8E机制质量基线，更不能作为业务达标结论。
+- 已验证：Knowledge6组真实DB，Tasks4新组+原17组；实际Gateway/Tasks/Knowledge/MySQL/PG恢复/取消3组，恢复pending增量1组复验；独立身份HTTP3组；清单guard1组DB+真实HTTP；有界传输3项（5秒正文期限/4在途拒绝/响应上限/不重定向不重试）。Knowledge原26+security10单元有效。Python282通过/47条件跳过，新增图/指标10项再验，mypy46源码/Ruff通过。前端50单元/构建/类型/lint/format与7组浏览器通过，1440/1024/414及引用侧栏截图实际查看。
+- 证据：[S8C TEST_RESULT](../../qa/quality-runs-20261021/TEST_RESULT.md)、[实现映射](../../qa/quality-runs-20261021/IMPLEMENTATION_EVIDENCE.md)，source-fingerprint和validation记录源码/日志。代码卫生后端COMPLETE_WITH_LIMITATIONS（Java无formatter/专用静态分析），前端COMPLETE；枚举/固定协议值问题已修正，保留最初失败日志，没有豁免或冒称独立Agent审查。
+- 迁移：Tasks V3、Knowledge V5均在独立dev/test执行且success=1，旧迁移未修改，新迁移也不可改写；前序V4有效。独立评测服务密钥已初始化，当前worker支持三种图，预算/既有配置保留。
+- 运行：七个后端/worker与Vite28086运行，最终制品更新后核对readiness；确定性验收期间正常暂停qa-worker，验收结束确认活跃评测0后恢复。原运行记录保存在后端`.local/s8c-evaluation-it-*.json`和前端`.local/s8c-quality-run-state.json`，不盲目重复受理或删除。
+- 费用：聊天0.510952/1元（14次），Embedding0.26/1元（26次）；S8A/B/C新增付费调用均0。S8E真实模型前再次核账；Reranker没有新额度。
+- 授权：本地实现/测试/必要配置与正常Git提交、合并、推送main；无生产部署、清理数据/账本、强推、新模型费用或子Agent授权。`.local`/`.logs`/`.idea`及测试数据保留。
+- 历史失败：旧Tasks结果CHECK、严格枚举解析、候选未知写入、恢复窗口及报告切换已修正；夹具键长/方法、Java无Mockito、浏览器断点动画帧与测试数组可空类型已修正并有针对性复验。全局Ruff默认规则不作为本仓库规范，运行脚本显式使用已有Python配置；没有新增工具链。
+- 规范：continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；业务建模、持久化、API、并发安全、容量/版本、发布治理与相关个人栈。无全局Engineering Runtime Gate冒称。
 
 ## 历史：20 项差距的框架化实施计划
 

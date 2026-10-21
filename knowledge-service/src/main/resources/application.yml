@@ -49,6 +49,15 @@ mybatis-plus:
   global-config:
     banner: false
 knowledge:
+  evaluation:
+    enabled: ${KNOWLEDGE_EVALUATION_ENABLED:false}
+    task-endpoint: ${KNOWLEDGE_EVALUATION_TASK_ENDPOINT:http://127.0.0.1:28087}
+    task-public-key: ${KNOWLEDGE_EVALUATION_TASK_PUBLIC_KEY:}
+    task-private-key: ${KNOWLEDGE_EVALUATION_TASK_PRIVATE_KEY:}
+    worker-public-key: ${KNOWLEDGE_EVALUATION_WORKER_PUBLIC_KEY:}
+    worker-enabled: ${KNOWLEDGE_EVALUATION_WORKER_ENABLED:false}
+    worker-tenant: ${KNOWLEDGE_EVALUATION_WORKER_TENANT:}
+    poll-seconds: ${KNOWLEDGE_EVALUATION_POLL_SECONDS:2}
   runtime:
     enabled: ${KNOWLEDGE_RUNTIME_ENABLED:false}
     public-key: ${KNOWLEDGE_RUNTIME_PUBLIC_KEY:}

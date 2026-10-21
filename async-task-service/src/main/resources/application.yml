@@ -48,6 +48,8 @@ task:
     edge-public-key: ${INTERNAL_PUBLIC_KEY}
     submit-public-key: ${TASK_SUBMIT_PUBLIC_KEY}
     worker-public-key: ${TASK_WORKER_PUBLIC_KEY}
+    evaluation-enabled: ${TASK_EVALUATION_ENABLED:false}
+    evaluation-public-key: ${TASK_EVALUATION_PUBLIC_KEY:}
   lease-seconds: ${TASK_LEASE_SECONDS:60}
 management:
   server:

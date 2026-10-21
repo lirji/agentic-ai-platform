@@ -195,6 +195,29 @@ Knowledge 追加 V4，保存评测集、不可变修订和幂等命令回执；�
 
 真实 MySQL 测试沿 `deploy/local.py` 的 `test` 环境运行 `mvn -B -ntp -pl knowledge-service -am -Pintegration verify`，勿把本机数据库凭据放进命令或日志。前端 `pnpm exec playwright test tests/quality-real.spec.ts` 使用现有已发布操作资料且不调用模型；保留 `.local/s8b-quality-state.json` 恢复状态。验收边界与已知限制见 [S8B TEST_RESULT](../docs/qa/quality-datasets-20261021/TEST_RESULT.md)。
 
+## 持久评测运行（S8C）
+
+先沿用已批准的 Tasks / Knowledge / PG / QA 配置和模型预算。初始化独立角色后重新构建和启动 Tasks、Knowledge、qa-worker：
+
+```bash
+python3 deploy/local.py init-evaluation
+mvn -B -ntp -pl knowledge-service,async-task-service -am package
+python3 deploy/local.py stop-qa
+python3 deploy/local.py stop --service tasks
+python3 deploy/local.py stop --service knowledge
+python3 deploy/local.py start --service tasks
+python3 deploy/local.py start --service knowledge
+python3 deploy/local.py start-qa
+```
+
+`init-evaluation` 仅建立 `knowledge-evaluation-{private,public}.pem` 与 `runtime-evaluation-{private,public}.pem` 独立身份，并为已有 `.local/qa-worker.json` 增加绝对路径 `evaluation_private_key`；不会覆盖已有密钥、模型、检查点或账本，不调用模型。未初始化不启用新图。知识服务持有自己的Tasks私钥和worker公钥；Tasks只持有相应公钥，worker只获得自身配置。不要把这些内容提交或发给浏览器。
+
+Tasks追加V3、Knowledge追加V5，已执行迁移不能改写。默认关闭的 `knowledge.evaluation` / `task.identity.evaluation` 由本地已初始化配置启用；本地交接租户仍仅local-dev。后台交接一次一条，未知受理与取消都使用原taskId；交接耗尽在界面显式重试。`qa-worker` 顺序轮询原QA、work和新增 `knowledge-evaluation-v1`，一次只执行一个任务。本图600秒/202步/最多100题，旧图期限不扩大。
+
+前端评测集详情选择已保存修订运行；中央确认报告后才能查看逐题结果。失败可恢复原检查点，但模型调用发出而检查点未提交的窗口可能再次计费；两个累计预算不会重置。恢复配置必须与首次运行的模型/profile一致，不可拿确定性测试的synthetic profile改成真实模型继续跑。
+
+确定性协议/UI验收前正常停止qa-worker，设置 `AGENTIC_EVALUATION_IT=1` 与已存在的机制定义 `AGENTIC_EVALUATION_DATASET`，运行 `ai-runtime/tests/test_evaluation_execution_integration.py` 或前端 `quality-run-real.spec.ts`；固定聊天/召回只在测试工具内，报告经真实接口持久化。原任务记录在 `.local/s8c-evaluation-it-*.json` 与前端 `.local/s8c-quality-run-state.json`，未知结果先查询，不能盲目重跑。确认无排队或执行中的验收任务后恢复worker。当前真实模型质量基线由S8E交付，协议测试不替代它。
+
 ## 研究与只读助手（S6/S7）
 
 Tasks 启动时按原迁移账号应用 V2（kind 注释与 owner/kind 分页索引）；保留 V1 及旧问答数据。现有 `start-qa` worker 顺序领取问答和 `knowledge-work-v1`，不启动第二个付费 worker。界面入口为 [研究](http://127.0.0.1:28086/research) 和 [只读助手](http://127.0.0.1:28086/assistants)。仅检索当前用户的已发布知识，不提供互联网搜索或业务写入工具。

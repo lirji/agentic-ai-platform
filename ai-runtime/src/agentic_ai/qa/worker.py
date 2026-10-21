@@ -13,22 +13,25 @@ from pathlib import Path
 from typing import Self
 from uuid import uuid4
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from agentic_ai.agents.chat import ToolChatClient, ToolChatPort
 from agentic_ai.agents.models import WORK_EXECUTION_SECONDS, WORK_GRAPH
 from agentic_ai.agents.pipeline import WorkPipeline
+from agentic_ai.evaluation.client import EvaluationClient, EvaluationPort
+from agentic_ai.evaluation.models import EVALUATION_GRAPH, EXECUTION_SECONDS, GRAPH_STEPS, Profile
+from agentic_ai.evaluation.pipeline import EvaluationFailed, EvaluationPipeline, model_profile
 from agentic_ai.qa.chat import ChatClient, ChatPort
 from agentic_ai.qa.chat_budget import ChatBudget
 from agentic_ai.qa.chat_config import MAX_CONFIG_BYTES, ChatConfig
-from agentic_ai.qa.errors import QaCode, QaError
+from agentic_ai.qa.errors import QaCode, QaError, failure_code
 from agentic_ai.qa.knowledge import KnowledgeClient
 from agentic_ai.qa.pipeline import QaPipeline
 from agentic_ai.qa.retriever import KnowledgePort
 from agentic_ai.tasks.client import CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
-from agentic_ai.tasks.execution import MAX_EXECUTION_SECONDS, run_claimed_graph
-from agentic_ai.tasks.models import SubjectId, TaskFailureCode, TaskLease, TaskView
+from agentic_ai.tasks.execution import MAX_EXECUTION_SECONDS, MAX_GRAPH_STEPS, run_claimed_graph
+from agentic_ai.tasks.models import SubjectId, TaskLease, TaskView
 from agentic_ai.tasks.postgres import CheckpointConfig, PostgresCheckpoints
 
 HEARTBEAT_SECONDS = 10
@@ -45,6 +48,7 @@ class WorkerConfig(BaseModel):
     knowledge_endpoint: str = Field(repr=False, max_length=2048)
     task_private_key: Path = Field(repr=False)
     knowledge_private_key: Path = Field(repr=False)
+    evaluation_private_key: Path | None = Field(default=None, repr=False)
     chat_config: Path = Field(repr=False)
     checkpoints: CheckpointConfig = Field(repr=False)
 
@@ -54,6 +58,14 @@ class WorkerConfig(BaseModel):
         """所有敏感路径固定，不随工作目录变化误读另一个环境。"""
         if not value.is_absolute():
             raise ValueError("worker 配置需要绝对路径")
+        return value
+
+    @field_validator("evaluation_private_key")
+    @classmethod
+    def evaluation_absolute(cls, value: Path | None) -> Path | None:
+        """旧配置默认不领取评测，新身份必须显式配置绝对路径。"""
+        if value is not None and not value.is_absolute():
+            raise ValueError("评测身份需要绝对路径")
         return value
 
     @classmethod
@@ -76,31 +88,8 @@ class WorkerConfig(BaseModel):
         return parsed
 
 
-def failure_code(error: Exception) -> tuple[TaskFailureCode, bool]:
-    """只把目录编码写入中央失败事实，预算/输入失败不开放自动额度恢复。"""
-    if isinstance(error, QaError):
-        if error.code == QaCode.BUDGET_EXCEEDED:
-            return TaskFailureCode.BUDGET_EXCEEDED, False
-        if error.code in {
-            QaCode.INPUT_REJECTED,
-            QaCode.EVIDENCE_REJECTED,
-            QaCode.ANSWER_INVALID,
-            QaCode.CONFIG_INVALID,
-        }:
-            return TaskFailureCode.INPUT_REJECTED, False
-        return TaskFailureCode.AI_UNAVAILABLE, True
-    if isinstance(error, TaskRuntimeError) and error.code in {
-        TaskRuntimeCode.UNAVAILABLE,
-        TaskRuntimeCode.CAPACITY_EXCEEDED,
-    }:
-        return TaskFailureCode.AI_UNAVAILABLE, True
-    if isinstance(error, ValidationError):
-        return TaskFailureCode.INPUT_REJECTED, False
-    return TaskFailureCode.EXECUTION_FAILED, False
-
-
 async def _run_with_heartbeat(
-    pipeline: QaPipeline | WorkPipeline, checkpoints: CheckpointConfig
+    pipeline: QaPipeline | WorkPipeline | EvaluationPipeline, checkpoints: CheckpointConfig
 ) -> TaskView:
     async def pulse() -> None:
         while True:
@@ -114,9 +103,16 @@ async def _run_with_heartbeat(
             checkpoints,
             pipeline.build,
             before_complete=pipeline.before_complete,
-            execution_seconds=WORK_EXECUTION_SECONDS
-            if isinstance(pipeline, WorkPipeline)
-            else MAX_EXECUTION_SECONDS,
+            execution_seconds=(
+                EXECUTION_SECONDS
+                if isinstance(pipeline, EvaluationPipeline)
+                else WORK_EXECUTION_SECONDS
+                if isinstance(pipeline, WorkPipeline)
+                else MAX_EXECUTION_SECONDS
+            ),
+            graph_steps=GRAPH_STEPS
+            if isinstance(pipeline, EvaluationPipeline)
+            else MAX_GRAPH_STEPS,
             result_key="report" if isinstance(pipeline, WorkPipeline) else None,
         ),
         name="qa-graph",
@@ -142,11 +138,20 @@ async def execute_qa_task(
     knowledge: KnowledgePort,
     chat: ChatPort,
     tool_chat: ToolChatPort | None = None,
+    evaluations: EvaluationPort | None = None,
+    profile: Profile | None = None,
 ) -> TaskView:
     """异常先核对中央；取消/完成赢得竞争后不再报告覆盖它的失败。"""
     try:
-        pipeline: QaPipeline | WorkPipeline
-        if binding.graph_version == WORK_GRAPH:
+        pipeline: QaPipeline | WorkPipeline | EvaluationPipeline
+        if binding.graph_version == EVALUATION_GRAPH:
+            if evaluations is None or profile is None:
+                raise QaError(QaCode.CONFIG_INVALID)
+            opened = await evaluations.open(profile)
+            pipeline = EvaluationPipeline(
+                binding, central, knowledge, chat, evaluations, profile, opened
+            )
+        elif binding.graph_version == WORK_GRAPH:
             if tool_chat is None:
                 raise QaError(QaCode.CONFIG_INVALID)
             pipeline = WorkPipeline(binding, central, knowledge, tool_chat)
@@ -161,7 +166,7 @@ async def execute_qa_task(
                     "state": "EXECUTION_REJECTED",
                     "taskId": binding.task.task_id,
                     "code": error.code.value
-                    if isinstance(error, (QaError, TaskRuntimeError))
+                    if isinstance(error, (QaError, TaskRuntimeError, EvaluationFailed))
                     else "EXECUTION_FAILED",
                 }
             )
@@ -180,8 +185,20 @@ async def execute_qa_task(
             raise TaskRuntimeError(TaskRuntimeCode.LEASE_LOST) from None
         if isinstance(error, TaskRuntimeError) and error.code == TaskRuntimeCode.LEASE_LOST:
             raise error
-        code, retryable = failure_code(error)
+        code, retryable = (
+            (error.code, error.retryable)
+            if isinstance(error, EvaluationFailed)
+            else failure_code(error)
+        )
         try:
+            if isinstance(error, EvaluationFailed):
+                return await central.fail(
+                    binding.task.task_id,
+                    binding.epoch,
+                    code,
+                    retryable=retryable,
+                    result=error.proof.model_dump(mode="json", by_alias=True),
+                )
             return await central.fail(
                 binding.task.task_id, binding.epoch, code, retryable=retryable
             )
@@ -241,7 +258,13 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                 config.knowledge_private_key,
             )
             await probe.aclose()
+            evaluation_key = (
+                EvaluationClient.load_private_key(config.evaluation_private_key)
+                if config.evaluation_private_key is not None
+                else None
+            )
             chat_config = ChatConfig.from_file(config.chat_config)
+            evaluation_profile = model_profile(chat_config) if evaluation_key is not None else None
             budget = ChatBudget(chat_config)
             budget.check_available()
             async with PostgresCheckpoints.open(config.checkpoints) as storage:
@@ -254,7 +277,9 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                 _log("CONFIGURATION_VALID")
                 return
             _log("READY")
-            graph_versions = ("knowledge-qa-v1", WORK_GRAPH)
+            graph_versions = ("knowledge-qa-v1", WORK_GRAPH) + (
+                (EVALUATION_GRAPH,) if config.evaluation_private_key is not None else ()
+            )
             next_graph = 0
             while not stop.is_set():
                 budget.check_available()
@@ -271,11 +296,23 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                         binding.owner_id,
                         config.knowledge_private_key,
                     )
+                    evaluations = (
+                        EvaluationClient(config.knowledge_endpoint, binding, evaluation_key)
+                        if binding.graph_version == EVALUATION_GRAPH and evaluation_key is not None
+                        else None
+                    )
                     started = time.monotonic()
                     _log("EXECUTING", task=binding.task)
                     work = asyncio.create_task(
                         execute_qa_task(
-                            binding, central, config.checkpoints, knowledge, chat, tool_chat
+                            binding,
+                            central,
+                            config.checkpoints,
+                            knowledge,
+                            chat,
+                            tool_chat,
+                            evaluations,
+                            evaluation_profile if evaluations is not None else None,
                         )
                     )
                     stopping = asyncio.create_task(stop.wait())
@@ -298,6 +335,8 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                         stopping.cancel()
                         await asyncio.gather(work, stopping, return_exceptions=True)
                         await knowledge.aclose()
+                        if evaluations is not None:
+                            await evaluations.aclose()
                 if not stop.is_set():
                     try:
                         await asyncio.wait_for(stop.wait(), POLL_SECONDS)
