@@ -1,6 +1,6 @@
 {
   "task": "capability-implementation-plan-20261021",
-  "checked_at": "2026-10-21T12:18:58+08:00",
+  "checked_at": "2026-10-21T12:20:12+08:00",
   "baseline": "1e8f3b36766069764b74ca7c67cc6afeb9e9fe3e",
   "status": "PASS",
   "scope": "planning documents only; no application/model/runtime tests",
@@ -11,7 +11,7 @@
     "gaps": 20,
     "contract_workpackages": 19,
     "markdown_files": 13,
-    "local_links": 221,
+    "local_links": 222,
     "table_rows": 464,
     "framework_source_hashes": 7,
     "project_source_hashes": 8
