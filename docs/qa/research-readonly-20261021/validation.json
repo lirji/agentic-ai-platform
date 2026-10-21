@@ -24,5 +24,13 @@
   },
   "realModel": "real-model.json",
   "restart": "restart-replay.json",
-  "scope": "S6; S7 evidence in separate frontend repository"
+  "scope": "S6; S7 evidence in separate frontend repository",
+  "frontend": {
+    "implementationCommit": "5835332baa79032a1169130adc09b866a755abd0",
+    "unitTests": 38,
+    "browserGroups": 15,
+    "node": "24.22.0",
+    "pnpm": "12.14.0",
+    "result": "PASS"
+  }
 }

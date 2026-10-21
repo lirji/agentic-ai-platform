@@ -9,7 +9,7 @@
 | 阶段恢复与取消/撤权 | 4项真实PG+中央测试，analyze/verify新代恢复、最终引用撤权、模型中取消；PASS | .logs/s6-recovery.log、完整Python回归 |
 | 真实模型 | DeepSeek flash 的 REPORT/EXPLAIN/CHECKLIST/DRAFT 均成功，有授权引用与实际工具记录；无资料成功返回 NO_EVIDENCE，聊天增量0 | [真实模型](real-model.json) |
 | 重启与结果重放 | Tasks/网关正常重启，代理/worker再启动；5个已完成任务、原文与SSE只读重放，配置和两本账本不变，新增调用0 | [重启](restart-replay.json) |
-| SSE 与网关 | 成功保持 text/event-stream，缺身份仍JSON401；前端检查点只推进游标；PASS | IdentityExchangeTest、TaskPersistenceIT、公开HTTP、浏览器真实阶段 |
+| SSE 与网关 | 成功保持 text/event-stream，缺身份仍JSON401；前端检查点只推进游标；PASS | IdentityExchangeTest、TaskPersistenceIT、公开HTTP、浏览器真实阶段；[原真实QA的UTF-8与答案一致性](qa-sse-regression.json) |
 | 共享回归/构建 | 292 Python通过/21跳过；78 Java通过；Ruff、mypy 41源码、Python wheel/sdist、Maven构建通过 | .logs/s6-{python,java,gateway,mypy,build}-final.log |
 | 代码卫生 | 后端 COMPLETE_WITH_LIMITATIONS，17建议无阻断；前端 COMPLETE | [代码卫生](code-hygiene.json)、前端S7同名文件 |
 

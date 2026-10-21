@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "checks": [
+    {
+      "mode": "answer",
+      "taskId": "7c8193e0-21db-4c42-acd7-2169e746c1ee",
+      "utf8DeltaMatchesFinalAnswer": true
+    },
+    {
+      "mode": "followup",
+      "taskId": "ad12f560-19e6-4510-9360-4af5d55cb854",
+      "utf8DeltaMatchesFinalAnswer": true
+    }
+  ],
+  "newModelCalls": 0
+}
