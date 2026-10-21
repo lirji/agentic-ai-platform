@@ -16,6 +16,53 @@ pytestmark = pytest.mark.skipif(
 ROOT = Path(__file__).resolve().parents[2]
 
 
+@pytest.mark.parametrize("kind", ["reviews", "baseline"])
+def test_public_decisions_require_write_scope_and_reject_forged_or_oversize_body(kind):
+    """E03拒绝路径验证真实Gateway和Knowledge过滤链，不写业务数据。"""
+    sys.path.insert(0, str(ROOT / "deploy"))
+    import local
+
+    resource = (
+        f"runs/{uuid4()}/questions/{uuid4()}/reviews"
+        if kind == "reviews"
+        else f"datasets/{uuid4()}/revisions/1/baseline"
+    )
+    url = "http://127.0.0.1:28080/api/v1/knowledge/evaluations/" + resource
+    read_only = {
+        "Authorization": "Bearer " + local.token("decision-auth", "owner", "knowledge:read")
+    }
+    writable = {
+        "Authorization": "Bearer "
+        + local.token("decision-auth", "owner", "knowledge:read knowledge:write"),
+        "Idempotency-Key": str(uuid4()),
+        "Content-Type": "application/json",
+    }
+    with httpx.Client(trust_env=False, timeout=5) as client:
+        assert client.post(url, json={}).status_code == 401
+        assert client.post(url, headers=read_only, json={}).status_code == 403
+        for body in (
+            '{"reviewer":"forged"}',
+            '{"expectedRevision":1.1}',
+            '{"expectedRevision":0,"expectedRevision":1}',
+            '{"assessment":{"supported":1}}',
+            "{}{}",
+        ):
+            response = client.post(url, headers=writable, content=body)
+            assert response.status_code == 400
+            assert response.json()["code"] == "KNOWLEDGE_INPUT_INVALID"
+        response = client.post(url, headers=writable, content=iter([b" " * (32 * 1024 + 1)]))
+        assert response.status_code == 413
+        assert response.json()["code"] == "KNOWLEDGE_EVALUATION_TOO_LARGE"
+        assert (
+            client.post(
+                url.replace("28080", "28084"),
+                headers={"X-Internal-Token": token("worker")},
+                json={},
+            ).status_code
+            == 401
+        )
+
+
 def token(role, **updates):
     now = int(time.time())
     evaluation = role == "evaluation"

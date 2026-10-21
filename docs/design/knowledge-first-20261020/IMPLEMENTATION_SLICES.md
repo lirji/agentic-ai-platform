@@ -198,7 +198,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S8A | 冻结评测口径、样本和执行边界 | S7 | DESIGN | DONE |
 | S8B | 评测集创建、修订与标注界面 | S8A | IMPLEMENT | IN_PROGRESS |
 | S8C | 持久评测执行与逐题结果 | S8B | IMPLEMENT | DONE |
-| S8D | 基线选择、逐题对照与退化门禁 | S8C | IMPLEMENT | PLANNED |
+| S8D | 基线选择、逐题对照与退化门禁 | S8C | IMPLEMENT | DONE |
 | S8E | 运行当前两路链路的可追溯基线 | S8D | VALIDATE | PLANNED |
 | S8F | 最小跨语言与前端 CI | S8A | ENGINEERING | PLANNED |
 | S9A | 冻结结构化解析与准备包 v2 | S8A | DESIGN | PLANNED |
@@ -285,7 +285,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-EVAL；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 禁止跨定义/权限/资料快照的伪比较；总体改善不能掩盖关键题退化；检索/答案/延迟/成本分列；不合格运行不能设基线。
 - **Pass / Runtime：** IMPLEMENT；无新组件；模型裁判默认不自动开启。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G01 G08 G18。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G01 G08 G18。
 
 ### S8E · 运行当前两路链路的可追溯基线
 

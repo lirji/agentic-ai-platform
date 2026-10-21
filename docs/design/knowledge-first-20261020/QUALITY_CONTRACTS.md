@@ -1,6 +1,6 @@
 # 质量评测契约
 
-版本：`quality-v1`，2026-10-21；C-EVAL 的唯一正式入口。S8A 冻结本文件的定义、指标和执行归属；E01 已在 S8B 实现，E02 传输与身份详见 [执行契约](EVALUATION_RUN_CONTRACTS.md)。E03 比较 DTO 与迁移仍须在 S8D 实施前补齐，不能据概念说明虚构已实现接口。
+版本：`quality-v1`，2026-10-21；C-EVAL 的唯一正式入口。S8A 冻结本文件的定义、指标和执行归属；E01 已在 S8B 实现，E02 传输与身份详见 [执行契约](EVALUATION_RUN_CONTRACTS.md)。E03 人工评审、基线与比较传输见 [比较契约](EVALUATION_COMPARISON_CONTRACTS.md)，在S8D中实施。
 
 ## 1. 归属、修订与权限
 
@@ -96,7 +96,7 @@
 
 ## 4. E02/E03：执行与报告约束
 
-S8C 的正式传输、服务身份、持久交接和终态确认补充见 [E02 持久评测执行](EVALUATION_RUN_CONTRACTS.md)；以下不变量继续适用。E03 仍在 S8D 前冻结。
+S8C 的正式传输、服务身份、持久交接和终态确认补充见 [E02 持久评测执行](EVALUATION_RUN_CONTRACTS.md)；以下不变量继续适用。E03 见 [人工评审与比较](EVALUATION_COMPARISON_CONTRACTS.md)。
 
 S8C 使用 Tasks 的新增评测类型及版本化 LangGraph 根图；每题复用当前 RAG，不为评测启动另一个通用调度器。Knowledge 保存请求和业务结果，可靠交接绑定唯一 taskId；受理不等于运行成功。发起、取消、恢复都有稳定请求身份，恢复须重验定义、资料、权限、预算与原 checkpoint 兼容性。
 

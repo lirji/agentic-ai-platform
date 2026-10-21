@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationDecisionMapper">
+    <sql id="owned">tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId}</sql>
+    <sql id="reviewColumns">r.tenant_id, r.owner_id, r.run_id, r.manifest_digest, r.question_id, r.revision,
+        r.content_digest, r.body_json, r.reviewer, r.created_at</sql>
+    <sql id="baselineColumns">b.baseline_id, b.dataset_id, b.dataset_revision, b.revision, b.tenant_id, b.owner_id,
+        b.run_id, b.manifest_digest, b.review_digest, b.policy_version</sql>
+    <select id="command" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationDecisionRows$CommandRow">
+        SELECT request_fingerprint AS fingerprint, receipt_json FROM knowledge_evaluation_decision_command
+        WHERE <include refid="owned"/> AND key_hash = #{key}
+    </select>
+    <insert id="accept">
+        INSERT INTO knowledge_evaluation_decision_command (tenant_id, owner_id, key_hash, request_fingerprint, kind, run_id, receipt_json, created_at)
+        VALUES (#{caller.tenantId}, #{caller.userId}, #{key}, #{fingerprint}, #{kind}, #{runId}, #{receipt}, UTC_TIMESTAMP(6))
+    </insert>
+    <select id="reviews" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationDecisionRows$ReviewRow">
+        SELECT <include refid="reviewColumns"/> FROM knowledge_evaluation_review_head h
+        JOIN knowledge_evaluation_review_revision r USING (run_id, manifest_digest, question_id, revision)
+        WHERE r.tenant_id = #{caller.tenantId} AND r.owner_id = #{caller.userId} AND r.run_id = #{runId} AND r.manifest_digest = #{manifest}
+        ORDER BY r.question_id
+    </select>
+    <select id="history" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationDecisionRows$ReviewRow">
+        SELECT <include refid="reviewColumns"/> FROM knowledge_evaluation_review_revision r
+        WHERE r.tenant_id = #{caller.tenantId} AND r.owner_id = #{caller.userId}
+            AND r.run_id = #{runId} AND r.manifest_digest = #{manifest} AND r.question_id = #{questionId}
+        <if test="before != null">AND r.revision &lt; #{before}</if>
+        ORDER BY r.revision DESC LIMIT #{limit}
+    </select>
+    <select id="reviewHead" resultType="java.lang.Long">
+        SELECT revision FROM knowledge_evaluation_review_head WHERE <include refid="owned"/>
+            AND run_id = #{runId} AND manifest_digest = #{manifest} AND question_id = #{questionId}
+    </select>
+    <insert id="appendReview">
+        INSERT INTO knowledge_evaluation_review_revision (tenant_id, owner_id, run_id, manifest_digest, question_id, revision,
+            content_digest, body_json, reviewer, created_at)
+        VALUES (#{row.tenantId}, #{row.ownerId}, #{row.runId}, #{row.manifestDigest}, #{row.questionId}, #{row.revision},
+            #{row.contentDigest}, #{row.bodyJson}, #{row.reviewer}, #{row.createdAt})
+    </insert>
+    <insert id="createReviewHead">
+        INSERT INTO knowledge_evaluation_review_head (tenant_id, owner_id, run_id, manifest_digest, question_id, revision)
+        VALUES (#{row.tenantId}, #{row.ownerId}, #{row.runId}, #{row.manifestDigest}, #{row.questionId}, #{row.revision})
+    </insert>
+    <update id="advanceReview">
+        UPDATE knowledge_evaluation_review_head SET revision = #{row.revision}
+        WHERE tenant_id = #{row.tenantId} AND owner_id = #{row.ownerId} AND run_id = #{row.runId}
+            AND manifest_digest = #{row.manifestDigest} AND question_id = #{row.questionId} AND revision = #{expected}
+    </update>
+    <select id="facts" resultType="java.lang.String">
+        SELECT JSON_OBJECT('questionId', question_id, 'outcome', JSON_EXTRACT(report_json, '$.outcome'),
+            'answerability', JSON_EXTRACT(report_json, '$.result.answerability'),
+            'citationCount', COALESCE(JSON_LENGTH(report_json, '$.result.citations'), 0),
+            'timing', JSON_EXTRACT(report_json, '$.timing'), 'cost', JSON_EXTRACT(report_json, '$.cost'))
+        FROM knowledge_evaluation_candidate WHERE <include refid="owned"/> AND run_id = #{runId} AND
+        <foreach collection="receipts" item="receipt" separator=" OR " open="(" close=")">
+            (epoch = #{receipt.epoch} AND question_id = #{receipt.questionId} AND digest = #{receipt.digest})
+        </foreach>
+    </select>
+    <select id="baseline" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationDecisionRows$BaselineRow">
+        SELECT <include refid="baselineColumns"/>, b.snapshot_json, b.note, b.selected_by, b.created_at
+        FROM knowledge_evaluation_baseline b WHERE b.tenant_id = #{caller.tenantId} AND b.owner_id = #{caller.userId} AND b.baseline_id = #{id}
+    </select>
+    <select id="current" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationDecisionRows$BaselineRow">
+        SELECT <include refid="baselineColumns"/>, NULL AS snapshot_json, b.note, b.selected_by, b.created_at
+        FROM knowledge_evaluation_baseline_head h JOIN knowledge_evaluation_baseline b USING (dataset_id, dataset_revision, revision)
+        WHERE b.tenant_id = #{caller.tenantId} AND b.owner_id = #{caller.userId} AND b.dataset_id = #{datasetId} AND b.dataset_revision = #{datasetRevision}
+    </select>
+    <select id="baselines" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationDecisionRows$BaselineRow">
+        SELECT <include refid="baselineColumns"/>, NULL AS snapshot_json, NULL AS note, b.selected_by, b.created_at
+        FROM knowledge_evaluation_baseline b WHERE b.tenant_id = #{caller.tenantId} AND b.owner_id = #{caller.userId}
+            AND b.dataset_id = #{datasetId} AND b.dataset_revision = #{datasetRevision}
+        <if test="before != null">AND b.revision &lt; #{before}</if>
+        ORDER BY b.revision DESC LIMIT #{limit}
+    </select>
+    <insert id="appendBaseline">
+        INSERT INTO knowledge_evaluation_baseline (baseline_id, dataset_id, dataset_revision, revision, tenant_id, owner_id,
+            run_id, manifest_digest, review_digest, policy_version, snapshot_json, note, selected_by, created_at)
+        VALUES (#{row.baselineId}, #{row.datasetId}, #{row.datasetRevision}, #{row.revision}, #{row.tenantId}, #{row.ownerId},
+            #{row.runId}, #{row.manifestDigest}, #{row.reviewDigest}, #{row.policyVersion}, #{row.snapshotJson}, #{row.note}, #{row.selectedBy}, #{row.createdAt})
+    </insert>
+    <insert id="createBaselineHead">
+        INSERT INTO knowledge_evaluation_baseline_head (dataset_id, dataset_revision, tenant_id, owner_id, revision)
+        VALUES (#{row.datasetId}, #{row.datasetRevision}, #{row.tenantId}, #{row.ownerId}, #{row.revision})
+    </insert>
+    <update id="advanceBaseline">
+        UPDATE knowledge_evaluation_baseline_head SET revision = #{row.revision}
+        WHERE tenant_id = #{row.tenantId} AND owner_id = #{row.ownerId} AND dataset_id = #{row.datasetId}
+            AND dataset_revision = #{row.datasetRevision} AND revision = #{expected}
+    </update>
+</mapper>

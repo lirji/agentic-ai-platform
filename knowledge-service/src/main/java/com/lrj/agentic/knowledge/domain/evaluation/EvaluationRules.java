@@ -123,7 +123,8 @@ public final class EvaluationRules {
         if (!condition) { throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID); }
     }
 
-    private static String text(String input, int minimum, int maximum) {
+    /** 定义与人工评审共用Unicode/长度规则，不能在新接口绕过控制字符约束。 */
+    public static String text(String input, int minimum, int maximum) {
         require(input != null);
         String value = input.strip();
         require(minimum == 0 || !ProcessingProtocol.blankText(value));

@@ -48,7 +48,9 @@ public class KnowledgeSecurity {
                                 "/api/v1/knowledge/evaluations/runs",
                                 "/api/v1/knowledge/evaluations/runs/*/cancel",
                                 "/api/v1/knowledge/evaluations/runs/*/resume",
-                                "/api/v1/knowledge/evaluations/runs/*/dispatch")
+                                "/api/v1/knowledge/evaluations/runs/*/dispatch",
+                                "/api/v1/knowledge/evaluations/runs/*/questions/*/reviews",
+                                "/api/v1/knowledge/evaluations/datasets/*/revisions/*/baseline")
                         .hasAuthority("SCOPE_" + IdentityProtocol.WRITE_SCOPE)
                         .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/search")
                         .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)

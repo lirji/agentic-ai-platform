@@ -3,21 +3,18 @@
 ## 当前任务：按能力深化方案连续实施
 
 - 标识：`capability-delivery-20261021`。用户已要求“开始实施”，按20项差距的51项计划连续推进，条件项仍按触发条件执行。
-- 状态：S8A/S8B已交付；S8C DONE / 必需验收PASS / 两仓已正常合并推送origin/main并核对远程；完整计划未完成。下一项S8D人工评审、基线选择与逐题退化比较，不等待用户再说继续。
-- 权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、QUALITY_CONTRACTS；本文件为唯一任务状态。S8C传输与恢复依据 [E02](EVALUATION_RUN_CONTRACTS.md)，S8D实施前补齐E03，不重做既有架构。
-- Git：两仓原目录 `feat/quality-runs-20261021`，后端起点`c810e959df28a44695e72f4dc67f1ed29ffdb17b`，前端起点`427bcb9451752a3fa5dbcbb77835339059e7b998`；S8C产品提交后端`32377f2`、前端`f811c99`均已交付，无新worktree；收据提交以Git历史为准。S8B后端`02d2235`、前端`427bcb9`已合并推送。
-- 当前清单：①S8C契约/身份；②Knowledge运行账本/报告与Tasks失败凭据；③LangGraph逐题恢复/QA复用；④React运行/逐题结果；⑤验收与文档已完成；⑥两仓逻辑提交/正常合并推送已完成；⑦进入S8D。
-- 决策：Knowledge拥有不可变定义/报告，Tasks拥有租约/终态，PG根图逐题保存候选引用。候选写入不宣称跨库原子fencing；只提升实际接受的中央proof。未知受理/取消/恢复沿原taskId和原CAS，恢复pending继续轮询；取消在未知恢复窗口409。正文按manifestDigest核对，避免新答案混旧汇总。
-- 质量口径：仍为当前生产两路RRF(60)/QA路径。空召回应答题0、无答案不适用、执行失败与未评审分开。正确引用不等于正确回答；缺失usage/金额保留未知。人工评审、基线/比较和真实模型基线尚未完成。
-- 用户样本决定：先用项目架构/操作文档；固定来源和样本见QUALITY_ACCEPTANCE。当前确定性浏览器夹具不是S8E机制质量基线，更不能作为业务达标结论。
-- 已验证：Knowledge6组真实DB，Tasks4新组+原17组；实际Gateway/Tasks/Knowledge/MySQL/PG恢复/取消3组，恢复pending增量1组复验；独立身份HTTP3组；清单guard1组DB+真实HTTP；有界传输3项（5秒正文期限/4在途拒绝/响应上限/不重定向不重试）。Knowledge原26+security10单元有效。Python282通过/47条件跳过，新增图/指标10项再验，mypy46源码/Ruff通过。前端50单元/构建/类型/lint/format与7组浏览器通过，1440/1024/414及引用侧栏截图实际查看。
-- 证据：[S8C TEST_RESULT](../../qa/quality-runs-20261021/TEST_RESULT.md)、[实现映射](../../qa/quality-runs-20261021/IMPLEMENTATION_EVIDENCE.md)，source-fingerprint和validation记录源码/日志。代码卫生后端COMPLETE_WITH_LIMITATIONS（Java无formatter/专用静态分析），前端COMPLETE；枚举/固定协议值问题已修正，保留最初失败日志，没有豁免或冒称独立Agent审查。
-- 迁移：Tasks V3、Knowledge V5均在独立dev/test执行且success=1，旧迁移未修改，新迁移也不可改写；前序V4有效。独立评测服务密钥已初始化，当前worker支持三种图，预算/既有配置保留。
-- 运行：七个后端/worker与Vite28086运行，最终制品更新后核对readiness；确定性验收期间正常暂停qa-worker，验收结束确认活跃评测0后恢复。原运行记录保存在后端`.local/s8c-evaluation-it-*.json`和前端`.local/s8c-quality-run-state.json`，不盲目重复受理或删除。
-- 费用：聊天0.510952/1元（14次），Embedding0.26/1元（26次）；S8A/B/C新增付费调用均0。S8E真实模型前再次核账；Reranker没有新额度。
-- 授权：本地实现/测试/必要配置与正常Git提交、合并、推送main；无生产部署、清理数据/账本、强推、新模型费用或子Agent授权。`.local`/`.logs`/`.idea`及测试数据保留。
-- 历史失败：旧Tasks结果CHECK、严格枚举解析、候选未知写入、恢复窗口及报告切换已修正；夹具键长/方法、Java无Mockito、浏览器断点动画帧与测试数组可空类型已修正并有针对性复验。全局Ruff默认规则不作为本仓库规范，运行脚本显式使用已有Python配置；没有新增工具链。
-- 规范：continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；业务建模、持久化、API、并发安全、容量/版本、发布治理与相关个人栈。无全局Engineering Runtime Gate冒称。
+- 状态：S8A/B/C已交付；S8D DONE / 必需验收PASS / 待两仓正常Git交付；完整51项计划未完成，下一步S8E真实机制基线，不等用户再次确认。
+- 权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、QUALITY_CONTRACTS、[E02](EVALUATION_RUN_CONTRACTS.md)、[E03](EVALUATION_COMPARISON_CONTRACTS.md)；本文件是唯一任务状态。首批资料遵循QUALITY_ACCEPTANCE固定提交，不把确定性夹具当真实质量基线。
+- Git：两仓原目录`feat/quality-baselines-20261021`；后端起点44409bf700910edbe3d2ae6375e90cbc87f8eeac，前端起点717e8c249c59c8f1cb8a654839e0a1234050bde6；S8D未提交，改动归属见source-fingerprint及实现映射；无新worktree。S8C产品32377f2/f811c99和收据已推送main。
+- S8D实现：不可变人工评审/基线选择，原键恢复与CAS、当前报告和绑定复核；固定mechanism-gate-v1逐题/汇总比较，未知费用保留分母；React评分、历史、设置基线、两侧原文对照和权限失效隐藏。
+- S8D验收：[TEST_RESULT](../../qa/quality-baselines-20261021/TEST_RESULT.md)、[实现映射](../../qa/quality-baselines-20261021/IMPLEMENTATION_EVIDENCE.md)。后端47单元+安全10+22真实DB/HTTP PASS；最终制品重启后5项身份/严格输入PASS。前端59单元、类型/构建/lint/format和12组浏览器PASS；1440/1024/414及弹窗/侧栏截图实际查看。代码卫生后端WITH_LIMITATIONS（Java无formatter/专用静态分析），前端COMPLETE；只读复核，不冒称子Agent审查。
+- 历史修复：MyBatis锁前空查询缓存导致并发同键误报CAS，移到聚合锁后并通过7组DB及回归；本地身份桥E03精确白名单、虚拟下拉、快速Esc焦点、拒绝后答案隐藏均已修复。保留原失败日志；卫生扫描误读.gitignore内第三方venv，按Git纳管/当前任务文件重算且保留原报告，未修改规则或为误报改业务枚举。
+- 迁移：Knowledge V6 dev/test成功，不可改写；旧V4/V5及Tasks V3未变。运行：Gateway/Knowledge/Tasks/Conversations/AI/LiteLLM/qa-worker及Vite正常；Knowledge最终制品重启readiness通过。local-dev活跃任务0、全库活跃评测0，其他租户故障夹具保留；`.logs/s8d-final-restart.log`。
+- 费用：聊天0.510952/1元（14次）、Embedding0.26/1元（26次）；S8A/B/C/D新增付费均0。这是累计保守预留不是账单；S8E运行前再次核账，不清零，不扩大Reranker额度。
+- 用户样本决定：先用项目架构/操作文档；来源、题目与固定提交见QUALITY_ACCEPTANCE。S8D两条确定性运行沿前端`.local/s8d-quality-decision-state.json`及原后端record恢复，不重建。
+- 下一步：生成当前源码/日志摘要，按已授权逻辑提交并正常合并推送两仓main；记录远程收据后直接进入S8E。S8E通过接口导入固定段落、用真实document/version/chunk标注、冻结定义后运行当前两路RRF/QA，逐题评审并如实记录失败和费用。
+- 授权：本地实施、测试与正常Git提交/合并/推送；不包括生产部署、删除数据/目录、强推、新模型费用或子Agent。`.local`/`.logs`/`.idea`和测试数据保留。
+- 规范：continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；业务建模、持久化、API、并发安全、容量/版本、发布治理。无全局Engineering Runtime Gate冒称。
 
 ## 历史：20 项差距的框架化实施计划
 

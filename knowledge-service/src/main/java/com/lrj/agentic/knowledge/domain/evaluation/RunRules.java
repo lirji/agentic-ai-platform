@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 /** 服务端复核报告不变量和指标，不能把运行时提交的任意分数当成事实。 */
 public final class RunRules {
+    /** 复用原问答结果协议，评审不得自行发明回答状态。 */
+    public static boolean hasAnswer(String answerability) { return ANSWERED.equals(answerability); }
     private static final Pattern CITED = Pattern.compile("\\[([0-9]+)]");
     private static final String ANSWERED = "ANSWERED";
     private static final String NO_EVIDENCE = "NO_EVIDENCE";

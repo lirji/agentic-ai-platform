@@ -1,0 +1,31 @@
+{
+  "slice": "S8D",
+  "repository": "agentic-ai-platform",
+  "base": "44409bf700910edbe3d2ae6375e90cbc87f8eeac",
+  "files": {
+    "README.md": "f994905f0c0563d426363482c7ec7d340317dbb457384e68bdaf2584fa2a5b95",
+    "ai-runtime/tests/evaluation_ui_fixture.py": "3fd2f1ede3131c2f19a8abbc4a2af0b6e834843903d974517a8a85b430fe2432",
+    "ai-runtime/tests/test_evaluation_identity_integration.py": "6c1d48cfb1c12a6d604b678bda88fada0cbf1086aef4c061394a334f7bf268db",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/EvaluationDecisionController.java": "cdeb10ee51db71054101fde31e05a31d6b533df4518b873b81fb15ee07e5461c",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationDecisionService.java": "d29e7578d83372617727a2b02f645eabc392b22c068a902e3a9c85cae9d95a51",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/KnowledgeSecurity.java": "10b7ab5aa2efc14cb3b0466f3f668c8d2cc837f3366b878efd63e907ff97fa4c",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeError.java": "d40bc6df1e18f5dbebaf3dd3cefcf2a8eb4078effa3dd5b04fa8fbe80c9e4dd7",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/ComparisonModels.java": "b4214d76d3e9fa0af76a8493e07a832fd670287644689e36f05b8d10f8b1adf3",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/ComparisonRules.java": "ade5f7e3a8ca9712846a497d77d29ac50f4a5c0ee9a95872a21bd41c1fc0b458",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/DecisionModels.java": "ab54c386f3f2cf3cfbe3b1f996c2d3dc222c67e5c82a10fe14ad6f7f860e1fe8",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/DecisionProtocol.java": "3ce68c9ceb435778f7104402859796c6793a591e369c38296f5bf15f90235b79",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationDecisionRepository.java": "9a5a1ac1b17bd81c58e1f247431f45df66f5c933ec5985aefbb8a5a40b2b1827",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationRules.java": "a89f812c63277209cdd77bfa91ad47c9d1c3fb507c4515c7641f32951c5eb68a",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/ReviewRules.java": "652e503ee2cac2be9a7604ab7c833e73ecca575098c1b90d932bdd8423c9dbb8",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunRules.java": "95a9d319912452e6d298fc31ab8e0b2b852bcb611cf705de47ecd531e17636b1",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationDecisionMapper.java": "832814d8c84aa09679d4f8f8397406cfe215daa76439e71be5a1cb12683041db",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationDecisionRows.java": "ff1b4a2257c5629bd4900c3c42b8fa571ad84de936f318c2a7c4ed5678a7b1a1",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlEvaluationDecisionRepository.java": "c5e8208e4b7f0ee700a5099cfa437ed32e0c656db1441064684bad7f9d99d2ba",
+    "knowledge-service/src/main/resources/db/migration/V6__evaluation_decisions.sql": "2a7258e8bcf7c5501eaa7f592fc6d63d63984d985f1a14bc940a1d0d8df668f2",
+    "knowledge-service/src/main/resources/mapper/EvaluationDecisionMapper.xml": "242014d4f0fac6b713ffd3e6351c31d3c726863c3433174e2dc4b4d6cc32990e",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/ComparisonRulesTest.java": "abf7840508801bbee722c2baaf40f981e9c4b4e7c5e47d8842c51aaff8a8b4e8",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationDecisionIT.java": "1758731528bf5eed417aebef5ffe898c3b0d586d0be413c75989156f53369da6",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/ReviewRulesTest.java": "9d45f155fa8be75b219b60fd994a00d26b08eabbb2dc56fd400c201f6e10421f"
+  },
+  "fingerprint": "4c456ddc2a9d3453d7ce156827eb747341944f83a13c3d8fb9652583626f9195"
+}
