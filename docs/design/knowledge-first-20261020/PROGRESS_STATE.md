@@ -3,14 +3,16 @@
 ## 当前任务：能力缺口对比分析
 
 - 标识：`capability-gap-analysis-20261021`。用户最新要求：先中断实施，对比 langchain4j-platform 与本项目的业务和实现精细化差距，输出能力欠缺文档，为后续方向提供依据。
-- 状态：分析 DONE / 文档验证 PASS / Git 交付待执行；无产品代码变更。五步实施显式 PAUSED，本次报告交付后也不自动恢复。
+- 状态：分析 DONE / 文档验证 PASS / 分析提交已合并推送 main；无产品代码变更。五步实施显式 PAUSED，本次报告交付后也不自动恢复。
 - 计划：①固定两后端及当前前端基线；②复用参考项目已有分析并核验核心源码；③业务/实现/前端/测试/运行对照；④缺口、优先级、依赖、验收与暂不建设项；⑤五份关联分析文档及索引；⑥文档验证、正常提交合并推送。
 - Git：本项目原目录 `feat/capability-gap-analysis-20261021`，起点 `d61536c`；前端 main `d2b4dc6`；参考 `../langchain4j-platform` main `468cec425dd160e80cfc3ab378d3440a8767e4d5`。开始时仅上一暂停任务的两份进度文件未提交，这些修改属于本次范围切换记录，保留并纠正暂停状态。未建 worktree。
 - 产物：`.engineering/exploration/{CAPABILITY_MAP,CAPABILITY_GAPS,OPPORTUNITIES,EVOLUTION_ROADMAP,EVIDENCE_INDEX}.md`，其中 CAPABILITY_GAPS 为主阅读入口；本节仍是唯一任务状态。
 - 边界：仅源码/配置/测试与已有验证证据只读取证，写分析/索引/进度文档；不修改产品/测试/运行配置/依赖，不调用付费模型，不做数据迁移/清理/部署。正常文档提交/合并/推送沿既有授权。
 - 已完成：五份分析文档、20 项差距、12 项候选及条件路线；26 组证据、147 处固定提交文件引用和摘要清单。修正相关文档入口的早期状态漂移。区分实现/配置/历史验证；原两路 RRF 已实现、精排缺失、引用不等于语义正确等结论已复核。
 - 验证：五份必备分析结构、20 个差距、12 个候选、26 组/147 处固定提交证据及 SHA-256、Markdown 表格/围栏/本地链接、引用 ID、改动范围与常见密钥模式检查通过；参考及前端 HEAD/工作树未变。详见 [.engineering/exploration/VALIDATION.md](../../../.engineering/exploration/VALIDATION.md)。未执行应用测试、付费模型或运行探测。
-- 下一步：将本任务 12 份文档/证据文件按独立分支提交，正常合并推送 main，记录实际收据；实施继续 PAUSED。
+- Git 交付：分析提交 `80391e7e54a4d820111bd7cd7d663ed93c481360` 在独立任务分支完成，已 fast-forward 合并并正常推送 `origin/main`，ls-remote 核对一致；[交付收据](../../../.engineering/exploration/DELIVERY_RESULT.json)记录该提交。末次收据提交以 Git 历史为准，不递归填自身 hash。
+- 下一步：本轮分析无未完成项；五步实施保持 PAUSED，等待用户明确恢复后再基于报告细化当前切片。没有新增运行中的测试/模型/迁移任务。
+- 目录：无新增 worktree；前端与参考仓库未变。.local 凭据/账本/恢复状态、.idea 用户配置和历史验证日志保留；target/dist/编译测试缓存可在无需复现并获清理授权后处理，本轮未清理。
 - 规范：project-capability-exploration（复用 discovery/deep-analysis 扫描方法）、project-documentation、update-progress-docs、task-git-delivery；源码事实优先、未知不冒充结论。未启动新构建/测试/付费请求；原服务和私密状态保留。
 
 ## 暂停：知识平台深度完善

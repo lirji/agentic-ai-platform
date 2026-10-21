@@ -1,0 +1,72 @@
+{
+  "taskId": "capability-gap-analysis-20261021",
+  "status": "PASS",
+  "scope": "documentation-only",
+  "baseCommit": "d61536cbb9179db010f33d7b1cdbda737e22fc92",
+  "documentCommit": "80391e7e54a4d820111bd7cd7d663ed93c481360",
+  "taskBranch": "feat/capability-gap-analysis-20261021",
+  "target": "origin/main",
+  "merge": "FAST_FORWARD",
+  "push": "PASS",
+  "observedRemoteMain": "80391e7e54a4d820111bd7cd7d663ed93c481360",
+  "changedPaths": [
+    ".engineering/exploration/CAPABILITY_GAPS.md",
+    ".engineering/exploration/CAPABILITY_MAP.md",
+    ".engineering/exploration/EVIDENCE_INDEX.md",
+    ".engineering/exploration/EVOLUTION_ROADMAP.md",
+    ".engineering/exploration/OPPORTUNITIES.md",
+    ".engineering/exploration/VALIDATION.md",
+    ".engineering/exploration/evidence-manifest.json",
+    "CODEX_PROGRESS.md",
+    "README.md",
+    "docs/README.md",
+    "docs/design/knowledge-first-20261020/PROGRESS_STATE.md",
+    "docs/doc-map.md"
+  ],
+  "validation": {
+    "status": "PASS",
+    "report": ".engineering/exploration/VALIDATION.md",
+    "reportFiles": 5,
+    "gapItems": 20,
+    "candidateItems": 12,
+    "evidenceGroups": 26,
+    "fixedSourceReferences": 147,
+    "sourceFiles": 136,
+    "markdownFiles": 11,
+    "localLinks": 160,
+    "fixedCommitLinks": 147,
+    "diffCheck": "PASS",
+    "applicationTests": "NOT_RUN_DOCUMENT_ONLY",
+    "paidModelCalls": 0,
+    "runtimeChanges": false,
+    "productionDeployment": false,
+    "remoteCI": "NOT_RUN_NO_WORKFLOWS_IN_CURRENT_BASELINE"
+  },
+  "otherRepositories": {
+    "agentic-ai-platform-web": {
+      "head": "d2b4dc6957cfbc81d29a8493dc9aa284aab8e584",
+      "changed": false
+    },
+    "langchain4j-platform": {
+      "head": "468cec425dd160e80cfc3ab378d3440a8767e4d5",
+      "changed": false
+    }
+  },
+  "implementation": {
+    "task": "knowledge-depth-20261021",
+    "status": "PAUSED_BY_USER",
+    "autoResume": false
+  },
+  "workspace": {
+    "newWorktrees": 0,
+    "deletedPaths": [],
+    "retained": [
+      ".local credentials, budgets, task recovery state",
+      ".idea user editor state",
+      ".logs historical verification evidence",
+      "existing build and runtime caches"
+    ],
+    "cleanup": "Not executed; build outputs/caches may be cleaned only after no longer needed and authorized"
+  },
+  "receiptScope": "This receipt records delivery of documentCommit. Its own commit is resolved from Git history; no self-hash placeholder or recursive commit."
+}

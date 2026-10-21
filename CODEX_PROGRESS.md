@@ -2,7 +2,7 @@
 
 - 当前任务：`capability-gap-analysis-20261021`；用户要求先暂停五步实施，对比 langchain4j-platform 的业务与实现精细化差距，输出能力欠缺文档。
 - 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
-- 当前后端分支：`feat/capability-gap-analysis-20261021`，起点 `d61536c`；前端及参考仓库只读，无新 worktree。报告入口：`.engineering/exploration/CAPABILITY_GAPS.md`（已分析并验证，Git 文档交付待执行）。
+- 分析文档已通过验证；任务分支 `feat/capability-gap-analysis-20261021` 的分析提交 `80391e7` 已合并推送 main；收据见权威进度，末次提交以 Git 为准。前端及参考仓库只读，无新 worktree。报告入口：[能力欠缺对比](.engineering/exploration/CAPABILITY_GAPS.md)。
 - 五步实施 `knowledge-depth-20261021` 已按用户要求暂停，尚无产品代码修改。本轮仅源码取证、分析文档、索引/进度和已授权的正常 Git 文档交付；不运行付费模型、迁移或部署，不在分析后自动恢复实现。
 
 ## 前期可行性任务记录
