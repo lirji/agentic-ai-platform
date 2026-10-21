@@ -3,9 +3,9 @@
 ## 当前任务：按能力深化方案连续实施
 
 - 标识：`capability-delivery-20261021`。用户最新要求“开始实施”，已解除上一轮开发暂停；按 51 项计划的依赖推进，条件项仍按触发条件执行，不默认全量扩业务或新增费用。
-- 当前：S8A DONE；S8B DONE / 必需验收 PASS，待两仓正常 Git 交付；S8C READY。按原依赖继续 S8C–E 与 S8F，不将评测定义交付当作质量闭环完成。
+- 当前：S8A DONE；S8B DONE / 必需验收 PASS / 两仓已正常合并推送；S8C READY。按原依赖继续 S8C–E 与 S8F，不将评测定义交付当作质量闭环完成。
 - 计划/权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、各正式 CONTRACTS；本文件为唯一进度。原 S0–S7 及计划文档有效证据保留。
-- Git：后端 `/Users/liruijun/personal/LLM/agentic-ai-platform`，原目录 `feat/quality-datasets-20261021`，起点 S8A 提交 `39af9f6`（已合并推送 main）；前端分支 `feat/quality-datasets-20261021`，起点 `d2b4dc6957cfbc81d29a8493dc9aa284aab8e584`；参考仓库只读。无新 worktree。
+- Git：S8B 后端 `02d22359a2309074afc486fdc5fc37cfea233c96`、前端 `427bcb9451752a3fa5dbcbb77835339059e7b998` 已在独立任务分支验证后 fast-forward 合并推送 origin/main，远程核对一致；见 [交付收据](../../qa/quality-datasets-20261021/delivery-result.json)。原目录，无新 worktree；两仓产品工作树干净。收据文档提交以 Git 历史为准。
 - 当前清单：①核对代码/规范/恢复状态；②冻结质量定义、指标、接口与失败/权限语义；③文档验证与 S8A 交付；④S8B 数据集/标注后端与 UI；⑤真实 DB/HTTP/浏览器验收；⑥按依赖继续。
 - 关键决策：Knowledge 拥有不可变数据集修订与报告；复用 Tasks/LangGraph 执行，LlamaIndex 仅适配指标/检索。先保留当前检索排序；同源标注、空召回/无答案/执行失败及当前权限分开。标注读取已发布片段，不产生模型调用。
 - 样本决定：用户已选择项目架构/操作文档，U01 首批资料用途已明确；固定源提交与真实章节建立机制集，不据此宣称业务质量达标。模型调用前读取现有账本与在途状态，聊天/Embedding 原各 1 元累计上限不变，Reranker 未获新额度。
@@ -14,7 +14,7 @@
 - 历史失败：焦点恢复、保存可访问名称、旧字段提示已修正；虚拟列表测试改用组件支持的键盘导航，原失败日志保留。Java 无 formatter/专用静态分析，Code Hygiene COMPLETE_WITH_LIMITATIONS；前端 COMPLETE，无阻断。没有声称独立 Agent 审查。
 - 运行：原七个后端/worker 与前端运行；Knowledge 新制品、dev/test V4/readiness 已验证。S8B 模型调用 0。浏览器真实数据集及原回执恢复状态在前端 `.local/s8b-quality-state.json`，不可清空盲目重试；私密配置、预算和旧任务保留。无在途付费调用。
 - S8A 证据：[质量契约](QUALITY_CONTRACTS.md)、[样本规范](QUALITY_ACCEPTANCE.md)、[验收](../../qa/quality-contracts-20261021/TEST_RESULT.md)。E01 已冻结；E02/E03 传输于对应片前补齐。文档检查通过，未运行应用/模型。
-- 下一步：提交并正常合并/推送 S8B 两仓，核对远程；立即进入 S8C，先基于现有 Tasks/Graph 冻结 E02 精确传输与报告凭据，再实施持久执行、逐题结果及 React 运行界面。无新增组件或额外模型额度授权。
+- 下一步：立即进入 S8C，先基于现有 Tasks/Graph 冻结 E02 精确传输与报告凭据，再实施持久执行、逐题结果及 React 运行界面。无新增组件或额外模型额度授权。
 
 ## 历史：20 项差距的框架化实施计划
 
