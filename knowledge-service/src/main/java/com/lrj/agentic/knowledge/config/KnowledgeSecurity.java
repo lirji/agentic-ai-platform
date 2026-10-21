@@ -42,7 +42,9 @@ public class KnowledgeSecurity {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/ingestions",
-                                "/api/v1/knowledge/ingestions/*/retry")
+                                "/api/v1/knowledge/ingestions/*/retry",
+                                "/api/v1/knowledge/evaluations/datasets",
+                                "/api/v1/knowledge/evaluations/datasets/*/revisions")
                         .hasAuthority("SCOPE_" + IdentityProtocol.WRITE_SCOPE)
                         .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/search")
                         .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)

@@ -14,6 +14,7 @@
 | [实施切片 S8–S18](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices) | 51 项稳定任务、逐项依赖、Owner/路径、契约、Runtime 与可观察验收 | 新任务唯一清单；保留 S0–S7 |
 | [契约工作包](design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)、[框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json) | 新协议待冻结范围、锁定接口及适配风险 | 不是新线上 schema；未改依赖或运行配置 |
 | [质量契约](design/knowledge-first-20261020/QUALITY_CONTRACTS.md)、[样本验收](design/knowledge-first-20261020/QUALITY_ACCEPTANCE.md) | E01 评测集/修订/标注、质量指标、运行归属与首批机制资料 | S8A 冻结，S8B 实施依据 |
+| [评测定义验收](qa/quality-datasets-20261021/TEST_RESULT.md)、[实现映射](qa/quality-datasets-20261021/IMPLEMENTATION_EVIDENCE.md) | S8B 真实保存/修订、权限/发布绑定、原文标注与失败恢复 | 结果与限制见验收；执行/基线由 S8C/D 接续 |
 | [计划文档验证](qa/capability-plan-20261021/TEST_RESULT.md) | 任务覆盖/依赖、文档结构/引用、接口摘要及改动边界 | 仅文档 PASS，不代表新能力实现或运行通过 |
 | [能力欠缺主报告](../.engineering/exploration/CAPABILITY_GAPS.md) | 对照业务、实现、UI、验证和运行能力；逐项影响与验收方向 | 历史差距基线；当前沿新计划实施 |
 | [能力地图](../.engineering/exploration/CAPABILITY_MAP.md)、[候选](../.engineering/exploration/OPPORTUNITIES.md)、[路线](../.engineering/exploration/EVOLUTION_ROADMAP.md) | 九维成熟度、触发条件、依赖及暂不建设项 | 建议，未冻结新契约或新技术选型 |

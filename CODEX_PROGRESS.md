@@ -2,7 +2,7 @@
 
 - 当前任务：`capability-delivery-20261021`，用户已要求“开始实施”，按 20 项差距的 51 项方案连续推进。
 - 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；稳定任务：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
-- 当前 S8A 设计验证通过，S8B 待实施；后端原目录分支 `feat/quality-contracts-20261021`，起点 `3f28379`。前端尚未修改；无新 worktree。
+- 当前 S8A 已交付，S8B 验收 PASS 待 Git 交付，S8C READY；后端原目录分支 `feat/quality-datasets-20261021`，起点 `39af9f6`。前端同名分支已实现；测试/恢复入口见唯一状态，无新 worktree。
 - [已交付方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)继续有效；新要求已解除开发暂停，不重做 S0–S7。
 - 沿用已有模型预算和正常 Git 提交/合并/推送授权；不扩大到生产部署、旧数据清理或新增模型费用。详细检查点、运行证据和下一步见唯一状态。
 

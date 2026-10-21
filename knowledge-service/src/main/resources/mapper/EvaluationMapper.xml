@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationMapper">
+    <sql id="owned">tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId}</sql>
+    <select id="command" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRow$CommandRow">
+        SELECT tenant_id, owner_id, key_hash, request_fingerprint, operation, dataset_id,
+            revision, definition_digest, created_at FROM knowledge_evaluation_command
+        WHERE <include refid="owned"/> AND key_hash = #{key}
+    </select>
+    <select id="dataset" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRow">
+        SELECT dataset_id, tenant_id, owner_id, name, purpose, current_revision AS revision,
+            question_count, created_at, updated_at FROM knowledge_evaluation_dataset
+        WHERE <include refid="owned"/> AND dataset_id = #{id}
+        <if test="lock">FOR UPDATE</if>
+    </select>
+    <select id="datasets" resultType="com.lrj.agentic.knowledge.domain.evaluation.EvaluationModels$DatasetSummary">
+        SELECT dataset_id, name, purpose, current_revision AS revision, question_count, created_at, updated_at
+        FROM knowledge_evaluation_dataset WHERE <include refid="owned"/>
+        <if test="purpose != null">AND purpose = #{purpose}</if>
+        <if test="after != null">AND dataset_id &gt; #{after}</if>
+        ORDER BY dataset_id LIMIT #{limit}
+    </select>
+    <select id="revision" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRow$RevisionRow">
+        SELECT r.dataset_id, r.revision, r.tenant_id, r.owner_id, r.name, r.purpose,
+            r.question_count, r.definition_digest, r.snapshot_json, r.created_at
+        FROM knowledge_evaluation_revision r JOIN knowledge_evaluation_dataset d
+            ON d.dataset_id = r.dataset_id AND d.tenant_id = r.tenant_id AND d.owner_id = r.owner_id
+        WHERE r.tenant_id = #{caller.tenantId} AND r.owner_id = #{caller.userId} AND r.dataset_id = #{id}
+        <choose><when test="revision != null">AND r.revision = #{revision}</when>
+            <otherwise>AND r.revision = d.current_revision</otherwise></choose>
+    </select>
+    <select id="history" resultType="com.lrj.agentic.knowledge.domain.evaluation.EvaluationModels$RevisionSummary">
+        SELECT dataset_id, name, purpose, revision, question_count, definition_digest, created_at
+        FROM knowledge_evaluation_revision WHERE <include refid="owned"/> AND dataset_id = #{id}
+        <if test="before != null">AND revision &lt; #{before}</if>
+        ORDER BY revision DESC LIMIT #{limit}
+    </select>
+    <insert id="create">
+        INSERT INTO knowledge_evaluation_dataset
+            (dataset_id, tenant_id, owner_id, name, purpose, current_revision, question_count, created_at, updated_at)
+        VALUES (#{row.datasetId}, #{row.tenantId}, #{row.ownerId}, #{row.name}, #{row.purpose},
+            #{row.revision}, #{row.questionCount}, #{row.createdAt}, #{row.updatedAt})
+    </insert>
+    <update id="advance">
+        UPDATE knowledge_evaluation_dataset SET name = #{row.name}, purpose = #{row.purpose},
+            current_revision = #{row.revision}, question_count = #{row.questionCount}, updated_at = #{row.updatedAt}
+        WHERE tenant_id = #{row.tenantId} AND owner_id = #{row.ownerId}
+            AND dataset_id = #{row.datasetId} AND current_revision = #{expected}
+    </update>
+    <insert id="append">
+        INSERT INTO knowledge_evaluation_revision (dataset_id, revision, tenant_id, owner_id, name,
+            purpose, question_count, definition_digest, snapshot_json, created_at)
+        VALUES (#{row.datasetId}, #{row.revision}, #{row.tenantId}, #{row.ownerId}, #{row.name}, #{row.purpose},
+            #{row.questionCount}, #{row.definitionDigest}, #{row.snapshotJson}, #{row.createdAt})
+    </insert>
+    <insert id="accept">
+        INSERT INTO knowledge_evaluation_command (tenant_id, owner_id, key_hash, request_fingerprint,
+            operation, dataset_id, revision, definition_digest, created_at)
+        VALUES (#{row.tenantId}, #{row.ownerId}, #{row.keyHash}, #{row.requestFingerprint}, #{row.operation},
+            #{row.datasetId}, #{row.revision}, #{row.definitionDigest}, #{row.createdAt})
+    </insert>
+    <select id="lockDocuments" resultType="string">
+        SELECT document_id FROM knowledge_document WHERE <include refid="owned"/> AND document_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+        ORDER BY document_id FOR SHARE
+    </select>
+    <select id="bindings" resultType="com.lrj.agentic.knowledge.domain.evaluation.EvaluationModels$DocumentBinding">
+        SELECT DISTINCT c.document_id, c.document_version AS version, d.content_hash AS source_hash,
+            c.batch_digest, #{processor} AS processor_version
+        <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingMapper.publishedScope"/>
+        AND c.document_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+        ORDER BY c.document_id
+    </select>
+    <sql id="evidenceFrom">
+        SELECT c.document_id, c.document_version AS version, c.chunk_id, c.text, c.text_hash,
+            d.display_name, c.start_byte, c.end_byte
+        <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingMapper.publishedScope"/>
+    </sql>
+    <select id="gold" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRow$EvidenceRow">
+        <include refid="evidenceFrom"/> AND c.chunk_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+        ORDER BY c.document_id, c.document_version, c.chunk_id
+    </select>
+    <select id="evidence" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRow$EvidenceRow">
+        <include refid="evidenceFrom"/> AND c.document_id = #{documentId} AND c.document_version = #{version}
+        <if test="after != null">AND c.chunk_id &gt; #{after}</if>
+        ORDER BY c.chunk_id LIMIT #{limit}
+    </select>
+</mapper>

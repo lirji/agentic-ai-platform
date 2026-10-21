@@ -91,9 +91,8 @@
         SELECT #{eventId}, job_id, #{actor}, #{action}, status, stage, lease_epoch, revision,
             error_code, UTC_TIMESTAMP(6) FROM knowledge_ingestion WHERE <include refid="owned"/>
     </insert>
-    <sql id="publishedFrom">
-        SELECT c.document_id, c.document_version AS version, c.chunk_id, c.batch_digest, c.text,
-            c.start_byte, c.end_byte, d.display_name
+    <!-- 搜索、引用与评测标注共用发布权威，避免三处校验逐步漂移。 -->
+    <sql id="publishedScope">
         FROM knowledge_chunk c
         JOIN knowledge_document d ON d.document_id = c.document_id
             AND d.tenant_id = c.tenant_id AND d.owner_id = c.owner_id
@@ -103,6 +102,11 @@
             AND d.status = 'READY' AND d.published_version = c.document_version
             AND d.version = c.document_version AND d.ingestion_job_id = j.job_id
             AND j.status = 'READY' AND j.batch_digest = c.batch_digest
+    </sql>
+    <sql id="publishedFrom">
+        SELECT c.document_id, c.document_version AS version, c.chunk_id, c.batch_digest, c.text,
+            c.start_byte, c.end_byte, d.display_name
+        <include refid="publishedScope"/>
     </sql>
     <select id="published" resultType="com.lrj.agentic.knowledge.domain.processing.ProcessingRepository$PublishedChunk">
         <include refid="publishedFrom"/> AND c.chunk_id IN

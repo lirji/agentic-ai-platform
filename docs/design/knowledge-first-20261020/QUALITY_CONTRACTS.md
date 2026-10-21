@@ -20,13 +20,13 @@
 | POST `/datasets` | `Idempotency-Key`；`Definition` | 201 `Receipt`，重放同一结果 |
 | POST `/datasets/{datasetId}/revisions` | 同上；`{expectedRevision, definition}` | 201 `Receipt`，条件写入 |
 | GET `/commands/{key}` | 同一调用者原提交键 | 200 `Receipt`；未持久受理 404，可按原请求原键重试 |
-| GET `/datasets` | `limit=20`，1–100；可选 `cursor` | 200 `{items: DatasetSummary[], nextCursor: string|null}` |
+| GET `/datasets` | `limit=20`，1–100；可选 `cursor` 和 `purpose=MECHANISM|BUSINESS` | 200 `{items: DatasetSummary[], nextCursor: string|null}` |
 | GET `/datasets/{datasetId}` | 无 | 200 最新 `RevisionDetail` |
 | GET `/datasets/{datasetId}/revisions` | 同样分页参数 | 200 `{items: RevisionSummary[], nextCursor}` |
 | GET `/datasets/{datasetId}/revisions/{revision}` | 正整数修订 | 200 指定 `RevisionDetail` |
 | GET `/evidence` | 必填 documentId、version；limit 默认 20，1–100；可选 cursor | 200 `{items: EvidenceOption[], nextCursor}`，只读已发布块，不调用 Embedding |
 
-数据集按 datasetId 升序游标分页，修订按 revision 降序，证据按 chunkId 升序；游标编码排序键并绑定资源范围，非法游标返回 400。分页不是快照隔离，不承诺分页过程中并发新增项目都可见。列表上限作用于数据库查询，不先取全量。
+用途筛选由数据库执行并绑定游标，不仅过滤当前页。数据集按 datasetId 升序游标分页，修订按 revision 降序，证据按 chunkId 升序；游标编码排序键并绑定资源范围，非法游标返回 400。分页不是快照隔离，不承诺分页过程中并发新增项目都可见。列表上限作用于数据库查询，不先取全量。
 
 `Definition` 的所有字段必填，允许 description/referenceAnswer 空字符串、questions 空数组（空集可保存，禁止运行）。文本按 Unicode 码点计数，拒绝 NUL、无效代理字符和除换行/制表符外的控制字符；首尾空白规范化，内部换行和顺序保留。未知属性、重复 JSON key、错类型、浮点整数、非有限值均拒绝，不把字符串/数字隐式转为其他类型。总 JSON UTF-8 请求上限 256 KiB（包括 chunked 请求）。
 

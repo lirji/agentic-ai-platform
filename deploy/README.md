@@ -187,6 +187,14 @@ python3 deploy/local.py stop-chat
 
 本次计价核验日期 2026-10-21，按官方峰值未缓存输入 2 元/百万 token、输出 8 元/百万 token，并在客户端使用字节上界、1024 输出上限与 2 倍余量。[官方计价](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)。正式累计预留为聊天 0.092600 元/4 次、Embedding 0.20 元/20 批，均非提供方账单；实际费用未查询。重启验证保留配置及两个预算摘要，不增加请求。
 
+## 评测定义（S8B）
+
+Knowledge 追加 V4，保存评测集、不可变修订和幂等命令回执；应用启动前沿既有迁移入口执行，不能修改已执行的 V1–V4。无需新服务、定时器或模型配置。前端 `/quality` 可创建题目、限定已发布资料、逐段标注证据，并查看历史修订；[E01](../docs/design/knowledge-first-20261020/QUALITY_CONTRACTS.md) 是唯一契约。
+
+保存结果未知时先按原键查询 `/api/v1/knowledge/evaluations/commands/{key}`，或以完全相同输入/键重试；不得通过更换键制造重复修订。版本冲突保留草稿并核对新修订；资料发布或权限改变时隐藏旧定义正文，原提交回执仍可查询。S8B 不运行模型，不重置任何预算，也不提供执行或基线按钮。
+
+真实 MySQL 测试沿 `deploy/local.py` 的 `test` 环境运行 `mvn -B -ntp -pl knowledge-service -am -Pintegration verify`，勿把本机数据库凭据放进命令或日志。前端 `pnpm exec playwright test tests/quality-real.spec.ts` 使用现有已发布操作资料且不调用模型；保留 `.local/s8b-quality-state.json` 恢复状态。验收边界与已知限制见 [S8B TEST_RESULT](../docs/qa/quality-datasets-20261021/TEST_RESULT.md)。
+
 ## 研究与只读助手（S6/S7）
 
 Tasks 启动时按原迁移账号应用 V2（kind 注释与 owner/kind 分页索引）；保留 V1 及旧问答数据。现有 `start-qa` worker 顺序领取问答和 `knowledge-work-v1`，不启动第二个付费 worker。界面入口为 [研究](http://127.0.0.1:28086/research) 和 [只读助手](http://127.0.0.1:28086/assistants)。仅检索当前用户的已发布知识，不提供互联网搜索或业务写入工具。

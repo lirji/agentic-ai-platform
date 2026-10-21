@@ -1,0 +1,25 @@
+{
+  "slice": "S8B",
+  "base": "39af9f6abc24eb069e467368f73dec8eff9d1209",
+  "fingerprint": "d7536944163d794ba05dcca426cea65b75b6e0454c15b68bf885cc8b7f0cd7a8",
+  "files": {
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/EvaluationController.java": "8acb03f799338e18455b8c70674162e03ff858cd12595b8843ae4f0bd9aeb8ca",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationJson.java": "5e5aa9b6c8c557549ef8ff725d36c9b81d9c6273742f0e916b9fe9b0675e924b",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationService.java": "4e0e7b1d1718fd0d02ce011022e31b60055985ec83c863e42aee9eb144e33739",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/KnowledgeSecurity.java": "e92533fd2b2c47238263e1ca696f61727922be7e6ea15eaf0233f2e4b4a68f8c",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeError.java": "5b848e4f80866f59274bf725664fc967d5adc6444642d30f8095325240f249e0",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationModels.java": "da17194c35830855b22146d9d3fff076b12695024c9bac09a056a1a5cd4a0636",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationProtocol.java": "595ff0625e6935df76535590b220c64924b1f7920ec2678253593075169c38e1",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationRepository.java": "f2e619b013946f0166247623954707eb71383597ab03bf0de864ca69fe0ee03c",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationRules.java": "fbdce318038734f83e65eb3c895ad3699c797460fb11fab2804b45d172dc7b0a",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationMapper.java": "77a800d45817423b30ddd164b4f17fa83097284042e8c228c2bae78a9dda03c6",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationRow.java": "2ea4d3fdbd9dd7e409b8bb78f596b9fa8a297c071b98e7c96499eb50dfe8653a",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlEvaluationRepository.java": "597a1dab9218b258da6ca1a5944e5911df783babf78a40d11e0708189d44db8b",
+    "knowledge-service/src/main/resources/db/migration/V4__evaluation_definitions.sql": "0af1cf91e7c4b4714ef65ae8da91ac5b6285faa93b7d514c83f709e264794b2b",
+    "knowledge-service/src/main/resources/mapper/EvaluationMapper.xml": "b1fc4e9a1fb57b38568ddb0316af5b9349ce1781c958c3c73f454ea5c82099af",
+    "knowledge-service/src/main/resources/mapper/ProcessingMapper.xml": "a7d6bd92dad94dae35d15410dfa1b4644b8eb9317871b5a40dc94359a0ea947e",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationHttpIT.java": "dc64c8d83ddac6da8baf76c7750c90b74d664faaba849aa2e81ec9bde0c3ec30",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationPersistenceIT.java": "e4de7b6b93ae63958527f27b0510048f22d7877ec29bcaf44ca30e6507559151",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationRulesTest.java": "4780d805800ec8da133ddb83ca79ac65b36ebddb2e42e1877fd79eac47a7489a"
+  }
+}

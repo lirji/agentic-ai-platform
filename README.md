@@ -30,3 +30,5 @@
 前端使用独立新建的 React 工程和既定配套；后续业务参考 AgentScope 的用例与规则。默认文本 Embedding 采用参考项目的百炼 `text-embedding-v4`、1024 维和 OpenAI 兼容接口；不采用 HashEmbedding 或自动回退到 hash。
 
 准备基线、React 架构、R01/H01、P01/P02、知识 K、中央 T 与会话 Q 契约已落盘。Java 使用 JDK 21、Boot 3.5、MyBatis-Plus/XML，Gateway 验签后换发内部 JWT；Knowledge、Tasks、Conversations 各自拥有独立数据库。Python 3.12 已锁定三框架：LangGraph/LlamaIndex 用于准备图，Deep Agents 完成隔离工具/流式兼容验证。真实北京百炼账号的 1024 维准备/查询和 PG 检查点联合恢复已验证；少量合成资料上的真实问答已验证；研究与三种只读助手已在合成资料上通过真实模型验收；系统性检索质量、容量与生产运行仍未验收。
+
+评测定义管理已接入 Knowledge 与独立 React `/quality`：保存问题、语料范围、正确证据和拒答标准，修改保留不可变修订；未知提交可查原回执，绑定失效隐藏正文。[S8B 验收](docs/qa/quality-datasets-20261021/TEST_RESULT.md)记录当前范围；持久评测执行和基线比较接续 S8C/D。
