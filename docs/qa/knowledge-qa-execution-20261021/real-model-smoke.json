@@ -1,0 +1,107 @@
+{
+  "model": "deepseek-flash",
+  "overall": "PASS",
+  "provider": {
+    "result": "PASS",
+    "responseModels": [
+      "chat-default"
+    ],
+    "providerModel": "deepseek/deepseek-flash",
+    "providerEndpoint": "https://api.deepseek.com",
+    "usage": {
+      "completion_tokens": 3,
+      "prompt_tokens": 11,
+      "total_tokens": 14,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "text_tokens": 3
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "thinking": "disabled",
+    "done": true,
+    "normalStop": true,
+    "expectedReply": true,
+    "durationSeconds": 0.801
+  },
+  "providerProbeReservations": 2,
+  "cases": {
+    "answer": {
+      "taskId": "7c8193e0-21db-4c42-acd7-2169e746c1ee",
+      "status": "SUCCEEDED",
+      "result": {
+        "answer": "资料上传受理不等于已发布。上传受理只代表原文和任务已经保存，资料仅上传者本人可见 [1]。\n\n发布成功的必要条件：资料先解析、分块并生成向量，再写入向量索引和全文索引；只有向量索引和全文索引都确认成功后，资料才进入已发布状态 [1]。",
+        "citations": [
+          {
+            "source": {
+              "locator": "utf8-bytes:0-859",
+              "displayName": "知识资料处理指引"
+            },
+            "chunkId": "9bde51ae3ceb861b6db869e155bb8343541cc4029fcb03c61049bd9391d3414e",
+            "version": 1,
+            "citationId": "1",
+            "documentId": "010988ca-4c2e-4fa4-bcd3-601e75b0b437"
+          }
+        ],
+        "answerability": "ANSWERED",
+        "schemaVersion": "knowledge-qa-result-v1"
+      },
+      "eventTypes": [
+        "CHECKPOINT",
+        "PROGRESS",
+        "STATUS",
+        "TEXT_DELTA"
+      ]
+    },
+    "followup": {
+      "taskId": "ad12f560-19e6-4510-9360-4af5d55cb854",
+      "status": "SUCCEEDED",
+      "result": {
+        "answer": "处理失败时，先查看任务原因；对于允许重试的任务，可以沿用原文件继续处理 [1]。\n\n已有的“准备结果”和“已经成功的索引”会被复用，以避免重复工作 [1]。",
+        "citations": [
+          {
+            "source": {
+              "locator": "utf8-bytes:0-859",
+              "displayName": "知识资料处理指引"
+            },
+            "chunkId": "9bde51ae3ceb861b6db869e155bb8343541cc4029fcb03c61049bd9391d3414e",
+            "version": 1,
+            "citationId": "1",
+            "documentId": "010988ca-4c2e-4fa4-bcd3-601e75b0b437"
+          }
+        ],
+        "answerability": "ANSWERED",
+        "schemaVersion": "knowledge-qa-result-v1"
+      },
+      "eventTypes": [
+        "CHECKPOINT",
+        "PROGRESS",
+        "STATUS",
+        "TEXT_DELTA"
+      ]
+    },
+    "empty": {
+      "taskId": "5a230af6-fcb7-4e9f-8f09-724d0541234b",
+      "status": "SUCCEEDED",
+      "result": {
+        "answer": "未检索到可引用的已发布资料。请调整问题或知识范围后再试。",
+        "citations": [],
+        "answerability": "NO_EVIDENCE",
+        "schemaVersion": "knowledge-qa-result-v1"
+      },
+      "eventTypes": [
+        "CHECKPOINT",
+        "PROGRESS",
+        "STATUS"
+      ]
+    }
+  },
+  "chatReservations": 4,
+  "chatReservedCny": "0.092600",
+  "chatLimitCny": "1",
+  "actualBilledCny": null,
+  "emptyEvidenceAddedChatCalls": 0,
+  "note": "仅使用已发布合成资料；保守预留不是提供方账单。"
+}

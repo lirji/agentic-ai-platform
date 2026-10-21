@@ -15,7 +15,15 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from pydantic import BaseModel, ValidationError
 
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
-from agentic_ai.tasks.models import CheckpointReceipt, ClaimReply, TaskLease, TaskView
+from agentic_ai.tasks.models import (
+    CheckpointReceipt,
+    ClaimReply,
+    TaskEvent,
+    TaskEventType,
+    TaskFailureCode,
+    TaskLease,
+    TaskView,
+)
 
 M = TypeVar("M", bound=BaseModel)
 HTTP_SECONDS = 5
@@ -206,6 +214,43 @@ class CentralTaskClient:
             self._path(task_id, "/complete"),
             TaskView,
             {"epoch": epoch, "operationKey": f"result:{task_id}", "result": result},
+        )
+
+    async def event(
+        self,
+        task_id: str,
+        epoch: int,
+        operation_key: str,
+        event_type: TaskEventType,
+        payload: dict[str, object],
+    ) -> TaskEvent:
+        """稳定操作键归属当前 epoch；确认后的相同事件重放由中央防重。"""
+        return await self._request(
+            "POST",
+            self._path(task_id, "/events"),
+            TaskEvent,
+            {
+                "epoch": epoch,
+                "operationKey": operation_key,
+                "type": event_type.value,
+                "payload": payload,
+            },
+        )
+
+    async def fail(
+        self, task_id: str, epoch: int, code: TaskFailureCode, *, retryable: bool
+    ) -> TaskView:
+        """失败也携带原租约代次；迟到的 worker 不能覆盖取消或接管。"""
+        return await self._request(
+            "POST",
+            self._path(task_id, "/fail"),
+            TaskView,
+            {
+                "epoch": epoch,
+                "operationKey": f"failure:{epoch}",
+                "errorCode": code.value,
+                "retryable": retryable,
+            },
         )
 
     async def aclose(self) -> None:

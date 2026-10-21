@@ -1,6 +1,6 @@
 # 项目文档
 
-当前阶段：资料入库、处理、发布、引用检索和独立 React 工作台已交付；真实北京百炼 1024 维调用通过。S5A 中央任务与 S5B PG 检查点联合恢复已验收，S5B Python 全量 150 项通过；S5C 原问题与可靠交接完成 45 项 Java、40 项 HTTP 及重启验收。问答执行、研究与助手待后续片。最终 Git 交付以当前进度为准。记录日期：2026-10-21。
+当前阶段：资料与独立 React 工作台、中央任务/PG 恢复、原问题和可靠交接已交付。S5D 问答图、累计预算及 worker 已通过受控恢复与真实 deepseek-flash 问答、追问、无资料和引用验证；S5E 问答 UI 通过28项单元/组件和10组真实/受控浏览器验收。研究与助手继续后续切片。最终 Git 交付以当前进度为准。记录日期：2026-10-21。
 
 ## 文档索引
 
@@ -21,6 +21,10 @@
 | [S5B 验证结果](qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md) | 150 项 Python、真实 PG/MySQL/HTTP 恢复、资源和身份界限 | 验收通过；无常驻图 worker、无聊天调用 |
 | [会话与交接契约](design/knowledge-first-20261020/CONVERSATION_CONTRACTS.md) | Q01–Q03 原问题、上下文、交接、查询；T01 owner 委托读取扩展 | S5C 冻结并验证，未宣称模型问答可用 |
 | [S5C 验证结果](qa/knowledge-conversations-20261021/TEST_RESULT.md) | 45 项 Java、40 项真实 HTTP、重启/依赖故障和 Python 恢复回归 | 会话与交接验收通过，无付费调用 |
+| [问答执行契约](design/knowledge-first-20261020/QA_EXECUTION_CONTRACTS.md) | K05、原生问答图、引用/事件、累计预算与 worker | S5D 冻结；deepseek-flash 已批准并实测 |
+| [S5D 验证结果](qa/knowledge-qa-execution-20261021/TEST_RESULT.md) | 263 项 Python、真实知识读取与 PG/Tasks/合成模型恢复 | PASS；真实模型、问答/引用、预算重启已验证 |
+| S5E 前端 `docs/qa/s5e/TEST_RESULT.md` | 会话/提问/任务/流式/引用、真实Q/T、无付费浏览器与视觉验收 | 独立前端仓库验收通过；不替代真实模型效果 |
+| [研究与只读助手准备](design/knowledge-first-20261020/RESEARCH_READINESS.md) | Deep Agents 默认工具、文本适配与工具循环、根图恢复和研究契约缺口 | 只读核对；P1真实模型闭环已通过，下一步冻结研究切片 |
 | [知识迁入清单](design/knowledge-first-20261020/KNOWLEDGE_MIGRATION.md) | 参考规则、依赖闭包及未迁入能力 | 源仓库只读；按新契约实现所需能力 |
 | [Java 本地运行](../deploy/README.md) | dev-infra 独立资源、分权账号、启动/停止、测试身份和故障验收 | 本机开发验证入口；无生产部署声明 |
 | [实施切片](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md) | S0 有界验收及后续依赖路线 | 唯一可执行切片清单 |
@@ -43,4 +47,4 @@
 - **验证通过**：必须标明验证对象与范围；文档检查通过不表示业务、性能或安全验收通过。
 - **待验证/待明确**：保留未解决的问题，后续按实际证据更新。
 
-当前需求以首期约定为准，技术基线以架构与选型正文为准；可行性分析保留前期背景和当时的验证状态。已有 Python 准备图、Java 知识与中央任务服务、独立 React 工作台、真实处理/发布/检索及项目专用存储。PG 图恢复、知识问答、研究与助手继续实施；未执行生产部署。
+当前需求以首期约定为准，技术基线以架构与选型正文为准；可行性分析保留前期背景。已有准备图、Java 知识/任务/会话服务、React 知识与问答工作台、真实检索及 PG 恢复。真实问答闭环已验证，研究和助手继续实施；未执行生产部署。

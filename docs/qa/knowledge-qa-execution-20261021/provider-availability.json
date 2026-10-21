@@ -1,0 +1,10 @@
+{
+  "credentialSource": "USER_UPDATED_20261021",
+  "httpStatus": 200,
+  "modelCalls": 0,
+  "modelIds": [
+    "deepseek-flash",
+    "deepseek-v4-pro"
+  ],
+  "approvedModelAvailable": true
+}

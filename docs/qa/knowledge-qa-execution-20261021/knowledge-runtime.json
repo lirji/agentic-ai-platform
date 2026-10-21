@@ -1,0 +1,26 @@
+{
+  "slice": "S5D",
+  "overall": "PARTIAL",
+  "completedChecks": {
+    "javaRegression": 39,
+    "pythonKnowledgeUnit": 21,
+    "realKnowledgeHttp": 20
+  },
+  "evidence": [
+    ".logs/s5d-knowledge-verify.log",
+    ".logs/s5d-qa-knowledge-unit-2.log",
+    ".logs/s5d-knowledge-http.log"
+  ],
+  "embedding": {
+    "callsThisPass": 1,
+    "cumulativeReservations": 17,
+    "reservedCny": "0.17",
+    "limitCny": "1",
+    "actualInvoice": false
+  },
+  "chatCalls": 0,
+  "pending": [
+    "real chat model decision and validation",
+    "UI"
+  ]
+}

@@ -124,7 +124,7 @@ flowchart TB
 | Qdrant/ES/GraphRAG 数据 | Knowledge 管理的检索数据与投影 | 当前 Registry/Graph 数据不能因“投影”名称而被直接清空；重建完备性须实测 |
 | LlamaIndex docstore/cache | 仅按需作为派生转换状态/缓存 | 不替代平台内容去重、版本账本或可见性权威 |
 
-表中业务数据归本项目迁入或实现的服务；旧项目数据不自动成为新项目数据。LangGraph Checkpointer 已选 PostgreSQL 独立逻辑库，具体库名和账号在运行环境设计时确定，**尚未创建**；应用/迁移身份分离，连接池与 LiteLLM 库独立预算。[官方持久记忆示例](https://docs.langchain.com/oss/python/langgraph/add-memory)
+表中业务数据归本项目迁入或实现的服务；旧项目数据不自动成为新项目数据。S5B 已创建 PostgreSQL 独立 `agentic_checkpoints` / `agentic_checkpoints_test` 及分离的应用/迁移身份，应用没有 DDL/DELETE 权限，连接池与未来 LiteLLM 存储独立预算。[官方持久记忆示例](https://docs.langchain.com/oss/python/langgraph/add-memory)
 
 ## 5. LlamaIndex 的实际接入与目标职责
 

@@ -197,3 +197,12 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 ## S5C 会话实施增量（2026-10-21）
 
 会话服务沿用 JDK 21、Boot 3.5.16、MyBatis-Plus/XML、MySQL 8.4 与既有观测组件；新建自己的逻辑库/账号，不引入 MQ。TaskStatus 共享至 platform-contracts，后者只新增对已解析 jackson-annotations 的直接声明，实际 jar 与原 Knowledge 制品内同一包完全一致；没有新外部版本。凭据引用、端口和资源界限见 [运行说明](../../../deploy/README.md)，依赖差异与验收见 [S5C](../../qa/knowledge-conversations-20261021/TEST_RESULT.md)。
+
+
+## S5D 实际聊天出口（2026-10-21）
+
+用户批准将原停用型号替换为 `deepseek-flash` 并更新凭据。独立 `deploy/model-proxy/` 环境固定 LiteLLM **1.106.0**，不混入 AI 运行时依赖；补充官方可选依赖 Prisma **0.15.0** 解决未认证请求异常分类，不配置代理数据库。wheel、锁摘要与依赖公告扫描见 [制品记录](../../qa/knowledge-qa-execution-20261021/litellm-artifact.json)。123 个注册依赖在本次 OSV 扫描无命中，这不是未来或所有部署形态的安全保证。
+
+本机单路由 `chat-default → deepseek/deepseek-flash`，显式 `thinking.type=disabled`，保持现有纯文本问答契约；不启用默认思考输出、工具、重试、回退、缓存或外部追踪。提供方 key 仅进入代理，worker 使用独立本机密钥。真实代理转换/失败边界与真实问答分别验证，详见 [S5D 验收](../../qa/knowledge-qa-execution-20261021/TEST_RESULT.md)。
+
+按 [官方价格](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/) 的峰值未缓存输入 2 元/百万、输出 8 元/百万配置保守预算；客户端另加字节上界和 2 倍余量。官方模型默认思考开启，实际请求显式关闭，参数依据 [官方接口](https://api-docs.deepseek.com/zh-cn/api/create-chat-completion/)。聊天与 Embedding 的原 1 元累计上限不变。历史 S5A/S5B 的“未接入”仅描述当时状态，当前以本节及权威进度为准。

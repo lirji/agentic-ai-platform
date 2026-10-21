@@ -1,0 +1,7 @@
+{
+  "registryPackages": 123,
+  "source": "https://api.osv.dev/v1/querybatch",
+  "result": "NO_MATCH",
+  "findings": [],
+  "lockSha256": "97be54ed641266626cff80662108e6f11de0914e98905c073a39bf20b79fa0bb"
+}

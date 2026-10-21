@@ -1,0 +1,13 @@
+[project]
+name = "agentic-model-proxy"
+version = "0.1.0"
+description = "独立的本机 LiteLLM 聊天出口，与业务 AI 运行时隔离依赖"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "litellm[proxy]==1.106.0",
+  # LiteLLM 的认证错误分类会导入此包；不启用 Prisma 数据库或运行其迁移。
+  "prisma==0.15.0",
+]
+
+[tool.uv]
+package = false

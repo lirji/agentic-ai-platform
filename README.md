@@ -2,7 +2,7 @@
 
 独立建设的知识与 Agent 平台，优先实现**知识入库、知识问答、研究分析和业务助手**。架构与组件已确认：**全新 React 前端 + LangGraph、Deep Agents、LlamaIndex AI 核心 + 按需迁入的 Java 领域能力**。
 
-**已实现独立资料受理、持久处理、双索引发布与可引用检索，以及 Python 的鉴权知识准备接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证，Java 双索引处理与恢复已通过真实组件集成测试，S3 完整真实链路、重启恢复和搜索补丁升级验收通过。[独立 React 工作台](https://github.com/lirji/agentic-ai-platform-web)已接通资料、状态、检索和引用，本机入口 http://127.0.0.1:28086；中央任务与 PG 检查点联合恢复、原问题与可靠交接已通过 S5A–S5C 验收，问答执行、研究和助手尚未接通；验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+**已实现独立资料受理、持久处理、双索引发布与可引用检索，以及 Python 的鉴权知识准备接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证，Java 双索引处理与恢复已通过真实组件集成测试，S3 完整真实链路、重启恢复和搜索补丁升级验收通过。[独立 React 工作台](https://github.com/lirji/agentic-ai-platform-web)已接通资料、状态、检索、会话、任务与引用，本机入口 http://127.0.0.1:28086；中央任务与 PG 检查点联合恢复、原问题与可靠交接已通过 S5A–S5C 验收。S5D 已接通独立 LiteLLM → deepseek-flash，真实回答、追问、无资料拒答、引用和重启保持预算验收通过；S5E 界面已交付，本机单在途问答 worker 运行。研究和只读助手仍待后续实施。验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 
 ## 阅读入口
 
@@ -13,6 +13,7 @@
 - [中央 AI 任务](docs/design/knowledge-first-20261020/TASK_CONTRACTS.md)：执行租约、持久事件、取消/恢复与检查点提交凭据；[S5A 验收](docs/qa/durable-ai-tasks-20261020/TEST_RESULT.md)。
 - [图检查点恢复](docs/design/knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)：不可变快照、执行代次隔离、中央凭据与安全解码；[S5B 验收](docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。
 - [知识会话与交接](docs/design/knowledge-first-20261020/CONVERSATION_CONTRACTS.md)：原问题、顺序版本、有界上下文、可靠任务交接与查询；[S5C 验收](docs/qa/knowledge-conversations-20261021/TEST_RESULT.md)。
+- [问答执行与引用](docs/design/knowledge-first-20261020/QA_EXECUTION_CONTRACTS.md)、[S5D 验收](docs/qa/knowledge-qa-execution-20261021/TEST_RESULT.md)与[研究准备](docs/design/knowledge-first-20261020/RESEARCH_READINESS.md)：真实模型门禁和后续工具/恢复边界。
 - [知识 API](docs/design/knowledge-first-20261020/KNOWLEDGE_CONTRACTS.md)与[迁入清单](docs/design/knowledge-first-20261020/KNOWLEDGE_MIGRATION.md)：身份、幂等、原文、分页、持久任务及参考规则边界。
 - [AI 平台升级可行性分析](docs/feasibility/AI平台升级可行性分析.md)：前期讨论记录；第 4 节说明框架优势、选择理由与业务用途，第 8 节说明收益及衡量方法。
 - [文档索引](docs/README.md)：文档职责与状态。
@@ -25,4 +26,4 @@
 
 前端使用独立新建的 React 工程和既定配套；后续业务参考 AgentScope 的用例与规则。默认文本 Embedding 采用参考项目的百炼 `text-embedding-v4`、1024 维和 OpenAI 兼容接口；不采用 HashEmbedding 或自动回退到 hash。
 
-准备基线、React 架构、R01/H01、P01/P02、知识 K、中央 T 与会话 Q 契约已落盘。Java 使用 JDK 21、Boot 3.5、MyBatis-Plus/XML，Gateway 验签后换发内部 JWT；Knowledge、Tasks、Conversations 各自拥有独立数据库。Python 3.12 已锁定三框架：LangGraph/LlamaIndex 用于准备图，Deep Agents 完成隔离工具/流式兼容验证。真实北京百炼账号的 1024 维准备/查询和 PG 检查点联合恢复已验证；完整问答、研究助手、检索质量与生产运行仍待后续验收。
+准备基线、React 架构、R01/H01、P01/P02、知识 K、中央 T 与会话 Q 契约已落盘。Java 使用 JDK 21、Boot 3.5、MyBatis-Plus/XML，Gateway 验签后换发内部 JWT；Knowledge、Tasks、Conversations 各自拥有独立数据库。Python 3.12 已锁定三框架：LangGraph/LlamaIndex 用于准备图，Deep Agents 完成隔离工具/流式兼容验证。真实北京百炼账号的 1024 维准备/查询和 PG 检查点联合恢复已验证；少量合成资料上的真实问答已验证；研究助手、系统性检索质量与生产运行仍待后续验收。

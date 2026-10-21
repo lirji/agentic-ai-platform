@@ -1,7 +1,7 @@
 """中央终态先行的执行入口；图完成和中央结果提交之间允许安全恢复。"""
 
 import asyncio
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from typing import Any, cast
 
 from langgraph.graph.state import CompiledStateGraph
@@ -18,6 +18,7 @@ MAX_EXECUTION_SECONDS = 45
 MAX_GRAPH_STEPS = 32
 RESULT_SCHEMA = TypeAdapter(dict[str, JsonValue])
 GraphFactory = Callable[[FencedPostgresSaver], CompiledStateGraph[Any, Any, Any, Any]]
+ResultValidator = Callable[[dict[str, object]], Awaitable[None]]
 
 
 def _same_task(current: TaskLease, original: TaskLease, central: CentralTaskClient) -> None:
@@ -36,6 +37,8 @@ async def run_claimed_graph(
     central: CentralTaskClient,
     checkpoints: CheckpointConfig,
     build_graph: GraphFactory,
+    *,
+    before_complete: ResultValidator | None = None,
 ) -> TaskView:
     """先查中央再开 PG；已完成图从完整快照取输出，不再次执行业务节点。"""
     current = await central.inspect(binding.task.task_id)
@@ -63,15 +66,18 @@ async def run_claimed_graph(
                         durability="sync",
                     )
                     snapshot = await graph.aget_state(config)
-            if snapshot.next or snapshot.interrupts:
-                raise TaskRuntimeError(TaskRuntimeCode.UNSUPPORTED)
-            try:
-                result = RESULT_SCHEMA.validate_python(value, strict=True)
-            except ValidationError:
-                raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID) from None
-            return await central.complete(
-                current.task.task_id, current.epoch, cast(dict[str, object], result)
-            )
+                    if snapshot.next or snapshot.interrupts:
+                        raise TaskRuntimeError(TaskRuntimeCode.UNSUPPORTED)
+                    try:
+                        result = cast(
+                            dict[str, object], RESULT_SCHEMA.validate_python(value, strict=True)
+                        )
+                    except ValidationError:
+                        raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID) from None
+                    # 已完成快照恢复可能不再执行任何节点，最终权限校验不能只放在节点中。
+                    if before_complete is not None:
+                        await before_complete(result)
+                    return await central.complete(current.task.task_id, current.epoch, result)
     except (TaskRuntimeError, TimeoutError) as error:
         # 取消、接管或提交响应丢失时，以中央最新事实结束；未提交则交给后续领取恢复。
         observed = await central.inspect(binding.task.task_id)

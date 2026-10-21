@@ -118,7 +118,7 @@ S1 的身份、时间、幂等键与 revision 记录受理；S3 通过 `knowledg
 
 `python3 deploy/local.py init-tasks` 在 dev-infra MySQL 创建 `agentic_tasks` / `agentic_tasks_test`，分别使用 `agentic_task_app` / `agentic_task_test_app` 与对应 migrate 账号；应用只有库内 DML，迁移账号无 DROP。随机凭据及独立 task-submit/task-worker RSA 密钥保存在忽略的 `.local/`（0600）。重复初始化不改已有数据或轮换密码；无所有权记录时不接管同名资源。
 
-`mvn -B -ntp package` 后使用 `python3 deploy/local.py start --service tasks`；停止仍走同一入口 `stop --service tasks`，只终止本项目进程。该模块不需要模型、PG、S3 或旧业务服务即可验收中央协议。T01 见 [任务契约](../docs/design/knowledge-first-20261020/TASK_CONTRACTS.md)。目前只接收内部会话服务的任务，尚未启动真正 AI worker，也不宣称可通过 UI 问答。
+`mvn -B -ntp package` 后使用 `python3 deploy/local.py start --service tasks`；停止仍走同一入口 `stop --service tasks`，只终止本项目进程。该模块不需要模型、PG、S3 或旧业务服务即可验收中央协议。T01 见 [任务契约](../docs/design/knowledge-first-20261020/TASK_CONTRACTS.md)。目前只接收内部会话服务的任务；S5D 的独立问答 worker 和 UI 真实验收见下文。
 
 `ai-runtime/.venv/bin/python deploy/task_smoke.py` 验证真实网关、三类签名身份、输入拒绝、任务/事件/完成幂等；保存 `.local/s5a-http-state.json` 以便中断后先核对原任务，不能删除该文件后盲目重做未知结果。完成后重启本项目 tasks，再运行同脚本 `--restart-check`。`deploy/task_fault_smoke.py` 仅启动临时故障进程 28097/29097，连接不可达地址验证 503 与 readiness DOWN，不中断共享 DB；测试结束终止自己创建的子进程。
 
@@ -142,10 +142,47 @@ AGENTIC_CHECKPOINT_IT=1 ai-runtime/.venv/bin/pytest ai-runtime/tests/test_task_c
 
 构建后用 `python3 deploy/local.py start --service conversations`；启停与默认全服务命令均已接入。Gateway 路由 `/api/v1/conversations`，读写 scope 为 `conversation:read` / `conversation:write`。会话服务仅拿到自身数据库/提交签名与 Gateway 公钥；不会注入 Tasks worker 私钥或 Knowledge 数据库配置。详见 [Q01–Q03 契约](../docs/design/knowledge-first-20261020/CONVERSATION_CONTRACTS.md)。
 
-本地初始化默认启用 `local-dev` 单租户交接 worker；每次领取一个问题，HTTP 最多 2 在途、5 秒、256 KiB，15 秒数据库租约，5 次自动尝试和最多 3 次显式恢复。`SUBMITTED` 仅表示中央任务受理，最终回答仍由 Tasks API 返回；当前没有常驻模型问答 worker。Tasks 暂时不可用时原问题仍可读；需要前序答案的提问返回明确依赖错误，不保存伪造上下文。Actuator 提供交接活跃/积压/结果/耗时、HTTP 在途和执行池指标。
+本地初始化默认启用 `local-dev` 单租户交接 worker；每次领取一个问题，HTTP 最多 2 在途、5 秒、256 KiB，15 秒数据库租约，5 次自动尝试和最多 3 次显式恢复。`SUBMITTED` 仅表示中央任务受理，最终回答仍由 Tasks API 返回；本机问答 worker 由 S5D 的显式命令单独启动。Tasks 暂时不可用时原问题仍可读；需要前序答案的提问返回明确依赖错误，不保存伪造上下文。Actuator 提供交接活跃/积压/结果/耗时、HTTP 在途和执行池指标。
 
 `ai-runtime/.venv/bin/python deploy/conversation_smoke.py` 首次执行真实 Gateway/会话/Tasks 联合验收，恢复标识保存在 `.local/s5c-http-state.json`。此命令包含临时 28098/29098 隔离进程：使用专用合成租户、真实中央提交后丢弃响应、重启恢复、不可达 Tasks/数据库故障。完成后只终止自己创建的进程，不停止共享数据库；合成中央任务已完成或取消，不会被后续付费 worker 领取。重启会话后用 `--restart-check` 查询原记录；中途失败先核对私密状态与任务，不删除记录来重新跑未知命令。
 
 Java `-Pintegration` 覆盖真实数据库的并发/幂等/上下文/租约/次数上限，HTTP 联调和重启证据见 [S5C 验收](../docs/qa/knowledge-conversations-20261021/TEST_RESULT.md)。原问题与上下文没有自动清理策略；生产保留期、IAM、容量和部署仍未验收。回退会话制品前先停止交接 worker，保留数据库与中央任务；代码回退不会撤销已受理问题或生成任务。
 
-当前没有常驻图 worker；`run_claimed_graph` 是供后续业务装配的执行入口。PG 准备写可能留下孤立旧分支，但恢复只认中央凭据。生产保留期、备份恢复和容量另行落实；本轮保留数据与私密记录。
+本机已显式启动 S5D 单在途问答 worker，固定 local-dev，使用用户批准的 deepseek-flash。PG 准备写可能留下孤立旧分支，但恢复只认中央凭据。生产保留期、备份恢复和容量另行落实；本轮保留数据与私密记录。
+
+## 问答执行（S5D，真实聊天已验收）
+
+`python3 deploy/local.py init-qa` 仅建立独立 `runtime-knowledge-{private,public}.pem`；重复执行核对配对、保留原密钥，Knowledge 只收到公钥。启用后提供 K05 内部只读搜索/引用，Gateway 不转发内部路由。原公开 Knowledge 身份与新 worker 身份不互认。
+
+先正常停止需重建的 Java 服务，再构建对应 jar、启动服务；避免覆盖运行中的 jar 使关闭时无法加载原类。该约束不涉及停止共享 dev-infra。
+
+2026-10-21 用户批准 `deepseek-flash` 并更新凭据。独立 Python 环境锁定 LiteLLM 1.106.0 与 Prisma 0.15.0（错误分类所需，不启用数据库）；进程监听 127.0.0.1:28089。只有 `chat-default` 路由，转发 deepseek/deepseek-flash，显式关闭 thinking、重试/回退/正文日志/外部追踪。提供方密钥仅进入代理进程，worker 使用独立代理密钥。Embedding 与聊天各 1 元分别累计，不删除或重建账本恢复额度。
+
+问答 CLI、配置字段、预算和退出边界见 [AI 运行时](../ai-runtime/README.md#问答执行与当前限制)。锁定制品、123 项依赖公告扫描、真实代理边界及实际问答均有独立证据，见 [S5D 验收](../docs/qa/knowledge-qa-execution-20261021/TEST_RESULT.md)。普通 `serve` 不启动问答 worker；需要下列显式操作。
+
+无需真实模型的恢复验收：
+
+```bash
+AGENTIC_QA_EXECUTION_IT=1 AGENTIC_CHECKPOINT_IT=1 ai-runtime/.venv/bin/pytest ai-runtime/tests -q
+```
+
+该命令仅对本项目创建随机租户/合成任务，使用本机 TCP/SSE 模型替身和临时预算文件。5 项 S5D 联合测试覆盖检索后/生成后恢复、最终重验、流中取消、真实预检与 SIGTERM 退出；`.local/s5d-*.json` / 辅助 s5b 记录保留。不会读取旧语料或调用付费模型。S5D 的真实知识接口另有独立验收，付费检索需额外显式开关，日常回归不要开启。
+
+
+```bash
+uv sync --project deploy/model-proxy --frozen --python 3.12 --no-build
+# 首次由密钥管理工具注入 DEEPSEEK_API_KEY；不把密钥写入命令或仓库。
+python3 deploy/local.py init-chat
+python3 deploy/local.py start-chat
+python3 deploy/local.py start-qa
+python3 deploy/local.py status
+# 停止/回退先停止领取任务，随后停止出口。
+python3 deploy/local.py stop-qa
+python3 deploy/local.py stop-chat
+```
+
+首次 `init-chat` 创建 `.local/model-proxy.json`、`chat.json`、`qa-worker.json` 与 `chat-budget-20261020.json`，权限 0600。再次执行只预检、保留文件；任何一份已有而另一份缺失时拒绝自动重建。新密钥仅更新私密 providerKey，再按上述顺序正常重启；不改代理密钥或预算账本。就绪仅 GET /v1/models，不使用会付费的代理 /health 检查。
+
+`AGENTIC_PROXY_IT=1` 的 pytest 使用实际代理进程与本机合成提供方，验证型号转换、无重试和日志边界，不消费真实模型。真实业务验收显式运行 `ai-runtime/.venv/bin/python deploy/qa_smoke.py --confirm-paid`，复用 `.local/s5d-real-model.json` 原任务与幂等键；未知提供方返回会停下，不能删除状态再试。脚本只对合成资料建问答，并测试无资料路径；已完成记录再次运行不新增模型调用。
+
+本次计价核验日期 2026-10-21，按官方峰值未缓存输入 2 元/百万 token、输出 8 元/百万 token，并在客户端使用字节上界、1024 输出上限与 2 倍余量。[官方计价](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)。正式累计预留为聊天 0.092600 元/4 次、Embedding 0.20 元/20 批，均非提供方账单；实际费用未查询。重启验证保留配置及两个预算摘要，不增加请求。

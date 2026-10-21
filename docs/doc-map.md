@@ -4,7 +4,7 @@
 
 本项目已有 Python AI 运行时与独立 Java Gateway/Knowledge/Tasks/Conversations 服务。知识资料和中央任务按参考规则独立实现，旧数据和旧部署未迁入；以下原项目映射仍是固定取证证据。
 
-本轮同步基线 `3e0a626700c811b5cb4768f8e982cdef6f95174b` → S5C 工作树：会话与原问题、持久交接、Gateway 受众/路由、Tasks owner 委托读取、共享状态编码、分权初始化和实际验收同步至契约/架构/运行说明。[S5C 证据](qa/knowledge-conversations-20261021/TEST_RESULT.md)绑定当前源码；S2–S5B 历史证据保留，当前状态见唯一进度。
+本轮同步基线 `865aaa4ba1e0f50c91e2b206385fd78fdc027ee1` → S5D 工作树：Knowledge 独立只读身份、问答图、引用重验、流式预算、中央事件/失败、完成前回调及 worker 同步至契约/运行说明。[S5D 证据](qa/knowledge-qa-execution-20261021/TEST_RESULT.md)绑定当前源码，新增 LiteLLM 锁定制品、实际 deepseek-flash、三条业务路径、浏览器引用与无新增费用重启证据；S2–S5C 历史证据保留，当前状态见唯一进度。
 
 ## 权威文档
 
@@ -68,6 +68,8 @@
 | 尚未确定的范围与验证状态 | 本次用户要求、可行性讨论与任务检查结果 | 第 1、10、11 节 |
 
 ## 后续维护规则
+
+2026-10-21 当前实现补充：S5E 前端证据在独立 `agentic-ai-platform-web/docs/qa/s5e/`，覆盖真实 Q/T、受控 Q04/SSE、知识引用共享消费者与视觉交互；实际 Git 交付仍以当前进度为准。[研究准备](design/knowledge-first-20261020/RESEARCH_READINESS.md)映射已锁定 Deep Agents 0.7.28 的入口/默认工具与本项目文本聊天、根图恢复边界，不是新研究契约或生产接入声明。
 
 1. 用户最新决定优先；已确认基线与工程建议分别标记，不让历史未决项覆盖后续确认。
 2. 若引用更新后的源码，先核对实际差异，再更新受影响结论与基线；不只刷新日期。

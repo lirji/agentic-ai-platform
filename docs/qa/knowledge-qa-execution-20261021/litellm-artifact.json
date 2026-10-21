@@ -1,0 +1,53 @@
+{
+  "component": "litellm",
+  "version": "1.106.0",
+  "checkedAt": "2026-10-21",
+  "pypi": {
+    "wheel": "litellm-1.106.0-cp310-abi3-macosx_11_0_arm64.whl",
+    "sha256": "bae66b279ad1043471acfe6ed5a31b6b4cebf39eb309fa46a5c0ab6c69a00105",
+    "yanked": false,
+    "vulnerabilities": []
+  },
+  "archiveCheck": {
+    "pathTraversal": false,
+    "startupPth": false
+  },
+  "sources": [
+    "https://pypi.org/pypi/litellm/1.106.0/json",
+    "https://github.com/BerriAI/litellm/releases/tag/v1.106.0"
+  ],
+  "status": "INSTALLED",
+  "license": "MIT",
+  "dependencyLock": "deploy/model-proxy/uv.lock",
+  "pricing": {
+    "model": "deepseek-flash",
+    "checkedAt": "2026-10-21",
+    "inputCnyPerMillion": "2",
+    "outputCnyPerMillion": "8",
+    "basis": "peak price; input assumes no cache hit; ledger adds 2x margin",
+    "reference": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/"
+  },
+  "dependencyLockSha256": "97be54ed641266626cff80662108e6f11de0914e98905c073a39bf20b79fa0bb",
+  "installedVersion": "1.106.0",
+  "runtimeDependencyCorrection": {
+    "package": "prisma",
+    "version": "0.15.0",
+    "license": "Apache-2.0",
+    "reason": "LiteLLM auth error classifier imports prisma even without a configured database",
+    "databaseEnabled": false
+  },
+  "boundaryTests": {
+    "result": "PASS",
+    "count": 3,
+    "log": ".logs/s5d-proxy-integration-final.log",
+    "checked": [
+      "missing credential rejected",
+      "chat-default maps to deepseek-flash",
+      "thinking disabled on provider wire",
+      "provider 503 receives one attempt only",
+      "unknown route rejected",
+      "prompt, API key and error body absent from proxy logs",
+      "missing ledger cannot be re-created"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "formatters": {
+    "metadata": {"()": "safe_logging.MetadataFormatter"}
+  },
+  "handlers": {
+    "metadata": {
+      "class": "logging.StreamHandler",
+      "formatter": "metadata",
+      "stream": "ext://sys.stderr"
+    }
+  },
+  "root": {"level": "WARNING", "handlers": ["metadata"]},
+  "loggers": {
+    "LiteLLM": {"level": "WARNING", "handlers": ["metadata"], "propagate": false},
+    "LiteLLM Proxy": {"level": "WARNING", "handlers": ["metadata"], "propagate": false},
+    "LiteLLM Router": {"level": "WARNING", "handlers": ["metadata"], "propagate": false},
+    "uvicorn": {"level": "INFO", "handlers": ["metadata"], "propagate": false},
+    "uvicorn.error": {"level": "INFO", "handlers": ["metadata"], "propagate": false},
+    "uvicorn.access": {"level": "WARNING", "handlers": ["metadata"], "propagate": false},
+    "httpx": {"level": "WARNING", "handlers": ["metadata"], "propagate": false}
+  }
+}

@@ -1,6 +1,6 @@
 # AI 运行时
 
-当前实现 S0/S2/S5B：Python 3.12、存活端点、真实 Embedding、鉴权知识准备/查询向量，以及受控 PG 检查点和中央恢复协议。契约权威为 [R01/H01](../docs/design/knowledge-first-20261020/CONTRACTS.md)、[P01/P02](../docs/design/knowledge-first-20261020/PROCESSING_CONTRACTS.md)和 [S5B](../docs/design/knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)。Java 已实现索引发布与检索，独立 React 工作台已接通知识路径；问答与研究业务尚未接通。
+已交付 S0/S2/S5B：Python 3.12、存活端点、真实 Embedding、鉴权知识准备/查询向量，以及受控 PG 检查点和中央恢复。S5D 问答图、累计预算和 worker 已通过受控恢复与真实 deepseek-flash 问答验收。契约权威为 [R01/H01](../docs/design/knowledge-first-20261020/CONTRACTS.md)、[P01/P02](../docs/design/knowledge-first-20261020/PROCESSING_CONTRACTS.md)、[S5B](../docs/design/knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)与 [Q 执行](../docs/design/knowledge-first-20261020/QA_EXECUTION_CONTRACTS.md)。
 
 ## 本地启动
 
@@ -17,7 +17,7 @@ uv run --frozen agentic-ai serve --host 127.0.0.1 --port 8000
 {"status":"alive","service":"agentic-ai-runtime"}
 ```
 
-该端点只证明进程可响应，无需模型凭据。不存在声明业务可用的 readiness 端点。三框架已正式锁定并安装：LangGraph 1.2.16 编排准备图、LlamaIndex Core 0.14.25 分块；Deep Agents 0.7.28 已通过隔离工具/流式循环验证，业务研究 Agent 尚未交付。PG 完整快照已通过真实 LangGraph 和中央任务联合恢复验收，不代表问答 worker 已启动。
+该端点只证明进程可响应，无需模型凭据。不存在声明业务可用的 readiness 端点。三框架已正式锁定并安装：LangGraph 1.2.16 编排准备图、LlamaIndex Core 0.14.25 分块；Deep Agents 0.7.28 已通过隔离工具/流式循环验证，业务研究 Agent 尚未交付。PG 完整快照已通过真实 LangGraph 和中央任务联合恢复验收；本机问答 worker 另由显式入口启动，见下文。
 
 ## 启用知识准备
 
@@ -62,6 +62,7 @@ async def embed_authorized_texts(texts: list[str]):
 - `src/agentic_ai/adapters/`：OpenAI 兼容 HTTP 实现。
 - `src/agentic_ai/processing/`：准备契约、摘要、服务身份及固定处理图。
 - `src/agentic_ai/tasks/`：中央任务客户端、受控 PG saver、严格序列化和终态优先执行入口。
+- `src/agentic_ai/qa/`：固定身份知识检索、LlamaIndex retriever、LangGraph 问答图、引用重验、累计聊天预算与单在途 worker。
 - `src/agentic_ai/runtime/`：有界配置；`api/` 与 `cli.py`：当前运行入口。
 - `tests/`：配置、协议成功/失败、分批、时限、取消及真实本地 HTTP 进程测试。模型响应使用 HTTPX transport 替身，不能作为真实语义质量证据。
 
@@ -79,4 +80,27 @@ uv build --no-sources
 AGENTIC_CHECKPOINT_IT=1 uv run --frozen pytest -q
 ```
 
-当前 150 项全量验证通过（含 11 项真实 PG/MySQL/中央 HTTP），见 [S5B 验收](../docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。测试只新增本项目合成数据，保留 `.local/s5b-*.json` 归属记录，不调用任何真实模型。执行入口未暴露为用户 API；不接受用户 threadId，不支持子图、历史回放或删除。
+S5B 当时 150 项验证通过（含 11 项真实 PG/MySQL/中央 HTTP），见 [S5B 验收](../docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。测试只新增本项目合成数据，保留 `.local/s5b-*.json` 归属记录，不调用任何真实模型。执行入口未暴露为用户 API；不接受用户 threadId，不支持子图、历史回放或删除。
+
+## 问答执行与当前限制
+
+S5D 图为 `retrieve → generate → verify`。每次读取/模型调用/事件追加前检查中央租约；恢复后的证据和最终引用重新经 Java 判权。无证据直接返回统一说明，不调用聊天。完整快照恢复也执行 `before_complete`；中央已经终态时不重跑图。上下文只取同 owner/会话/知识范围的一个前序成功回答。
+
+聊天客户端固定 `chat-default`、1 在途、25 秒、64 KiB 请求、256 KiB 响应、32 KiB SSE 事件、1024 输出 token；无重试/回退/工具调用。独立 0600 账本在发送前锁定、保守预留并 fsync，未知响应不退款；重启、日期变化或显式恢复均不重置。实际出口已锁定 LiteLLM 1.106.0 → deepseek-flash，关闭思考模式；真实流与问答已验证。代理进程使用独立依赖环境、最小日志和专用密钥，不持有其他服务凭据。
+
+只有显式运行下列命令才会启动 worker，普通 `serve` 不会自动领取问答任务：
+
+```bash
+uv run --frozen agentic-ai check-qa-worker --config /absolute/path/to/private-worker.json
+uv run --frozen agentic-ai qa-worker --config /absolute/path/to/private-worker.json
+```
+
+预检读取固定私钥、聊天配置/账本和 PG 迁移/权限，不生成内容或预留费用；不证明代理/提供方可达。进程日志区分配置有效、READY、执行、中央不可达、结果未确认和停止；任务 ID 用于关联，正文与凭据不入日志。PID 存活与配置/依赖就绪是不同事实。SIGTERM 停止领取并取消有界在途等待，不把关闭误报为业务失败；未完成任务由中央租约接管。
+
+私密 `WorkerConfig` 字段为 `tenant_id,tasks_endpoint,knowledge_endpoint,task_private_key,knowledge_private_key,chat_config,checkpoints`，最后一项为含 `dsn` 的 PG 配置。`ChatConfig` 字段见 [chat_config.py](src/agentic_ai/qa/chat_config.py)：必须明确获准型号、当前价格/核验日期、代理密钥和预算绝对路径，无默认提供方。本机配置已在忽略的 `.local/` 建立，使用 2026-10-21 官方峰值价格与累计账本；初始化幂等保留所有现存文件，缺失账本时拒绝重建。运行命令见[独立模型出口](../deploy/README.md#问答执行s5d真实聊天已验收)。
+
+```bash
+AGENTIC_QA_EXECUTION_IT=1 AGENTIC_CHECKPOINT_IT=1 uv run --frozen pytest -q
+```
+
+当前执行记录为 263 passed / 20 skipped：包含 5 项真实 PG/Tasks/网关与本机模型 TCP 联合测试、11 项旧恢复回归。20 项真实知识接口测试在前一单独阶段已通过，其中唯一的付费检索未重跑；随后真实三条业务路径使正式累计 Embedding 预留达 0.20 元/20 批，聊天累计预留 0.092600 元/4 次（含 2 次提供方探针）；均为独立 1 元上限内的保守预留，非账单。新增独立代理边界、真实业务路径与重启重放证据分别列示。证据及未验证项见 [S5D 验证](../docs/qa/knowledge-qa-execution-20261021/TEST_RESULT.md)。

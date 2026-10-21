@@ -1,0 +1,131 @@
+{
+  "slice": "S5D",
+  "overall": "PASS",
+  "deliveryGate": "PASS",
+  "baseCommit": "865aaa4ba1e0f50c91e2b206385fd78fdc027ee1",
+  "sourceFingerprint": "7555d13658b6bab84132308d400657971859387d98a57aa792ff99dd94694e94",
+  "files": {
+    "ai-runtime/src/agentic_ai/cli.py": "e96ca081b378b7b6a0166d57c465c76419b37f464af8df813a9dc612664d533d",
+    "ai-runtime/src/agentic_ai/qa/__init__.py": "197410f9d375e02719dfff240f971a85ddb38c101138cb96ddebeadef04bc4c4",
+    "ai-runtime/src/agentic_ai/qa/chat.py": "9aab7cca546d60e3ac4e3fd12954fbd54c77ecafd90107ab7c243961cca98705",
+    "ai-runtime/src/agentic_ai/qa/chat_budget.py": "8b124fe83f226bfd1dbf8288b7e68ad6ec460d8c3c1f883864f7890b23aadb22",
+    "ai-runtime/src/agentic_ai/qa/chat_config.py": "5e91dd1b43b0fab7a0b0a8f210c494ee74e68629c651e748cfdce008b29d479a",
+    "ai-runtime/src/agentic_ai/qa/errors.py": "3fb52248315c276da85d3e713cfc72845e8aadc4ee9268db5724090d06272949",
+    "ai-runtime/src/agentic_ai/qa/knowledge.py": "b79b87bf5cbe4379b9e1f7ae5c2f35c8e85e4257d981f64c6bbdaf63ba72f6d7",
+    "ai-runtime/src/agentic_ai/qa/models.py": "d42691ab4f0270f391737dcaf540facf387d9a314bfe374c7ddeb2356a44f0b3",
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "9a6300da7e74784e4935d9c46c265f97f7e9bb4004c8606a7b12c6e579557852",
+    "ai-runtime/src/agentic_ai/qa/retriever.py": "aee7c086533b4a3b75363b930e8899fef5badb715897b83625d4bdf977307aa7",
+    "ai-runtime/src/agentic_ai/qa/worker.py": "a684a3b37106f134727659e552e72f7450bc8989afd25ef7ca0d905ca0fb70e5",
+    "ai-runtime/src/agentic_ai/tasks/client.py": "e8eeb445ea2bb075b22a1fba8616518da5a5fbb95ee8836563f67c24f7c574d8",
+    "ai-runtime/src/agentic_ai/tasks/execution.py": "3a1828a5899247a8fe073b1ac47e0db6f648281fe62d60add10998a0b15cf3e6",
+    "ai-runtime/src/agentic_ai/tasks/models.py": "3e0e38a24164423802f2f2ba58046ca38d58868b685ca40e47a63a0541cdb418",
+    "ai-runtime/src/agentic_ai/tasks/postgres.py": "f79283464ba6f5e333f0b01188b51f1794eeb5edcab296dd2db53a0939b9bf2b",
+    "ai-runtime/tests/test_model_proxy_integration.py": "104d82394a48552d37794155c5a73bd73641f3a94f76714dd23f9e834bb9ad5a",
+    "ai-runtime/tests/test_qa_chat.py": "2f996ba6563c6f6de6af0d3ce0be3e20f71da701020fd20c507b9ee4de4aef2e",
+    "ai-runtime/tests/test_qa_execution_integration.py": "c48efc908c98c5f2be1409fb533ae9c65f46004734870e92473b450e626ebedb",
+    "ai-runtime/tests/test_qa_knowledge.py": "59817f9ee45b5883212cfcdf54511543ed3acd9fe05fce8f1fd27d55c004e41a",
+    "ai-runtime/tests/test_qa_knowledge_integration.py": "a4877fd4f105c843f9a682834d9c48d3a394504113b4dc6fbf47d13ffded5897",
+    "ai-runtime/tests/test_qa_pipeline.py": "46c93522bffd4e336a4d9e8fca9de05e329f7c0d6ee1e10ab566f9ad6acb2011",
+    "ai-runtime/tests/test_qa_worker.py": "95c737865ca0ba41375658a3bbd3d68d80d3433b8155e0c129cf4eb5dd9432a1",
+    "deploy/chat_local.py": "3ca0f963315047e91b8b2653ebcfb434f3b19c7076513044403773edba580536",
+    "deploy/local.py": "c91539558e55bac300d5c721ab3547731953aafe3ce9f1f5ba588598486b5c2e",
+    "deploy/model-proxy/config.yaml": "5019c5ab06b2c5d1bfa55771b5678c72910957f39dfd2eec563b676c83fa0396",
+    "deploy/model-proxy/logging.json": "3a999a9e80eeb6c702e30d5897f252c8786e0a6fd2675268e5eff76719c3e582",
+    "deploy/model-proxy/pyproject.toml": "59ac89f6d110cc4be98e691c809d67e498818bae4a9bbd6616746fe352cfe15c",
+    "deploy/model-proxy/safe_logging.py": "ff1639066a3b9fab84099552dfb845cd63dc19eaee61621ed5b4a515b28ec82a",
+    "deploy/model-proxy/uv.lock": "97be54ed641266626cff80662108e6f11de0914e98905c073a39bf20b79fa0bb",
+    "deploy/qa_local.py": "61320a28c084584cece6dd70af265e37962e78358e5fabc962c726d53dd28bcd",
+    "deploy/qa_smoke.py": "a0ca67910a2c33586fdba765e89650637b6275f38c09a603cf5aaef73e808104",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/RuntimeKnowledgeController.java": "f31afe9397dc680fc52f8e684f16d70a72878faa5190bc40ee4d88dcd7a5cc6a",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/RuntimeKnowledgeSecurity.java": "b743874f9f04f227095fcf730f7dd8d136cf65526af8a7afd8798e1dfa1da6eb",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/RuntimeKnowledgeProtocol.java": "6113d90256a0a651ee2f8b27e060eab68840161afb946914322f41bb137fad9f",
+    "knowledge-service/src/main/resources/application.yml": "45b5e286b40ce3d4c973eeda9f58730b833a735c51f27a46c664c28fa9b321eb"
+  },
+  "checks": {
+    "javaRegression": {
+      "result": "PASS",
+      "count": 39,
+      "log": ".logs/s5d-knowledge-verify.log"
+    },
+    "pythonFull": {
+      "result": "PASS",
+      "passed": 263,
+      "skipped": 20,
+      "log": ".logs/s5d-python-full.log"
+    },
+    "workerFinal": {
+      "result": "PASS",
+      "passed": 17,
+      "deselected": 4,
+      "log": ".logs/s5d-worker-final.log"
+    },
+    "knowledgeHttp": {
+      "result": "PASS",
+      "passed": 20,
+      "log": ".logs/s5d-knowledge-http.log"
+    },
+    "mypy": {
+      "result": "PASS",
+      "sourceFiles": 37
+    },
+    "ruff": {
+      "result": "PASS",
+      "formatFiles": 59,
+      "scope": "AI src/tests and 5 deploy Python files"
+    },
+    "sdistWheel": {
+      "result": "PASS",
+      "log": ".logs/s5d-python-build-final.log"
+    },
+    "codeHygiene": {
+      "result": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+      "advisories": 22,
+      "log": ".logs/s5d-code-hygiene-delivery.log",
+      "review": "18 existing named protocol constants/typed bounds; 3 smoke test timing/page limits; 1 scanner false positive comparing project enum with isolated proxy site-packages"
+    },
+    "pythonProxyFinal": {
+      "result": "PASS",
+      "passed": 250,
+      "skipped": 36,
+      "log": ".logs/s5d-python-proxy-final.log",
+      "skippedEvidence": "20 K05 and 16 PG/Tasks integration cases already passed; 26/27 prior files unchanged, CLI dispatch covered by new restart check"
+    },
+    "proxyBoundary": {
+      "result": "PASS",
+      "passed": 3,
+      "log": ".logs/s5d-proxy-integration-final.log"
+    },
+    "realModel": {
+      "result": "PASS",
+      "path": "real-model-smoke.json"
+    },
+    "restartReplay": {
+      "result": "PASS",
+      "path": "restart-replay.json"
+    },
+    "browser": {
+      "result": "PASS",
+      "path": "browser-real-model.json"
+    }
+  },
+  "unverified": [
+    "production IAM/capacity/backups",
+    "systematic model quality beyond synthetic fixtures",
+    "actual provider bill",
+    "research and readonly assistants"
+  ],
+  "embeddingReservedCny": "0.20",
+  "realChatCalls": 4,
+  "chatModelInExecutionTests": "loopback deterministic TCP/SSE test double, not a provider",
+  "fingerprintAlgorithm": "sha256(canonical JSON sorted path:sha256 pairs)",
+  "chatReservedCny": "0.092600",
+  "actualBilledCny": null,
+  "priorEvidenceReuse": {
+    "sourceFingerprint": "d08fd4436b40b84833e01103e7524953a867b9535e7d343bb1cd785d489ae0b6",
+    "unchangedFiles": 26,
+    "changedFiles": [
+      "deploy/local.py"
+    ],
+    "coverageOfChangedFiles": "new explicit init/start/stop/status dispatch exercised by real restart/replay"
+  }
+}

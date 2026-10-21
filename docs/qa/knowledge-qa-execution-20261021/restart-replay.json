@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "servicesRestarted": [
+    "model-proxy",
+    "qa-worker"
+  ],
+  "privateConfigAndBudgetHashesUnchanged": true,
+  "replayedCases": 3,
+  "additionalModelCalls": 0,
+  "statePath": ".local/s5d-real-model.json"
+}

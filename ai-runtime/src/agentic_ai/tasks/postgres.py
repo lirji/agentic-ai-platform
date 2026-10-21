@@ -140,3 +140,22 @@ class PostgresCheckpoints:
             value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False
         ).encode()
         return hashlib.sha256(encoded).hexdigest()
+
+    async def verify_ready(self) -> None:
+        """领取前核对既有原生迁移与应用读写权限；本步骤不创建表或写入快照。"""
+        async with self.pool.connection() as connection:
+            migrations = await connection.execute(
+                "SELECT max(v) AS version FROM checkpoint_migrations"
+            )
+            row = await migrations.fetchone()
+            if row is None or row["version"] != len(AsyncPostgresSaver.MIGRATIONS) - 1:
+                raise TaskRuntimeError(TaskRuntimeCode.CONFIG_INVALID)
+            rights = await connection.execute(
+                "SELECT bool_and(has_table_privilege(current_user, name, 'SELECT') "
+                "AND has_table_privilege(current_user, name, 'INSERT') "
+                "AND has_table_privilege(current_user, name, 'UPDATE')) AS allowed "
+                "FROM unnest(ARRAY['checkpoints','checkpoint_blobs','checkpoint_writes']) AS name"
+            )
+            grants = await rights.fetchone()
+            if grants is None or grants["allowed"] is not True:
+                raise TaskRuntimeError(TaskRuntimeCode.CONFIG_INVALID)

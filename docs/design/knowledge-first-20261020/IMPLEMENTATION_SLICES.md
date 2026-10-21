@@ -19,6 +19,26 @@ S1 已追加知识受理/查询的一致性审查与冻结契约，见下文。�
 | S2 | Knowledge 客户端经独立服务身份调用 Python，取得有来源定位和真实向量的版本化准备结果及查询向量 | S0/S1；PROCESSING_CONTRACTS P01/P02；模型账号/地域/1 元授权已确认 | backend：ai-runtime；runtime：deploy 本地 AI 启动/私密配置；docs：既有设计/QA | Python 只计算准备结果，不写 Knowledge/检索存储；无业务迁移 | no；首次跨语言准备契约 | 下列 S2-AC | 已选三框架、PyJWT RSA 验签、真实百炼；服务密钥独立 | DONE |
 | S3 | 上传资料经持久 worker、真实准备及双索引发布为 READY；所有者可检索、引用及按原输入重试 | S2；PROCESSING_CONTRACTS S3 与 K03/K04 | backend：knowledge-service、必要 API；ai-runtime 仅本机预算护栏；runtime：deploy 独立搜索与验证；docs：权威设计/QA | Knowledge V2/V3、准备对象、双索引；不修改已应用迁移 | no | 下列 S3-AC | 现有 MySQL/S3/AI；独立 Qdrant 1.19.2、ES 8.19.23 smartcn | DONE |
 
+### S5E：知识问答界面（DONE，Git 交付见当前进度）
+
+- 依赖：S5C 已交付的 Q01/Q03/T01/K04；S5D 的 Q04 格式、K05 及恢复/事件消费者兼容检查 PASS。S5E 当时先完成无模型 UI 验收，后续 S5D 已补齐真实模型门禁。没有多 Agent 并行。
+- 可观察结果：创建/分页会话、受理原问题、选择已发布知识范围、读取同一 taskId 的真实交接/排队/生成/终态，取消、允许的恢复、引用重新判权与详情返回。最终答案只使用 SUCCEEDED 的 Q04 result。
+- 路径/Owner：frontend 为独立 web 仓库的 chat feature、ChatPage、必要导航/文档入口、共享引用与错误目录、测试；runtime 仅扩展既有 loopback 开发桥的精确 Q/T 路由和 scopes；docs 同步原权威文档。无新依赖、表或后端业务接口。
+- 范围：每会话200轮上限，原问题分页读取后仅渲染当前20轮；任务读取随可见卡片，运行中的流使用有界批次/游标。默认关联已确认的同范围最近成功问题；前序状态无法确认时保留错误，可显式选择独立提问。
+- 幂等：创建与提问保留提交编号/原命令；结果未知不自动另建命令。sessionStorage 只保存作用域、请求摘要、幂等键与原 expectedRevision，不保存问题/答案或凭据；确认后清理对应意图。更换输入遇到未知命令先要求核对历史，不能默默丢弃。
+- S5E-AC1：strict 构建、ESLint/Prettier、类型/契约/状态与流边界测试、Code Hygiene；不放宽已有规范、不新增第二组件体系。
+- S5E-AC2：真实 Gateway/Conversation/Tasks 创建→提问→交接/排队→取消→刷新保留原问题；合成测试任务及时取消，未启用真实 worker，不额外消耗模型预算。
+- S5E-AC3：受控契约流验证运行/断流游标/重复事件/新代重置、最终答案/无证据、引用/权限失败、取消竞争、恢复条件与409刷新、未知写响应原键/原版本重放；明确这是模拟响应验收。
+- S5E-AC4：复用浅色靛蓝 Ant Design。1440/1024/414px 主页面、创建表单、引用侧栏截图实际查看；键盘、焦点、长内容/错误、范围切换旧响应与引用详情返回有行为证据。当时未包含真实模型；后续 S5D 已补充两轮真实回答与引用 UI 验收。
+- 验收：独立前端 `docs/qa/s5e/TEST_RESULT.md` PASS。28项单元/组件、10组真实/受控浏览器、构建/格式/静态与 Code Hygiene COMPLETE；身份/草稿调整后相关2组复验及截图再核对通过。真实任务 CANCELLED/attemptCount=0，没有新增模型调用。S5D 现已另行完成真实模型门禁。
+
+### S5D：知识问答执行与引用（DONE）
+
+- 依赖 S5C DONE；[Q 执行契约](QA_EXECUTION_CONTRACTS.md) 固定 K05 身份/读取、答案与引用、事件、费用和 worker 边界。2026-10-21 用户已明确批准 deepseek-flash，并更新 API key；独立 LiteLLM/真实问答验收已通过。
+- 允许路径：Knowledge 内部只读入口/独立验签与相关测试；ai-runtime 问答图/LlamaIndex 检索适配、聊天适配器/预算、中央 events/fail 与最终结果回调；deploy 私密配置/独立 LiteLLM/worker 与验证；必要契约和文档。不得修改已应用迁移、直连其他业务库或新增外部写工具。
+- 顺序：先 K05 和有界客户端，再图/预算/事件及受控模型验证；型号确认后落实独立模型出口与真实调用。无多 Agent 并行。
+- 验收：[S5D TEST_RESULT](../../qa/knowledge-qa-execution-20261021/TEST_RESULT.md) PASS；原受控恢复与 K05 验证、真实代理边界、deepseek-flash 回答/追问/无证据、浏览器引用、重启重放保持额度均通过。Embedding 0.20 元/20 批，聊天 0.092600 元/4 次保守预留，非账单。S5E 已交付；研究助手按下一切片推进。
+
 ### S5C：知识会话与可靠任务交接（DONE）
 
 - 依赖 S5B DONE；依据 [CONVERSATION_CONTRACTS](CONVERSATION_CONTRACTS.md) 的冻结 Q01/Q03 与 T01 兼容读取扩展，Q02 继续使用中央事件。当前唯一执行片，无并行 Agent。
@@ -128,4 +148,4 @@ S1 不包含处理 worker、向量发布、问答或页面；完成后继续细�
 | 6 | 研究分析及业务助手 | Deep Agents 工具边界、累计预算、多 worker 恢复/取消、报告制品与 UI；写工具另定契约 |
 | 7 | 知识转换完善及 AgentScope 参考业务扩展 | 前述知识闭环验收，逐项业务需求和迁入边界明确 |
 
-S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。S4、S5A、S5B 与 S5C 已验收；会话 Q 契约已冻结，下一步细化答案/模型执行并接入问答 UI。可并行集合：无；未授权多个 Agent 并行写入。前端仓库创建和真实模型调用在对应阶段落实，不由本片验收替代。
+S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。S4、S5A、S5B、S5C 与 S5E 界面已验收；S5D deepseek-flash 真实问答与引用已验收。研究和只读助手的已有代码边界及后续动作见 [RESEARCH_READINESS](RESEARCH_READINESS.md)，不是已 READY 的新业务切片。可并行集合：无；未授权多个 Agent 并行写入。

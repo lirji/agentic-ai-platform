@@ -92,3 +92,28 @@ class ClaimReply(WireModel):
     """空队列是 null，不伪造成功任务。"""
 
     task: TaskLease | None
+
+
+class TaskEventType(StrEnum):
+    """T01 允许 worker 写入的事件；终态事件只能由中央服务产生。"""
+
+    PROGRESS = "PROGRESS"
+    TEXT_DELTA = "TEXT_DELTA"
+
+
+class TaskFailureCode(StrEnum):
+    """中央允许报告的安全失败码，不承载提供方原始异常。"""
+
+    AI_UNAVAILABLE = "AI_UNAVAILABLE"
+    BUDGET_EXCEEDED = "BUDGET_EXCEEDED"
+    INPUT_REJECTED = "INPUT_REJECTED"
+    EXECUTION_FAILED = "EXECUTION_FAILED"
+
+
+class TaskEvent(WireModel):
+    """追加成功返回中央分配的序号；worker 不自行推测游标。"""
+
+    sequence: int = Field(ge=1)
+    type: TaskEventType
+    payload: dict[str, JsonValue]
+    created_at: AwareDatetime

@@ -265,6 +265,9 @@ def environment(mode: str = "dev") -> dict[str, str]:
 
     if conversation_local.CONFIG.exists():
         env.update(conversation_local.environment(mode))
+    import qa_local
+
+    env.update(qa_local.environment())
     return env
 
 
@@ -422,13 +425,34 @@ def main() -> None:
             "init-tasks",
             "init-checkpoints",
             "init-conversations",
+            "init-qa",
+            "init-chat",
+            "start-chat",
+            "stop-chat",
+            "start-qa",
+            "stop-qa",
             "stop-search",
         ],
     )
     parser.add_argument("--service", choices=SERVICES)
     parser.add_argument("--reference-env", type=Path, help="已获授权的来源模型环境文件")
     args = parser.parse_args()
-    if args.command == "init-conversations":
+    if args.command in {"init-chat", "start-chat", "stop-chat", "start-qa", "stop-qa"}:
+        import chat_local
+
+        if args.command == "init-chat":
+            chat_local.init()
+        else:
+            service = "model-proxy" if args.command.endswith("chat") else "qa-worker"
+            if args.command.startswith("start"):
+                chat_local.start(service)
+            else:
+                chat_local.stop(service)
+    elif args.command == "init-qa":
+        import qa_local
+
+        qa_local.init()
+    elif args.command == "init-conversations":
         import conversation_local
 
         conversation_local.init()
@@ -466,10 +490,13 @@ def main() -> None:
         stop(args.service)
     elif args.command == "status":
         import ai_local
+        import chat_local
 
         for name in SERVICES:
             print(f"{name}: {'running' if alive(name) else 'stopped'}")
         print(f"ai-runtime: {'running' if ai_local.alive() else 'stopped'}")
+        for name in chat_local.SERVICES:
+            print(f"{name}: {'running' if chat_local.alive(name) else 'stopped'}")
     elif args.command == "token":
         load()
         private(

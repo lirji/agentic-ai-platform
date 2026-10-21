@@ -49,6 +49,9 @@ mybatis-plus:
   global-config:
     banner: false
 knowledge:
+  runtime:
+    enabled: ${KNOWLEDGE_RUNTIME_ENABLED:false}
+    public-key: ${KNOWLEDGE_RUNTIME_PUBLIC_KEY:}
   processing:
     enabled: ${KNOWLEDGE_PROCESSING_ENABLED:false}
     worker-enabled: ${KNOWLEDGE_WORKER_ENABLED:false}

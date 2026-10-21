@@ -1,0 +1,48 @@
+# 只有项目 worker 能持有代理密钥；提供方账号仅由此独立进程读取。
+model_list:
+  - model_name: chat-default
+    litellm_params:
+      model: deepseek/deepseek-flash
+      api_base: https://api.deepseek.com
+      api_key: os.environ/DEEPSEEK_API_KEY
+      thinking:
+        type: disabled
+      max_tokens: 1024
+      num_retries: 0
+      max_retries: 0
+      timeout: 23
+      stream_timeout: 23
+      max_parallel_requests: 1
+
+router_settings:
+  num_retries: 0
+  max_fallbacks: 0
+  timeout: 23
+  stream_timeout: 23
+  fallbacks: []
+  context_window_fallbacks: []
+  content_policy_fallbacks: []
+  default_litellm_params:
+    max_retries: 0
+
+litellm_settings:
+  num_retries: 0
+  max_fallbacks: 0
+  request_timeout: 23
+  set_verbose: false
+  suppress_debug_info: true
+  turn_off_message_logging: true
+  disable_streaming_logging: true
+  success_callback: []
+  failure_callback: []
+  callbacks: []
+  service_callback: []
+  cache: false
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  disable_spend_logs: true
+  disable_error_logs: true
+  disable_retry_on_max_parallel_request_limit_error: true
+  background_health_checks: false
+  store_model_in_db: false
