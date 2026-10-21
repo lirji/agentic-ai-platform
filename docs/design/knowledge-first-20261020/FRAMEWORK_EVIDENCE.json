@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "task": "capability-implementation-plan-20261021",
+  "checked_at": "2026-10-21T12:14:57+08:00",
+  "scope": "只读本机锁定接口及官方说明；未执行应用测试、模型调用或框架升级",
+  "project_baseline": "1e8f3b36766069764b74ca7c67cc6afeb9e9fe3e",
+  "python_version": "3.12.13",
+  "installed_packages_equal_uv_lock": true,
+  "versions": {
+    "llama-index-core": "0.14.25",
+    "langgraph": "1.2.16",
+    "deepagents": "0.7.28",
+    "langgraph-checkpoint-postgres": "3.2.0",
+    "langchain-openai": "1.7.2"
+  },
+  "installed_source_files": [
+    {
+      "package": "llama-index-core",
+      "version": "0.14.25",
+      "path_from_site_packages": "llama_index/core/retrievers/fusion_retriever.py",
+      "sha256": "e125fb8666943f40c56cb9b4102fb3ca3a81db485304464b8cd196dc8cf516f9",
+      "references": [
+        {
+          "symbol_or_pattern": "class QueryFusionRetriever",
+          "lines": [
+            33
+          ],
+          "finding": "授权 Retriever 组合扩展点"
+        },
+        {
+          "symbol_or_pattern": "num_queries: int = 4",
+          "lines": [
+            41
+          ],
+          "finding": "默认四个查询，不直接采用"
+        },
+        {
+          "symbol_or_pattern": "if llm else Settings.llm",
+          "lines": [
+            63
+          ],
+          "finding": "显式避免隐式全局模型"
+        },
+        {
+          "symbol_or_pattern": "k = 60.0",
+          "lines": [
+            122
+          ],
+          "finding": "原生融合 offset"
+        },
+        {
+          "symbol_or_pattern": "for rank, node_with_score in enumerate(",
+          "lines": [
+            128
+          ],
+          "finding": "原生排名从零开始"
+        },
+        {
+          "symbol_or_pattern": "hash = node_with_score.node.hash",
+          "lines": [
+            131,
+            204,
+            221
+          ],
+          "finding": "原生按 Node hash 去重"
+        }
+      ]
+    },
+    {
+      "package": "llama-index-core",
+      "version": "0.14.25",
+      "path_from_site_packages": "llama_index/core/evaluation/retrieval/metrics.py",
+      "sha256": "c33797ccfe07cccfcedd9f3bcc587861e40ba7916416d5a74def8232f029a6d4",
+      "references": [
+        {
+          "symbol_or_pattern": "class HitRate",
+          "lines": [
+            16
+          ],
+          "finding": "指标扩展点"
+        },
+        {
+          "symbol_or_pattern": "or not retrieved_ids",
+          "lines": [
+            65,
+            132,
+            207,
+            263,
+            319,
+            408
+          ],
+          "finding": "该指标拒绝空召回；项目需定义有答案/无答案口径"
+        },
+        {
+          "symbol_or_pattern": "or not expected_ids",
+          "lines": [
+            66,
+            133,
+            208,
+            264,
+            320,
+            409
+          ],
+          "finding": "空正确答案集合需项目语义适配"
+        }
+      ]
+    },
+    {
+      "package": "llama-index-core",
+      "version": "0.14.25",
+      "path_from_site_packages": "llama_index/core/postprocessor/types.py",
+      "sha256": "601ce5068496ada110cf4626d69f86f44937fcb087bf23dc8aadd95c1e8780fc",
+      "references": [
+        {
+          "symbol_or_pattern": "class BaseNodePostprocessor",
+          "lines": [
+            12
+          ],
+          "finding": "重排后处理扩展点"
+        },
+        {
+          "symbol_or_pattern": "def postprocess_nodes",
+          "lines": [
+            35
+          ],
+          "finding": "同步接口；异步 I/O 适配需实施时验证"
+        }
+      ]
+    },
+    {
+      "package": "llama-index-core",
+      "version": "0.14.25",
+      "path_from_site_packages": "llama_index/core/ingestion/pipeline.py",
+      "sha256": "00a1de638af05f7cf8bfa068f24f8f6b4037fa5849896ebfab0e2edbe165695d",
+      "references": [
+        {
+          "symbol_or_pattern": "class IngestionPipeline",
+          "lines": [
+            262
+          ],
+          "finding": "转换流水线；不授予本项目索引写权限"
+        }
+      ]
+    },
+    {
+      "package": "langgraph",
+      "version": "1.2.16",
+      "path_from_site_packages": "langgraph/graph/state.py",
+      "sha256": "d8c8021a93a8fc895d62335a9482e50d51353343bf885901e6487611dcd0d212",
+      "references": [
+        {
+          "symbol_or_pattern": "class StateGraph",
+          "lines": [
+            131
+          ],
+          "finding": "根图定义扩展点"
+        }
+      ]
+    },
+    {
+      "package": "langgraph-checkpoint-postgres",
+      "version": "3.2.0",
+      "path_from_site_packages": "langgraph/checkpoint/postgres/aio.py",
+      "sha256": "4fb93dd257ecc7e0d604d438d265cdb369b48149d9e169fbba4e49aa89ff6462",
+      "references": [
+        {
+          "symbol_or_pattern": "class AsyncPostgresSaver",
+          "lines": [
+            45
+          ],
+          "finding": "沿现有受控适配；原生 Saver 不代替中央 fencing"
+        }
+      ]
+    },
+    {
+      "package": "deepagents",
+      "version": "0.7.28",
+      "path_from_site_packages": "deepagents/graph.py",
+      "sha256": "3826c92c9613a30d898d3fb4fb76ab49a6af0537b5ef74ec9e7340673f7f2261",
+      "references": [
+        {
+          "symbol_or_pattern": "def create_deep_agent",
+          "lines": [
+            278
+          ],
+          "finding": "锁定版本复杂 Agent 构造入口"
+        },
+        {
+          "symbol_or_pattern": "checkpointer: Checkpointer | None",
+          "lines": [
+            293
+          ],
+          "finding": "可配置内部检查点；项目当前显式关闭"
+        }
+      ]
+    }
+  ],
+  "project_source_files": [
+    {
+      "path": "ai-runtime/pyproject.toml",
+      "sha256": "5cfb0fcafcce08f8db6fdcba83c28553ebc62f56875a62d3c0f580aedaa2f8a5"
+    },
+    {
+      "path": "ai-runtime/uv.lock",
+      "sha256": "e9751dfe7d66d46ec98963a6910c74ee43fc1ac28def0687be0e2a8b0ad230cb"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/processing/models.py",
+      "sha256": "f4d046bdaf0c7944d54a3aa0fa7b5bc3978054a0ceee7190dc69879970c87f06"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/qa/retriever.py",
+      "sha256": "3786e0176b0e52022f9a4165e4d4f6cc6f9246346e693629e7d9a2af9d6bd633"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/agents/pipeline.py",
+      "sha256": "de0f12b84a4bb992fa7546a97f7028df28c83dfb1375fd70b4fa046d84cfc259"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSearch.java",
+      "sha256": "f4ac35910cb372fa13bde10aaf55db82de06438a37748b92139b5721045dc5f9"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingProtocol.java",
+      "sha256": "24e3ebcd14d917160a349707cacc5e1ee4b488575c5c67003d1348aafdc315bf"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/SearchIndex.java",
+      "sha256": "5afa8fd2c14466399d682a19fd9e43d418f397ed6eca8dfa9b58c923c3b109bd"
+    }
+  ],
+  "official_sources": [
+    {
+      "url": "https://developers.llamaindex.ai/python/framework/module_guides/querying/node_postprocessors/",
+      "supports": "后处理扩展，包括模型重排；不证明本项目已接入"
+    },
+    {
+      "url": "https://developers.llamaindex.ai/python/framework/module_guides/evaluating/",
+      "supports": "检索与生成评测方向；项目标签及空结果语义单独定义"
+    },
+    {
+      "url": "https://docs.langchain.com/oss/python/langgraph/persistence",
+      "supports": "检查点及 Store 生命周期；业务状态仍由 Java 管理"
+    },
+    {
+      "url": "https://docs.langchain.com/oss/python/deepagents/backends",
+      "supports": "文件工具与线程内/跨线程后端的差别；当前锁定版本以本地接口为准"
+    },
+    {
+      "url": "https://help.aliyun.com/zh/model-studio/rerank",
+      "supports": "qwen3-rerank 的独立 rerank 协议候选；未验证账号开通、实际地域、价格或效果"
+    }
+  ],
+  "limits": [
+    "局部接口核对不代表未来适配已实现或运行通过",
+    "未复制第三方源码，摘要以本机已安装包和锁文件为基准",
+    "正文引用/项目权限/业务审批不由框架自动保证"
+  ]
+}

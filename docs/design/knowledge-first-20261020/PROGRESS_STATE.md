@@ -1,6 +1,22 @@
 # 独立知识平台准备进度
 
-## 当前任务：能力缺口对比分析
+## 当前任务：20 项差距的框架化实施计划
+
+- 标识：`capability-implementation-plan-20261021`。用户要求按本项目框架重新制定后续任务拆分和实施，并已明确本轮先交付完整计划；不恢复产品开发。
+- 状态：方案 DONE / 文档验证 PASS / Git 待交付。原 `knowledge-depth-20261021` 保持 PAUSED；无产品/测试/运行配置改动。
+- 计划：①核对原契约/架构与固定差距基线；②定义三框架/Java/React 的增量职责与兼容路线；③将 G01–G20 映射为稳定任务、依赖及可观察验收；④区分契约前置、条件项、运行/费用门禁；⑤同步原设计/切片/索引并验证；⑥正常 Git 文档交付。
+- Git：原目录新任务分支 `feat/capability-implementation-plan-20261021`，起点 `1e8f3b36766069764b74ca7c67cc6afeb9e9fe3e`，开始时干净；前端 `d2b4dc6` 与参考 `468cec4` 只读，未建 worktree。
+- 权威产物：CAPABILITY_IMPLEMENTATION_PLAN（主方案）、现有 IMPLEMENTATION_SLICES（稳定任务 ID 与依赖）、CAPABILITY_CONTRACT_BACKLOG（待冻结边界）；BACKEND_ARCHITECTURE/TECH_SELECTION/FRONTEND_ARCHITECTURE 仅增量同步，不另建平行架构。
+- 已核对：S0–S7、P/K/Q/T/work 协议；当前锁定 Deep Agents 0.7.28、LangGraph 1.2.16、LlamaIndex core 0.14.25；本地框架接口与官方职责说明。查询编排移交须先提供授权候选原语，不能两端重复 RRF；新来源解析不能沿用原始 TXT 字节定位语义。
+- 已完成：主方案、51 项任务（43 PLANNED / 8 CONDITIONAL）、20 项映射和 19 个契约工作包；现有架构/选型/前端设计及文档入口增量同步。框架证据核对 5 个锁定包、7 个安装源码和 8 个项目文件摘要。现行协议正文、产品/测试/运行文件保持不变。
+- 关键决策：LlamaIndex 接管查询前先比较原 RRF 一基排名与稳定身份；统一搜索/问答/研究用例；Java 仍掌握授权、版本和唯一索引发布；新解析显式区分原文件与提取物；预算 usage 归属为方案建议，S15A 冻结后再实施。
+- 验证：20 项覆盖、51 个稳定任务/索引、19 个契约工作包与依赖无环、旧 S0–S7 保留、Markdown/链接、源码摘要及仅文档范围均 PASS，见 [TEST_RESULT](../../qa/capability-plan-20261021/TEST_RESULT.md)。未运行应用测试或付费模型。
+- 下一步：完成正常 Git 文档交付。本轮不进入 S8 实现；未来恢复后先做 S8A 设计，所有新增任务保持 PLANNED 或 CONDITIONAL。
+- 校验修正：S11E 对后续协议的描述已移出前置含义，复验通过；另补充过滤后原始排名保留、分块变化后标注重绑定及无答案/空召回区分，防止融合等价与质量比较口径失真。
+- 运行与边界：无本轮服务/构建/模型/迁移任务；前端和参考仓库只读。U01–U07 为未来对应任务的输入，不阻止本轮计划交付，也不代表获得新费用或部署授权。
+- 规范：backend-architecture-design、implementation-slicing、project-documentation、update-progress-docs、task-git-delivery；采用全局建模/持久化/契约/并发安全/容量/发布及个人技术栈相应要求。没有授权子 Agent 并行。
+
+## 历史：能力缺口对比分析
 
 - 标识：`capability-gap-analysis-20261021`。用户最新要求：先中断实施，对比 langchain4j-platform 与本项目的业务和实现精细化差距，输出能力欠缺文档，为后续方向提供依据。
 - 状态：分析 DONE / 文档验证 PASS / 分析提交已合并推送 main；无产品代码变更。五步实施显式 PAUSED，本次报告交付后也不自动恢复。

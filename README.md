@@ -6,11 +6,12 @@
 
 ## 阅读入口
 
-- [与 langchain4j-platform 的能力差距](.engineering/exploration/CAPABILITY_GAPS.md)：业务与实现深度的 20 项对照、源码证据、候选和演进方向。**五步改造已暂停，本轮仅交付分析文档。**
+- [20 项差距的实施方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)：按当前三框架与 Java/React 边界拆为 11 批、51 项任务，包含依赖、契约前置、兼容路线及验收。**本轮仅交付计划，开发继续暂停。**
+- [与 langchain4j-platform 的能力差距](.engineering/exploration/CAPABILITY_GAPS.md)：业务与实现深度的 20 项对照及固定源码证据，为新计划提供依据。
 - [首期业务与工程约定](docs/design/knowledge-first-20261020/BRIEF.md)：独立运行、业务优先级、React 与技能代码规范，以及模型、数据和代码参考资产。
 - [目标架构](docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md)：三框架职责、模块与数据所有权、任务恢复、安全边界及 P0–P4 演进建议。
 - [技术与组件选型](docs/design/platform-selection-20261020/TECH_SELECTION.md)：31 项决策、候选版本、基础组件、取舍与验证条件；附可复现的依赖解析证据。
-- [React 前端设计](docs/design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md)、[契约](docs/design/knowledge-first-20261020/CONTRACTS.md)及[实施切片](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md)：首片范围与后续业务依赖。
+- [React 前端设计](docs/design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md)、[现行契约](docs/design/knowledge-first-20261020/CONTRACTS.md)、[新增契约工作包](docs/design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)及[实施切片](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md)：S0–S7 历史与 S8–S18 后续任务；工作包不代表新协议已冻结。
 - [中央 AI 任务](docs/design/knowledge-first-20261020/TASK_CONTRACTS.md)：执行租约、持久事件、取消/恢复与检查点提交凭据；[S5A 验收](docs/qa/durable-ai-tasks-20261020/TEST_RESULT.md)。
 - [图检查点恢复](docs/design/knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)：不可变快照、执行代次隔离、中央凭据与安全解码；[S5B 验收](docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。
 - [知识会话与交接](docs/design/knowledge-first-20261020/CONVERSATION_CONTRACTS.md)：原问题、顺序版本、有界上下文、可靠任务交接与查询；[S5C 验收](docs/qa/knowledge-conversations-20261021/TEST_RESULT.md)。

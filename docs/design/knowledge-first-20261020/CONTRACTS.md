@@ -2,7 +2,9 @@
 
 版本：`v1-foundation`，2026-10-20。依据：[首期约定](BRIEF.md)、[后端架构](../platform-selection-20261020/BACKEND_ARCHITECTURE.md)、[React 设计](FRONTEND_ARCHITECTURE.md)。
 
-本文件是新项目的契约入口。**R01/H01、K01–K04、P01/P02、T01、PG 恢复和 Q01–Q03 会话/交接已冻结。** 带引用答案 schema 和模型执行在后续切片冻结；不把会话受理当作问答已可用。
+本文件是项目的契约入口。**R01/H01、K01–K04、P01/P02、T01、PG 恢复及会话/交接已冻结；带引用问答与 R02/A01 研究/助手协议也已随 S5D/S6 冻结。** 具体以各专业文件为准；受理与执行终态继续区分。
+
+2026-10-21 新增[能力深化契约工作包](CAPABILITY_CONTRACT_BACKLOG.md)，配套[实施方案](CAPABILITY_IMPLEMENTATION_PLAN.md)。C-编号是待设计工作，不替换现行协议；对应任务启动前再登记唯一正式 schema，当前未恢复开发。
 
 知识契约细化见 [KNOWLEDGE_CONTRACTS](KNOWLEDGE_CONTRACTS.md)：S1 冻结受理、查询及身份/错误边界；S3 已补齐 K03 重试和 K04 检索/引用。此增补不改变 R01/H01。
 

@@ -1,0 +1,325 @@
+{
+  "task": "capability-implementation-plan-20261021",
+  "checked_at": "2026-10-21T12:18:58+08:00",
+  "baseline": "1e8f3b36766069764b74ca7c67cc6afeb9e9fe3e",
+  "status": "PASS",
+  "scope": "planning documents only; no application/model/runtime tests",
+  "counts": {
+    "tasks": 51,
+    "planned": 43,
+    "conditional": 8,
+    "gaps": 20,
+    "contract_workpackages": 19,
+    "markdown_files": 13,
+    "local_links": 221,
+    "table_rows": 464,
+    "framework_source_hashes": 7,
+    "project_source_hashes": 8
+  },
+  "checks": {
+    "task_fields_and_index_match": true,
+    "acyclic_dependencies": true,
+    "contract_freeze_precedes_consumers": true,
+    "s0_s7_preserved": true,
+    "docs_only": true
+  },
+  "one_valid_topological_order": [
+    "S8A",
+    "S8B",
+    "S8F",
+    "S9A",
+    "S13A",
+    "S8C",
+    "S10A",
+    "S14A",
+    "S8D",
+    "S8E",
+    "S11A",
+    "S9B",
+    "S15A",
+    "S9C",
+    "S15B",
+    "S9D",
+    "S9E",
+    "S9F",
+    "S10B",
+    "S10C",
+    "S13B",
+    "S14B",
+    "S10D",
+    "S10E",
+    "S14C",
+    "S10F",
+    "S11B",
+    "S14D",
+    "S11C",
+    "S11D",
+    "S11E",
+    "S12A",
+    "S15C",
+    "S17A",
+    "S12B",
+    "S17D",
+    "S18B",
+    "S12C",
+    "S18C",
+    "S12D",
+    "S13C",
+    "S17B",
+    "S16A",
+    "S17C",
+    "S18D",
+    "S16B",
+    "S18E",
+    "S18F",
+    "S16C",
+    "S18A",
+    "S16D"
+  ],
+  "gap_task_map": {
+    "G01": [
+      "S12B",
+      "S14B",
+      "S14D",
+      "S8A",
+      "S8B",
+      "S8C",
+      "S8D",
+      "S8E"
+    ],
+    "G02": [
+      "S9A",
+      "S9B",
+      "S9C",
+      "S9E",
+      "S9F"
+    ],
+    "G03": [
+      "S9A",
+      "S9B",
+      "S9C",
+      "S9D",
+      "S9E",
+      "S9F"
+    ],
+    "G04": [
+      "S10A",
+      "S10B",
+      "S10C",
+      "S10D",
+      "S14D",
+      "S17C"
+    ],
+    "G05": [
+      "S10E",
+      "S10F"
+    ],
+    "G06": [
+      "S18A"
+    ],
+    "G07": [
+      "S11A",
+      "S11B",
+      "S11C",
+      "S11D",
+      "S11E",
+      "S9D"
+    ],
+    "G08": [
+      "S11E",
+      "S12A",
+      "S12B",
+      "S13C",
+      "S18C",
+      "S8D",
+      "S8E"
+    ],
+    "G09": [
+      "S14A",
+      "S14B",
+      "S14C",
+      "S14D"
+    ],
+    "G10": [
+      "S11A",
+      "S11B",
+      "S13A",
+      "S13B",
+      "S13C",
+      "S14C"
+    ],
+    "G11": [
+      "S18B",
+      "S18C"
+    ],
+    "G12": [
+      "S11E",
+      "S12C",
+      "S12D",
+      "S18D",
+      "S18E"
+    ],
+    "G13": [
+      "S10D",
+      "S10F",
+      "S11C",
+      "S12D",
+      "S16A",
+      "S16B",
+      "S16C",
+      "S8C"
+    ],
+    "G14": [
+      "S15C",
+      "S16B",
+      "S16C",
+      "S16D"
+    ],
+    "G15": [
+      "S11D",
+      "S15A",
+      "S15B",
+      "S17C"
+    ],
+    "G16": [
+      "S17B",
+      "S17D",
+      "S8F"
+    ],
+    "G17": [
+      "S17A",
+      "S17B",
+      "S17C",
+      "S17D"
+    ],
+    "G18": [
+      "S10B",
+      "S10C",
+      "S10D",
+      "S10E",
+      "S10F",
+      "S11E",
+      "S12A",
+      "S12B",
+      "S12C",
+      "S12D",
+      "S13A",
+      "S13B",
+      "S13C",
+      "S14A",
+      "S14B",
+      "S14C",
+      "S14D",
+      "S15B",
+      "S15C",
+      "S18A",
+      "S18B",
+      "S18C",
+      "S18D",
+      "S18E",
+      "S18F",
+      "S8B",
+      "S8C",
+      "S8D",
+      "S9B",
+      "S9C",
+      "S9E",
+      "S9F"
+    ],
+    "G19": [
+      "S10A",
+      "S15A",
+      "S8A",
+      "S8F"
+    ],
+    "G20": [
+      "S18D",
+      "S18E",
+      "S18F"
+    ]
+  },
+  "read_only_repos": [
+    {
+      "repo": "agentic-ai-platform-web",
+      "commit": "d2b4dc6957cfbc81d29a8493dc9aa284aab8e584",
+      "clean": true
+    },
+    {
+      "repo": "langchain4j-platform",
+      "commit": "468cec425dd160e80cfc3ab378d3440a8767e4d5",
+      "clean": true
+    }
+  ],
+  "changed_paths": [
+    "CODEX_PROGRESS.md",
+    "README.md",
+    "docs/README.md",
+    "docs/design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md",
+    "docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md",
+    "docs/design/knowledge-first-20261020/CONTRACTS.md",
+    "docs/design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json",
+    "docs/design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md",
+    "docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md",
+    "docs/design/knowledge-first-20261020/PROGRESS_STATE.md",
+    "docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md",
+    "docs/design/platform-selection-20261020/TECH_SELECTION.md",
+    "docs/doc-map.md",
+    "docs/qa/capability-plan-20261021/TEST_RESULT.md",
+    "docs/qa/capability-plan-20261021/delivery-result.json",
+    "docs/qa/capability-plan-20261021/validation.json"
+  ],
+  "content_fingerprints": [
+    {
+      "path": "README.md",
+      "sha256": "d50f3576b63b632268178a18f4dc0d1ba576f0fd4316b66a556e39adb4f8b256"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "509e537a6c907802ceb9c8a1fbbeb271931b72caced6a1e8c124bcc73a745fde"
+    },
+    {
+      "path": "docs/design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md",
+      "sha256": "d5446325ce09bb17c117404b3c8626987da74863358e0662195dd74be6dee318"
+    },
+    {
+      "path": "docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md",
+      "sha256": "3fab1a3861a7d20873bd4e19b45909ba31b310544bf1284f57a19f5179d5aea8"
+    },
+    {
+      "path": "docs/design/knowledge-first-20261020/CONTRACTS.md",
+      "sha256": "ef8590dad7b030f3f64aa646ca0f07d45ab4311e38e584699239f19f12d9593d"
+    },
+    {
+      "path": "docs/design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json",
+      "sha256": "e34214575d413e3c1d4969abf6cba610e806c382b865a326446b9870d87c060a"
+    },
+    {
+      "path": "docs/design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md",
+      "sha256": "d8a7190c5135b7ed0cf4cce9219581d917bb709b4d782ea7c718fcef6dfb99bb"
+    },
+    {
+      "path": "docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md",
+      "sha256": "3be0e28eaed5216f023850ed6b52942b2486336654cb754cd7637e6c35f46b32"
+    },
+    {
+      "path": "docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md",
+      "sha256": "0e37ae049aa840cb6e1b1553116047ccc9aab903fff2bf3dc98840d27800e5c3"
+    },
+    {
+      "path": "docs/design/platform-selection-20261020/TECH_SELECTION.md",
+      "sha256": "46b51be4b5a312edb1b9f4d62365be4a01705942f00f1a7d30c0b00f548ade72"
+    },
+    {
+      "path": "docs/doc-map.md",
+      "sha256": "7b24173f582752f4b33b445503536d39809edba1f96e22acfebc2ff006e2a114"
+    }
+  ],
+  "metadata_excluded_from_fingerprints": [
+    "CODEX_PROGRESS.md",
+    "PROGRESS_STATE.md",
+    "TEST_RESULT.md",
+    "validation.json",
+    "delivery-result.json"
+  ],
+  "errors": []
+}

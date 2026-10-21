@@ -8,7 +8,13 @@
 
 本轮 S6/S7 同步基线：后端 `cb2f688`、前端 `f68e660`。Tasks 公共 work 请求/分页、V2 索引、`agents/` 受控工具与根图、共享 worker 和网关 SSE 映射到 [R02/A01](design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)；两路页面与共享意图/事件消费映射到独立前端 S7。证据与实际源码摘要见 [S6/S7 验收](qa/research-readonly-20261021/TEST_RESULT.md)，旧 QA 记录为历史验证，不替代当前回归。
 
-## 当前能力比较（2026-10-21）
+## 当前能力实施计划（2026-10-21）
+
+用户已明确选择“先交付完整任务拆分和实施方案”。[主方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)逐项映射 G01–G20；[原实施清单](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)追加 S8–S18 共 51 项，保留 S0–S7；[契约工作包](design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)仅列待冻结内容。架构/选型/前端设计已同步增量边界，现行线上协议与产品代码未变。
+
+本次后端基线 `1e8f3b36766069764b74ca7c67cc6afeb9e9fe3e`，前端与参考仓库仍为下方对比基线。[框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json)核对锁定版本、本地接口摘要及官方文档；不把框架能力当作业务已实现。仅交付计划及文档验证，产品开发继续暂停；唯一状态仍在 PROGRESS_STATE。
+
+## 已完成：能力比较（2026-10-21）
 
 用户要求暂停知识深化实施，先比较业务与实现细度。本轮权威入口为[能力缺口](../.engineering/exploration/CAPABILITY_GAPS.md)，配套[地图](../.engineering/exploration/CAPABILITY_MAP.md)、[候选](../.engineering/exploration/OPPORTUNITIES.md)、[路线](../.engineering/exploration/EVOLUTION_ROADMAP.md)及[证据](../.engineering/exploration/EVIDENCE_INDEX.md)。当前后端基线 `d61536cbb9179db010f33d7b1cdbda737e22fc92`，React 基线 `d2b4dc6957cfbc81d29a8493dc9aa284aab8e584`，参考 Java 基线保持 `468cec425dd160e80cfc3ab378d3440a8767e4d5`。本轮未重新审计独立 AgentScope，也未执行模型/运行验收。
 

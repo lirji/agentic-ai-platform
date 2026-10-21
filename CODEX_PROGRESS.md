@@ -1,9 +1,11 @@
 # Codex Progress
 
-- 当前任务：`capability-gap-analysis-20261021`；用户要求先暂停五步实施，对比 langchain4j-platform 的业务与实现精细化差距，输出能力欠缺文档。
+- 当前任务：`capability-implementation-plan-20261021`；基于 20 项差距与本项目三框架/Java/React 职责，重新制定完整任务拆分和实施方案。
+- 用户已明确选择“先交付完整任务拆分和实施方案”；本轮只修改设计、切片、索引和进度，开发继续暂停。
 - 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
-- 分析文档已通过验证；任务分支 `feat/capability-gap-analysis-20261021` 的分析提交 `80391e7` 已合并推送 main；收据见权威进度，末次提交以 Git 为准。前端及参考仓库只读，无新 worktree。报告入口：[能力欠缺对比](.engineering/exploration/CAPABILITY_GAPS.md)。
-- 五步实施 `knowledge-depth-20261021` 已按用户要求暂停，尚无产品代码修改。本轮仅源码取证、分析文档、索引/进度和已授权的正常 Git 文档交付；不运行付费模型、迁移或部署，不在分析后自动恢复实现。
+- 原目录任务分支 `feat/capability-implementation-plan-20261021`，起点 `1e8f3b3`；前端及参考仓库只读，无新 worktree。
+- 计划主入口：[完整实施方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)已写入；切片沿用原 IMPLEMENTATION_SLICES，S0–S7 不重新编号。文档验证与 Git 交付状态见权威进度。
+- 分析依据：[20 项能力缺口](.engineering/exploration/CAPABILITY_GAPS.md)。不调用付费模型、不改运行配置、不执行迁移/部署；文档校验后按持续授权正常提交合并推送 main。
 
 ## 前期可行性任务记录
 

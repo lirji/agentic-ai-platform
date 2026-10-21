@@ -4,9 +4,9 @@
 
 **已确认基线：独立知识平台，采用全新 React 前端、Python AI 核心与按需迁入本项目的 Java 领域能力。LangGraph 统一执行与恢复，Deep Agents 承载复杂 Agent，LlamaIndex 承载知识处理与 RAG。**
 
-S2 的 LangGraph/LlamaIndex 准备图已接入真实 Embedding；S3 由 Java 持久化准备包、执行带代次的租约处理、提交 Qdrant/ES 并原子发布文档/任务，提供授权检索和原文引用。跨进程故障恢复已验证，Python 不持有业务库或索引写权限。知识准备短图仍无 checkpoint；S5B 已交付独立的持久图执行与 PG 恢复适配层，Deep Agents 目前只有隔离兼容验证，研究 Agent 尚未接通。契约见 [P01/P02 与 S3](../knowledge-first-20261020/PROCESSING_CONTRACTS.md)。
+S2 的 LangGraph/LlamaIndex 准备图已接入真实 Embedding；S3 由 Java 持久化准备包、执行带代次的租约处理、提交 Qdrant/ES 并原子发布文档/任务，提供授权检索和原文引用。跨进程故障恢复已验证，Python 不持有业务库或索引写权限。知识准备短图仍无 checkpoint；S5B 已交付持久图执行与 PG 恢复适配层；S5D 问答及 S6 的 Deep Agents 研究/只读助手已接通，验收边界见第 11 节与当前进度。契约见 [P01/P02 与 S3](../knowledge-first-20261020/PROCESSING_CONTRACTS.md)。
 
-这是新项目 `agentic-ai-platform` 的目标设计；已开始实施 S0 AI 运行基础与 S1 知识资料受理/查询，尚未完成三框架业务闭环。用户已确认架构与组件，并进一步明确独立运行、全新 React 前端、知识业务优先及按需迁入资产，见[首期业务与工程约定](../knowledge-first-20261020/BRIEF.md)。下文事实表中的“已有/当前”指参考项目；“迁入/沿用”表示复用代码与能力，不表示必须依赖旧项目正在运行的业务服务。组件、版本、候选取舍见 [TECH_SELECTION](TECH_SELECTION.md)，历史背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)，真实实施/验证状态见[当前进度](../knowledge-first-20261020/PROGRESS_STATE.md)。
+这是 `agentic-ai-platform` 的目标设计；当前 S0–S7 已交付有限知识业务闭环，系统性质量、多人共享及生产运行仍待建设。用户已确认架构与组件，并明确独立运行、全新 React 前端、知识业务优先及按需迁入资产，见[首期业务与工程约定](../knowledge-first-20261020/BRIEF.md)。下文第 2 节事实表中的“已有/当前”指参考项目；“迁入/沿用”不表示依赖旧业务部署。组件取舍见 [TECH_SELECTION](TECH_SELECTION.md)，历史背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)。2026-10-21 的能力深化设计见第 12 节；新增任务尚未实施，开发继续暂停。真实状态见[当前进度](../knowledge-first-20261020/PROGRESS_STATE.md)。
 
 S5A 已实现本项目 `async-task-service`：独立 MySQL 任务库、租约代次、持久事件、显式取消/恢复和幂等终态报告。参考旧中央任务语义按范围裁剪，未迁入内存权威、旧 DAG、Kafka 或 webhook。S5B 已接入独立 PG 库的原生 AsyncPostgresSaver：每个 epoch 物理隔离、不可变快照、中央凭据确认后才恢复，拒绝未知 pending writes 与不安全解码；真实 PG/MySQL/HTTP 的接管、丢失响应及终态对账已验收。契约见 [T01](../knowledge-first-20261020/TASK_CONTRACTS.md)、[检查点](../knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)。
 
@@ -108,7 +108,7 @@ flowchart TB
     Domain --> BizDB[("领域数据库")]
 ```
 
-图中的后端能力在 `agentic-ai-platform` 建设，React 前端使用独立新仓库，S4 已实现资料、状态、检索和引用；Q/T 尚未接通。`agentscope-platform` 保持为后续业务参考与隔离对照来源，不作为新平台必需运行时。共享基础设施与身份接入需验证权限、容量、项目级命名空间及版本契约，引用旧部署配置不等于已经接入。
+图中的后端能力在 `agentic-ai-platform` 建设，React 使用独立仓库；S4 已实现资料、状态、检索和引用，S5E/S7 已接通问答、研究与只读助手。`agentscope-platform` 保持为后续业务参考与隔离对照来源，不作为新平台必需运行时。共享基础设施与身份接入仍按各组件的实际验收记录判断，引用旧部署配置不等于已经接入。
 
 ## 4. 数据权威与模块边界
 
@@ -118,7 +118,7 @@ flowchart TB
 | 业务工具与副作用 | 本项目对应 Java 服务；业务数据库及按需流程能力 | 经受控 API 调用，不给模型业务库连接或任意 SQL 权限；具体写工具另定 |
 | 用户可见任务、owner、租约、取消、终态、持久事件、webhook | `async-task-service` / MySQL | AI 作为受约束执行器；框架完成事件不能直接替代中央终态 |
 | 图节点状态、消息、interrupt、下一执行位置 | 新 AI 运行时 / PostgreSQL 独立库的 LangGraph Checkpointer | 只存图执行事实；旧中央 DAG 检查点仍供旧运行时使用 |
-| 线程工作文件 | Deep Agents StateBackend，随同线程检查点持久化；大对象使用受控 S3 引用 | 不挂载宿主项目目录；不同 tenant/user/thread 不共享默认命名空间 |
+| 线程工作文件（条件能力） | 若后续启用，优先受控 StateBackend 与有界 S3 引用；S6 对模型禁用文件工具 | 不挂载宿主项目目录；不同 tenant/user/thread 不共享默认命名空间；不能把框架默认能力写成已启用 |
 | 长期用户画像 | 有需求时迁入 conversation 的受治理记忆能力 | AI 通过记忆 API 读写；不默认迁入历史画像或建立第二写权威 |
 | 原文、文档版本、内容去重、入库任务、发布可见性 | `knowledge-service`；既有 S3/JDBC/Registry 职责分别保留 | LlamaIndex 提供转换结果；发布者仍唯一 |
 | Qdrant/ES/GraphRAG 数据 | Knowledge 管理的检索数据与投影 | 当前 Registry/Graph 数据不能因“投影”名称而被直接清空；重建完备性须实测 |
@@ -130,7 +130,7 @@ flowchart TB
 
 LlamaIndex 提供可组合的[检索器](https://developers.llamaindex.ai/python/framework/module_guides/querying/retriever/)与[入库流水线](https://developers.llamaindex.ai/python/framework/module_guides/loading/ingestion_pipeline/)。本平台选择其 RAG 与数据处理能力，不购买 LlamaCloud/LlamaParse 作为必要前置。
 
-1. **接入阶段**：自定义 Retriever 调用本项目迁入并验证的受授权 Java 检索 API，将返回的原文、doc/version、来源和评分映射为 Node；LlamaIndex 组织证据与回答。此时 Java 执行原融合/重排，Python 不重复再做相同排名；该服务需要随本项目交付。
+1. **当前接入**：自定义 Retriever 调用本项目受授权 Java 检索 API，将原文、doc/version、来源和评分映射为 Node；LlamaIndex 组织证据。Java 已执行向量/BM25 两路 RRF60 与权威过滤，尚未接独立模型 Reranker；Python 不重复融合。
 2. **目标查询阶段**：在语言中立契约具备后，由 LlamaIndex 负责查询变换、多路检索组合、融合/重排与引用。Java 提供经过租户、部门/文档权限过滤的检索原语和可见版本校验；迁移路径上关闭已移交的 Java 同类 AI 逻辑。该检索原语契约尚未实现。
 3. **目标入库阶段**：LlamaIndex 承担分块、元信息抽取和 embedding 编排，输出有界、可验证的准备结果，Java 验证后写入各目标并发布可见版本。S2/S3 已实现 UTF-8 TXT/Markdown 的准备与发布；Tika/Tesseract、多格式解析和丰富元信息仍是后续能力，当前不得冒充已支持。
 4. **索引写权限**：本轮目标仍由 Knowledge 统一提交；不让原 Java worker 和 LlamaIndex VectorStoreIndex 对同一集合并发维护相同文档。未来若要 Python 直接拥有索引写入，须另立数据所有权迁移决策。
@@ -154,7 +154,7 @@ LlamaIndex 的文档哈希/缓存去重不能覆盖平台的并发唯一约束�
 | 业务工具超时、结果未知 | 查询领域幂等账本/结果；不把超时当作失败后直接重做 |
 | 取消与迟到成功竞争 | 由中央条件状态迁移裁决；停止继续调度，已提交的业务效果不会被取消自动回滚 |
 
-**外部中央租约与原生 PostgresSaver 的联合 fencing 尚未实现或验证，是独立 worker 上线前置条件。** 不把同名 run、顺序调用或持有 Redis 锁当成证明。优先在受控 Checkpointer 适配层落实 epoch/提交隔离；若无法可靠拦截所有检查点写入，必须回到运行所有权设计重新决策，不能带缺口上线。
+**S5B 已实现 epoch 物理隔离、不可变快照与中央提交凭据，S6 复用并验证了受控接管/取消/撤权恢复。** 这不等于多 worker 的容量与公平调度已经验证；S16 补齐真实竞争、故障及负载证据。后续图改动必须继续通过现有适配层，不把同名 run、顺序调用或 Redis 锁当作 fencing 证明。
 
 图检查点、Java 领域提交、中央任务终态之间不存在天然的跨库事务。复用现有业务幂等和中央 webhook outbox；不为“选了图框架”新建全链路 MQ。幂等写回/查询对账构成显式恢复流程，后续契约需覆盖同键异参、迟到结果与冲突码。
 
@@ -162,10 +162,10 @@ LangGraph interrupt 恢复会重新进入节点，interrupt 之前的代码可�
 
 ## 7. 安全、资源与运行规则
 
-- 延续网关身份交换、内部令牌验证、Java 业务授权。当前文档 ReBAC 默认 `disabled`；需要文档/部门级隔离的目标环境，必须完成授权初始化与 `enforce` 验证，不能把默认关闭写成已经受细粒度保护。
+- 当前采用网关身份交换、内部令牌验证及 Java 的 tenant/owner 授权。参考项目的 ReBAC 默认关闭不是本项目已接通的授权能力；正式身份和团队共享在 S13 冻结角色矩阵及承载方式并验证，不能直接复制一个 `enforce` 开关就宣布完成。
 - 参考项目已记录的 SQL 护栏、MCP 写工具配置等缺口转为接入验收用例；复用接口不表示已通过新项目安全验收，见[可行性分析 R5](../../feasibility/AI平台升级可行性分析.md#r5现有安全缺口不会因换框架自动消失)。
 - 三框架只接收由服务端生成的可信执行上下文；租户、用户、权限和工具 allowlist 不进入可由模型修改的状态。所有子 Agent、重试、检索器与记忆访问继承相同约束。
-- Deep Agents 默认采用线程内虚拟工作文件。生产不得直接暴露宿主文件系统或本地 shell；Browser/Code 仅经现有受控远程沙箱。内置工具、通用子 Agent、MCP 和显式子 Agent 均逐项限制，不能只过滤主 Agent 的自定义工具。
+- S6 对模型禁用 Deep Agents 文件工具，关闭通用子 Agent 与内部 saver；只允许两个受控只读工具。现有 StateBackend 配置不代表对模型开放文件系统。未来文件、Browser/Code 或委派能力必须单独设计隔离与预算，本项目尚未交付远程沙箱，不得直接暴露宿主目录或 shell。
 - StateBackend 与跨线程 StoreBackend 的生命周期不同；跨线程能力若启用，命名空间从可信上下文计算。知识文件、记忆文件和 Skills 是数据/配置，不能由不可信文档提升执行权限。[官方后端说明](https://docs.langchain.com/oss/python/deepagents/backends)
 - 全链路 deadline 和 token/费用预算覆盖规划、子 Agent、LlamaIndex 生成、重排与重试；预算在外部模型调用前登记，恢复不重置。模型出口、HTTP 连接、入库批次、工作文件、检查点大小和并行子任务都设上限。
 - Python 请求级依赖显式注入，避免用可变的全局 LlamaIndex Settings 保存租户或凭据；Java 沿用独立线程池、TTL 与真实追踪上下文，事务不跨线程。
@@ -226,3 +226,23 @@ P0–P4 沿用阶段标识，按本轮独立项目和知识优先要求更新范
 S6 已在既定服务内落地研究/助手：[R02/A01](../knowledge-first-20261020/WORK_TASK_CONTRACTS.md)。Tasks 独占不可变请求和结果，Knowledge 继续独占证据，LlamaIndex 做授权检索；Deep Agents 在 LangGraph 的 analyze 节点执行两个受控只读工具，内部 checkpoint 显式关闭，根图仍经原 PG/中央 fencing 恢复。单 worker 顺序领取问答和工作图，不新增并行执行器或中间件。
 
 analyze 失败从上一阶段重执行，可能再次计费；三轮模型/五次工具/两次额外搜索、120 秒整图上限及原累计预算共同约束。完成前再次验证租约和引用权限。实际工具枚举、真实模型、撤权/取消/新代恢复与重启回放见 [S6 验收](../../qa/research-readonly-20261021/TEST_RESULT.md)。这不代表多实例容量、系统性答案质量或生产部署就绪。
+
+## 12. 20 项差距的增量架构方案（2026-10-21）
+
+本节细化已确认的三框架/Java 边界，不改变现行 P/K/Q/T/work 协议。完整任务与兼容路线见[能力实施方案](../knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)；新边界先在[契约工作包](../knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)设计并冻结，再实施。本文只给出方案，新产品开发保持暂停。
+
+| 增量能力 | 归属与调用方向 | 任务 |
+| --- | --- | --- |
+| 评测与知识运营 | Knowledge 拥有评测定义、标注修订、报告、反馈/候选/审批/发布；Tasks 通用任务执行，LangGraph 评测图调用实际 RAG；报告幂等回写/查询对账 | S8、S14 |
+| 多格式与处理版本 | Knowledge 持有原文件和隔离解析作业；规范提取物进入 LlamaIndex Document/Node 与结构分块；Java 校验准备包并唯一提交双索引 | S9、S10 |
+| 检索与精排 | 搜索/问答/研究调用同一 Python RAG；Java 返回权限和发布版本已核验的两路候选，LlamaIndex 做一次 RRF 与独立模型精排；结果交付前再由 Java 复核 | S11 |
+| 追问与研究深度 | Conversation 保存原问题和受控历史引用；LangGraph 管根图/阶段恢复，Deep Agents 有界规划/读证据，业务输出由 Java 契约接收 | S12 |
+| 共享权限 | IAM 提供可信身份，Knowledge 拥有文档共享决策；模型输入、在途任务、历史报告/引用与恢复都落实当前权限检查 | S13 |
+| 共享费用（本轮建议） | 在 Tasks 自有库内增加独立 usage 模块及内部 API，负责 operationId 预留/结算/未知结果；各服务不直写其表。S15A 冻结归属与规则后才实施，规模确需时再评估独立服务 | S15 |
+| 条件记忆/工具 | Conversation 管记忆确认、遗忘与代次；外部业务效果仍归对应 Java 领域。框架 Store/interrupt 不替代业务权威 | S18 |
+
+查询移交先保持当前一基排名 `1/(60+rank)`、chunk/batch 身份与确定性同分顺序，不直接套用 LlamaIndex 默认查询扩展/融合；S11C 证明等价后 S11D 才改变排序算法。新候选原语不能反调 Python RAG，旧路径按策略版本保留给旧任务，避免循环调用及重复费用。
+
+P-v2 区分原文件、提取物及片段摘要；原始 PDF 二进制偏移不能解释为提取文本位置。处理 profile、文档 revision 和 index generation 分别版本化；S10D 验证后切换，旧版本未到清理条件前保留，代码回退不回滚已发生的业务事实。
+
+新的业务模块优先加入现有归属服务，使用本库短事务、幂等内部 API 和既有持久 worker。没有新的 MQ、缓存或调度平台前置；持续来源确需业务定时同步时，S18A 按既定 XXL-JOB 约定接入。多 worker、公平准入、共享预算、观测和还原演练分别在 S15–S17 形成证据。

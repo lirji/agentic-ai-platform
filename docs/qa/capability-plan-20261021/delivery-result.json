@@ -1,0 +1,13 @@
+{
+  "task": "capability-implementation-plan-20261021",
+  "scope": "planning documentation only",
+  "status": "PENDING",
+  "task_branch": "feat/capability-implementation-plan-20261021",
+  "base_commit": "1e8f3b36766069764b74ca7c67cc6afeb9e9fe3e",
+  "target": "origin/main",
+  "authorization": "用户持续授权正常独立分支提交、合并和推送；本轮只交付方案",
+  "product_implementation": "PAUSED",
+  "application_tests": "NOT_RUN_DOCS_ONLY",
+  "model_calls": 0,
+  "production_deployment": false
+}

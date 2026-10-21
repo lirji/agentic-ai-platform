@@ -28,7 +28,7 @@ Deep Agents 构建在 LangChain Agent 基础之上，使用 LangGraph 执行；L
 
 正式 [uv.lock](../../../ai-runtime/uv.lock) 已锁定并在 Python 3.12/macOS ARM64 安装 `langgraph 1.2.16`、`deepagents 0.7.28`、`llama-index-core 0.14.25`、`langchain-openai 1.7.2`、`langgraph-checkpoint-postgres 3.2.0`；PyJWT 2.15.1（crypto）补充独立 Knowledge 服务 RS256 验签，不引入第二个身份服务。
 
-LangGraph/LlamaIndex 已用于 P01 准备图，Deep Agents 工具循环/流式通过隔离测试；真实北京百炼 `text-embedding-v4 / 1024` 准备/查询已验证。PG 持久恢复、真实研究 Agent、Linux 与完整检索质量仍未验证。详情见 [S2 验收](../../qa/knowledge-processing-20261020/TEST_RESULT.md)。
+本段保留 S2 当时的验证范围：LangGraph/LlamaIndex 用于 P01 准备图，Deep Agents 工具循环/流式通过隔离测试；真实北京百炼 `text-embedding-v4 / 1024` 准备/查询已验证，见 [S2 验收](../../qa/knowledge-processing-20261020/TEST_RESULT.md)。此后 S5B/S5D/S6 已验证 PG 联合恢复、真实问答和研究；Linux 完整应用交付、系统性质量与容量仍须另验，不能沿用 S2 的未实现描述作为当前状态。
 
 本机 118 个运行/开发依赖已查 PyPI 发布元数据，许可证无缺项；NLTK 3.10.3 有未修复的模型文件路径沙箱绕过公告 `GHSA-8mgp-746c-j5xp`。本片显式分句，不调用该公告涉及的训练、模型导入/导出或用户控制路径，不以此宣称整个 NLTK 安全。后续启用文档 reader/模型加载前重新评估。OSV 直连 TLS 失败后使用 PyPI 发布公告，完整结果与例外见 S2 报告。
 
@@ -105,7 +105,7 @@ S3 搜索运行版本决策（2026-10-20）：本项目独立实例采用 **Qdra
 | T27 可观测/评测 | OTel + 现有 Prometheus/采集端；复用固定 RAG/Agent 评测资产 | LangSmith 可选作独立诊断工具，须评估数据与费用，不作为三框架运行硬依赖；不同时新建多套观测平台 |
 | T28 API 与协议 | HTTP/JSON/SSE；沿用 MCP/A2A 边界 | 不引入 gRPC/GraphQL 作为此次框架迁移前置；SDK 事件只在内部使用，对外发布语言中立版本契约 |
 | T29 前端 | **全新 React + TypeScript + Vite + Ant Design 前端，独立 Git 仓库** | 用户明确不复用旧前端；React Router、TanStack Query、Axios、Ant Design Form/主题、CSS Modules、pnpm 为默认配套，Zustand 按需；围绕知识库、问答、研究和助手完成页面/状态设计，S4 已锁定版本与独立仓库，详见 [前端选型](https://github.com/lirji/agentic-ai-platform-web/blob/main/docs/TECH_SELECTION.md) |
-| T30 部署 | 本项目独立 Compose + dev_infra；按需求参考 Helm 能力 | 所需业务服务随本项目交付；共享实例落实库/账号/前缀与资源权限隔离；不启动或访问旧业务部署也能完成当前业务闭环，尚无本项目部署文件 |
+| T30 部署 | 本项目独立 Compose + dev_infra；按需求参考 Helm 能力 | 已有本地脚本及独立搜索/模型代理配置；完整应用固定制品、升级与还原由 S17 验收。共享实例继续使用项目库/账号/前缀，旧业务部署不作为必需依赖 |
 | T31 工程验证 | Python pytest/Ruff/mypy + Java 现有测试 + 契约一致性 | 增加与真实风险对应的检查点、恢复、租户和版本共存测试；不改现有 Coding Agent 工具或触发真实模型 benchmark |
 
 基础设施与版本事实来自 [dev_infra 说明](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/dev-infra/README.md)、[Compose](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/docker-compose.yml)、[edge POM](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/edge-gateway/pom.xml)、[共享观测模块](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/platform-observability/pom.xml)、[前端依赖](https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/capability-showcase-frontend/package.json)。现有配置不等于本次已验证服务运行版本。
@@ -119,7 +119,7 @@ S3 搜索运行版本决策（2026-10-20）：本项目独立实例采用 **Qdra
 | 主 Agent/规划 | 先用现有可用且支持工具调用的主模型作为迁移对照 | 工具选择、参数 schema、长任务成功率、循环/幻觉、模型接口兼容 |
 | 摘要/轻任务 | 在语义相同前提下单独配置低成本模型 | 摘要事实保真、长上下文压缩和总调用成本；不能只比较单 token 单价 |
 | Embedding | **默认百炼 `text-embedding-v4`，1024 维，OpenAI 兼容接口**；来自参考项目标准 Compose；不使用 HashEmbedding | 真实调用、中文/业务 Recall@k、过滤后召回、入库与查询模型一致性；模型/维度变化创建新索引并重建 |
-| Rerank | 先保留当前模型与排序策略，再单变量对照 | nDCG/MRR、引用质量、P95、超时回退；避免 Java 与 LlamaIndex 重复 rerank |
+| Rerank | 当前只有 Java 两路 RRF60，尚无独立精排模型；S11 优先验证百炼 qwen3-rerank 适配 | 先融合等价、再做 nDCG/MRR/答案质量/延迟/费用消融；实际账号/地域/端点/预算另核对，避免 Java 与 LlamaIndex 重复排序 |
 | 视觉/语音 | 现有领域适配继续提供能力 | 本次不同时切换 ASR/TTS/视觉供应商，后续按真实缺口评估 |
 
 参考配置中 `chat-default` 声明为 `deepseek/deepseek-chat`，这是来源事实，未验证本项目账号可用性或运行效果。初始 RAG 资产含 200 条合成问题与 20 条语料清单记录，需重绑定新项目文档/权限并补充业务样本；旧评测结果不作为新项目验收结果。
@@ -206,3 +206,22 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 本机单路由 `chat-default → deepseek/deepseek-flash`，显式 `thinking.type=disabled`，保持现有纯文本问答契约；不启用默认思考输出、工具、重试、回退、缓存或外部追踪。提供方 key 仅进入代理，worker 使用独立本机密钥。真实代理转换/失败边界与真实问答分别验证，详见 [S5D 验收](../../qa/knowledge-qa-execution-20261021/TEST_RESULT.md)。
 
 按 [官方价格](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/) 的峰值未缓存输入 2 元/百万、输出 8 元/百万配置保守预算；客户端另加字节上界和 2 倍余量。官方模型默认思考开启，实际请求显式关闭，参数依据 [官方接口](https://api-docs.deepseek.com/zh-cn/api/create-chat-completion/)。聊天与 Embedding 的原 1 元累计上限不变。历史 S5A/S5B 的“未接入”仅描述当时状态，当前以本节及权威进度为准。
+
+## 能力深化的增量选型（2026-10-21，方案阶段）
+
+本轮不升级框架/依赖、不新增运行组件。沿当前锁定的 `LangGraph 1.2.16 / Deep Agents 0.7.28 / llama-index-core 0.14.25`；[本地接口证据](../knowledge-first-20261020/FRAMEWORK_EVIDENCE.json)记录已安装版本及源码摘要。官方在线文档说明能力方向，具体调用必须对照锁定实现，不凭最新版示例改造。
+
+| 对应既有决策 | 本轮方案及适配范围 | 冻结/验证任务 |
+| --- | --- | --- |
+| T03/T27 评测 | Java 管定义/标注/报告；LlamaIndex 指标经项目适配，LangGraph 调用实际 RAG。无答案、空召回、失败分别计量；默认人工标注，不默认新增付费裁判 | S8A–E、S12B |
+| T20 解析 | 优先 Java 有界子进程解析，LlamaIndex 处理规范结构；用真实样本比较 Tika/PDFBox/POI 与 Python Reader 后锁定依赖。OCR、XLSX/CSV 按需启用 | S9；不提前采购 LlamaParse 或增加第二套解析 |
+| T03/T14/T15 检索 | 保持 Qdrant + ES；Java 授权候选，LlamaIndex 显式融合适配保持一基排名与稳定身份。默认查询生成、全局模型和零基排名不能直接沿用 | S11A–C；先固定输入等价，再真实链路对照 |
+| T05 独立精排 | 首选待验证候选为百炼 qwen3-rerank 受控 HTTP + LlamaIndex 后处理；聊天与 rerank 不共用未经验证的协议。仅在数据/部署要求驱动时评估本地 CrossEncoder | S11D；账号、地域、接口、实际费用与独立累计额度落实后才能真实调用 |
+| T01/T02 执行深度 | LangGraph 根图分阶段；Deep Agents 有界规划/证据工具；保持文件工具、通用子 Agent、shell 和内部 saver 对任务关闭；记忆经治理 API | S12、条件 S18；不新增同级 Workflow/调度器 |
+| T09/T12/T13 费用 | 建议 Tasks 内独立 usage 模块/自有 MySQL 账本，内部 API 预留/结算；不让多实例各守本地额度，不在本轮引入独立计费服务 | S15A 冻结归属及精度/未知结果语义；S15B 对账原账本，不清零 |
+| T22/T29 身份与 UI | 沿 Casdoor/auth-platform 方向和现有 React 栈；先定组织/角色/共享规则，再按真实能力加入评测、运营及共享页面 | S13 及各带 UI 任务 |
+| T27/T30/T31 工程 | 最小 CI 前置，埋点随功能；固定制品、升级、隔离还原及供应链分项验收。公共中间件优先 dev_infra，不新造缓存/MQ/配置中心 | S8F、S15C、S16、S17 |
+
+百炼官方当前给出独立重排协议；这只支持候选方案，不证明本项目账号已开通或效果改善。[重排序文档](https://help.aliyun.com/zh/model-studio/rerank) 新格式、Reader、模型加载或依赖变化需重新检查对应许可证、安全公告及实际运行路径，既有 S2/S1 依赖结论不是永久豁免。
+
+完整顺序、条件项及回退规则见[实施方案](../knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)；本轮没有新增模型费用额度或生产部署授权。
