@@ -1,6 +1,31 @@
 # 独立知识平台准备进度
 
-## 当前任务：研究分析与只读助手
+## 当前任务：能力缺口对比分析
+
+- 标识：`capability-gap-analysis-20261021`。用户最新要求：先中断实施，对比 langchain4j-platform 与本项目的业务和实现精细化差距，输出能力欠缺文档，为后续方向提供依据。
+- 状态：分析 DONE / 文档验证 PASS / Git 交付待执行；无产品代码变更。五步实施显式 PAUSED，本次报告交付后也不自动恢复。
+- 计划：①固定两后端及当前前端基线；②复用参考项目已有分析并核验核心源码；③业务/实现/前端/测试/运行对照；④缺口、优先级、依赖、验收与暂不建设项；⑤五份关联分析文档及索引；⑥文档验证、正常提交合并推送。
+- Git：本项目原目录 `feat/capability-gap-analysis-20261021`，起点 `d61536c`；前端 main `d2b4dc6`；参考 `../langchain4j-platform` main `468cec425dd160e80cfc3ab378d3440a8767e4d5`。开始时仅上一暂停任务的两份进度文件未提交，这些修改属于本次范围切换记录，保留并纠正暂停状态。未建 worktree。
+- 产物：`.engineering/exploration/{CAPABILITY_MAP,CAPABILITY_GAPS,OPPORTUNITIES,EVOLUTION_ROADMAP,EVIDENCE_INDEX}.md`，其中 CAPABILITY_GAPS 为主阅读入口；本节仍是唯一任务状态。
+- 边界：仅源码/配置/测试与已有验证证据只读取证，写分析/索引/进度文档；不修改产品/测试/运行配置/依赖，不调用付费模型，不做数据迁移/清理/部署。正常文档提交/合并/推送沿既有授权。
+- 已完成：五份分析文档、20 项差距、12 项候选及条件路线；26 组证据、147 处固定提交文件引用和摘要清单。修正相关文档入口的早期状态漂移。区分实现/配置/历史验证；原两路 RRF 已实现、精排缺失、引用不等于语义正确等结论已复核。
+- 验证：五份必备分析结构、20 个差距、12 个候选、26 组/147 处固定提交证据及 SHA-256、Markdown 表格/围栏/本地链接、引用 ID、改动范围与常见密钥模式检查通过；参考及前端 HEAD/工作树未变。详见 [.engineering/exploration/VALIDATION.md](../../../.engineering/exploration/VALIDATION.md)。未执行应用测试、付费模型或运行探测。
+- 下一步：将本任务 12 份文档/证据文件按独立分支提交，正常合并推送 main，记录实际收据；实施继续 PAUSED。
+- 规范：project-capability-exploration（复用 discovery/deep-analysis 扫描方法）、project-documentation、update-progress-docs、task-git-delivery；源码事实优先、未知不冒充结论。未启动新构建/测试/付费请求；原服务和私密状态保留。
+
+## 暂停：知识平台深度完善
+
+- 标识：`knowledge-depth-20261021`。用户于 2026-10-21 批准此前五步建议顺序并要求实施，明确认为当前平台相较 langchain4j-platform 不够细致；以实际能力、质量和可恢复操作作为验收，不以测试数量代表业务深度。
+- 完整目标与顺序：①质量评测基线；②PDF/DOCX 与引用定位（OCR 按资料需求）；③更新版本、删除、重索引与旧引用；④LlamaIndex 查询编排与独立模型 Reranker、同集效果对照；⑤正式身份/共享权限、多 worker、监控、备份恢复与部署验收。后续每项独立冻结契约和切片，不能把首片完成写成五步全部完成。
+- 当前状态：PAUSED（用户明确要求先做差距对比）；尚无本轮产品实现/验证。S0–S7 已交付且前次核验源码摘要后端 29 / 前端 18 项一致，两仓起始工作树干净。
+- 已执行：读取当前进度、既有契约和技能；定位参考项目 eval-service、知识解析/生命周期/检索质量模块；创建原目录任务分支，无 worktree。
+- Git：后端 `/Users/liruijun/personal/LLM/agentic-ai-platform`，`feat/knowledge-quality-20261021`，起点 `d61536c`；前端 `/Users/liruijun/personal/LLM/agentic-ai-platform-web`，起点 `d2b4dc6`，未修改。参考仓库只读，不能迁入其工作区改动或直接访问旧业务数据。
+- 授权：五步本地设计、实现、必要测试及正常提交/合并/推送 main；无需再次确认继续。生产部署、清理旧数据和新增模型预算没有新增授权；原聊天/Embedding 各 1 元累计上限不变，先核对账本及在途任务，禁止重发已完成探针或重置账本。
+- 恢复入口：先阅读本次能力缺口报告，待用户明确恢复实施后再更新路线、冻结 S8 契约。五步原范围保留，本次分析不自动触发实现。
+- 规范：enterprise-feature-development、continue-approved-delivery、backend-implementation、update-progress-docs、task-git-delivery；全局业务建模/持久化/接口/并发安全/容量/发布治理。沿用现有手工专业 pass 与证据，不冒称机器 Runtime Gate 或独立 Agent 审查。
+- 运行：未启动本轮构建/测试/模型任务；原服务和 `.local/` 凭据/账本/恢复状态保留。恢复时先核对实际进程与任务。
+
+## 历史：研究分析与只读助手
 
 - 标识：`research-readonly-20261021`；用户已授权开始剩余研究与只读助手，继承P2、原模型/预算及正常合并推送main授权；无生产部署/清理。
 - 状态：S6 DONE / S7 DONE；本次实现、验收及两仓代码正常合并推送main均已完成，交付PASS。研究报告、解释/清单/草稿、空证据真实模型均PASS；292项Python、78项Java、38项前端单元、15组联合浏览器通过。窄屏未知提交提示改为说明下方操作后，7组相关浏览器/38项单元/构建/静态复验PASS，截图已实际核对。

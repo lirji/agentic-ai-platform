@@ -8,6 +8,12 @@
 
 本轮 S6/S7 同步基线：后端 `cb2f688`、前端 `f68e660`。Tasks 公共 work 请求/分页、V2 索引、`agents/` 受控工具与根图、共享 worker 和网关 SSE 映射到 [R02/A01](design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)；两路页面与共享意图/事件消费映射到独立前端 S7。证据与实际源码摘要见 [S6/S7 验收](qa/research-readonly-20261021/TEST_RESULT.md)，旧 QA 记录为历史验证，不替代当前回归。
 
+## 当前能力比较（2026-10-21）
+
+用户要求暂停知识深化实施，先比较业务与实现细度。本轮权威入口为[能力缺口](../.engineering/exploration/CAPABILITY_GAPS.md)，配套[地图](../.engineering/exploration/CAPABILITY_MAP.md)、[候选](../.engineering/exploration/OPPORTUNITIES.md)、[路线](../.engineering/exploration/EVOLUTION_ROADMAP.md)及[证据](../.engineering/exploration/EVIDENCE_INDEX.md)。当前后端基线 `d61536cbb9179db010f33d7b1cdbda737e22fc92`，React 基线 `d2b4dc6957cfbc81d29a8493dc9aa284aab8e584`，参考 Java 基线保持 `468cec425dd160e80cfc3ab378d3440a8767e4d5`。本轮未重新审计独立 AgentScope，也未执行模型/运行验收。
+
+新增事实由固定提交、源码/配置/SQL、前端 API 调用和近期 QA 交叉支持，文件摘要见报告目录的 `evidence-manifest.json`；历史报告仅用作线索。新报告不替换现有契约，不自动恢复五步实施；当前任务状态仍在原 PROGRESS_STATE。
+
 ## 权威文档
 
 - 当前需求：[首期业务与工程约定](design/knowledge-first-20261020/BRIEF.md)；当前进度：[准备与实施进度](design/knowledge-first-20261020/PROGRESS_STATE.md)。
@@ -42,7 +48,9 @@
 
 用户进一步要求不使用默认 HashEmbedding。重新核对同一固定提交发现：应用配置和部分 split 配置默认 hash，而标准 Compose 覆盖为百炼 text-embedding-v4 / 1024 维。新项目选择后者作为真实语义默认，并要求所有启动配置一致、失败不回退 hash。具体配置和模型/样本引用集中在首期约定第 5 节；只核对声明与结构，未执行种子、模型或数据库操作。
 
-| 当前设计内容 | 权威位置 | 证据与限制 |
+以下表格是首期设计及 S0/S1 当时的记录，保留当时验证边界；其中“未实现/未创建/待落实”不代表当前状态，当前实现以 S6/S7 QA 和上方能力比较为准。
+
+| 首期历史记录 | 权威位置 | 当时证据与限制 |
 | --- | --- | --- |
 | 三框架职责、状态权威、恢复与安全 | 目标架构第 3–8 节 | 原项目固定提交 + 框架官方资料；新项目尚未实现 |
 | 框架与基础组件选型 | 技术选型 T01–T31 | 对照复用、替换与暂缓条件；不是新增全部组件的授权 |

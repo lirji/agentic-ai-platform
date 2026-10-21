@@ -1,0 +1,1420 @@
+{
+  "date": "2026-10-21",
+  "task": "capability-gap-analysis-20261021",
+  "method": "fixed_git_objects; no runtime tests or paid calls",
+  "repositories": {
+    "A": {
+      "label": "当前后端",
+      "commit": "d61536cbb9179db010f33d7b1cdbda737e22fc92",
+      "repository": "https://github.com/lirji/agentic-ai-platform",
+      "hasGithubWorkflows": false
+    },
+    "W": {
+      "label": "当前 React",
+      "commit": "d2b4dc6957cfbc81d29a8493dc9aa284aab8e584",
+      "repository": "https://github.com/lirji/agentic-ai-platform-web",
+      "hasGithubWorkflows": false
+    },
+    "L": {
+      "label": "参考项目",
+      "commit": "468cec425dd160e80cfc3ab378d3440a8767e4d5",
+      "repository": "https://github.com/lirji/langchain4j-platform",
+      "hasGithubWorkflows": true
+    }
+  },
+  "evidence": [
+    {
+      "id": "E01",
+      "title": "范围、模块与公开入口",
+      "gaps": "G12/G20",
+      "evidenceType": "SOURCE/CONFIG/INVENTORY",
+      "facts": "当前六个 Maven 模块、Python AI 与独立 React；参考覆盖更多领域。当前 controller 集合支持限定知识/任务/会话业务。",
+      "limits": "模块和路由数量不作质量排名；未审计外部 AgentScope 全部实现。",
+      "symbol": "pom.modules；KnowledgeController",
+      "configuration": "根 pom / React 路由",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "pom.xml",
+          "line": 17,
+          "sha256": "be8f3c67098fe906e3ed5b5a3545526716eb1d0d37fd1799b0f1b839c58d8090",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/pom.xml#L17"
+        },
+        {
+          "repository": "L",
+          "path": "pom.xml",
+          "line": 25,
+          "sha256": "f4b5ab0ba985ec1b3fbc3ae8d32ed2a381044516689a28c95a2261b3878f5a85",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/pom.xml#L25"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeController.java",
+          "line": 25,
+          "sha256": "18c8a0d33161a14c9582283cf899b913882780ea1bb5217547b03249eed1dbb3",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeController.java#L25"
+        },
+        {
+          "repository": "W",
+          "path": "src/app/App.tsx",
+          "line": 1,
+          "sha256": "93bbb8c251488b9d029b68ad868d83746dad930be00d3c1d8a9a86341eb46114",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/blob/d2b4dc6957cfbc81d29a8493dc9aa284aab8e584/src/app/App.tsx#L1"
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "title": "上传边界、幂等与内容去重",
+      "gaps": "G02/G05",
+      "evidenceType": "SOURCE/SQL",
+      "facts": "当前只接受 TXT/MD、严格 UTF-8 与大小限制；同键复用、新键创建新 UUID。参考受理按内容摘要筛选可见重复记录。",
+      "limits": "当前 hash 原文存储不是业务级重复文档阻止；参考不泄露无权资料/不自动合并旧数据。",
+      "symbol": "UploadRules.validate；KnowledgeService.submit；IngestionSubmissionService.submit",
+      "configuration": "MAX_BYTES；deduplicateContent",
+      "sql": "knowledge_document / knowledge_ingestion",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/UploadRules.java",
+          "line": 14,
+          "sha256": "04b23b112659fc034d8297098051b056d1d5c910b7843955bed0a0530e67e192",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/UploadRules.java#L14"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeService.java",
+          "line": 35,
+          "sha256": "d0ae738dbd1bf1f2db14a19d8a9c08f6bca1678f8d761dac9d112cf9c069aa86",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeService.java#L35"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/resources/db/migration/V1__knowledge_registration.sql",
+          "line": 1,
+          "sha256": "720159a60711e869841ce6c3d10433f3f1b646c1784afe9a1aa619102f999e8a",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/resources/db/migration/V1__knowledge_registration.sql#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/ingest/job/IngestionSubmissionService.java",
+          "line": 72,
+          "sha256": "e7a25f2d0b139a7ba0cce8e470708a623e365d85c47db59696548e6db63eb214",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/ingest/job/IngestionSubmissionService.java#L72"
+        },
+        {
+          "repository": "L",
+          "path": "docs/delivery/knowledge-content-dedup/PROGRESS_STATE.md",
+          "line": 1,
+          "sha256": "cdf4346fb43668393e25a9edc1bb84442b58d10f7aba2bb79c2f11652f8fb7ad",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/delivery/knowledge-content-dedup/PROGRESS_STATE.md#L1"
+        }
+      ]
+    },
+    {
+      "id": "E03",
+      "title": "格式、OCR、资源边界与结构来源",
+      "gaps": "G02/G03",
+      "evidenceType": "SOURCE/CONFIG",
+      "facts": "参考有专用 PDF/DOCX/工作表/CSV/Markdown 解析、受限 fallback、来源白名单、OCR 与 fork 资源限制；当前输入仍为纯文本。",
+      "limits": "fallback 不能称为全部格式结构保真；fork 不是完备 RCE 沙箱；OCR 效果依赖样本。",
+      "symbol": "StructuredDocumentParser.parse；ForkedDocumentParser；SourceProvenance",
+      "configuration": "DocumentParsingProperties / DocumentOcrProperties",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/UploadRules.java",
+          "line": 1,
+          "sha256": "04b23b112659fc034d8297098051b056d1d5c910b7843955bed0a0530e67e192",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/UploadRules.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/StructuredDocumentParser.java",
+          "line": 41,
+          "sha256": "c2a5738be5161546157183ed4e728e9187cfd3ac4997741f0d9ad0d04d5ef8a5",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/StructuredDocumentParser.java#L41"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/ForkedDocumentParser.java",
+          "line": 1,
+          "sha256": "89e264acce3f1480ee0db073719b5ae5116b4e7e2ae5809022f7b6d9b5ae6bbb",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/ForkedDocumentParser.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/SourceProvenance.java",
+          "line": 1,
+          "sha256": "7a388693640c1c7fbf806bd9b7cfdeb17f9e65f5922825f5d6942f8473632325",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/SourceProvenance.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/DocumentParsingProperties.java",
+          "line": 1,
+          "sha256": "4d8ef19dca33fb49cb5a60bc467ae73dc3c8f950bff0ae93a0f24298e310bdff",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/DocumentParsingProperties.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/DocumentOcrProperties.java",
+          "line": 1,
+          "sha256": "99b94c00f5adae6a5c6ddf66ec01342f89f4253005a4825f30c856ac93d62a66",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/DocumentOcrProperties.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/PdfPageOcr.java",
+          "line": 1,
+          "sha256": "d851de535e74745ab25ec379b3b9b6aa3695458331ec1ac7bdcb262776e744bd",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/PdfPageOcr.java#L1"
+        }
+      ]
+    },
+    {
+      "id": "E04",
+      "title": "切分与当前来源字节定位",
+      "gaps": "G03",
+      "evidenceType": "SOURCE/TEST",
+      "facts": "当前字符 tokenizer + 512/64 SentenceSplitter，回到原文求字节区间；参考标题/父子/语义/结构 splitter。",
+      "limits": "存在多策略不证明更准；当前字节摘要绑定是应保留能力。",
+      "symbol": "pipeline；KnowledgeSearch.hit；DocumentSplitterFactory",
+      "configuration": "chunk_size / chunk_overlap / max chunks",
+      "sql": "knowledge_chunk",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/processing/pipeline.py",
+          "line": 9,
+          "sha256": "fc9f9021f93e64296068963817627f435f9165bb48afcbf581002ac22779be20",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/processing/pipeline.py#L9"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSearch.java",
+          "line": 75,
+          "sha256": "f4ac35910cb372fa13bde10aaf55db82de06438a37748b92139b5721045dc5f9",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSearch.java#L75"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/DocumentSplitterFactory.java",
+          "line": 1,
+          "sha256": "d663714e9bfd329e53d9f0da73575303e447fef3af3fee5fb5356feab8b9c15f",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/DocumentSplitterFactory.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/StructuredDocumentSplitter.java",
+          "line": 1,
+          "sha256": "a9cefc9ad7fc2b81265b4e135b3d1a2ea6ad7471a3857227ddbd775d6a307c6b",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/StructuredDocumentSplitter.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/MarkdownHeaderSplitter.java",
+          "line": 1,
+          "sha256": "6084b8cf2a2ed9244db1782ff849b162b80bc707d00d5e503e4d714a2911e2a6",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/MarkdownHeaderSplitter.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/ParentChildSplitter.java",
+          "line": 1,
+          "sha256": "dda61799eefca5c0e88b7d71c2e1716b993d11beee05de122e2af0275e37457f",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/ParentChildSplitter.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/SemanticChunkingSplitter.java",
+          "line": 1,
+          "sha256": "c95330dfc378347595c8a45aaccde370f8066b0e04ddd9219041ea9af8073101",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/SemanticChunkingSplitter.java#L1"
+        }
+      ]
+    },
+    {
+      "id": "E05",
+      "title": "版本、删除与共享的业务入口",
+      "gaps": "G04/G10",
+      "evidenceType": "SOURCE/API",
+      "facts": "当前没有公开文档更新/删除/重索引路由；参考支持更新版本、删除与分享。",
+      "limits": "参考同步兼容上传有可见性窗口，物理清理部分 best-effort；不认定其所有路径具有原子更新。",
+      "symbol": "KnowledgeService.submit；DocumentController；DocumentService.uploadDocument/deleteInternal；DocumentShareController",
+      "configuration": "INITIAL_DOCUMENT_VERSION；authz mode",
+      "sql": "文档 registry 与发布版本",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeService.java",
+          "line": 23,
+          "sha256": "d0ae738dbd1bf1f2db14a19d8a9c08f6bca1678f8d761dac9d112cf9c069aa86",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeService.java#L23"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeController.java",
+          "line": 1,
+          "sha256": "18c8a0d33161a14c9582283cf899b913882780ea1bb5217547b03249eed1dbb3",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeController.java#L1"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeProcessingController.java",
+          "line": 1,
+          "sha256": "523f34ef4d99f631617a0c6c54210658d89596159439533be45b019f39888568",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/KnowledgeProcessingController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/controller/DocumentController.java",
+          "line": 1,
+          "sha256": "357d05fa4e0872faf7883d2362671d1d5387a60adec4421eb2ece7d593aa179e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/controller/DocumentController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/DocumentService.java",
+          "line": 230,
+          "sha256": "b7c39d4bea45342d7ff308640d51bde3c3e77a01eb13506232f025d421236e9d",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/lifecycle/DocumentService.java#L230"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/controller/DocumentShareController.java",
+          "line": 1,
+          "sha256": "fcecf4441487a273bb3a695cf6de3a67535319fd634f7355fbdc066473e2b969",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/controller/DocumentShareController.java#L1"
+        }
+      ]
+    },
+    {
+      "id": "E06",
+      "title": "准备结果、双索引发布及可靠交接",
+      "gaps": "G04/G13",
+      "evidenceType": "SOURCE/SQL/QA",
+      "facts": "当前固定准备结果、sink 状态/租约、权威 chunk 与摘要绑定；会话派发先持久化。",
+      "limits": "可靠发布单版不等于用户可管理完整生命周期；本轮未重跑故障测试。",
+      "symbol": "IngestionRunner；ProcessingMapper；ConversationMapper",
+      "configuration": "processorVersion / batchDigest",
+      "sql": "knowledge_chunk / knowledge_ingestion / conversation dispatch",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/IngestionRunner.java",
+          "line": 1,
+          "sha256": "3cadaac550596d129673692ada19d26b0dba38d180bb160a4d9c08a5c711c520",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/IngestionRunner.java#L1"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/resources/mapper/ProcessingMapper.xml",
+          "line": 1,
+          "sha256": "5560a4b3e491a2e7b5d5b43ef36dc1cfbd69d9e132d355def584f42cd1af1146",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/resources/mapper/ProcessingMapper.xml#L1"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/resources/db/migration/V2__knowledge_processing.sql",
+          "line": 1,
+          "sha256": "5611133be871858b3513395dbe7a1697435b0386e2d7f567dd139fd584b32740",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/resources/db/migration/V2__knowledge_processing.sql#L1"
+        },
+        {
+          "repository": "A",
+          "path": "conversation-service/src/main/resources/db/migration/V1__conversations_and_dispatch.sql",
+          "line": 1,
+          "sha256": "e76cc9373689d740a408cf1c7113754420e6f746da482ba507e4d13cb6579a3f",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/conversation-service/src/main/resources/db/migration/V1__conversations_and_dispatch.sql#L1"
+        },
+        {
+          "repository": "A",
+          "path": "conversation-service/src/main/resources/mapper/ConversationMapper.xml",
+          "line": 1,
+          "sha256": "ae7f0401411bbee022cbe5f60622db36f49abef608979855e94e7ff4edc90552",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/conversation-service/src/main/resources/mapper/ConversationMapper.xml#L1"
+        }
+      ]
+    },
+    {
+      "id": "E07",
+      "title": "召回、融合与权威过滤",
+      "gaps": "G07/G13",
+      "evidenceType": "SOURCE/CONFIG",
+      "facts": "当前两路顺序召回、RRF60、权威发布/所有者/摘要过滤后 Top K；参考可组装来源并有有界并发、融合和重排前授权。",
+      "limits": "参考实际路数取决于 enabled；未验证运行时具体路数；两路本身不构成缺陷。",
+      "symbol": "KnowledgeSearch.search；DualSearchIndex.search；KnowledgeQueryService.query；ParallelRetrievalExecutor.retrieve",
+      "configuration": "ProcessingProtocol / source.enabled / fusionStrategy / rrfK",
+      "sql": "ProcessingMapper.published",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSearch.java",
+          "line": 40,
+          "sha256": "f4ac35910cb372fa13bde10aaf55db82de06438a37748b92139b5721045dc5f9",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSearch.java#L40"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/DualSearchIndex.java",
+          "line": 97,
+          "sha256": "0f0ee85b92830774dde32f620a14a5d98b5546926a00a44978cc11c7e8e290e7",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/DualSearchIndex.java#L97"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingProtocol.java",
+          "line": 1,
+          "sha256": "24e3ebcd14d917160a349707cacc5e1ee4b488575c5c67003d1348aafdc315bf",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingProtocol.java#L1"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingClaim.java",
+          "line": 1,
+          "sha256": "276f667f1538514a6ebc5a294daef48a248510ae6e56db704202e4d242f3276a",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingClaim.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/KnowledgeQueryService.java",
+          "line": 298,
+          "sha256": "4b300dbf95b179f5addfa081f7bfb2e3b43025c93fa91b4c60da92a7762b4619",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/KnowledgeQueryService.java#L298"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/search/ParallelRetrievalExecutor.java",
+          "line": 43,
+          "sha256": "b9882a5c3cf25130fa77dbcf062480207d47a9adc49cdb569b6f8f3b9446364b",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/search/ParallelRetrievalExecutor.java#L43"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/search/HybridFusionService.java",
+          "line": 1,
+          "sha256": "5b1565121fa3907464aa73b8b1311f53a03d403311caafc523cf08460260c5d8",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/search/HybridFusionService.java#L1"
+        }
+      ]
+    },
+    {
+      "id": "E08",
+      "title": "独立重排与查询扩展",
+      "gaps": "G07",
+      "evidenceType": "SOURCE/CONFIG",
+      "facts": "当前 AuthorizedRetriever 只适配授权搜索；参考有 LLM/Jina/百炼重排及 query expander。YAML 默认 llm，Compose 默认 bailian/qwen3-rerank。",
+      "limits": "实现/默认配置不证明真实模型质量或目前服务已启用；百炼适配失败回退初始候选，需明确可见性。",
+      "symbol": "AuthorizedRetriever；RerankConfig；BailianReranker.rerank；LlmQueryExpander",
+      "configuration": "app.rag.rerank；RAG_RERANK_TYPE / MODEL",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/qa/retriever.py",
+          "line": 27,
+          "sha256": "3786e0176b0e52022f9a4165e4d4f6cc6f9246346e693629e7d9a2af9d6bd633",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/qa/retriever.py#L27"
+        },
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/qa/knowledge.py",
+          "line": 1,
+          "sha256": "e3ded9477dc702017e03aad80125c5728c3135094811bd5c3f79866c84ce677d",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/qa/knowledge.py#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/rerank/RerankConfig.java",
+          "line": 1,
+          "sha256": "ae981a9062fa8201da7d50855a39b6b9cb55009284a0ce1dcf9df69a68e07af1",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/rerank/RerankConfig.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/rerank/BailianReranker.java",
+          "line": 35,
+          "sha256": "996d38e3872af65c12a3d8b395a5da0ad2c213e7c80a1c3bcdc49ac5226b6ac7",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/rerank/BailianReranker.java#L35"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/rerank/LlmReranker.java",
+          "line": 1,
+          "sha256": "c5e55a3e9c343c7594c3c08edbf4ae996632fe8ba90d9c19ef06c29785fbd745",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/rerank/LlmReranker.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/rerank/JinaReranker.java",
+          "line": 1,
+          "sha256": "e94b1bee02ef6a57a413e72393f4452ced8809cbd94c30956105753085582f9f",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/rerank/JinaReranker.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/query/LlmQueryExpander.java",
+          "line": 1,
+          "sha256": "66a8f8f02aab04bfebf2e040d9b1d0a998c864aeee1ff227d150ba7489e3e085",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/query/LlmQueryExpander.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/resources/application.yml",
+          "line": 318,
+          "sha256": "36a174a5c932270364f6a9e61bbefe9f530ecc0882598a5dcac26b623a522ac7",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/resources/application.yml#L318"
+        },
+        {
+          "repository": "L",
+          "path": "deploy/docker-compose.yml",
+          "line": 490,
+          "sha256": "d450ad59e03b10a707c318904381ecccd8753887ace5c2eeec8ca5c6e7c16b48",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/docker-compose.yml#L490"
+        }
+      ]
+    },
+    {
+      "id": "E09",
+      "title": "质量数据集、评分与门禁",
+      "gaps": "G01",
+      "evidenceType": "SOURCE/SQL/ASSET",
+      "facts": "参考数据集修订/基线与权限上下文绑定，逐题文档级指标及退化比较；存在 eval-service 与200题合成资产。",
+      "limits": "Precision 分母为实际返回的不同文档数；不是固定K分母或答案语义评分。合成问题不代表本项目真实业务质量。",
+      "symbol": "QualityController；QualityService；QualityScoring.score/compare；RetrievalEvaluator",
+      "configuration": "topK / allowedDrop / allowedP95IncreaseMs",
+      "sql": "retrieval quality datasets/runs migration",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/quality/QualityController.java",
+          "line": 1,
+          "sha256": "5630e974d91a5b1a8a50a58fc3f5c88a01a3817814ff024932ab39dfb7f9fd98",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/quality/QualityController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/quality/QualityService.java",
+          "line": 1,
+          "sha256": "529461853df719df5fc5b9cf4026a03091e385e42a1d03275dd7c52739168ab4",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/quality/QualityService.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/quality/QualityScoring.java",
+          "line": 12,
+          "sha256": "bc24c7f6c42211e1cd101d218f69cb2a533d734d72b7120a85c575ced7cba119",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/quality/QualityScoring.java#L12"
+        },
+        {
+          "repository": "L",
+          "path": "database-migrations/src/main/resources/db/migration/knowledge-ingestion/V6__retrieval_quality.sql",
+          "line": 1,
+          "sha256": "3860d30c80f9dd20868683b9cff3126c3253b90bd806f2365c065556b1704502",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/database-migrations/src/main/resources/db/migration/knowledge-ingestion/V6__retrieval_quality.sql#L1"
+        },
+        {
+          "repository": "L",
+          "path": "eval-service/src/main/java/com/lrj/platform/eval/retrieval/RetrievalEvaluator.java",
+          "line": 1,
+          "sha256": "483c7813d12e3984a6dfaa84a49a8f00a976bf9164df18d8bba04ea5110d0a26",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/eval-service/src/main/java/com/lrj/platform/eval/retrieval/RetrievalEvaluator.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "docs/qa/resume-metrics-0727-1539/datasets/rag-golden-200.json",
+          "line": 1,
+          "sha256": "14d828e945039ecfe784e44f66d1f98b9dbc94d43536c3400c061afb10731164",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/qa/resume-metrics-0727-1539/datasets/rag-golden-200.json#L1"
+        },
+        {
+          "repository": "L",
+          "path": "docs/qa/resume-metrics-0727-1539/datasets/rag-corpus-manifest.json",
+          "line": 1,
+          "sha256": "cb7da2e844230a5c94bdf08d58da69db305da1171ecb77daecd9d71db7aaf45e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/qa/resume-metrics-0727-1539/datasets/rag-corpus-manifest.json#L1"
+        }
+      ]
+    },
+    {
+      "id": "E10",
+      "title": "知识反馈、候选与审批发布",
+      "gaps": "G09",
+      "evidenceType": "SOURCE/SQL/API",
+      "facts": "参考有反馈、候选状态、内容绑定评估、审批发布、任务同步、发布探测及回滚草稿。当前路由未包含这些业务。",
+      "limits": "局部 requiredText 检查不等于通用答案质量评分；生产全栈验证范围见E25。",
+      "symbol": "KnowledgeOperations；KnowledgeOperationsController；KnowledgePublicationService",
+      "configuration": "状态 DRAFT/EVALUATED/APPROVED/PUBLISHING/PUBLISH_FAILED/PUBLISHED",
+      "sql": "V4 knowledge_operations",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/operations/KnowledgeOperations.java",
+          "line": 10,
+          "sha256": "4a0e1fbcd0e765fb2d7d01dabfcc9b9bb0e520165e367fe538d60d817365f396",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/operations/KnowledgeOperations.java#L10"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/operations/KnowledgeOperationsController.java",
+          "line": 1,
+          "sha256": "513235da4a2d9262e28b4b01c998bd99705e4c6dbdcbc543233d67807d01a006",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/operations/KnowledgeOperationsController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/operations/KnowledgePublicationService.java",
+          "line": 1,
+          "sha256": "402f13a0d1baab7e436b6c261fd33c48aafdce5b8cc96928f61c8c24fdd38dc2",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/operations/KnowledgePublicationService.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/operations/KnowledgeOperationsService.java",
+          "line": 1,
+          "sha256": "23a522c3926eca7a88b54e218e4914c4fcd65dc6b34d60a785ee8e640de2c8b3",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/operations/KnowledgeOperationsService.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "database-migrations/src/main/resources/db/migration/knowledge-ingestion/V4__knowledge_operations.sql",
+          "line": 1,
+          "sha256": "2e6507102ebf4b9609aec8422bd9200060df5d2288361cf5b305745f9f9ba38a",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/database-migrations/src/main/resources/db/migration/knowledge-ingestion/V4__knowledge_operations.sql#L1"
+        }
+      ]
+    },
+    {
+      "id": "E11",
+      "title": "来源同步及运营控制",
+      "gaps": "G06",
+      "evidenceType": "SOURCE/SQL/API",
+      "facts": "参考有配置来源、外部记录映射、poll/pause/resume/retry/runs；身份和来源受服务端限制。",
+      "limits": "配置为空无同步数据；不是已接通所有企业来源。当前仅上传入口。",
+      "symbol": "KnowledgeSyncController；KnowledgeSyncService",
+      "configuration": "http-sync.enabled / runtime.role / sources",
+      "sql": "V7 knowledge_http_sync / V8 knowledge_sync_operations",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/ingest/sync/KnowledgeSyncController.java",
+          "line": 1,
+          "sha256": "7acf6508a6eb8a8ebd63cd0ad08bb97e899d5afb6783454fb46ac9a7ac1ad2d1",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/ingest/sync/KnowledgeSyncController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/ingest/sync/KnowledgeSyncService.java",
+          "line": 1,
+          "sha256": "0f6b4fcbfbb6c64e4c6813dc8a10e49103f38d5f6f23385d84676f95b1a9226e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/ingest/sync/KnowledgeSyncService.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "database-migrations/src/main/resources/db/migration/knowledge-ingestion/V7__knowledge_http_sync.sql",
+          "line": 1,
+          "sha256": "e51dce9e38c83dddfe7fbdf6cacff21717318dbd28df2f366afcbf5155067474",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/database-migrations/src/main/resources/db/migration/knowledge-ingestion/V7__knowledge_http_sync.sql#L1"
+        },
+        {
+          "repository": "L",
+          "path": "database-migrations/src/main/resources/db/migration/knowledge-ingestion/V8__knowledge_sync_operations.sql",
+          "line": 1,
+          "sha256": "649420dee6531b53fbc5305fb39f7d64f41b13db574c14b596fa799a669e94a6",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/database-migrations/src/main/resources/db/migration/knowledge-ingestion/V8__knowledge_sync_operations.sql#L1"
+        }
+      ]
+    },
+    {
+      "id": "E12",
+      "title": "回答引用、语义支撑及有限上下文",
+      "gaps": "G08/G11",
+      "evidenceType": "SOURCE",
+      "facts": "当前 retrieve/generate/verify 校验引用编号及授权来源，选定上一轮上下文；参考对话有历史压缩、可选 guardrail/grounding。",
+      "limits": "引用校验不是语义蕴含证明；参考 grounding 异常跳过评分、警告不保证答案正确。",
+      "symbol": "QaPipeline；ConversationController.chat；LlmGroundingChecker；ConversationGuardrail",
+      "configuration": "MAX_HITS / SYSTEM_PROMPT / grounding enabled",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/qa/pipeline.py",
+          "line": 73,
+          "sha256": "0651a10df80645720c33ee0b0e65ccaa0a96ce3ce76e464dfd3cc8a666d144ba",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/qa/pipeline.py#L73"
+        },
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/qa/models.py",
+          "line": 14,
+          "sha256": "d42691ab4f0270f391737dcaf540facf387d9a314bfe374c7ddeb2356a44f0b3",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/qa/models.py#L14"
+        },
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/ConversationController.java",
+          "line": 1,
+          "sha256": "ae76182a75dbc287af73b22cd7cbe582b2b16c0bfdbe60cab15dc14b72c12100",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/ConversationController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/grounding/LlmGroundingChecker.java",
+          "line": 1,
+          "sha256": "eda6601abf7b093b1becd1b414c6f2bec5714751694865fa5aefea2af5699cb0",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/grounding/LlmGroundingChecker.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/grounding/GroundingConfig.java",
+          "line": 1,
+          "sha256": "5a3ea503ae367483667054408d9406767757b92e24c760897df65f1d3347c899",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/grounding/GroundingConfig.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/guardrail/ConversationGuardrail.java",
+          "line": 1,
+          "sha256": "41a363d17241c1d86d5f2e42138cfb0dc1b47e369e277bda1431cba69d3669d2",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/guardrail/ConversationGuardrail.java#L1"
+        }
+      ]
+    },
+    {
+      "id": "E13",
+      "title": "跨会话记忆及治理",
+      "gaps": "G11",
+      "evidenceType": "SOURCE/SQL/QA",
+      "facts": "参考 JDBC profile、候选确认/拒绝/修改/遗忘/置顶、过期与 generation；当前没有对应业务。",
+      "limits": "记忆与会话存储不同；不将记忆默认开启作为本项目需求。",
+      "symbol": "GovernedProfileStore；MemoryGovernanceController；UserProfileChatService",
+      "configuration": "profile enabled/store；expectedGeneration",
+      "sql": "conversation V1 user_profile_memory",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/memory/profile/GovernedProfileStore.java",
+          "line": 1,
+          "sha256": "33fadd32ba693c8e062507693cb59a4fb0d016e63b6666eb2946887dcea2410e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/memory/profile/GovernedProfileStore.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/memory/profile/MemoryGovernanceController.java",
+          "line": 1,
+          "sha256": "a658b7651cefd81be6d479879e772d9bcc88276ce1d468de206a8780804cb03e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/memory/profile/MemoryGovernanceController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/memory/profile/JdbcUserProfileStore.java",
+          "line": 1,
+          "sha256": "85ff8564ec74831cab1dd9d2c2d125dacfbb6fb0c917395179ea5791bbf98767",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/memory/profile/JdbcUserProfileStore.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/memory/profile/UserProfileChatService.java",
+          "line": 1,
+          "sha256": "e25b9013f79361a152c84d73dc0c35fa7f7a7ab4ec1bd74956163a16ba2cf05c",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/memory/profile/UserProfileChatService.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/memory/SummarizingChatMemory.java",
+          "line": 1,
+          "sha256": "fc112ef26c6ca6a1f27c675b8a6c8d150bb9826acc5c400fd7bea1d37b80b73c",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/memory/SummarizingChatMemory.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "database-migrations/src/main/resources/db/migration/conversation/V1__user_profile_memory.sql",
+          "line": 1,
+          "sha256": "ba6091c8a28f5913d368e1ee3a4f093e9320cfd210aa205b390a2297cf2a8bce",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/database-migrations/src/main/resources/db/migration/conversation/V1__user_profile_memory.sql#L1"
+        },
+        {
+          "repository": "L",
+          "path": "docs/delivery/persistent-profile-memory/TEST_RESULT.md",
+          "line": 1,
+          "sha256": "c02f40849342166a75ccd8d309fe2721bfaa52d85af195dd9cfe9ac68287c69e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/delivery/persistent-profile-memory/TEST_RESULT.md#L1"
+        }
+      ]
+    },
+    {
+      "id": "E14",
+      "title": "只读 Agent 与默认路由边界",
+      "gaps": "G12/G20",
+      "evidenceType": "SOURCE/CONFIG/CONTRACT",
+      "facts": "当前两类知识工具、调用次数上限、无子Agent/内部checkpoint，外层根图恢复；参考默认 Agent 路由为外部 AgentScope。",
+      "limits": "Java agent-service 控制器不等于默认外部执行器全部已核实；原子 analyze 重做可能再计费。",
+      "symbol": "agents.pipeline；WORK_GRAPH；Gateway route",
+      "configuration": "checkpointer=False / subagents=[]；baseline backend / AGENT_URI",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/agents/pipeline.py",
+          "line": 7,
+          "sha256": "de0f12b84a4bb992fa7546a97f7028df28c83dfb1375fd70b4fa046d84cfc259",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/agents/pipeline.py#L7"
+        },
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/agents/models.py",
+          "line": 1,
+          "sha256": "9c07db665ba3314a3bbb3b2712ca0b0a25bf06fc000355fc7874f1ea4515b96a",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/agents/models.py#L1"
+        },
+        {
+          "repository": "A",
+          "path": "docs/design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md",
+          "line": 1,
+          "sha256": "f006e9f3bae7c310a5c226ad0ae6393b73bfef3dfb46b541d07b68f5ddc179a6",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/docs/design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md#L1"
+        },
+        {
+          "repository": "L",
+          "path": "edge-gateway/src/main/resources/application.yml",
+          "line": 152,
+          "sha256": "57f3b289bf18c48e61538e1cf07271bf4861b11d50706e6c49045d73428a74fa",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/edge-gateway/src/main/resources/application.yml#L152"
+        },
+        {
+          "repository": "L",
+          "path": "deploy/docker-compose.yml",
+          "line": 1028,
+          "sha256": "d450ad59e03b10a707c318904381ecccd8753887ace5c2eeec8ca5c6e7c16b48",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/docker-compose.yml#L1028"
+        }
+      ]
+    },
+    {
+      "id": "E15",
+      "title": "中央任务、租约与检查点",
+      "gaps": "G13",
+      "evidenceType": "SOURCE/SQL/QA",
+      "facts": "当前行锁/SKIP LOCKED、epoch/expiry 和中央凭据约束 PG；worker 顺序领取两图，租户来自配置。",
+      "limits": "已有 fencing 不证明多租户公平和生产容量；本轮无新负载实验。",
+      "symbol": "TaskMapper；checkpointer；qa.worker",
+      "configuration": "graph_versions / tenant_id / epoch",
+      "sql": "ai_task / ai_task_event / PG snapshots",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "async-task-service/src/main/resources/mapper/TaskMapper.xml",
+          "line": 26,
+          "sha256": "294d78685a578534617e15f5bab59a943816d447bb8ce5aab929ff7d374216f7",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/async-task-service/src/main/resources/mapper/TaskMapper.xml#L26"
+        },
+        {
+          "repository": "A",
+          "path": "async-task-service/src/main/resources/db/migration/V1__durable_tasks.sql",
+          "line": 1,
+          "sha256": "180e589cda1d9a1b7edc63a128e44ea665386da903d2a0a2cf55cc3d10b0e6bd",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/async-task-service/src/main/resources/db/migration/V1__durable_tasks.sql#L1"
+        },
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/tasks/checkpointer.py",
+          "line": 1,
+          "sha256": "9d5c9392241eef24020ca561ed36e0ceaffb0f253f066d8335a2f67bfbf52cb5",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/tasks/checkpointer.py#L1"
+        },
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/qa/worker.py",
+          "line": 257,
+          "sha256": "2110f3f6ee1a71336351ddadace47d6dcd8e50e2f3479f48228b50c274c86077",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/qa/worker.py#L257"
+        },
+        {
+          "repository": "A",
+          "path": "docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md",
+          "line": 1,
+          "sha256": "129db8886ae69be99fdae283684599b4ce6b84032c2f4d34a3281b90b2d9a993",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md#L1"
+        }
+      ]
+    },
+    {
+      "id": "E16",
+      "title": "身份信任、开发桥与分享开关",
+      "gaps": "G10",
+      "evidenceType": "SOURCE/CONFIG",
+      "facts": "当前 JwtTrust 和 local identity bridge 有明确边界；参考 Casdoor 令牌交换与分享存在，ReBAC 默认 disabled。",
+      "limits": "不宣称当前无鉴权，不把参考 authz 代码存在写成默认 enforce；未探测当前线上权限。",
+      "symbol": "JwtTrust；localIdentity；CasdoorTokenExchangeFilter",
+      "configuration": "loopback / X-Workbench-Request / app.rag.authz.mode",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "platform-security/src/main/java/com/lrj/agentic/security/JwtTrust.java",
+          "line": 1,
+          "sha256": "3d12b09c0d17dfeb1095b4b02c05e92beca5358806ec52b50ad57e5b409c80c7",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/platform-security/src/main/java/com/lrj/agentic/security/JwtTrust.java#L1"
+        },
+        {
+          "repository": "W",
+          "path": "deploy/local-identity.ts",
+          "line": 1,
+          "sha256": "4325cfc85327f4497500eb85d901f0028e8c9c1c86939c820a26a1bb2487d865",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/blob/d2b4dc6957cfbc81d29a8493dc9aa284aab8e584/deploy/local-identity.ts#L1"
+        },
+        {
+          "repository": "L",
+          "path": "edge-gateway/src/main/java/com/lrj/platform/edge/CasdoorTokenExchangeFilter.java",
+          "line": 1,
+          "sha256": "a515cd1b2b8deaf7da92ef03f77e49274bf13f8aa12ef0c3c9eebc4050d50b9e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/edge-gateway/src/main/java/com/lrj/platform/edge/CasdoorTokenExchangeFilter.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/resources/application.yml",
+          "line": 176,
+          "sha256": "36a174a5c932270364f6a9e61bbefe9f530ecc0882598a5dcac26b623a522ac7",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/resources/application.yml#L176"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/controller/DocumentShareController.java",
+          "line": 1,
+          "sha256": "fcecf4441487a273bb3a695cf6de3a67535319fd634f7355fbdc066473e2b969",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/controller/DocumentShareController.java#L1"
+        }
+      ]
+    },
+    {
+      "id": "E17",
+      "title": "前端业务流程与真实API绑定",
+      "gaps": "G18/G01/G09/G10",
+      "evidenceType": "SOURCE/UI",
+      "facts": "当前上传/引用/任务等真实操作；参考有质量、运营、同步、来源和记忆治理面板及API调用。",
+      "limits": "本轮读代码/旧QA，未重新浏览器截图；比较任务完整度而非主观视觉评分。",
+      "symbol": "App/KnowledgePage；RetrievalQualityPanel；KnowledgeOperationsPanel",
+      "configuration": "API request functions / error-state handling",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "W",
+          "path": "src/app/App.tsx",
+          "line": 1,
+          "sha256": "93bbb8c251488b9d029b68ad868d83746dad930be00d3c1d8a9a86341eb46114",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/blob/d2b4dc6957cfbc81d29a8493dc9aa284aab8e584/src/app/App.tsx#L1"
+        },
+        {
+          "repository": "W",
+          "path": "src/pages/KnowledgePage.tsx",
+          "line": 1,
+          "sha256": "f0f14673188d611062e9626d83c20cd95ab4f4701dd5e00a76df1379cf5141b0",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/blob/d2b4dc6957cfbc81d29a8493dc9aa284aab8e584/src/pages/KnowledgePage.tsx#L1"
+        },
+        {
+          "repository": "W",
+          "path": "src/features/knowledge/upload-intent.ts",
+          "line": 1,
+          "sha256": "b5ac0a5c8da6997fa8ef494cfebdc7b158b1d81ddb62e19bdc3bc8d3d076ef01",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/blob/d2b4dc6957cfbc81d29a8493dc9aa284aab8e584/src/features/knowledge/upload-intent.ts#L1"
+        },
+        {
+          "repository": "W",
+          "path": "src/features/knowledge/Citation.tsx",
+          "line": 1,
+          "sha256": "26217974feda938cfe71acbe65db2ba8f70da66adad41fef58a81837346e8f49",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/blob/d2b4dc6957cfbc81d29a8493dc9aa284aab8e584/src/features/knowledge/Citation.tsx#L1"
+        },
+        {
+          "repository": "L",
+          "path": "capability-showcase-frontend/src/modules/rag/RetrievalQualityPanel.vue",
+          "line": 1,
+          "sha256": "d9079225ba612e1186821242762f34bfd2f4bc9c9d490fd2e99e3fc072102105",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/capability-showcase-frontend/src/modules/rag/RetrievalQualityPanel.vue#L1"
+        },
+        {
+          "repository": "L",
+          "path": "capability-showcase-frontend/src/modules/rag/KnowledgeOperationsPanel.vue",
+          "line": 1,
+          "sha256": "ae24f1ea32dd395195b3552516ccc481c4bd9478f49456735ed25155942ef376",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/capability-showcase-frontend/src/modules/rag/KnowledgeOperationsPanel.vue#L1"
+        },
+        {
+          "repository": "L",
+          "path": "capability-showcase-frontend/src/modules/rag/KnowledgeSyncPanel.vue",
+          "line": 1,
+          "sha256": "ba6d98c5cbd0d77aacce633ef52be96c3419ab4f2d7ffa942c14a449788cca9b",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/capability-showcase-frontend/src/modules/rag/KnowledgeSyncPanel.vue#L1"
+        },
+        {
+          "repository": "L",
+          "path": "capability-showcase-frontend/src/modules/rag/KnowledgeSourceDetails.vue",
+          "line": 1,
+          "sha256": "2bd7f440ff095c5c059194b6a28d9946e6b0e911699a643b8fe8f9f6a92abc18",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/capability-showcase-frontend/src/modules/rag/KnowledgeSourceDetails.vue#L1"
+        }
+      ]
+    },
+    {
+      "id": "E18",
+      "title": "已有指标、追踪和参考告警资产",
+      "gaps": "G14",
+      "evidenceType": "SOURCE/CONFIG",
+      "facts": "当前Java开放 health/prometheus，有Timer及请求关联；参考含模型/chunk观测与告警配置。",
+      "limits": "跨Java/Python完整链路覆盖与生产告警有效性需验证；不能写当前零监控。",
+      "symbol": "IngestionWorker；RequestCorrelation；OtelChatModelListener；ChunkMetrics",
+      "configuration": "management.endpoints.web.exposure；Prometheus alerts",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/resources/application.yml",
+          "line": 87,
+          "sha256": "45b5e286b40ce3d4c973eeda9f58730b833a735c51f27a46c664c28fa9b321eb",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/resources/application.yml#L87"
+        },
+        {
+          "repository": "A",
+          "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/IngestionWorker.java",
+          "line": 1,
+          "sha256": "059af698896701e1660834ea84901f7f54a4ce8574846e928322822f973a786a",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/IngestionWorker.java#L1"
+        },
+        {
+          "repository": "A",
+          "path": "async-task-service/src/main/java/com/lrj/agentic/task/api/RequestCorrelation.java",
+          "line": 1,
+          "sha256": "5c7b5bf95591702ff1abfbedc34c2e8cbe80e9be361a849d880f6db7554e1c87",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/async-task-service/src/main/java/com/lrj/agentic/task/api/RequestCorrelation.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "platform-observability/src/main/java/com/lrj/platform/observability/otel/OtelChatModelListener.java",
+          "line": 1,
+          "sha256": "d7584f4373e2328ca72ed722ed9decbe0ecfd32d4a236351cc0b3d7ac3266a11",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/platform-observability/src/main/java/com/lrj/platform/observability/otel/OtelChatModelListener.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/src/main/java/com/lrj/platform/knowledge/observability/ChunkMetrics.java",
+          "line": 1,
+          "sha256": "9cfb9c215f4e9149c05cf31efdccb5047189d74509a03189bdbcd71230a8b1ee",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/src/main/java/com/lrj/platform/knowledge/observability/ChunkMetrics.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "deploy/prometheus/alerts.yml",
+          "line": 1,
+          "sha256": "2d67641a1e124a0b89e5a287b6189ede5aaa6923a6cd156d90bcd842748a4b85",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/prometheus/alerts.yml#L1"
+        },
+        {
+          "repository": "L",
+          "path": "deploy/test-observability-config.sh",
+          "line": 1,
+          "sha256": "949bae4de12b20682bfe5f22fd9f9fec3b9e72bcde0776c3f154d28f9a550929",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/test-observability-config.sh#L1"
+        }
+      ]
+    },
+    {
+      "id": "E19",
+      "title": "预算保护与平台计量边界",
+      "gaps": "G15",
+      "evidenceType": "SOURCE/CONFIG",
+      "facts": "当前本地文件锁账本限制累计调用；参考 token budget/Redis tracker/预留结算API按配置启用。",
+      "limits": "本地保守预留不是供应商账单，不能证明跨主机共享配额；不读取/公布密钥或真实账本内容。",
+      "symbol": "EmbeddingBudget.reserve；ChatBudget.reserve；BudgetAuthorityController；RedisTokenBudgetTracker",
+      "configuration": "budget_file / api-enabled / reservation flags",
+      "sql": "Redis token budget ledger (可选)",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/runtime/embedding_budget.py",
+          "line": 17,
+          "sha256": "a691ddce31111dcf402c1ec2e72a41246feb5cb753380c8df3ef5a70c86d9527",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/runtime/embedding_budget.py#L17"
+        },
+        {
+          "repository": "A",
+          "path": "ai-runtime/src/agentic_ai/qa/chat_budget.py",
+          "line": 23,
+          "sha256": "8b124fe83f226bfd1dbf8288b7e68ad6ec460d8c3c1f883864f7890b23aadb22",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/src/agentic_ai/qa/chat_budget.py#L23"
+        },
+        {
+          "repository": "L",
+          "path": "conversation-service/src/main/java/com/lrj/platform/conversation/budget/BudgetAuthorityController.java",
+          "line": 1,
+          "sha256": "40190b063e9e2e5d56c494b0f3a762c6e0c572319078331bdc7a8ae7f3ee9ce6",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/conversation-service/src/main/java/com/lrj/platform/conversation/budget/BudgetAuthorityController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "platform-metering/src/main/java/com/lrj/platform/metering/RedisTokenBudgetTracker.java",
+          "line": 1,
+          "sha256": "601bfdc5e88d2f0bf6524e11186dd4055b653273b9f977ed0145e107d111ddd0",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/platform-metering/src/main/java/com/lrj/platform/metering/RedisTokenBudgetTracker.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "platform-metering/src/main/java/com/lrj/platform/metering/TokenBudgetProperties.java",
+          "line": 1,
+          "sha256": "8ade4cd0d44f5945e10b31277ca9bc97c39712e34a33edcc9d0a437836da2c3f",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/platform-metering/src/main/java/com/lrj/platform/metering/TokenBudgetProperties.java#L1"
+        }
+      ]
+    },
+    {
+      "id": "E20",
+      "title": "持续集成和供应链",
+      "gaps": "G16",
+      "evidenceType": "INVENTORY/CONFIG/QA",
+      "facts": "当前两仓基线均无 .github/workflows；参考有reactor、前端、契约/配置及供应链工作流。",
+      "limits": "本轮未读取实时远程CI；参考历史SBOM失败见E25，工作流存在不等于绿色门禁。",
+      "symbol": "Git tracked-path inventory / workflow jobs",
+      "configuration": "GitHub Actions triggers / test/scan steps",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "ai-runtime/pyproject.toml",
+          "line": 1,
+          "sha256": "5cfb0fcafcce08f8db6fdcba83c28553ebc62f56875a62d3c0f580aedaa2f8a5",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/ai-runtime/pyproject.toml#L1"
+        },
+        {
+          "repository": "W",
+          "path": "package.json",
+          "line": 1,
+          "sha256": "9b4ab63a67b6e0cece4ae378cf1542325c772392e0b51266ef1ae6c14d138383",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/blob/d2b4dc6957cfbc81d29a8493dc9aa284aab8e584/package.json#L1"
+        },
+        {
+          "repository": "L",
+          "path": ".github/workflows/agentscope-cutover-ci.yml",
+          "line": 1,
+          "sha256": "b29cea603f15cf4e0de642daef645f95579601b3617fb50366007228d0625d7c",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/.github/workflows/agentscope-cutover-ci.yml#L1"
+        },
+        {
+          "repository": "L",
+          "path": ".github/workflows/supply-chain.yml",
+          "line": 1,
+          "sha256": "41760a9f6efcf158c5ce502592d20c7ec35e4596168c6f81df2129f6dbcebc9f",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/.github/workflows/supply-chain.yml#L1"
+        },
+        {
+          "repository": "L",
+          "path": ".github/workflows/capability-showcase-frontend-ci.yml",
+          "line": 1,
+          "sha256": "709918ef258ebe7f13e3e78091691e225263ac63207095fe5aa52b8d60b3c2ea",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/.github/workflows/capability-showcase-frontend-ci.yml#L1"
+        }
+      ]
+    },
+    {
+      "id": "E21",
+      "title": "本地运行、部署和恢复工具",
+      "gaps": "G17",
+      "evidenceType": "SOURCE/CONFIG/DOC",
+      "facts": "当前本地Java/Python/Web启动及搜索Compose；参考全应用Compose/Helm及dev_infra迁移备份/导入工具，不等于日常灾备体系。",
+      "limits": "未执行脚本或重新查服务健康；不把工具存在写成生产RPO/RTO或恢复成功。",
+      "symbol": "deploy.local；dev-infra manage.backup",
+      "configuration": "Dockerfile / Compose / Helm",
+      "sql": "MySQL / PG / S3 / indexes",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "deploy/README.md",
+          "line": 1,
+          "sha256": "243c3c7e1d479379268e44b8b648dc7ffc1fd66083d0741ffc5e6bd777fbde56",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/deploy/README.md#L1"
+        },
+        {
+          "repository": "A",
+          "path": "deploy/local.py",
+          "line": 1,
+          "sha256": "c91539558e55bac300d5c721ab3547731953aafe3ce9f1f5ba588598486b5c2e",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/deploy/local.py#L1"
+        },
+        {
+          "repository": "L",
+          "path": "deploy/docker-compose.yml",
+          "line": 1,
+          "sha256": "d450ad59e03b10a707c318904381ecccd8753887ace5c2eeec8ca5c6e7c16b48",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/docker-compose.yml#L1"
+        },
+        {
+          "repository": "L",
+          "path": "knowledge-service/Dockerfile",
+          "line": 1,
+          "sha256": "be7bbcb7d6f83678c7d957da93428a685a51d5d9c128772902773eb67a10a4b7",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/knowledge-service/Dockerfile#L1"
+        },
+        {
+          "repository": "L",
+          "path": "deploy/helm/platform/charts/platform-lib/templates/_deployment.tpl",
+          "line": 1,
+          "sha256": "84d96f91838f846884417dd0d9a300274b71743adb1a860cf1061f2d6cd91bbc",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/helm/platform/charts/platform-lib/templates/_deployment.tpl#L1"
+        },
+        {
+          "repository": "L",
+          "path": "deploy/dev-infra/manage.py",
+          "line": 138,
+          "sha256": "59ed518b7b5e074d6dd544db34503f623e7e2b0999265a54cca315949836c08d",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/deploy/dev-infra/manage.py#L138"
+        }
+      ]
+    },
+    {
+      "id": "E22",
+      "title": "参考额外领域业务",
+      "gaps": "G20",
+      "evidenceType": "SOURCE/API",
+      "facts": "参考有订单查询、流程任务、SQL分析和税票审核入口；当前未覆盖这些领域。",
+      "limits": "只证明业务入口/相关实现存在，不重新验收全部领域；不自动纳入知识平台必做项。",
+      "symbol": "OrderController；WorkflowController；AnalyticsController；TaxInvoiceReviewController",
+      "configuration": "workflow / analytics enable conditions",
+      "sql": "对应领域数据不在本轮读取范围",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "L",
+          "path": "order-service/src/main/java/com/lrj/platform/order/OrderController.java",
+          "line": 1,
+          "sha256": "e773ccf68a35184f6ff2b501fa6b6e96457a857c33ca4c8b415c63e889a46a90",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/order-service/src/main/java/com/lrj/platform/order/OrderController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "workflow-service/src/main/java/com/lrj/platform/workflow/controller/WorkflowController.java",
+          "line": 1,
+          "sha256": "984d464887d395bc2a8a56608ebad3c1c9142f1cda6bf84706077e7e1c6ee39d",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/workflow-service/src/main/java/com/lrj/platform/workflow/controller/WorkflowController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "analytics-service/src/main/java/com/lrj/platform/analytics/controller/AnalyticsController.java",
+          "line": 1,
+          "sha256": "61ec41fd793e8279a979d46fcf05b4d46b82f5862837847bc2d2ba9385083535",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/analytics-service/src/main/java/com/lrj/platform/analytics/controller/AnalyticsController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "tax-service/src/main/java/com/lrj/platform/tax/TaxInvoiceReviewController.java",
+          "line": 1,
+          "sha256": "71156824f2aa1cee1b7bb8298545b33ea3f3dc389b03ace46e808bbfe3167d90",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/tax-service/src/main/java/com/lrj/platform/tax/TaxInvoiceReviewController.java#L1"
+        }
+      ]
+    },
+    {
+      "id": "E23",
+      "title": "多模态、渠道和协议入口",
+      "gaps": "G20",
+      "evidenceType": "SOURCE/API",
+      "facts": "参考有语音/视觉、渠道及MCP/A2A相关入口；当前未提供这些业务。",
+      "limits": "条件启用及外部依赖分别存在；本轮未验证真实渠道账号或多模态模型效果。",
+      "symbol": "VoiceController；VisionController；ChannelController；InteropController；A2aController",
+      "configuration": "ConditionalOnProperty / external channel configuration",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "L",
+          "path": "voice-service/src/main/java/com/lrj/platform/voice/VoiceController.java",
+          "line": 1,
+          "sha256": "683934238caa5916d88f16e73adc9e64d212e2762882c289f0d581f6a04f1b57",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/voice-service/src/main/java/com/lrj/platform/voice/VoiceController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "vision-service/src/main/java/com/lrj/platform/vision/controller/VisionController.java",
+          "line": 1,
+          "sha256": "e7621f7258d321eb5d904de6162ce442fd943acbaf2c875be990ff5c52532c4f",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/vision-service/src/main/java/com/lrj/platform/vision/controller/VisionController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "channel-service/src/main/java/com/lrj/platform/channel/ChannelController.java",
+          "line": 1,
+          "sha256": "d88271cd55ed3bd8bb015fabf675346ae7424c84d4400fdf7af3f0910161071b",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/channel-service/src/main/java/com/lrj/platform/channel/ChannelController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "interop-service/src/main/java/com/lrj/platform/interop/InteropController.java",
+          "line": 1,
+          "sha256": "6ac67bb54860a28d1f172f08d322ac2666c8407cfcb2fdb948cfd8600c01e94b",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/interop-service/src/main/java/com/lrj/platform/interop/InteropController.java#L1"
+        },
+        {
+          "repository": "L",
+          "path": "interop-service/src/main/java/com/lrj/platform/interop/a2a/A2aController.java",
+          "line": 1,
+          "sha256": "04c09d029e34a466f54f12d70a4031eeec32b3427f57b8ec0ca7e66f8116ab81",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/interop-service/src/main/java/com/lrj/platform/interop/a2a/A2aController.java#L1"
+        }
+      ]
+    },
+    {
+      "id": "E24",
+      "title": "当前实际验证证据与边界",
+      "gaps": "G01/G12/G13/G16/G18",
+      "evidenceType": "QA_RECORD/FINGERPRINT",
+      "facts": "S6/S7有真实组件、模型、恢复、UI测试；源码摘要可追溯。",
+      "limits": "292 Python含另21跳过，78Java、前端38单元/15浏览器不是跨项目评分；少量合成资料/单worker非系统质量/容量。",
+      "symbol": "S6/S7 TEST_RESULT / source-fingerprint",
+      "configuration": "测试时配置；不是当前在线探测",
+      "sql": "隔离测试数据，未重新读取业务库",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "docs/qa/research-readonly-20261021/TEST_RESULT.md",
+          "line": 1,
+          "sha256": "ff0874b3e9d81e3304b889ca776099fe134432fe09dd90f521d797f55945a1f9",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/docs/qa/research-readonly-20261021/TEST_RESULT.md#L1"
+        },
+        {
+          "repository": "A",
+          "path": "docs/qa/research-readonly-20261021/source-fingerprint.json",
+          "line": 1,
+          "sha256": "d1159707877acd4ac65c699be8c536695b22b23dd78559bc2e1e67f9985269cd",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/docs/qa/research-readonly-20261021/source-fingerprint.json#L1"
+        },
+        {
+          "repository": "A",
+          "path": "docs/qa/research-readonly-20261021/IMPLEMENTATION_EVIDENCE.md",
+          "line": 1,
+          "sha256": "566beb4c6e3239c04d041c31795bb76684bade6edddfff02775bf835fd0e9d56",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/docs/qa/research-readonly-20261021/IMPLEMENTATION_EVIDENCE.md#L1"
+        },
+        {
+          "repository": "W",
+          "path": "docs/qa/s7/TEST_RESULT.md",
+          "line": 1,
+          "sha256": "4e9df8b052a312c0ec1d3e06640bd9ce6ec82ebfddad2e81e965283036c5731c",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/blob/d2b4dc6957cfbc81d29a8493dc9aa284aab8e584/docs/qa/s7/TEST_RESULT.md#L1"
+        }
+      ]
+    },
+    {
+      "id": "E25",
+      "title": "参考近期专项验证而非旧总览",
+      "gaps": "G01/G02/G05/G09/G11/G16",
+      "evidenceType": "QA_RECORD",
+      "facts": "解析/结构来源/OCR/真实ES、MySQL、容器，以及运营/记忆/去重/界面均有专项记录。",
+      "limits": "不同阶段测试不可相加；运营全栈部分NOT_RUN、条件跳过和远程供应链失败均保留；本轮未复跑。",
+      "symbol": "TEST_RESULT / PROGRESS_STATE",
+      "configuration": "artifact/version/source fingerprints at historical runs",
+      "sql": "各专项临时库验证，不代表生产数据",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "L",
+          "path": "docs/delivery/knowledge-parsing-hardening/TEST_RESULT.md",
+          "line": 1,
+          "sha256": "db8daefb6357e26a1115bfababfb3d725b76dc39153dc09dbe4f2b4445f0eb2e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/delivery/knowledge-parsing-hardening/TEST_RESULT.md#L1"
+        },
+        {
+          "repository": "L",
+          "path": "docs/delivery/memory-knowledge-operations/TEST_RESULT.md",
+          "line": 1,
+          "sha256": "1ec98645f54cd7d89ec4c435ddd9bd55c4c6f2b349ddfe648a4fbf0f882d949d",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/delivery/memory-knowledge-operations/TEST_RESULT.md#L1"
+        },
+        {
+          "repository": "L",
+          "path": "docs/delivery/persistent-profile-memory/TEST_RESULT.md",
+          "line": 1,
+          "sha256": "c02f40849342166a75ccd8d309fe2721bfaa52d85af195dd9cfe9ac68287c69e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/delivery/persistent-profile-memory/TEST_RESULT.md#L1"
+        },
+        {
+          "repository": "L",
+          "path": "docs/delivery/knowledge-content-dedup/PROGRESS_STATE.md",
+          "line": 1,
+          "sha256": "cdf4346fb43668393e25a9edc1bb84442b58d10f7aba2bb79c2f11652f8fb7ad",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/delivery/knowledge-content-dedup/PROGRESS_STATE.md#L1"
+        },
+        {
+          "repository": "L",
+          "path": "docs/delivery/knowledge-ingestion-ui/PROGRESS_STATE.md",
+          "line": 1,
+          "sha256": "fdd73d5c1ab628cf06d787fead46506bc1a042a8ba98ab8f45fd769815f64d57",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/docs/delivery/knowledge-ingestion-ui/PROGRESS_STATE.md#L1"
+        }
+      ]
+    },
+    {
+      "id": "E26",
+      "title": "阶段完成与文档时效",
+      "gaps": "G19",
+      "evidenceType": "DOC/REVISION",
+      "facts": "当前旧索引含早期未实现描述，后续S7事实已更新；参考旧分析早于近期专项。",
+      "limits": "索引在本次文档交付修正，证据固定为分析前基线；不能引用旧报告替代当前源码。",
+      "symbol": "docs index / prior analysis / PROGRESS_STATE",
+      "configuration": "—",
+      "sql": "—",
+      "confidence": "FACT",
+      "files": [
+        {
+          "repository": "A",
+          "path": "docs/README.md",
+          "line": 1,
+          "sha256": "33d5582fd2ad4adbec016a741b0cd800913507559bc0db9b772c564608c62f4e",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/docs/README.md#L1"
+        },
+        {
+          "repository": "A",
+          "path": "docs/doc-map.md",
+          "line": 1,
+          "sha256": "9a18b0fcb21fc0acc2449d286683749ae9409a45de1bee165dcaa023bb3263a9",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/docs/doc-map.md#L1"
+        },
+        {
+          "repository": "A",
+          "path": "docs/design/knowledge-first-20261020/PROGRESS_STATE.md",
+          "line": 1,
+          "sha256": "15f5b9b118d981a644e9f45f6766420297dfe090076cf40e4d33c04fe576356e",
+          "url": "https://github.com/lirji/agentic-ai-platform/blob/d61536cbb9179db010f33d7b1cdbda737e22fc92/docs/design/knowledge-first-20261020/PROGRESS_STATE.md#L1"
+        },
+        {
+          "repository": "L",
+          "path": ".engineering/analysis/PROJECT_CAPABILITY_REPORT.md",
+          "line": 1,
+          "sha256": "aa6d8a0290cf0897abd8a1f4c9055f8a6bf554633d80cddffa1a89d225477d9e",
+          "url": "https://github.com/lirji/langchain4j-platform/blob/468cec425dd160e80cfc3ab378d3440a8767e4d5/.engineering/analysis/PROJECT_CAPABILITY_REPORT.md#L1"
+        }
+      ]
+    }
+  ]
+}
