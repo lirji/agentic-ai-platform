@@ -1,6 +1,20 @@
 # 独立知识平台准备进度
 
-## 当前任务：20 项差距的框架化实施计划
+## 当前任务：按能力深化方案连续实施
+
+- 标识：`capability-delivery-20261021`。用户最新要求“开始实施”，已解除上一轮开发暂停；按 51 项计划的依赖推进，条件项仍按触发条件执行，不默认全量扩业务或新增费用。
+- 当前：S8A DONE / 设计验证 PASS；S8B READY，开始评测定义后端与 UI。先完成正式质量契约，再连续实施 S8B–E 的质量闭环及 S8F 最小 CI；之后依既有主线推进，不能将首片完成写成全计划完成。
+- 计划/权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、各正式 CONTRACTS；本文件为唯一进度。原 S0–S7 及计划文档有效证据保留。
+- Git：后端 `/Users/liruijun/personal/LLM/agentic-ai-platform`，原目录 `feat/quality-contracts-20261021`，起点 `3f28379833a2cffa45547d3ec0e681fc3383e5ec`；前端 `main@d2b4dc6957cfbc81d29a8493dc9aa284aab8e584` 干净，进入 S8B 时建立相应任务分支；参考仓库只读。无新 worktree。
+- 当前清单：①核对代码/规范/恢复状态；②冻结质量定义、指标、接口与失败/权限语义；③文档验证与 S8A 交付；④S8B 数据集/标注后端与 UI；⑤真实 DB/HTTP/浏览器验收；⑥按依赖继续。
+- 关键决策：Knowledge 拥有不可变数据集修订与报告；复用 Tasks/LangGraph 执行，LlamaIndex 仅适配指标/检索。先保留当前检索排序；同源标注、空召回/无答案/执行失败及当前权限分开。标注读取已发布片段，不产生模型调用。
+- 样本决定：用户已选择项目架构/操作文档，U01 首批资料用途已明确；固定源提交与真实章节建立机制集，不据此宣称业务质量达标。模型调用前读取现有账本与在途状态，聊天/Embedding 原各 1 元累计上限不变，Reranker 未获新额度。
+- 规范：continue-approved-delivery、backend-implementation、frontend-implementation、implementation-validation、update-progress-docs、task-git-delivery；已读业务建模、持久化、API、并发安全、容量/版本和相关个人技术栈。无子 Agent 并行授权。
+- 运行：未新启服务、测试、迁移或模型调用。已有本地服务和私密配置保留；实施验证前先核对实际进程，不能重发已完成付费探针。
+- S8A 证据：[质量契约](QUALITY_CONTRACTS.md)、[样本规范](QUALITY_ACCEPTANCE.md)、[验收](../../qa/quality-contracts-20261021/TEST_RESULT.md)。E01 已冻结；E02/E03 传输于对应片前补齐。文档检查通过，未运行应用/模型。
+- 下一步：S8A 文档正常 Git 交付后立即进入 S8B，使用追加 V4 与真实 API；不等待重复“继续”。
+
+## 历史：20 项差距的框架化实施计划
 
 - 标识：`capability-implementation-plan-20261021`。用户要求按本项目框架重新制定后续任务拆分和实施，并已明确本轮先交付完整计划；不恢复产品开发。
 - 状态：方案 DONE / 文档验证 PASS / 内容提交已合并推送 main。原 `knowledge-depth-20261021` 保持 PAUSED；无产品/测试/运行配置改动。

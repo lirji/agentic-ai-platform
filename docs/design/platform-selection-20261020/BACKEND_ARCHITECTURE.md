@@ -6,7 +6,7 @@
 
 S2 的 LangGraph/LlamaIndex 准备图已接入真实 Embedding；S3 由 Java 持久化准备包、执行带代次的租约处理、提交 Qdrant/ES 并原子发布文档/任务，提供授权检索和原文引用。跨进程故障恢复已验证，Python 不持有业务库或索引写权限。知识准备短图仍无 checkpoint；S5B 已交付持久图执行与 PG 恢复适配层；S5D 问答及 S6 的 Deep Agents 研究/只读助手已接通，验收边界见第 11 节与当前进度。契约见 [P01/P02 与 S3](../knowledge-first-20261020/PROCESSING_CONTRACTS.md)。
 
-这是 `agentic-ai-platform` 的目标设计；当前 S0–S7 已交付有限知识业务闭环，系统性质量、多人共享及生产运行仍待建设。用户已确认架构与组件，并明确独立运行、全新 React 前端、知识业务优先及按需迁入资产，见[首期业务与工程约定](../knowledge-first-20261020/BRIEF.md)。下文第 2 节事实表中的“已有/当前”指参考项目；“迁入/沿用”不表示依赖旧业务部署。组件取舍见 [TECH_SELECTION](TECH_SELECTION.md)，历史背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)。2026-10-21 的能力深化设计见第 12 节；新增任务尚未实施，开发继续暂停。真实状态见[当前进度](../knowledge-first-20261020/PROGRESS_STATE.md)。
+这是 `agentic-ai-platform` 的目标设计；当前 S0–S7 已交付有限知识业务闭环，系统性质量、多人共享及生产运行仍待建设。用户已确认架构与组件，并明确独立运行、全新 React 前端、知识业务优先及按需迁入资产，见[首期业务与工程约定](../knowledge-first-20261020/BRIEF.md)。下文第 2 节事实表中的“已有/当前”指参考项目；“迁入/沿用”不表示依赖旧业务部署。组件取舍见 [TECH_SELECTION](TECH_SELECTION.md)，历史背景见[可行性分析](../../feasibility/AI平台升级可行性分析.md)。2026-10-21 的能力深化设计见第 12 节；用户已要求开始实施，S8 质量闭环按新契约推进。真实状态见[当前进度](../knowledge-first-20261020/PROGRESS_STATE.md)。
 
 S5A 已实现本项目 `async-task-service`：独立 MySQL 任务库、租约代次、持久事件、显式取消/恢复和幂等终态报告。参考旧中央任务语义按范围裁剪，未迁入内存权威、旧 DAG、Kafka 或 webhook。S5B 已接入独立 PG 库的原生 AsyncPostgresSaver：每个 epoch 物理隔离、不可变快照、中央凭据确认后才恢复，拒绝未知 pending writes 与不安全解码；真实 PG/MySQL/HTTP 的接管、丢失响应及终态对账已验收。契约见 [T01](../knowledge-first-20261020/TASK_CONTRACTS.md)、[检查点](../knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)。
 

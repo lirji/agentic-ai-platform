@@ -1,6 +1,6 @@
 # 项目文档
 
-当前任务：在[20 项差距](../.engineering/exploration/CAPABILITY_GAPS.md)基础上交付[完整任务拆分和实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)，共 11 批、51 项任务。用户已明确本轮只要方案，开发继续暂停；当前状态见唯一 [PROGRESS_STATE](design/knowledge-first-20261020/PROGRESS_STATE.md)。
+当前任务：在[20 项差距](../.engineering/exploration/CAPABILITY_GAPS.md)基础上交付[完整任务拆分和实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)，共 11 批、51 项任务。方案已交付，用户随后要求开始实施，目前从 S8 质量闭环推进；当前状态见唯一 [PROGRESS_STATE](design/knowledge-first-20261020/PROGRESS_STATE.md)。
 
 当前阶段：资料与独立 React 工作台、中央任务/PG 恢复、原问题和可靠交接已交付。S5D 问答图、累计预算及 worker 已通过受控恢复与真实 deepseek-flash 问答、追问、无资料和引用验证；S5E 问答 UI 通过28项单元/组件和10组真实/受控浏览器验收。S6/S7 研究分析、资料解释、核对清单和草稿建议已接通真实 Deep Agents、任务恢复、界面与引用；本轮结果见 S6/S7 验收。最终 Git 交付以当前进度为准。记录日期：2026-10-21。
 
@@ -10,11 +10,12 @@
 
 | 文档 | 职责 | 状态 |
 | --- | --- | --- |
-| [能力实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md) | 框架分工、批次与 G01–G20 映射、三条关键路径、兼容及验收 | 完整计划；43 项主线、8 项条件任务，未启动实现 |
+| [能力实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md) | 框架分工、批次与 G01–G20 映射、三条关键路径、兼容及验收 | 完整计划；43 项主线、8 项条件任务，S8 开始实施 |
 | [实施切片 S8–S18](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices) | 51 项稳定任务、逐项依赖、Owner/路径、契约、Runtime 与可观察验收 | 新任务唯一清单；保留 S0–S7 |
 | [契约工作包](design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)、[框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json) | 新协议待冻结范围、锁定接口及适配风险 | 不是新线上 schema；未改依赖或运行配置 |
+| [质量契约](design/knowledge-first-20261020/QUALITY_CONTRACTS.md)、[样本验收](design/knowledge-first-20261020/QUALITY_ACCEPTANCE.md) | E01 评测集/修订/标注、质量指标、运行归属与首批机制资料 | S8A 冻结，S8B 实施依据 |
 | [计划文档验证](qa/capability-plan-20261021/TEST_RESULT.md) | 任务覆盖/依赖、文档结构/引用、接口摘要及改动边界 | 仅文档 PASS，不代表新能力实现或运行通过 |
-| [能力欠缺主报告](../.engineering/exploration/CAPABILITY_GAPS.md) | 对照业务、实现、UI、验证和运行能力；逐项影响与验收方向 | 分析文档；五步实施暂停 |
+| [能力欠缺主报告](../.engineering/exploration/CAPABILITY_GAPS.md) | 对照业务、实现、UI、验证和运行能力；逐项影响与验收方向 | 历史差距基线；当前沿新计划实施 |
 | [能力地图](../.engineering/exploration/CAPABILITY_MAP.md)、[候选](../.engineering/exploration/OPPORTUNITIES.md)、[路线](../.engineering/exploration/EVOLUTION_ROADMAP.md) | 九维成熟度、触发条件、依赖及暂不建设项 | 建议，未冻结新契约或新技术选型 |
 | [比较证据](../.engineering/exploration/EVIDENCE_INDEX.md) | 26 组证据、147 处固定提交文件引用、配置与验证边界 | 本轮只读取证，未重跑模型或应用测试 |
 | [首期业务与工程约定](design/knowledge-first-20261020/BRIEF.md) | 独立性、业务范围、React、技能结构规范、参考资产与后续准备 | 用户决定已记录；闭环细化和顺序区分工程建议 |
@@ -58,4 +59,4 @@
 - **验证通过**：必须标明验证对象与范围；文档检查通过不表示业务、性能或安全验收通过。
 - **待验证/待明确**：保留未解决的问题，后续按实际证据更新。
 
-当前需求以用户最新范围、首期约定及能力实施方案为准，技术基线以架构与选型正文为准；可行性分析保留前期背景。已有准备图、Java 知识/任务/会话服务、React 工作台、真实检索及 PG 恢复；问答、研究和只读助手均有有限业务验收。新增任务仍为计划，未执行生产部署。
+当前需求以用户最新范围、首期约定及能力实施方案为准，技术基线以架构与选型正文为准；可行性分析保留前期背景。已有准备图、Java 知识/任务/会话服务、React 工作台、真实检索及 PG 恢复；问答、研究和只读助手均有有限业务验收。新增任务按切片逐项实施，未执行生产部署。

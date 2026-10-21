@@ -1,6 +1,6 @@
 # 20 项能力差距的任务拆分与实施方案
 
-2026-10-21；任务 `capability-implementation-plan-20261021`。用户已明确选择：**本轮先交付完整计划，产品开发继续暂停。** 本文是后续设计与实施依据，新增契约和任务尚未实施，不代表 20 项差距已经关闭。
+2026-10-21 编制；计划任务 `capability-implementation-plan-20261021` 已交付。用户随后明确要求“开始实施”，现由 `capability-delivery-20261021` 按此方案连续推进；最新状态见 [PROGRESS_STATE](PROGRESS_STATE.md)。本文不是已实现能力声明，差距按逐项证据关闭。
 
 依据：[20 项差距](../../../.engineering/exploration/CAPABILITY_GAPS.md)、既有 [架构](../platform-selection-20261020/BACKEND_ARCHITECTURE.md)、[选型](../platform-selection-20261020/TECH_SELECTION.md)及 S0–S7 实际实现。当前后端基线 `1e8f3b3`，前端 `d2b4dc6`；没有重新评估或更换三框架路线。
 
@@ -168,7 +168,7 @@ S8A 至少给出 Recall@K、MRR/nDCG 的相关性标注与聚合口径，另列�
 
 ## 8. 恢复实施时的第一步
 
-下一具体任务是 **S8A：评测口径与执行契约**，产出可审查的样本/指标/权限/任务绑定设计；随后 `S8B → S8C → S8D → S8E` 形成第一条质量闭环，并完成 S8F 最小 CI。当前产品开发暂停，51 个新任务均未进入实现。
+下一具体任务是 **S8A：评测口径与执行契约**，产出可审查的样本/指标/权限/任务绑定设计；随后 `S8B → S8C → S8D → S8E` 形成第一条质量闭环，并完成 S8F 最小 CI。实施已恢复，逐任务的实际进度以原 IMPLEMENTATION_SLICES 与 PROGRESS_STATE 为准。
 
 此前五步建议由本计划细化，内容没有被全部取消：评测、格式、生命周期、检索、多人运行分别落在明确任务；新增知识运营、答案语义、研究深度及条件业务扩展，解决原建议覆盖不足的问题。
 

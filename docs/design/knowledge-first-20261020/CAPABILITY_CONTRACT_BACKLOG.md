@@ -41,3 +41,7 @@ schemaVersion、运行/处理版本、正文/结构/结果摘要和权限上下�
 ## 由规划到可执行的门槛
 
 工作包先写入唯一正式契约，完成当前实现兼容、真实权限、数据 Owner、UI 状态和测试用例映射，再把对应实现任务从 `PLANNED` 调整为 `READY`。本轮只给出工作包和任务顺序，所有新增实现任务仍未达到代码执行门槛。
+
+### C-EVAL 当前冻结情况
+
+S8A 已形成 [QUALITY_CONTRACTS](QUALITY_CONTRACTS.md) 与 [QUALITY_ACCEPTANCE](QUALITY_ACCEPTANCE.md)。E01 的公共定义/修订/标注接口可供 S8B 实施；评测指标、执行与报告唯一归属已明确。E02/E03 内部运行/终态凭据和比较传输 DTO 在 S8C/D 开始前补齐，不能将整组接口视为已实现。首批资料采用用户选择的项目架构/操作文档。

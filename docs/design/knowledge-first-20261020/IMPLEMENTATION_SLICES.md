@@ -169,9 +169,9 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 
 ## 能力深化任务（S8–S18）
 
-2026-10-21 重新规划，依据 [20 项差距实施方案](CAPABILITY_IMPLEMENTATION_PLAN.md)。本节是新增任务 ID、依赖与状态的唯一清单；S0–S7 的历史完成证据保持不变。用户本轮仅要完整计划，产品实施仍 PAUSED。
+2026-10-21 重新规划，依据 [20 项差距实施方案](CAPABILITY_IMPLEMENTATION_PLAN.md)。本节是新增任务 ID、依赖与状态的唯一清单；S0–S7 的历史完成证据保持不变。用户已于本轮要求“开始实施”，按以下依赖连续推进，当前状态见 PROGRESS_STATE。
 
-共 **51 项任务：43 项 PLANNED、8 项 CONDITIONAL，0 项 READY/IN_PROGRESS/DONE**。这里包括设计、实现、工程和专项验证任务，不将大阶段伪装成一次实现 pass。每个 IMPLEMENT 任务必须先完成所列 C-工作包的必要正式契约；C-工作包本身不是批准的 JSON，详见 [契约清单](CAPABILITY_CONTRACT_BACKLOG.md)。尚缺业务/环境/费用条件时，只能完成不依赖该条件的准备，不把协议替身当真实验收。
+共 **51 项任务**；状态随逐项验收更新，当前以索引和 PROGRESS_STATE 为准。这里包括设计、实现、工程和专项验证任务，不将大阶段伪装成一次实现 pass。每个 IMPLEMENT 任务必须先完成所列 C-工作包的必要正式契约；C-工作包本身不是批准的 JSON，详见 [契约清单](CAPABILITY_CONTRACT_BACKLOG.md)。尚缺业务/环境/费用条件时，只能完成不依赖该条件的准备，不把协议替身当真实验收。
 
 本轮不安排并行 Agent。各任务 `parallel=no`；未来允许并行时仍须证明迁移、共享契约、权限、制品与运行资源不冲突。Dependencies 是先后约束，ID 数字不是执行排序；例如 S10A 设计须先于 S9D 的处理版本实现。
 
@@ -195,8 +195,8 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 
 | ID | 任务 | Needs | Pass | 状态 |
 | --- | --- | --- | --- | --- |
-| S8A | 冻结评测口径、样本和执行边界 | S7 | DESIGN | PLANNED |
-| S8B | 评测集创建、修订与标注界面 | S8A | IMPLEMENT | PLANNED |
+| S8A | 冻结评测口径、样本和执行边界 | S7 | DESIGN | DONE |
+| S8B | 评测集创建、修订与标注界面 | S8A | IMPLEMENT | READY |
 | S8C | 持久评测执行与逐题结果 | S8B | IMPLEMENT | PLANNED |
 | S8D | 基线选择、逐题对照与退化门禁 | S8C | IMPLEMENT | PLANNED |
 | S8E | 运行当前两路链路的可追溯基线 | S8D | VALIDATE | PLANNED |
@@ -255,7 +255,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-EVAL；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 区分机制集与业务集；空命中计分与执行失败分开；定义/资料/权限/策略版本可追溯；明确 task 与报告唯一归属。
 - **Pass / Runtime：** DESIGN；无新增 Runtime。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G01 G19。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G01 G19。
 
 ### S8B · 评测集创建、修订与标注界面
 
@@ -265,7 +265,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-EVAL；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 真实 MySQL 幂等/版本冲突/租户隔离；UI 保存失败保留编辑、返回恢复筛选；旧基线不能沿用修改后的定义。
 - **Pass / Runtime：** IMPLEMENT；现有 MySQL；无模型调用。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G01 G18。
+- **状态 / 并行 / 对应缺口：** READY；parallel=no；G01 G18。
 
 ### S8C · 持久评测执行与逐题结果
 
@@ -767,7 +767,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 
 ### 下一任务、受阻条件及 Runtime 介入
 
-- 恢复实施后的第一项是 S8A（设计任务），其后 S8B/S8C/S8D/S8E 形成质量闭环；S8F 可在 S8A 后按实际队列安排，不能无 CI 长期积累后续改动。当前没有产品实现 READY。
+- 恢复实施后的第一项是 S8A（设计任务），其后 S8B/S8C/S8D/S8E 形成质量闭环；S8F 可在 S8A 后按实际队列安排，不能无 CI 长期积累后续改动。S8A 设计验收后才能把 S8B 调整为 READY；不得跳过契约。
 - 优先任务链、条件业务与 G01–G20 覆盖见主方案。S14A 反馈可在质量定义建立后提前；S13A/B 在多人使用前提前，不能机械排到最后。
 - U01–U07 的条件只阻止相关行为；欠缺真实模型额度不会阻止契约/协议测试，但不能把未运行的真实效果标 PASS。
 - Runtime 首次新增工作：S9B 解析子进程/依赖，S9E 条件 OCR，S11D 重排模型私密配置与预算，S13A 正式身份配置，S15C 观测接入，S16A worker 配额，S17A 完整制品。S18A 周期业务同步首次需要时才接既定 XXL-JOB。

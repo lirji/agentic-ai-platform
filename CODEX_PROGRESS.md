@@ -1,11 +1,10 @@
 # Codex Progress
 
-- 当前任务：`capability-implementation-plan-20261021`；基于 20 项差距与本项目三框架/Java/React 职责，重新制定完整任务拆分和实施方案。
-- 用户已明确选择“先交付完整任务拆分和实施方案”；本轮只修改设计、切片、索引和进度，开发继续暂停。
-- 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
-- 原目录任务分支 `feat/capability-implementation-plan-20261021`，起点 `1e8f3b3`；方案提交 `bc460e3` 已正常合并推送 main。前端及参考仓库只读，无新 worktree；收据提交见 Git 历史。
-- 计划主入口：[完整实施方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)已写入；切片沿用原 IMPLEMENTATION_SLICES，S0–S7 不重新编号。文档验证 PASS，内容已交付；详细 Git 收据见权威进度。
-- 分析依据：[20 项能力缺口](.engineering/exploration/CAPABILITY_GAPS.md)。不调用付费模型、不改运行配置、不执行迁移/部署；文档校验后按持续授权正常提交合并推送 main。
+- 当前任务：`capability-delivery-20261021`，用户已要求“开始实施”，按 20 项差距的 51 项方案连续推进。
+- 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；稳定任务：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
+- 当前 S8A 设计验证通过，S8B 待实施；后端原目录分支 `feat/quality-contracts-20261021`，起点 `3f28379`。前端尚未修改；无新 worktree。
+- [已交付方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)继续有效；新要求已解除开发暂停，不重做 S0–S7。
+- 沿用已有模型预算和正常 Git 提交/合并/推送授权；不扩大到生产部署、旧数据清理或新增模型费用。详细检查点、运行证据和下一步见唯一状态。
 
 ## 前期可行性任务记录
 

@@ -6,7 +6,7 @@
 
 ## 阅读入口
 
-- [20 项差距的实施方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)：按当前三框架与 Java/React 边界拆为 11 批、51 项任务，包含依赖、契约前置、兼容路线及验收。**本轮仅交付计划，开发继续暂停。**
+- [20 项差距的实施方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)：按当前三框架与 Java/React 边界拆为 11 批、51 项任务，包含依赖、契约前置、兼容路线及验收。方案已交付，用户已要求开始实施；当前从 S8 质量闭环推进。
 - [与 langchain4j-platform 的能力差距](.engineering/exploration/CAPABILITY_GAPS.md)：业务与实现深度的 20 项对照及固定源码证据，为新计划提供依据。
 - [首期业务与工程约定](docs/design/knowledge-first-20261020/BRIEF.md)：独立运行、业务优先级、React 与技能代码规范，以及模型、数据和代码参考资产。
 - [目标架构](docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md)：三框架职责、模块与数据所有权、任务恢复、安全边界及 P0–P4 演进建议。

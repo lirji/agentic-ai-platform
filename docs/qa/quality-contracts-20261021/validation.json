@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "slice": "S8A",
+  "base": "3f28379833a2cffa45547d3ec0e681fc3383e5ec",
+  "checks": {
+    "localLinks": 174,
+    "markdownFiles": 12,
+    "sampleSourcesAtFixedCommit": 4,
+    "scope": "documentation-only"
+  },
+  "artifacts": {
+    "docs/design/knowledge-first-20261020/QUALITY_CONTRACTS.md": "ba4d540be74f44ecd7adc2a7a7393463d17ff802607e41a37760e11cc90841d5",
+    "docs/design/knowledge-first-20261020/QUALITY_ACCEPTANCE.md": "e7e32b2c2da6639f57d4a7271c79db1d6188a7d51fdf0ede53c380f377d9f211"
+  },
+  "limitations": [
+    "E02/E03 transport DTOs freeze before S8C/D",
+    "no product or paid model tests in design pass"
+  ]
+}
