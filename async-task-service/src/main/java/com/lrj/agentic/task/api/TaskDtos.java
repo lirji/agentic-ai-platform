@@ -11,6 +11,12 @@ public final class TaskDtos {
     private TaskDtos() { }
     public record Submit(@NotNull String taskId, @NotNull String kind,
             @NotNull String runtimeVersion, @NotNull String graphVersion, @NotNull JsonNode input) { }
+    public record WorkSubmit(@NotNull String taskId, @NotNull String kind, @NotNull String question,
+            @NotNull List<String> documentIds, @NotNull String mode) { }
+    public record WorkInput(String schemaVersion, String kind, String question, List<String> documentIds,
+            String mode) { }
+    public record WorkItem(View task, WorkInput request) { }
+    public record WorkPage(List<WorkItem> items, String nextCursor) { }
     public record Revision(@NotNull @Min(0) Long expectedRevision) { }
     public record Claim(@NotNull String runtimeVersion, @NotNull String graphVersion) { }
     public record Epoch(@NotNull @Min(1) Long epoch) { }

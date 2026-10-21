@@ -36,6 +36,46 @@ class TaskPersistenceIT {
     @Autowired org.springframework.context.ApplicationContext context;
 
     @Test
+    void workSubmissionCanonicalScopeAndGraphIsolation() {
+        var owner = owner();
+        String id = UUID.randomUUID().toString();
+        var documents = List.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        var input = new WorkSubmit(id, "RESEARCH", "对比两份资料", documents, "REPORT");
+        var created = tasks.submitWork(owner, "work-request", input);
+        assertThat(tasks.submitWork(owner, "work-request", new WorkSubmit(id, "RESEARCH",
+                input.question(), documents.reversed(), "REPORT"))).isEqualTo(created);
+        assertThat(tasks.request(owner, id).documentIds()).isSorted();
+        assertThat(tasks.claim(worker(owner, "qa"), claim()).task()).isNull();
+        assertThat(tasks.claim(worker(owner, "work"), new Claim(TaskProtocol.RUNTIME, TaskProtocol.WORK_GRAPH))
+                .task().task().taskId()).isEqualTo(id);
+        error(TaskError.INPUT_INVALID, () -> tasks.submitWork(owner, "bad",
+                new WorkSubmit(UUID.randomUUID().toString(), "READONLY_ASSISTANT", "草稿", List.of(), "REPORT")));
+        error(TaskError.CONFLICT, () -> tasks.submitWork(owner, "work-request",
+                new WorkSubmit(id, "RESEARCH", "另一问题", documents, "REPORT")));
+        error(TaskError.NOT_FOUND, () -> tasks.request(owner(), id));
+    }
+
+    @Test
+    void workListUsesStableOwnedCursorWithoutCrossKindLeak() {
+        var owner = owner();
+        for (int i = 0; i < 4; i++) {
+            String id = UUID.randomUUID().toString();
+            tasks.submitWork(owner, id, new WorkSubmit(id, "READONLY_ASSISTANT", "清单" + i, List.of(), "CHECKLIST"));
+        }
+        var first = tasks.listWork(owner, "READONLY_ASSISTANT", null, 2);
+        var second = tasks.listWork(owner, "READONLY_ASSISTANT", first.nextCursor(), 2);
+        assertThat(first.items()).hasSize(2);
+        assertThat(second.items()).hasSize(2);
+        assertThat(second.nextCursor()).isNull();
+        assertThat(first.items().stream().map(item -> item.task().taskId()).toList())
+                .doesNotContainAnyElementsOf(second.items().stream().map(item -> item.task().taskId()).toList());
+        assertThat(tasks.listWork(owner(), "READONLY_ASSISTANT", null, 20).items()).isEmpty();
+        error(TaskError.NOT_FOUND, () -> tasks.listWork(owner(), "READONLY_ASSISTANT", first.nextCursor(), 2));
+        error(TaskError.NOT_FOUND, () -> tasks.listWork(owner, "RESEARCH", first.nextCursor(), 2));
+        error(TaskError.INPUT_INVALID, () -> tasks.listWork(owner, "READONLY_ASSISTANT", null, 21));
+    }
+
+    @Test
     void concurrentSubmissionCommitsOneTaskAndOneCreatedEvent() throws Exception {
         var owner = owner();
         var input = input();
@@ -299,7 +339,9 @@ class TaskPersistenceIT {
                 new Append(run.epoch(), "untrusted", "TEXT_DELTA", json.createObjectNode().put("text", attack)));
         var jwt = org.springframework.security.oauth2.jwt.Jwt.withTokenValue("test-only")
                 .header("alg", "RS256").subject(owner.userId()).claim("tenant_id", owner.tenantId()).build();
-        String stream = controller.stream(jwt, run.task().taskId(), "2").getBody();
+        var response = controller.stream(jwt, run.task().taskId(), "2");
+        assertThat(response.getHeaders().getContentType()).isEqualTo(org.springframework.http.MediaType.TEXT_EVENT_STREAM);
+        String stream = response.getBody();
         assertThat(stream).contains("event: TEXT_DELTA\n").doesNotContain("\nevent: forged\n");
         String data = stream.lines().filter(line -> line.startsWith("data: ")).findFirst().orElseThrow();
         assertThat(json.readTree(data.substring(6)).get("payload").get("text").asText()).isEqualTo(attack);

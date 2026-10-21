@@ -1,0 +1,20 @@
+{
+  "status": 200,
+  "reason": "tool_calls",
+  "role": "assistant",
+  "contentType": "str",
+  "contentLength": 24,
+  "messageKeys": [
+    "content",
+    "role",
+    "tool_calls"
+  ],
+  "reasoningPresent": false,
+  "tools": [
+    {
+      "id": "call_00_0p9Cxohm4dYTTp5ycdiL6566",
+      "name": "read_evidence",
+      "arguments": "{\"citation_id\": \"1\"}"
+    }
+  ]
+}

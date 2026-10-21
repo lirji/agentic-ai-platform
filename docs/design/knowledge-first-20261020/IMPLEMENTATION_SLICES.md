@@ -19,6 +19,21 @@ S1 已追加知识受理/查询的一致性审查与冻结契约，见下文。�
 | S2 | Knowledge 客户端经独立服务身份调用 Python，取得有来源定位和真实向量的版本化准备结果及查询向量 | S0/S1；PROCESSING_CONTRACTS P01/P02；模型账号/地域/1 元授权已确认 | backend：ai-runtime；runtime：deploy 本地 AI 启动/私密配置；docs：既有设计/QA | Python 只计算准备结果，不写 Knowledge/检索存储；无业务迁移 | no；首次跨语言准备契约 | 下列 S2-AC | 已选三框架、PyJWT RSA 验签、真实百炼；服务密钥独立 | DONE |
 | S3 | 上传资料经持久 worker、真实准备及双索引发布为 READY；所有者可检索、引用及按原输入重试 | S2；PROCESSING_CONTRACTS S3 与 K03/K04 | backend：knowledge-service、必要 API；ai-runtime 仅本机预算护栏；runtime：deploy 独立搜索与验证；docs：权威设计/QA | Knowledge V2/V3、准备对象、双索引；不修改已应用迁移 | no | 下列 S3-AC | 现有 MySQL/S3/AI；独立 Qdrant 1.19.2、ES 8.19.23 smartcn | DONE |
 
+### S6：研究与只读助手执行（DONE）
+
+- needs：S5D/S5B；Owner：backend/runtime；契约：[R02/A01](WORK_TASK_CONTRACTS.md)。
+- 范围：Tasks 公共受理/列表/输入、V2 索引；Python 受控工具适配、Deep Agents 有界阶段与 root JSON 恢复；既有 worker 顺序领取新 graph。无新组件。
+- 验收：契约受理/隔离/分页真实 MySQL 与 HTTP；工具白名单/预算/次数、真实 PG 恢复/取消/接管、最终引用撤权；真实模型研究和三种助手模式/空证据，旧 QA 回归。
+- 验收证据：[S6/S7 TEST_RESULT](../../qa/research-readonly-20261021/TEST_RESULT.md)；292项Python、78项Java、真实模型五案例与重启零新增调用均PASS。
+- 变更集：async-task-service、ai-runtime tasks/qa/agents、必要 deploy 脚本、测试与文档。独立受理/执行闭环先验证，再进入 S7；不并行 Agent 写入。
+
+### S7：研究与只读助手界面（DONE）
+
+- needs：S6；Owner：frontend；沿 [现有视觉与路由](FRONTEND_ARCHITECTURE.md) 与 R02/A01。
+- 范围：`/research`、`/research/:taskId`、`/assistants`、`/assistants/tasks/:taskId`；复用身份/查询/错误/引用，真实请求/阶段/结果。
+- 验收：范围选择、未知提交同键恢复、列表分页、阶段事件、刷新、取消/失败恢复、报告事实/推断、工具记录、草稿提示与引用；1440/1024/414px 实际截图和浏览器操作；共享问答/知识入口回归。
+- 验收证据：前端 `docs/qa/s7/TEST_RESULT.md`；38项单元、15组浏览器及样式修正后7组复验PASS，三屏宽报告/草稿/引用及窄屏未知提交截图已实际核对。没有新runtime或第二组件体系。
+
 ### S5E：知识问答界面（DONE，Git 交付见当前进度）
 
 - 依赖：S5C 已交付的 Q01/Q03/T01/K04；S5D 的 Q04 格式、K05 及恢复/事件消费者兼容检查 PASS。S5E 当时先完成无模型 UI 验收，后续 S5D 已补齐真实模型门禁。没有多 Agent 并行。
@@ -148,4 +163,4 @@ S1 不包含处理 worker、向量发布、问答或页面；完成后继续细�
 | 6 | 研究分析及业务助手 | Deep Agents 工具边界、累计预算、多 worker 恢复/取消、报告制品与 UI；写工具另定契约 |
 | 7 | 知识转换完善及 AgentScope 参考业务扩展 | 前述知识闭环验收，逐项业务需求和迁入边界明确 |
 
-S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。S4、S5A、S5B、S5C 与 S5E 界面已验收；S5D deepseek-flash 真实问答与引用已验收。研究和只读助手的已有代码边界及后续动作见 [RESEARCH_READINESS](RESEARCH_READINESS.md)，不是已 READY 的新业务切片。可并行集合：无；未授权多个 Agent 并行写入。
+S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PROCESSING_READINESS.md)。Embedding 沿用原百炼配置，上限 1 元；聊天沿用原配置，另限 1 元。S4、S5A、S5B、S5C 与 S5E 界面已验收；S5D deepseek-flash 真实问答与引用已验收。S6/S7研究与只读助手已按 [WORK_TASK_CONTRACTS](WORK_TASK_CONTRACTS.md) 实现并验收；[RESEARCH_READINESS](RESEARCH_READINESS.md)保留实施前核对。可并行集合：无；未授权多个 Agent 并行写入。

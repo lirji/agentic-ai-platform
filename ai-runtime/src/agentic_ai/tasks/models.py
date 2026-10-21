@@ -13,6 +13,16 @@ SubjectId = Annotated[str, StringConstraints(pattern=r"^[A-Za-z0-9._:-]{1,128}$"
 Sha256 = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
 
 
+class QaStage(StrEnum):
+    """问答与研究共享的中央进度词汇；阶段不代替任务终态。"""
+
+    RETRIEVING = "RETRIEVING"
+    GENERATING = "GENERATING"
+    ANALYZING = "ANALYZING"
+    VERIFYING = "VERIFYING"
+    TOOL_READING = "TOOL_READING"
+
+
 class TaskStatus(StrEnum):
     """Java TaskStatus 的 T01 协议映射；不在 Python 定义第二套状态迁移规则。"""
 
@@ -45,7 +55,7 @@ class TaskView(WireModel):
     """中央用户可见结果，不包含执行凭据。"""
 
     task_id: CanonicalId
-    kind: Literal["KNOWLEDGE_QA"]
+    kind: Literal["KNOWLEDGE_QA", "RESEARCH", "READONLY_ASSISTANT"]
     status: TaskStatus
     revision: int = Field(ge=0)
     attempt_count: int = Field(ge=0, le=5)
@@ -76,7 +86,7 @@ class TaskLease(WireModel):
     owner_id: SubjectId
     input: dict[str, JsonValue]
     runtime_version: Literal["langgraph-v1"]
-    graph_version: Literal["knowledge-qa-v1"]
+    graph_version: Literal["knowledge-qa-v1", "knowledge-work-v1"]
     epoch: int = Field(ge=0)
     worker_id: SubjectId | None
     lease_expires_at: AwareDatetime | None

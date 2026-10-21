@@ -13,6 +13,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from pydantic import ValidationError
 
+from agentic_ai.agents.models import WorkCitation
 from agentic_ai.qa.errors import QaCode, QaError
 from agentic_ai.qa.models import MAX_HITS, MAX_RESPONSE, Citation, KnowledgeHit, SearchReply
 from agentic_ai.tasks.models import WireModel
@@ -144,7 +145,7 @@ class KnowledgeClient:
             raise QaError(QaCode.EVIDENCE_REJECTED)
         return tuple(result.hits)
 
-    async def citation(self, value: Citation | KnowledgeHit) -> KnowledgeHit:
+    async def citation(self, value: Citation | WorkCitation | KnowledgeHit) -> KnowledgeHit:
         """路径只能由已校验引用字段组成；原文与出处漂移时不静默替换快照。"""
         path = (
             f"/internal/v1/knowledge/documents/{value.document_id}"

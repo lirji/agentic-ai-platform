@@ -1,0 +1,86 @@
+{
+  "result": "PASS",
+  "model": "deepseek-flash",
+  "cases": {
+    "REPORT": {
+      "taskId": "9a7b9a6c-63ad-4edf-be96-173824cc276b",
+      "status": "SUCCEEDED",
+      "citationCount": 3,
+      "toolCalls": [
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        },
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        },
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        }
+      ]
+    },
+    "EXPLAIN": {
+      "taskId": "71e61c6a-7ff4-4791-a8b2-cb3a5e77611c",
+      "status": "SUCCEEDED",
+      "citationCount": 3,
+      "toolCalls": [
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        },
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        },
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        }
+      ]
+    },
+    "CHECKLIST": {
+      "taskId": "c4b3baf5-002e-4c30-8d8c-fe12dd55797f",
+      "status": "SUCCEEDED",
+      "citationCount": 3,
+      "toolCalls": [
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        },
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        }
+      ]
+    },
+    "DRAFT": {
+      "taskId": "14570366-31eb-41c8-8820-c140843ab535",
+      "status": "SUCCEEDED",
+      "citationCount": 3,
+      "toolCalls": [
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        },
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        },
+        {
+          "name": "read_evidence",
+          "hitCount": 1
+        }
+      ]
+    },
+    "EMPTY": {
+      "taskId": "28df8bc3-1dab-46e0-af99-863f7ea9a070",
+      "status": "SUCCEEDED",
+      "citationCount": 0,
+      "toolCalls": []
+    }
+  },
+  "chatReservedCny": "0.510952",
+  "chatCalls": 14
+}

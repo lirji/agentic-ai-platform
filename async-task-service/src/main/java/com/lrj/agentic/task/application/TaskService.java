@@ -34,7 +34,9 @@ public class TaskService {
     public View submit(Caller owner, String key, Submit command) {
         TaskValues.id(command.taskId()); TaskValues.key(key);
         versions(command.runtimeVersion(), command.graphVersion());
-        require(TaskProtocol.KIND.equals(command.kind()), TaskError.INPUT_INVALID);
+        require(TaskProtocol.GRAPH.equals(command.graphVersion())
+                ? TaskProtocol.KIND.equals(command.kind())
+                : WorkKind.parse(command.kind()) != null, TaskError.INPUT_INVALID);
         String input = values.object(command.input(), TaskProtocol.MAX_VALUE);
         String digest = TaskValues.sha(values.write(command));
         var existing = mapper.byKey(owner.tenantId(), owner.userId(), key);
@@ -54,6 +56,35 @@ public class TaskService {
             if (winner == null) { throw new TaskFailure(TaskError.CONFLICT); }
             return replay(winner, digest);
         }
+    }
+
+    /** 公共任务受理复用同一数据库幂等事务，202 只表示已持久化。 */
+    public View submitWork(Caller owner, String key, WorkSubmit command) {
+        var input = WorkRequests.validate(command);
+        return submit(owner, key, new Submit(command.taskId(), input.kind(), TaskProtocol.RUNTIME,
+                TaskProtocol.WORK_GRAPH, values.read(values.write(input))));
+    }
+
+    /** 输入只对原所有者开放，问答内部输入不通过本入口暴露。 */
+    public WorkInput request(Caller owner, String id) { return workInput(owned(owner, id)); }
+
+    /** 使用同类型已授权游标与稳定排序，新增记录不会使下一页重复。 */
+    public WorkPage listWork(Caller owner, String kind, String cursor, int limit) {
+        WorkKind.parse(kind);
+        require(limit >= 1 && limit <= TaskProtocol.MAX_PAGE, TaskError.INPUT_INVALID);
+        TaskRow boundary = cursor == null ? null : owned(owner, cursor);
+        require(boundary == null || boundary.kind().equals(kind), TaskError.NOT_FOUND);
+        var rows = mapper.listWork(owner.tenantId(), owner.userId(), kind,
+                boundary == null ? null : boundary.createdAt(), cursor, limit + 1);
+        boolean more = rows.size() > limit;
+        var selected = rows.stream().limit(limit).toList();
+        return new WorkPage(selected.stream().map(row -> new WorkItem(view(row), workInput(row))).toList(),
+                more ? selected.getLast().taskId() : null);
+    }
+
+    private WorkInput workInput(TaskRow row) {
+        require(TaskProtocol.WORK_GRAPH.equals(row.graphVersion()), TaskError.NOT_FOUND);
+        return values.read(row.inputJson(), WorkInput.class);
     }
 
     /** 公共查询在 SQL 中联合过滤所有者和租户，不返回执行内部材料。 */
@@ -273,7 +304,8 @@ public class TaskService {
         require(row != null, TaskError.NOT_FOUND); return row;
     }
     private static void versions(String runtime, String graph) {
-        require(TaskProtocol.RUNTIME.equals(runtime) && TaskProtocol.GRAPH.equals(graph), TaskError.INPUT_INVALID);
+        require(TaskProtocol.RUNTIME.equals(runtime)
+                && (TaskProtocol.GRAPH.equals(graph) || TaskProtocol.WORK_GRAPH.equals(graph)), TaskError.INPUT_INVALID);
     }
     private static void changed(int count) { require(count == 1, TaskError.CONFLICT); }
     private static void require(boolean valid, TaskError code) {

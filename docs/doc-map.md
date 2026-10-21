@@ -6,6 +6,8 @@
 
 本轮同步基线 `865aaa4ba1e0f50c91e2b206385fd78fdc027ee1` → S5D 工作树：Knowledge 独立只读身份、问答图、引用重验、流式预算、中央事件/失败、完成前回调及 worker 同步至契约/运行说明。[S5D 证据](qa/knowledge-qa-execution-20261021/TEST_RESULT.md)绑定当前源码，新增 LiteLLM 锁定制品、实际 deepseek-flash、三条业务路径、浏览器引用与无新增费用重启证据；S2–S5C 历史证据保留，当前状态见唯一进度。
 
+本轮 S6/S7 同步基线：后端 `cb2f688`、前端 `f68e660`。Tasks 公共 work 请求/分页、V2 索引、`agents/` 受控工具与根图、共享 worker 和网关 SSE 映射到 [R02/A01](design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)；两路页面与共享意图/事件消费映射到独立前端 S7。证据与实际源码摘要见 [S6/S7 验收](qa/research-readonly-20261021/TEST_RESULT.md)，旧 QA 记录为历史验证，不替代当前回归。
+
 ## 权威文档
 
 - 当前需求：[首期业务与工程约定](design/knowledge-first-20261020/BRIEF.md)；当前进度：[准备与实施进度](design/knowledge-first-20261020/PROGRESS_STATE.md)。

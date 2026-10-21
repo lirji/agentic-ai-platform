@@ -1,0 +1,19 @@
+{
+  "result": "PASS",
+  "tasks": [
+    "b32828ae-f0c8-49ab-8b01-fce2ab47e203",
+    "b5e4b6b9-de09-4c22-bcb3-d7b77b9abd39",
+    "84c545b6-b9ca-41d7-9feb-3a20f32420f8"
+  ],
+  "checks": [
+    "canonical replay",
+    "conflicting request",
+    "stable cursor",
+    "tenant/owner isolation",
+    "write scope",
+    "input validation",
+    "request read",
+    "SSE media type and replay",
+    "cancel"
+  ]
+}

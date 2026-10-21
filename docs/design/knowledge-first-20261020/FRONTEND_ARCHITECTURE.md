@@ -86,3 +86,9 @@ S4 依据已发布 K01–K04 先落资料工作台；问答、研究、助手待
 本机开发桥及固定联调身份按 S4 运行约定执行；不在页面制作凭据粘贴表单。时间统一为北京时间 Asia/Shanghai，列表字段独立分列，主内容与辅助信息纵向排列。继续沿浅色、靛蓝、Ant Design token/CSS Modules；这些工程默认尚不是用户截图确认。
 
 S4 证据：[前端验收](https://github.com/lirji/agentic-ai-platform-web/blob/main/docs/qa/s4/TEST_RESULT.md)。严格区分真实浏览器业务链路、仅测试的故障夹具和用户尚未进行的视觉签收。
+
+## 9. S7 实施映射（2026-10-21）
+
+研究入口 `/research` 和详情 `/research/:taskId`，助手入口 `/assistants` 和详情 `/assistants/tasks/:taskId`；直接消费 R02/A01，复用 T01 事件/取消/恢复和 K04 引用。列表用真实游标并把分页上下文带入返回链接；请求未知时保留同一幂等键，刷新可查服务器结果，浏览器不持久化问题正文。
+
+报告详情分任务目标、资料事实、分析与推断、输出、资料边界、引用与实际读取记录；草稿显示人工审核提示。实际阶段标签来自持久 SSE，检查点事件仅推进游标。沿浅色靛蓝 Ant Design、CSS Modules 和原共享引用侧栏，不新增主题或页面内业务 Mock。1440/1024/414px、弹层/焦点及故障交互见 [S7 验收](https://github.com/lirji/agentic-ai-platform-web/blob/main/docs/qa/s7/TEST_RESULT.md)。

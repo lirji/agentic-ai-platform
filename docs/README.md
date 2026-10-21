@@ -1,6 +1,8 @@
 # 项目文档
 
-当前阶段：资料与独立 React 工作台、中央任务/PG 恢复、原问题和可靠交接已交付。S5D 问答图、累计预算及 worker 已通过受控恢复与真实 deepseek-flash 问答、追问、无资料和引用验证；S5E 问答 UI 通过28项单元/组件和10组真实/受控浏览器验收。研究与助手继续后续切片。最终 Git 交付以当前进度为准。记录日期：2026-10-21。
+当前阶段：资料与独立 React 工作台、中央任务/PG 恢复、原问题和可靠交接已交付。S5D 问答图、累计预算及 worker 已通过受控恢复与真实 deepseek-flash 问答、追问、无资料和引用验证；S5E 问答 UI 通过28项单元/组件和10组真实/受控浏览器验收。S6/S7 研究分析、资料解释、核对清单和草稿建议已接通真实 Deep Agents、任务恢复、界面与引用；本轮结果见 S6/S7 验收。最终 Git 交付以当前进度为准。记录日期：2026-10-21。
+
+当前增量：[R02/A01 契约](design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)、[S6/S7 验收](qa/research-readonly-20261021/TEST_RESULT.md)、[实现映射](qa/research-readonly-20261021/IMPLEMENTATION_EVIDENCE.md)。
 
 ## 文档索引
 

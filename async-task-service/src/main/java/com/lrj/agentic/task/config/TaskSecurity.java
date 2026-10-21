@@ -47,7 +47,7 @@ public class TaskSecurity {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/tasks/**").hasAuthority("SCOPE_" + TaskProtocol.READ)
-                .requestMatchers(HttpMethod.POST, "/api/v1/tasks/*/cancel", "/api/v1/tasks/*/resume")
+                .requestMatchers(HttpMethod.POST, "/api/v1/tasks", "/api/v1/tasks/*/cancel", "/api/v1/tasks/*/resume")
                 .hasAuthority("SCOPE_" + TaskProtocol.WRITE).anyRequest().denyAll());
         return base(http, json, decoder(key, IdentityProtocol.INTERNAL_ISSUER, null)).build();
     }

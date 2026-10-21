@@ -2,7 +2,7 @@
 
 独立建设的知识与 Agent 平台，优先实现**知识入库、知识问答、研究分析和业务助手**。架构与组件已确认：**全新 React 前端 + LangGraph、Deep Agents、LlamaIndex AI 核心 + 按需迁入的 Java 领域能力**。
 
-**已实现独立资料受理、持久处理、双索引发布与可引用检索，以及 Python 的鉴权知识准备接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证，Java 双索引处理与恢复已通过真实组件集成测试，S3 完整真实链路、重启恢复和搜索补丁升级验收通过。[独立 React 工作台](https://github.com/lirji/agentic-ai-platform-web)已接通资料、状态、检索、会话、任务与引用，本机入口 http://127.0.0.1:28086；中央任务与 PG 检查点联合恢复、原问题与可靠交接已通过 S5A–S5C 验收。S5D 已接通独立 LiteLLM → deepseek-flash，真实回答、追问、无资料拒答、引用和重启保持预算验收通过；S5E 界面已交付，本机单在途问答 worker 运行。研究和只读助手仍待后续实施。验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+**已实现独立资料受理、持久处理、双索引发布与可引用检索，以及 Python 的鉴权知识准备接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证，Java 双索引处理与恢复已通过真实组件集成测试，S3 完整真实链路、重启恢复和搜索补丁升级验收通过。[独立 React 工作台](https://github.com/lirji/agentic-ai-platform-web)已接通资料、状态、检索、会话、任务与引用，本机入口 http://127.0.0.1:28086；中央任务与 PG 检查点联合恢复、原问题与可靠交接已通过 S5A–S5C 验收。S5D 已接通独立 LiteLLM → deepseek-flash，真实回答、追问、无资料拒答、引用和重启保持预算验收通过；S5E 界面已交付，本机单在途问答 worker 运行。S6/S7 已实现研究报告与资料解释、核对清单、草稿建议：真实 Deep Agents 只读工具、根图恢复、分节结果、工具记录和引用均可用。验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 
 ## 阅读入口
 
@@ -17,6 +17,7 @@
 - [知识 API](docs/design/knowledge-first-20261020/KNOWLEDGE_CONTRACTS.md)与[迁入清单](docs/design/knowledge-first-20261020/KNOWLEDGE_MIGRATION.md)：身份、幂等、原文、分页、持久任务及参考规则边界。
 - [AI 平台升级可行性分析](docs/feasibility/AI平台升级可行性分析.md)：前期讨论记录；第 4 节说明框架优势、选择理由与业务用途，第 8 节说明收益及衡量方法。
 - [文档索引](docs/README.md)：文档职责与状态。
+- [研究与只读助手契约](docs/design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)、[S6/S7 验收](docs/qa/research-readonly-20261021/TEST_RESULT.md)：任务受理、只读工具、报告、恢复与界面。
 - [文档来源映射](docs/doc-map.md)：参考仓库基线、源码领域与后续同步规则。
 - [任务进度与恢复入口](CODEX_PROGRESS.md)：实施、验证与交付状态。
 
@@ -26,4 +27,4 @@
 
 前端使用独立新建的 React 工程和既定配套；后续业务参考 AgentScope 的用例与规则。默认文本 Embedding 采用参考项目的百炼 `text-embedding-v4`、1024 维和 OpenAI 兼容接口；不采用 HashEmbedding 或自动回退到 hash。
 
-准备基线、React 架构、R01/H01、P01/P02、知识 K、中央 T 与会话 Q 契约已落盘。Java 使用 JDK 21、Boot 3.5、MyBatis-Plus/XML，Gateway 验签后换发内部 JWT；Knowledge、Tasks、Conversations 各自拥有独立数据库。Python 3.12 已锁定三框架：LangGraph/LlamaIndex 用于准备图，Deep Agents 完成隔离工具/流式兼容验证。真实北京百炼账号的 1024 维准备/查询和 PG 检查点联合恢复已验证；少量合成资料上的真实问答已验证；研究助手、系统性检索质量与生产运行仍待后续验收。
+准备基线、React 架构、R01/H01、P01/P02、知识 K、中央 T 与会话 Q 契约已落盘。Java 使用 JDK 21、Boot 3.5、MyBatis-Plus/XML，Gateway 验签后换发内部 JWT；Knowledge、Tasks、Conversations 各自拥有独立数据库。Python 3.12 已锁定三框架：LangGraph/LlamaIndex 用于准备图，Deep Agents 完成隔离工具/流式兼容验证。真实北京百炼账号的 1024 维准备/查询和 PG 检查点联合恢复已验证；少量合成资料上的真实问答已验证；研究与三种只读助手已在合成资料上通过真实模型验收；系统性检索质量、容量与生产运行仍未验收。

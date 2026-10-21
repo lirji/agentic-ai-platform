@@ -4,6 +4,13 @@
     <select id="byOwner" resultType="com.lrj.agentic.task.infrastructure.TaskRow">
         SELECT * FROM ai_task WHERE tenant_id=#{tenant} AND owner_id=#{owner} AND task_id=#{id}
     </select>
+    <select id="listWork" resultType="com.lrj.agentic.task.infrastructure.TaskRow">
+        SELECT * FROM ai_task WHERE tenant_id=#{tenant} AND owner_id=#{owner} AND kind=#{kind}
+        <if test="before != null">
+          AND (created_at &lt; #{before} OR (created_at=#{before} AND task_id &lt; #{cursor}))
+        </if>
+        ORDER BY created_at DESC,task_id DESC LIMIT #{limit}
+    </select>
     <select id="byKey" resultType="com.lrj.agentic.task.infrastructure.TaskRow">
         SELECT * FROM ai_task WHERE tenant_id=#{tenant} AND owner_id=#{owner} AND request_key=#{key}
     </select>

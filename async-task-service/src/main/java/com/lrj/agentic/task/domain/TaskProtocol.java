@@ -16,6 +16,11 @@ public final class TaskProtocol {
     public static final String WORKER = "task:worker";
     public static final String KIND = "KNOWLEDGE_QA";
     public static final String RUNTIME = "langgraph-v1";
+    public static final String WORK_GRAPH = "knowledge-work-v1";
+    public static final String WORK_INPUT = "knowledge-work-input-v1";
+    public static final int MAX_QUESTION = 2000;
+    public static final int MAX_DOCUMENTS = 20;
+    public static final int MAX_PAGE = 20;
     public static final String GRAPH = "knowledge-qa-v1";
     public static final String STATUS_EVENT = "STATUS";
     public static final Set<String> WORKER_EVENTS = Set.of("PROGRESS", "TEXT_DELTA");

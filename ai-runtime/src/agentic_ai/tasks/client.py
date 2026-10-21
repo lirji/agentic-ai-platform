@@ -170,13 +170,13 @@ class CentralTaskClient:
             except (ValidationError, ValueError, TypeError):
                 raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID) from None
 
-    async def claim(self) -> TaskLease | None:
+    async def claim(self, graph_version: str = "knowledge-qa-v1") -> TaskLease | None:
         """领取版本与当前实际编译图绑定，不能由模型任意指定。"""
         reply = await self._request(
             "POST",
             "/internal/v1/task-worker/claim",
             ClaimReply,
-            {"runtimeVersion": "langgraph-v1", "graphVersion": "knowledge-qa-v1"},
+            {"runtimeVersion": "langgraph-v1", "graphVersion": graph_version},
         )
         return reply.task
 

@@ -186,3 +186,18 @@ python3 deploy/local.py stop-chat
 `AGENTIC_PROXY_IT=1` 的 pytest 使用实际代理进程与本机合成提供方，验证型号转换、无重试和日志边界，不消费真实模型。真实业务验收显式运行 `ai-runtime/.venv/bin/python deploy/qa_smoke.py --confirm-paid`，复用 `.local/s5d-real-model.json` 原任务与幂等键；未知提供方返回会停下，不能删除状态再试。脚本只对合成资料建问答，并测试无资料路径；已完成记录再次运行不新增模型调用。
 
 本次计价核验日期 2026-10-21，按官方峰值未缓存输入 2 元/百万 token、输出 8 元/百万 token，并在客户端使用字节上界、1024 输出上限与 2 倍余量。[官方计价](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)。正式累计预留为聊天 0.092600 元/4 次、Embedding 0.20 元/20 批，均非提供方账单；实际费用未查询。重启验证保留配置及两个预算摘要，不增加请求。
+
+## 研究与只读助手（S6/S7）
+
+Tasks 启动时按原迁移账号应用 V2（kind 注释与 owner/kind 分页索引）；保留 V1 及旧问答数据。现有 `start-qa` worker 顺序领取问答和 `knowledge-work-v1`，不启动第二个付费 worker。界面入口为 [研究](http://127.0.0.1:28086/research) 和 [只读助手](http://127.0.0.1:28086/assistants)。仅检索当前用户的已发布知识，不提供互联网搜索或业务写入工具。
+
+```bash
+# 不产生模型调用：隔离租户的 HTTP 受理、分页、身份、SSE 与取消
+ai-runtime/.venv/bin/python deploy/work_smoke.py
+# 仅在原预算授权内运行；先核对 .local/s6-work-smoke.json，保留原任务号
+ai-runtime/.venv/bin/python deploy/work_smoke.py --confirm-paid
+```
+
+第一次真实验收的协议拒绝任务和探针已保留，不删除状态重试；已成功的五个案例只读重放。浏览器创建/取消验收前需正常 `stop-qa`，完成并确认无排队任务后 `start-qa`。当前累计保守预留：聊天0.510952/1元（14次）、Embedding0.26/1元（26批），非提供方账单；[重启证据](../docs/qa/research-readonly-20261021/restart-replay.json)确认凭据/账本不变、无新增调用。
+
+回退时先停止 worker 及新建工作任务，保留中央任务和PG；V2是兼容扩展无需删除。旧 worker 不会处理工作图，新任务应交兼容版本恢复或由所有者显式取消，不改 task graph、不回滚账本、不用旧项目接管。没有执行生产部署。

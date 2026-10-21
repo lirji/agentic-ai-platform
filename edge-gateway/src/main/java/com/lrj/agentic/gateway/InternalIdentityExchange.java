@@ -64,8 +64,9 @@ public class InternalIdentityExchange implements GlobalFilter, Ordered {
                     };
                     return chain.filter(exchange.mutate().request(request).build()).thenReturn(Boolean.TRUE);
                 })
-                // chain.filter 返回空 Mono<Void>，先转成哨兵以免成功路径落入 switchIfEmpty。
-                .switchIfEmpty(errors.write(exchange, PlatformError.AUTH_REQUIRED).thenReturn(Boolean.FALSE))
+                // 错误写入也必须延迟：提前创建备用 Mono 会把成功响应预先标成 JSON。
+                .switchIfEmpty(Mono.defer(() -> errors.write(exchange, PlatformError.AUTH_REQUIRED)
+                        .thenReturn(Boolean.FALSE)))
                 .then();
     }
 
@@ -75,7 +76,7 @@ public class InternalIdentityExchange implements GlobalFilter, Ordered {
 
     /** 按固定路由归属选受众，不能把某服务的令牌转用于其他领域。 */
     private static String audience(String path) {
-        if (path.startsWith("/api/v1/tasks/")) { return IdentityProtocol.TASK_AUDIENCE; }
+        if ((path.equals("/api/v1/tasks") || path.startsWith("/api/v1/tasks/"))) { return IdentityProtocol.TASK_AUDIENCE; }
         if (path.equals("/api/v1/conversations") || path.startsWith("/api/v1/conversations/")) {
             return IdentityProtocol.CONVERSATION_AUDIENCE;
         }

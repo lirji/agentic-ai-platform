@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "python": {
+    "passed": 292,
+    "skipped": 21,
+    "warnings": 23,
+    "log": ".logs/s6-python-final.log"
+  },
+  "java": {
+    "passed": 78,
+    "failed": 0,
+    "skipped": 0,
+    "logs": [
+      ".logs/s6-java-final.log",
+      ".logs/s6-gateway-final.log"
+    ]
+  },
+  "quality": {
+    "ruff": "PASS",
+    "mypy": "PASS: 41 source files",
+    "pythonBuild": "PASS",
+    "mavenBuild": "PASS",
+    "hygiene": "COMPLETE_WITH_LIMITATIONS"
+  },
+  "realModel": "real-model.json",
+  "restart": "restart-replay.json",
+  "scope": "S6; S7 evidence in separate frontend repository"
+}

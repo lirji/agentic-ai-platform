@@ -1,10 +1,9 @@
 # Codex Progress
 
-- 当前任务：`knowledge-qa-execution-20261021`；用户要求继续后续实施，推进三框架接入与知识处理、发布、检索。
-- 当前唯一状态与恢复入口：[独立知识平台准备进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
-- 业务与交付基线：[首期约定](docs/design/knowledge-first-20261020/BRIEF.md)；架构与选型继续在原权威文档维护。
-- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`；S0–S5E 已交付，后端 S5D 实现 `2a95d3f` 已正常合并推送 main；前端 main `f68e660`。2026-10-21 用户批准 `deepseek-flash` 并更新凭据，真实问答/追问/引用、空资料和预算重启均通过。本轮模型接入已完成，后续研究与只读助手仍按原路线推进；具体 Git、额度、证据与恢复入口仅在权威进度维护。
-- 上一任务：[选型与迁移进度](docs/design/platform-selection-20261020/PROGRESS_STATE.md)，已完成；保留历史事实与证据。
+- 当前任务：`research-readonly-20261021`；实现既定 P2 研究分析与只读助手。
+- 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+- 契约：[WORK_TASK_CONTRACTS](docs/design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)；后端/前端原目录均使用 `feat/research-readonly-20261021`，无新 worktree。
+- S0–S5E 已交付；本轮从 S6 接续。授权包含必要本地实现、测试、原累计额度内模型联调及正常合并推送 main；不含生产部署/清理。
 
 ## 前期可行性任务记录
 

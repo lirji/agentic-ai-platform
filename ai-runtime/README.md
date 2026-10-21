@@ -104,3 +104,15 @@ AGENTIC_QA_EXECUTION_IT=1 AGENTIC_CHECKPOINT_IT=1 uv run --frozen pytest -q
 ```
 
 当前执行记录为 263 passed / 20 skipped：包含 5 项真实 PG/Tasks/网关与本机模型 TCP 联合测试、11 项旧恢复回归。20 项真实知识接口测试在前一单独阶段已通过，其中唯一的付费检索未重跑；随后真实三条业务路径使正式累计 Embedding 预留达 0.20 元/20 批，聊天累计预留 0.092600 元/4 次（含 2 次提供方探针）；均为独立 1 元上限内的保守预留，非账单。新增独立代理边界、真实业务路径与重启重放证据分别列示。证据及未验证项见 [S5D 验证](../docs/qa/knowledge-qa-execution-20261021/TEST_RESULT.md)。
+
+## 研究与只读助手（S6）
+
+`src/agentic_ai/agents/` 提供固定知识范围的工具模型适配与 `retrieve → analyze → verify`。analyze 使用真实 Deep Agents；仅搜索/读证据，无子 Agent、外部写工具或宿主文件访问。其内部不持久 checkpoint，根图继续使用原 FencedPostgresSaver，失败可能重做 analyze 并再次计费。原问答文本客户端及45秒限制不变；工作图120秒，每阶段最多3次模型、5次工具、2次额外搜索。
+
+现有 `agentic-qa-worker` 顺序轮询两个 graph，一次一个任务；相同私密配置、模型路由和累计预算。真实 deepseek-flash 已验证 REPORT/EXPLAIN/CHECKLIST/DRAFT；空证据零聊天调用。界面不展示思维链，只展示实际阶段、最终分节结果与工具元数据。[契约](../docs/design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)和[验收](../docs/qa/research-readonly-20261021/TEST_RESULT.md)。
+
+```bash
+AGENTIC_WORK_IT=1 AGENTIC_QA_EXECUTION_IT=1 AGENTIC_CHECKPOINT_IT=1 uv run --frozen pytest -q
+```
+
+真实恢复测试使用隔离合成身份和受控模型，不产生模型费用。Deep Agents 无内部 saver 时显式设置 durability=exit，以阻止继承父图 sync 持久设置；锁定版本会提示 durability 无效，属于已知无害警告，未放宽恢复器或序列化限制。

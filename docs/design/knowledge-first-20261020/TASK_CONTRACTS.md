@@ -19,6 +19,8 @@
 
 ## 接口与字段
 
+事件 code 为 STATUS/PROGRESS/TEXT_DELTA/CHECKPOINT；CHECKPOINT 仅推进客户端游标，不展示内部凭据或当成最终结果。SSE 成功必须使用 text/event-stream；错误继续返回统一 JSON。
+
 JSON 时间均 UTC ISO8601。UUID 为规范小写带连字符格式；revision/epoch/sequence 非负整数，事件序号从 1 开始。
 
 | 接口 | 请求 | 成功 |

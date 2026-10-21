@@ -7,6 +7,9 @@ import org.apache.ibatis.annotations.Param;
 /** 自定义 SQL 全部在 XML 中；写操作由应用短事务持有任务行锁。 */
 public interface TaskMapper extends BaseMapper<TaskRow> {
     TaskRow byOwner(@Param("tenant") String tenant, @Param("owner") String owner, @Param("id") String id);
+    List<TaskRow> listWork(@Param("tenant") String tenant, @Param("owner") String owner,
+            @Param("kind") String kind, @Param("before") java.time.Instant before,
+            @Param("cursor") String cursor, @Param("limit") int limit);
     TaskRow byKey(@Param("tenant") String tenant, @Param("owner") String owner, @Param("key") String key);
     TaskRow lock(@Param("tenant") String tenant, @Param("id") String id);
     TaskRow read(@Param("tenant") String tenant, @Param("id") String id);

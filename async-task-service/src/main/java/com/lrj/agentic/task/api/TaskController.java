@@ -29,6 +29,22 @@ public class TaskController {
     public View delegatedGet(@AuthenticationPrincipal Jwt jwt, @PathVariable String id) {
         return tasks.get(JwtTrust.caller(jwt), id);
     }
+    /** 研究与助手使用本服务的持久受理，不依赖浏览器保存业务账本。 */
+    @PostMapping("/api/v1/tasks")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public View submitWork(@AuthenticationPrincipal Jwt jwt, @RequestHeader("Idempotency-Key") String key,
+            @Valid @RequestBody WorkSubmit command) { return tasks.submitWork(JwtTrust.caller(jwt), key, command); }
+    /** 列表范围与游标所有权由数据库谓词和应用校验共同约束。 */
+    @GetMapping("/api/v1/tasks")
+    public WorkPage listWork(@AuthenticationPrincipal Jwt jwt, @RequestParam String kind,
+            @RequestParam(required = false) String cursor, @RequestParam(defaultValue = "20") int limit) {
+        return tasks.listWork(JwtTrust.caller(jwt), kind, cursor, limit);
+    }
+    /** 原请求用于刷新后的详情重建，不接受前端传入身份。 */
+    @GetMapping("/api/v1/tasks/{id}/request")
+    public WorkInput request(@AuthenticationPrincipal Jwt jwt, @PathVariable String id) {
+        return tasks.request(JwtTrust.caller(jwt), id);
+    }
     /** 公共视图不暴露内部检查点和输入。 */
     @GetMapping("/api/v1/tasks/{id}")
     public View get(@AuthenticationPrincipal Jwt jwt, @PathVariable String id) { return tasks.get(JwtTrust.caller(jwt), id); }
@@ -54,7 +70,8 @@ public class TaskController {
                     .append("\ndata: ").append(values.write(event)).append("\n\n");
         }
         body.append(": heartbeat\n\n");
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore())
+        // 明确响应媒体类型，避免安全链/内容协商的 JSON 默认值误标 SSE 正文。
+        return ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM).cacheControl(CacheControl.noStore())
                 .header("X-Task-Terminal", Boolean.toString(page.terminal())).body(body.toString());
     }
     /** 用户取消使用 revision，与迟到成功按数据库提交顺序裁决。 */

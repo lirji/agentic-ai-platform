@@ -15,6 +15,9 @@ from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
+from agentic_ai.agents.chat import ToolChatClient, ToolChatPort
+from agentic_ai.agents.models import WORK_EXECUTION_SECONDS, WORK_GRAPH
+from agentic_ai.agents.pipeline import WorkPipeline
 from agentic_ai.qa.chat import ChatClient, ChatPort
 from agentic_ai.qa.chat_budget import ChatBudget
 from agentic_ai.qa.chat_config import MAX_CONFIG_BYTES, ChatConfig
@@ -24,7 +27,7 @@ from agentic_ai.qa.pipeline import QaPipeline
 from agentic_ai.qa.retriever import KnowledgePort
 from agentic_ai.tasks.client import CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
-from agentic_ai.tasks.execution import run_claimed_graph
+from agentic_ai.tasks.execution import MAX_EXECUTION_SECONDS, run_claimed_graph
 from agentic_ai.tasks.models import SubjectId, TaskFailureCode, TaskLease, TaskView
 from agentic_ai.tasks.postgres import CheckpointConfig, PostgresCheckpoints
 
@@ -96,7 +99,9 @@ def failure_code(error: Exception) -> tuple[TaskFailureCode, bool]:
     return TaskFailureCode.EXECUTION_FAILED, False
 
 
-async def _run_with_heartbeat(pipeline: QaPipeline, checkpoints: CheckpointConfig) -> TaskView:
+async def _run_with_heartbeat(
+    pipeline: QaPipeline | WorkPipeline, checkpoints: CheckpointConfig
+) -> TaskView:
     async def pulse() -> None:
         while True:
             await asyncio.sleep(HEARTBEAT_SECONDS)
@@ -109,6 +114,10 @@ async def _run_with_heartbeat(pipeline: QaPipeline, checkpoints: CheckpointConfi
             checkpoints,
             pipeline.build,
             before_complete=pipeline.before_complete,
+            execution_seconds=WORK_EXECUTION_SECONDS
+            if isinstance(pipeline, WorkPipeline)
+            else MAX_EXECUTION_SECONDS,
+            result_key="report" if isinstance(pipeline, WorkPipeline) else None,
         ),
         name="qa-graph",
     )
@@ -132,12 +141,31 @@ async def execute_qa_task(
     checkpoints: CheckpointConfig,
     knowledge: KnowledgePort,
     chat: ChatPort,
+    tool_chat: ToolChatPort | None = None,
 ) -> TaskView:
     """异常先核对中央；取消/完成赢得竞争后不再报告覆盖它的失败。"""
     try:
-        pipeline = QaPipeline(binding, central, knowledge, chat)
+        pipeline: QaPipeline | WorkPipeline
+        if binding.graph_version == WORK_GRAPH:
+            if tool_chat is None:
+                raise QaError(QaCode.CONFIG_INVALID)
+            pipeline = WorkPipeline(binding, central, knowledge, tool_chat)
+        else:
+            pipeline = QaPipeline(binding, central, knowledge, chat)
         return await _run_with_heartbeat(pipeline, checkpoints)
     except Exception as error:
+        LOGGER.warning(
+            json.dumps(
+                {
+                    "component": "knowledge-qa-worker",
+                    "state": "EXECUTION_REJECTED",
+                    "taskId": binding.task.task_id,
+                    "code": error.code.value
+                    if isinstance(error, (QaError, TaskRuntimeError))
+                    else "EXECUTION_FAILED",
+                }
+            )
+        )
         observed = await central.inspect(binding.task.task_id)
         if (
             observed.task.task_id != binding.task.task_id
@@ -220,14 +248,19 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                 await storage.verify_ready()
             chat = ChatClient(chat_config, budget)
             stack.push_async_callback(chat.aclose)
+            tool_chat = ToolChatClient(chat_config, budget)
+            stack.push_async_callback(tool_chat.aclose)
             if check_only:
                 _log("CONFIGURATION_VALID")
                 return
             _log("READY")
+            graph_versions = ("knowledge-qa-v1", WORK_GRAPH)
+            next_graph = 0
             while not stop.is_set():
                 budget.check_available()
                 try:
-                    binding = await central.claim()
+                    binding = await central.claim(graph_versions[next_graph])
+                    next_graph = (next_graph + 1) % len(graph_versions)
                 except TaskRuntimeError:
                     _log("CENTRAL_UNAVAILABLE")
                     binding = None
@@ -241,7 +274,9 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                     started = time.monotonic()
                     _log("EXECUTING", task=binding.task)
                     work = asyncio.create_task(
-                        execute_qa_task(binding, central, config.checkpoints, knowledge, chat)
+                        execute_qa_task(
+                            binding, central, config.checkpoints, knowledge, chat, tool_chat
+                        )
                     )
                     stopping = asyncio.create_task(stop.wait())
                     try:

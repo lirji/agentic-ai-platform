@@ -1,0 +1,59 @@
+{
+  "result": "PASS",
+  "checks": [
+    {
+      "mode": "REPORT",
+      "taskId": "9a7b9a6c-63ad-4edf-be96-173824cc276b",
+      "status": "SUCCEEDED",
+      "resultSha256": "a4e66c7fee35ce646446f0de07e07c7dddcd62255c928a10b19da53638163811",
+      "stream": "PASS"
+    },
+    {
+      "mode": "EXPLAIN",
+      "taskId": "71e61c6a-7ff4-4791-a8b2-cb3a5e77611c",
+      "status": "SUCCEEDED",
+      "resultSha256": "264e56b92d5382b077fdf448c53fe975ef8ec5aad7d4dd14a2e3e53acdc1cc70",
+      "stream": "PASS"
+    },
+    {
+      "mode": "CHECKLIST",
+      "taskId": "c4b3baf5-002e-4c30-8d8c-fe12dd55797f",
+      "status": "SUCCEEDED",
+      "resultSha256": "6f358c5ac08ce990684c34f57aa4878d799a1febe0679660dfcea4eea0208fc9",
+      "stream": "PASS"
+    },
+    {
+      "mode": "DRAFT",
+      "taskId": "14570366-31eb-41c8-8820-c140843ab535",
+      "status": "SUCCEEDED",
+      "resultSha256": "982a8b008ee039eacad0bdce39247de6485616a434bc221a9eedc9d690f25fe4",
+      "stream": "PASS"
+    },
+    {
+      "mode": "EMPTY",
+      "taskId": "28df8bc3-1dab-46e0-af99-863f7ea9a070",
+      "status": "SUCCEEDED",
+      "resultSha256": "0e149dd0d511743df6414b6f57bbbc87e8425f279af6d2904c703e52047feff3",
+      "stream": "PASS"
+    }
+  ],
+  "configurationAndLedgerHashesUnchanged": true,
+  "newModelCalls": 0,
+  "budgets": {
+    "chat": {
+      "calls": 14,
+      "reservedCny": "0.510952",
+      "limitCny": "1"
+    },
+    "embedding": {
+      "calls": 26,
+      "reservedCny": "0.26",
+      "limitCny": "1"
+    }
+  },
+  "uiTask": {
+    "id": "fb435bcf-c074-4a7e-a8ee-35c84e5b3689",
+    "status": "CANCELLED",
+    "attemptCount": 0
+  }
+}

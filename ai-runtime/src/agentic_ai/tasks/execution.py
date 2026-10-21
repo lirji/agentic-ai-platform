@@ -39,6 +39,8 @@ async def run_claimed_graph(
     build_graph: GraphFactory,
     *,
     before_complete: ResultValidator | None = None,
+    execution_seconds: int = MAX_EXECUTION_SECONDS,
+    result_key: str | None = None,
 ) -> TaskView:
     """先查中央再开 PG；已完成图从完整快照取输出，不再次执行业务节点。"""
     current = await central.inspect(binding.task.task_id)
@@ -59,7 +61,7 @@ async def run_claimed_graph(
             config["recursion_limit"] = MAX_GRAPH_STEPS
             # 同步 durability 保证上一完整检查点提交后才开始下一步；本片无外部追踪。
             with tracing_context(enabled=False):
-                async with asyncio.timeout(MAX_EXECUTION_SECONDS):
+                async with asyncio.timeout(execution_seconds):
                     value = await graph.ainvoke(
                         current.input if current.checkpoint is None else None,
                         config,
@@ -68,6 +70,8 @@ async def run_claimed_graph(
                     snapshot = await graph.aget_state(config)
                     if snapshot.next or snapshot.interrupts:
                         raise TaskRuntimeError(TaskRuntimeCode.UNSUPPORTED)
+                    if result_key is not None:
+                        value = value[result_key]
                     try:
                         result = cast(
                             dict[str, object], RESULT_SCHEMA.validate_python(value, strict=True)

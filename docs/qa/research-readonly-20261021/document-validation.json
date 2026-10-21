@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "markdownFiles": 19,
+  "localLinks": 206,
+  "issues": [],
+  "scope": "changed Markdown in both repositories; local target existence and code fences"
+}

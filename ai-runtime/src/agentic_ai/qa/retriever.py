@@ -7,6 +7,7 @@ from llama_index.core.callbacks import CallbackManager
 from llama_index.core.schema import NodeWithScore, QueryBundle, TextNode
 from pydantic import ValidationError
 
+from agentic_ai.agents.models import WorkCitation
 from agentic_ai.qa.errors import QaCode, QaError
 from agentic_ai.qa.models import Citation, KnowledgeHit
 
@@ -18,7 +19,7 @@ class KnowledgePort(Protocol):
         """返回经 Java 授权和发布校验的证据。"""
         ...
 
-    async def citation(self, value: Citation | KnowledgeHit) -> KnowledgeHit:
+    async def citation(self, value: Citation | WorkCitation | KnowledgeHit) -> KnowledgeHit:
         """使用当前所有者重新核验引用，失效时拒绝。"""
         ...
 

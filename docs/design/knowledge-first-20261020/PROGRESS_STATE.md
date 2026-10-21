@@ -1,6 +1,21 @@
 # 独立知识平台准备进度
 
-## 当前任务：持久 AI 任务与知识问答
+## 当前任务：研究分析与只读助手
+
+- 标识：`research-readonly-20261021`；用户已授权开始剩余研究与只读助手，继承P2、原模型/预算及正常合并推送main授权；无生产部署/清理。
+- 状态：S6 DONE / S7 VERIFYING（锁定工具链补验）。研究报告、解释/清单/草稿、空证据真实模型均PASS；292项Python、78项Java、38项前端单元、15组联合浏览器通过。窄屏未知提交提示改为说明下方操作后，7组相关浏览器/38项单元/构建/静态复验PASS，截图已实际核对。
+- 计划：S6受理/执行/恢复 → S6真实验证 → S7界面/引用 → 联合验收、文档及两仓正常合并推送；前三项已实现，第四项收尾中。契约 [WORK_TASK_CONTRACTS](WORK_TASK_CONTRACTS.md)，证据 [TEST_RESULT](../../qa/research-readonly-20261021/TEST_RESULT.md)。
+- Git：后端原目录，分支 `feat/research-readonly-20261021`，起点/当前提交 `cb2f688`；前端原目录 `../agentic-ai-platform-web` 同名分支，起点/当前提交 `f68e660`。均为本任务未提交改动，已fetch远程main并核对无分叉，无额外worktree；修改清单可从各仓git status与实现映射恢复。
+- 决策：中央任务拥有不可变请求和结果；Deep Agents analyze为有界原子阶段，内部checkpoint关闭，外层JSON根图复用原PG/中央fencing，不放宽namespace/序列化。仅搜索/读证据，3轮模型/5次工具/2次额外搜索，单worker顺序领取两图；恢复可能再次计费。
+- 验证：真实MySQL/HTTP幂等、分页、隔离；4项真实PG/中央恢复/取消/撤权；五个真实模型案例、引用和重启重放通过。首次多工具响应拒绝及原任务保留；串行工具执行、网关备用错误Mono污染SSE头、前端缺CHECKPOINT事件及提交摘要竞态已修复并回归。
+- 预算：沿原两本累计账本，聊天 **0.510952/1元（14次）**，Embedding **0.26/1元（26批）**，非账单；重启配置/账本摘要不变，新增调用0。探针已完成不得重发；`.local/s6-work-smoke.json` 与前端 `.local/s7-ui-state.json` 必须保留。UI真实任务CANCELLED/attemptCount=0。
+- 当前服务：Gateway28080、Knowledge28084、AI28085、Web28086、Tasks28087、Conversations28088、LiteLLM28089及worker运行；local-dev无QUEUED/RUNNING。无运行中的构建/测试/付费任务或迁移；最终日志 `.logs/s7-work-final.log`（前端）及 `.logs/s6-*`。
+- 新核对：终端默认Node24.12与项目.nvmrc/engines要求24.22不符，已保留现有通过证据，正从官方校验摘要安装项目忽略目录内工具链并补验；不修改全局Node或项目版本要求。
+- 下一步：使用Node24.22完成前端构建/测试/浏览器补验；文档链接19份/206处和真实密钥扫描139份已PASS，随后暂存源码摘要复核；两仓各提交完整切片，fast-forward合并并push main，记录收据。QA在后端 `docs/qa/research-readonly-20261021/`、前端 `docs/qa/s7/`；日志 `.logs/s6-*` / `.logs/s7-*`。
+- 限制：Java未配置独立格式器，后端卫生COMPLETE_WITH_LIMITATIONS（17建议已人工审）；Deep Agents无内部saver的已知durability警告；现有Vite包大小警告。少量合成资料/单worker验证不等于生产容量或系统性答案质量。
+- 规范：session-handoff、continue-approved-delivery、implementation-slicing、backend/frontend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；全局业务建模/持久化/契约/并发安全/容量/发布及日志规范。手工专业pass，不冒称机器Runtime Gate、独立Agent审查或用户视觉签收。
+
+## 历史：持久 AI 任务与知识问答
 
 - 标识：`knowledge-qa-execution-20261021`；继承已批准的知识、问答、研究及只读助手路线。本轮模型/密钥更新及 S5D 真实问答已完成交付，完整平台尚未完成。
 - 状态：S0–S5C、S5E 已交付；S5D 真实模型、问答/追问/空资料、浏览器引用与刷新恢复均 PASS，最终 250 项回归与代码卫生通过，已正常合并推送并核对远程 main。权威验收：[TEST_RESULT](../../qa/knowledge-qa-execution-20261021/TEST_RESULT.md)，当前结论 PASS。

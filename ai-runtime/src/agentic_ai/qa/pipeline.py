@@ -3,7 +3,6 @@
 import json
 import re
 from contextlib import aclosing
-from enum import StrEnum
 from typing import Any, TypedDict, cast
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
@@ -26,7 +25,7 @@ from agentic_ai.qa.models import (
 from agentic_ai.qa.retriever import AuthorizedRetriever, KnowledgePort, retrieve_evidence
 from agentic_ai.tasks.client import CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
-from agentic_ai.tasks.models import TaskEventType, TaskLease, TaskStatus
+from agentic_ai.tasks.models import QaStage, TaskEventType, TaskLease, TaskStatus
 
 STREAM_BATCH_CHARS = 128
 SYSTEM_PROMPT = (
@@ -37,14 +36,6 @@ SYSTEM_PROMPT = (
     "不能作为本次引用。资料不足时明确说明限制，并引用用于作出判断的相关证据。"
     "不输出思维链、不调用工具。只输出最终回答文本。"
 )
-
-
-class QaStage(StrEnum):
-    """Q04 进度代码，不替代中央任务状态。"""
-
-    RETRIEVING = "RETRIEVING"
-    GENERATING = "GENERATING"
-    VERIFYING = "VERIFYING"
 
 
 class GraphInput(TypedDict):

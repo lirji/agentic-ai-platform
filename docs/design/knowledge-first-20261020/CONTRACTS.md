@@ -88,4 +88,4 @@ R01 用受控 HTTP 测试服务/transport 验证协议、分批、顺序、拒�
 
 ## T01 中央任务细化
 
-S5A 的任务创建、租约、事件、取消/恢复、检查点凭据和完成对账以 [TASK_CONTRACTS](TASK_CONTRACTS.md) 为准。S5B 的 PostgreSQL 不可变快照、安全解码与中央凭据恢复以 [CHECKPOINT_CONTRACTS](CHECKPOINT_CONTRACTS.md) 为准，真实联合恢复已通过。S5C 的 Q01–Q03 会话、问题、上下文关联与可靠交接以 [CONVERSATION_CONTRACTS](CONVERSATION_CONTRACTS.md) 为准；其中 T01 兼容增加 owner 委托读取。模型执行与前端问答尚未接通，不能因任务受理成功把答案标为完成。
+S5A 的任务创建、租约、事件、取消/恢复、检查点凭据和完成对账以 [TASK_CONTRACTS](TASK_CONTRACTS.md) 为准。S5B 的 PostgreSQL 不可变快照、安全解码与中央凭据恢复以 [CHECKPOINT_CONTRACTS](CHECKPOINT_CONTRACTS.md) 为准，真实联合恢复已通过。S5C 的 Q01–Q03 会话、问题、上下文关联与可靠交接以 [CONVERSATION_CONTRACTS](CONVERSATION_CONTRACTS.md) 为准；其中 T01 兼容增加 owner 委托读取。S5D/S5E 已接通真实模型与问答 UI；受理与最终结果仍是不同状态。S6/S7 研究和只读助手的公开受理、列表、输入与报告以 [WORK_TASK_CONTRACTS](WORK_TASK_CONTRACTS.md) 为准。
