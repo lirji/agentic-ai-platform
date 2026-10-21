@@ -2,10 +2,10 @@
 
 ## 当前任务：持久 AI 任务与知识问答
 
-- 标识：`knowledge-qa-execution-20261021`；继承已批准的知识、问答、研究及只读助手路线。当前收尾 S5D 真实问答，完整平台尚未完成。
-- 状态：S0–S5C、S5E 已交付；S5D 真实模型、问答/追问/空资料、浏览器引用与刷新恢复均 PASS，最终 250 项回归与代码卫生通过，正在完成文档与 Git 交付。权威验收：[TEST_RESULT](../../qa/knowledge-qa-execution-20261021/TEST_RESULT.md)，当前结论 PASS。
+- 标识：`knowledge-qa-execution-20261021`；继承已批准的知识、问答、研究及只读助手路线。本轮模型/密钥更新及 S5D 真实问答已完成交付，完整平台尚未完成。
+- 状态：S0–S5C、S5E 已交付；S5D 真实模型、问答/追问/空资料、浏览器引用与刷新恢复均 PASS，最终 250 项回归与代码卫生通过，已正常合并推送并核对远程 main。权威验收：[TEST_RESULT](../../qa/knowledge-qa-execution-20261021/TEST_RESULT.md)，当前结论 PASS。
 - 用户最新决定：2026-10-21 明确使用 `deepseek-flash`，随后更新 API key。新 key 已替换本项目忽略配置的 providerKey，0600；不在文档记录凭据。Embedding 与聊天分别沿用 1 元累计上限，跨日期、重启和恢复不重置。
-- Git：后端原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`，分支 `feat/knowledge-qa-execution-20261021`，HEAD/main/origin/main 起点 `865aaa4ba1e0f50c91e2b206385fd78fdc027ee1`；当前 S5D 代码/配置/验收及必要进度未提交。S5C 交付收据另作历史记录提交，不混入产品实现。没有额外 worktree。
+- Git：后端原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`，分支 `feat/knowledge-qa-execution-20261021`，起点 `865aaa4ba1e0f50c91e2b206385fd78fdc027ee1`；S5D 实现提交 `2a95d3fa9b92756e6470f76abb89f14b33bf789e` 已正常合并推送并核对。S5C 交付收据单独提交 `37a41fa`，未混入产品实现。当前仅本片交付记录收尾，最终文档提交以 Git 为准。没有额外 worktree。
 - 前端：原目录 `agentic-ai-platform-web`，main/origin/main `f68e660680e22789e59a3df5ed278e9d48dc1594`，工作树干净。34 个源码摘要与 S5E 验收一致；28 项单元/组件、10 组浏览器和 10 张多尺寸截图已验收。[交付收据](../../qa/knowledge-qa-execution-20261021/frontend-delivery.json)。本轮无前端代码修改。
 - 已实现：K05 独立只读身份；LlamaIndex 授权检索；LangGraph `retrieve → generate → verify`；中央事件/租约/失败与完成前权限重验；同范围前序回答；独立累计预算和单在途 worker。既有 V1/PG 迁移不改写。
 - 代理：独立 LiteLLM 1.106.0 与 Prisma 0.15.0（官方可选依赖，仅错误分类，不启用数据库），锁 `deploy/model-proxy/uv.lock`；123 个注册依赖 OSV 无命中，不能推断全部依赖零风险。`chat-default → deepseek/deepseek-flash`，thinking disabled；重试/回退/正文日志/外部追踪关闭。真实代理成功流、失败只发送一次、未知型号/未认证拒绝和日志脱敏 3 项通过。
@@ -16,7 +16,8 @@
 - 验证基线：原 263 项 Python（含 5 项真实执行恢复、11 项旧恢复）、39 项 Java、20 项 K05 HTTP 与构建证据保留；27 个原文件仅 deploy/local.py 因新增入口变化，其余摘要仍匹配。新入口已由真实初始化/重启验证。当前 Ruff/59 文件格式与 mypy/37 源码通过；最终 Python/代理回归 250 passed / 36 skipped；源码 35 项摘要 `7555d13658b6bab84132308d400657971859387d98a57aa792ff99dd94694e94`，日志 `.logs/s5d-python-proxy-final.log`。Code Hygiene COMPLETE_WITH_LIMITATIONS，22 条建议已审，无阻断项。
 - 服务：Gateway 28080、Knowledge 28084、AI 28085、Web 28086、Tasks 28087、Conversations 28088、LiteLLM 28089；问答 worker 仅领取 local-dev、一次一个任务。停止顺序 `stop-qa` 后 `stop-chat`。当前 local-dev 为 3 SUCCEEDED / 1 CANCELLED，无排队或运行任务。
 - 恢复：`.local/s5d-real-model.json` 保存真实验收原幂等键与任务号；`.local/s5d-*.json` / s5b 辅助状态、PG/中央事实、凭据和账本必须保留。真实验收会话 `af492f07-e132-47ca-83d6-b4186c7b4ccc`；运行 PID/log 在 `.local/`、`.logs/`。不删除记录重跑未知操作。
-- 下一具体操作：完成最终代码卫生/文档检查，S5D 标记 DONE 后按逻辑单元提交、正常合并推送 main并核对；再从 [研究准备](RESEARCH_READINESS.md) 冻结下一业务切片和工具/恢复边界。只读助手沿 BRIEF 的资料解释、清单、草稿建议，不接外部写工具。
+- 下一具体操作：S5D DONE；P1→P2 前置核对已完成，从 [研究准备](RESEARCH_READINESS.md) 冻结下一业务切片和工具/恢复边界。只读助手沿 BRIEF 的资料解释、清单、草稿建议，不接外部写工具。
+- 交付：[S5D 收据](../../qa/knowledge-qa-execution-20261021/delivery-result.json)；59 个本片文件、35 个源码摘要与暂存区一致。13 份 Markdown/171 个本地链接检查通过；候选文件及两份运行日志无真实密钥匹配，私密路径和代理环境均被 Git 忽略。没有进行中的构建/测试/付费请求；无新 worktree，`.idea/` 保留，缓存未清理。
 - 授权：现有计划本地实施、隔离资源及必要模型联调；验证后正常合并推送 main，无生产部署。没有清理数据/目录、强推或新增多 Agent。
 - 规范：backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery；架构业务建模/持久化/契约/并发/容量/发布及个人追踪规范。全局技能 Runtime 漂移仍按手工专业 pass 留证，不修改全局技能，不冒称机器 Gate 或独立审查员通过。
 - 限制：S5B 仍只支持根图完整快照，45 秒/32 步；不支持子图/历史回放/删除，不保证物理无孤立行或模型 exactly-once。研究 Agent、生产 IAM、容量、备份恢复与长期清理尚未验证。Java formatter/独立静态分析缺失需在最终验收中保留。

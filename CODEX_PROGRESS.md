@@ -3,7 +3,7 @@
 - 当前任务：`knowledge-qa-execution-20261021`；用户要求继续后续实施，推进三框架接入与知识处理、发布、检索。
 - 当前唯一状态与恢复入口：[独立知识平台准备进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 - 业务与交付基线：[首期约定](docs/design/knowledge-first-20261020/BRIEF.md)；架构与选型继续在原权威文档维护。
-- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`；分支 `feat/knowledge-qa-execution-20261021`。S0–S5C 已交付（后端 main 865aaa4），前端 S5E 已交付（main f68e660）；S5D 真实模型门禁与问答/引用/预算重启已通过，正在收尾交付，再接研究助手。2026-10-21 用户已确认使用 `deepseek-flash`；Embedding / 聊天分别沿用 1 元累计上限。具体事实、证据与恢复入口只在权威进度维护。
+- 项目：`/Users/liruijun/personal/LLM/agentic-ai-platform`；S0–S5E 已交付，后端 S5D 实现 `2a95d3f` 已正常合并推送 main；前端 main `f68e660`。2026-10-21 用户批准 `deepseek-flash` 并更新凭据，真实问答/追问/引用、空资料和预算重启均通过。本轮模型接入已完成，后续研究与只读助手仍按原路线推进；具体 Git、额度、证据与恢复入口仅在权威进度维护。
 - 上一任务：[选型与迁移进度](docs/design/platform-selection-20261020/PROGRESS_STATE.md)，已完成；保留历史事实与证据。
 
 ## 前期可行性任务记录

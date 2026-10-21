@@ -3,5 +3,12 @@
   "documents": 13,
   "localLinksAndAnchors": 171,
   "tableRows": 290,
-  "errors": []
+  "errors": [],
+  "deliveryCloseout": {
+    "status": "PASS",
+    "documents": 2,
+    "localLinksAndAnchors": 17,
+    "tableRows": 0,
+    "errors": []
+  }
 }
