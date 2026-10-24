@@ -1,0 +1,21 @@
+{
+  "backendCommit": "aa355c5aa0aabb2d8e1d5aef4506e77947e82c76",
+  "frontendCommit": "596053135cb43b764f39b892f7622127c3a4d208",
+  "files": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "2fdc9976e34c4d3c6fb3ec225844c660653cffa021059802a255a0027b250861",
+    "ai-runtime/src/agentic_ai/qa/chat.py": "9aab7cca546d60e3ac4e3fd12954fbd54c77ecafd90107ab7c243961cca98705",
+    "ai-runtime/src/agentic_ai/qa/chat_budget.py": "8b124fe83f226bfd1dbf8288b7e68ad6ec460d8c3c1f883864f7890b23aadb22",
+    "ai-runtime/src/agentic_ai/evaluation/pipeline.py": "0da2fb22036221ee1895033b1ddcb47a388ea1a2b6c3a3dcec1731b280057a09",
+    "ai-runtime/src/agentic_ai/evaluation/metrics.py": "41a5aaa8d4e4c2258a2f2ac32a548e8e72e651427b3a43640a3906858ece5c08",
+    "ai-runtime/src/agentic_ai/processing/models.py": "f4d046bdaf0c7944d54a3aa0fa7b5bc3978054a0ceee7190dc69879970c87f06",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSearch.java": "f4ac35910cb372fa13bde10aaf55db82de06438a37748b92139b5721045dc5f9",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/SearchIndex.java": "5afa8fd2c14466399d682a19fd9e43d418f397ed6eca8dfa9b58c923c3b109bd",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/ComparisonRules.java": "ade5f7e3a8ca9712846a497d77d29ac50f4a5c0ee9a95872a21bd41c1fc0b458"
+  },
+  "models": {
+    "chat": "deepseek-flash",
+    "embedding": "text-embedding-v4",
+    "embeddingDimensions": 1024
+  },
+  "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+}

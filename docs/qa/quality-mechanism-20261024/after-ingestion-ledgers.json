@@ -1,0 +1,14 @@
+{
+  "chat": {
+    "limitCny": "1",
+    "reservedCny": "0.581704",
+    "calls": 16,
+    "sha256": "d79afa5baf543ca73ba559c540aaf6f71000b7e804a94c25ec76dc3772be20aa"
+  },
+  "embedding": {
+    "limitCny": "1",
+    "reservedCny": "0.34",
+    "calls": 34,
+    "sha256": "d85391ae2138548f0a62f43c7e5699f67c9faff9fc36aae72c97fb9c6bdfd94a"
+  }
+}

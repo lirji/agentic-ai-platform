@@ -16,7 +16,8 @@
 | [质量契约](design/knowledge-first-20261020/QUALITY_CONTRACTS.md)、[样本验收](design/knowledge-first-20261020/QUALITY_ACCEPTANCE.md) | E01 评测集/修订/标注、质量指标、运行归属与首批机制资料 | S8A 冻结，S8B 实施依据 |
 | [评测定义验收](qa/quality-datasets-20261021/TEST_RESULT.md)、[实现映射](qa/quality-datasets-20261021/IMPLEMENTATION_EVIDENCE.md) | S8B 真实保存/修订、权限/发布绑定、原文标注与失败恢复 | 结果与限制见验收；执行/基线由 S8C/D 接续 |
 | [评测执行契约](design/knowledge-first-20261020/EVALUATION_RUN_CONTRACTS.md)、[S8C验收](qa/quality-runs-20261021/TEST_RESULT.md) | 原任务恢复、中央凭据确认、逐题指标与运行界面 | 当前执行与恢复能力 |
-| [评审与比较契约](design/knowledge-first-20261020/EVALUATION_COMPARISON_CONTRACTS.md)、[S8D验收](qa/quality-baselines-20261021/TEST_RESULT.md) | 人工评分、冻结基线、逐题退化与未知结果恢复 | 必需验收通过；真实机制质量接续S8E |
+| [评审与比较契约](design/knowledge-first-20261020/EVALUATION_COMPARISON_CONTRACTS.md)、[S8D验收](qa/quality-baselines-20261021/TEST_RESULT.md) | 人工评分、冻结基线、逐题退化与未知结果恢复 | 必需验收通过；真实机制质量见S8E |
+| [真实机制基线](qa/quality-mechanism-20261024/TEST_RESULT.md) | S8E 固定来源、真实RRF/问答、逐题评分与核账 | 8题执行成功；保留M04支撑失败，仅机制集 |
 | [计划文档验证](qa/capability-plan-20261021/TEST_RESULT.md) | 任务覆盖/依赖、文档结构/引用、接口摘要及改动边界 | 仅文档 PASS，不代表新能力实现或运行通过 |
 | [能力欠缺主报告](../.engineering/exploration/CAPABILITY_GAPS.md) | 对照业务、实现、UI、验证和运行能力；逐项影响与验收方向 | 历史差距基线；当前沿新计划实施 |
 | [能力地图](../.engineering/exploration/CAPABILITY_MAP.md)、[候选](../.engineering/exploration/OPPORTUNITIES.md)、[路线](../.engineering/exploration/EVOLUTION_ROADMAP.md) | 九维成熟度、触发条件、依赖及暂不建设项 | 建议，未冻结新契约或新技术选型 |

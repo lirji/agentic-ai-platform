@@ -1,0 +1,279 @@
+{
+  "overall": "PASS",
+  "scope": "S8E actual mechanism baseline only",
+  "sourceFiles": 4,
+  "excerpts": 6,
+  "publishedChunks": 7,
+  "executed": 8,
+  "failed": 0,
+  "unstarted": 0,
+  "retrievalDenominator": 6,
+  "meanMetrics": {
+    "recall": 1.0,
+    "mrr": 0.875,
+    "ndcg": 0.9051127596788988
+  },
+  "humanDimensionReviewer": "Codex manual reading via authenticated developer; not user sign-off",
+  "answerableSupportPass": 5,
+  "answerableSupportFail": 1,
+  "answerableCoveragePass": 6,
+  "refusalPass": 2,
+  "totalQuestionMs": 14259,
+  "qualityFailure": "M04 supported=FAIL; legally readable citations contain an overgeneralized search-404 claim",
+  "unknownProviderUsageAndAmounts": 8,
+  "ledgerReconciliation": {
+    "chat": {
+      "before": {
+        "limitCny": "1",
+        "reservedCny": "0.581704",
+        "calls": 16,
+        "sha256": "d79afa5baf543ca73ba559c540aaf6f71000b7e804a94c25ec76dc3772be20aa"
+      },
+      "after": {
+        "limitCny": "1",
+        "reservedCny": "0.889964",
+        "calls": 24,
+        "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+      },
+      "addedCalls": 8,
+      "additionalReservedCny": "0.308260"
+    },
+    "embedding": {
+      "before": {
+        "limitCny": "1",
+        "reservedCny": "0.28",
+        "calls": 28,
+        "sha256": "b0f0912f9d5b2b208ca898950dae7de3834c8ececa729a1b4cdbeb35ad797d80"
+      },
+      "after": {
+        "limitCny": "1",
+        "reservedCny": "0.42",
+        "calls": 42,
+        "sha256": "0af9684a0e3d11561a44cae9e1075565e7cc7bc4b98c2abf0d618ba5f5c4d0b2"
+      },
+      "addedCalls": 14,
+      "additionalReservedCny": "0.14"
+    }
+  },
+  "readOnlyChecksNoNewReservations": true,
+  "permissionDenials": [
+    {
+      "identity": "other-owner",
+      "path": "/api/v1/knowledge/evaluations/datasets/fee96d5a-6107-4778-b24f-960e6d418a09",
+      "status": 404
+    },
+    {
+      "identity": "other-owner",
+      "path": "/api/v1/knowledge/evaluations/runs/dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5",
+      "status": 404
+    },
+    {
+      "identity": "other-owner",
+      "path": "/api/v1/knowledge/evaluations/runs/dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5/questions/e4b7d378-826d-48e3-bd24-bc4de22bde9f",
+      "status": 404
+    },
+    {
+      "identity": "other-owner",
+      "path": "/api/v1/knowledge/evaluations/runs/dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5/reviews",
+      "status": 404
+    },
+    {
+      "identity": "other-owner",
+      "path": "/api/v1/knowledge/evaluations/datasets/fee96d5a-6107-4778-b24f-960e6d418a09/revisions/1/baseline",
+      "status": 404
+    },
+    {
+      "identity": "other-owner",
+      "path": "/api/v1/knowledge/documents/23f1e2ba-342c-4b16-811a-eb79bcd96bfc/versions/1/chunks/ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+      "status": 404
+    },
+    {
+      "identity": "other-tenant",
+      "path": "/api/v1/knowledge/evaluations/datasets/fee96d5a-6107-4778-b24f-960e6d418a09",
+      "status": 404
+    },
+    {
+      "identity": "other-tenant",
+      "path": "/api/v1/knowledge/evaluations/runs/dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5",
+      "status": 404
+    },
+    {
+      "identity": "other-tenant",
+      "path": "/api/v1/knowledge/evaluations/runs/dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5/questions/e4b7d378-826d-48e3-bd24-bc4de22bde9f",
+      "status": 404
+    },
+    {
+      "identity": "other-tenant",
+      "path": "/api/v1/knowledge/evaluations/runs/dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5/reviews",
+      "status": 404
+    },
+    {
+      "identity": "other-tenant",
+      "path": "/api/v1/knowledge/evaluations/datasets/fee96d5a-6107-4778-b24f-960e6d418a09/revisions/1/baseline",
+      "status": 404
+    },
+    {
+      "identity": "other-tenant",
+      "path": "/api/v1/knowledge/documents/23f1e2ba-342c-4b16-811a-eb79bcd96bfc/versions/1/chunks/ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+      "status": 404
+    }
+  ],
+  "questions": [
+    {
+      "sample": "M01",
+      "questionId": "e4b7d378-826d-48e3-bd24-bc4de22bde9f",
+      "metrics": {
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0
+      },
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "totalMs": 2406
+    },
+    {
+      "sample": "M02",
+      "questionId": "e14448f8-b577-4ea9-a36b-9d2e4cacb237",
+      "metrics": {
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0
+      },
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "totalMs": 1779
+    },
+    {
+      "sample": "M03",
+      "questionId": "4cb07d92-d71f-468a-a5e5-4d9cb97d5988",
+      "metrics": {
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0
+      },
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "totalMs": 2623
+    },
+    {
+      "sample": "M04",
+      "questionId": "9af825f0-ec4b-4dc6-9a0f-2056b0db7b0c",
+      "metrics": {
+        "recall": 1.0,
+        "mrr": 0.25,
+        "ndcg": 0.4306765580733931
+      },
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "FAIL",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "totalMs": 2005
+    },
+    {
+      "sample": "M05",
+      "questionId": "f70853a7-91ad-4b4d-976e-670ab2e7a8c9",
+      "metrics": {
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0
+      },
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "totalMs": 1356
+    },
+    {
+      "sample": "M06",
+      "questionId": "3a76df62-ada8-417e-967d-b0e718f835da",
+      "metrics": {
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0
+      },
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "totalMs": 1714
+    },
+    {
+      "sample": "M07",
+      "questionId": "333035e3-85f4-4b13-804c-b4e86c10b0cb",
+      "metrics": {
+        "recall": null,
+        "mrr": null,
+        "ndcg": null
+      },
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": null,
+        "coverage": null,
+        "refusal": "PASS"
+      },
+      "totalMs": 1284
+    },
+    {
+      "sample": "M08",
+      "questionId": "60550d61-8015-4579-aeea-c915c24f5cfa",
+      "metrics": {
+        "recall": null,
+        "mrr": null,
+        "ndcg": null
+      },
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": null,
+        "coverage": null,
+        "refusal": "PASS"
+      },
+      "totalMs": 1092
+    }
+  ],
+  "authorizationScope": "local-dev / developer (default workbench-user remains isolated)",
+  "baselineEligible": true,
+  "baseline": {
+    "baselineId": "bd158640-0389-4107-8491-20444637a9ae",
+    "datasetId": "fee96d5a-6107-4778-b24f-960e6d418a09",
+    "datasetRevision": 1,
+    "revision": 1,
+    "runId": "dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5",
+    "manifestDigest": "759ad0c2480e0ccbf807382f8d77e018cc021f34cbebae1b6decd8958f348643",
+    "reviewDigest": "5cdcb51c1df56d42cb91c78a221dec705064c804cc53001f0a6563d19ea2e68a",
+    "policyVersion": "mechanism-gate-v1",
+    "note": "首份真实当前 RRF60/问答机制基线；已知不足见逐题评审，不代表企业业务质量达标。",
+    "selectedBy": "developer",
+    "createdAt": "2026-10-24T09:32:03.457612Z",
+    "bindingState": "AVAILABLE"
+  },
+  "sourceMechanismEvidence": {
+    "oneBasedRrf": "KnowledgeSearch.java:52 uses offset+i+1",
+    "stableIdentity": "SearchIndex.Candidate(chunkId,batchDigest); MySQL publication filter"
+  },
+  "limitations": [
+    "Small fixed project-doc mechanism set, no business-quality or performance SLA claim",
+    "M03 source gap declared before execution; no fabricated corpus fact",
+    "No-answer texts correctly refuse but existing answerability code remains ANSWERED when retrieval is nonempty",
+    "Source-only chunk appears in no-answer retrieval; preserve it as observed noise",
+    "Per-question cost fields unknown in product; external immutable ledger reconciliation is not provider billing",
+    "No UI source change; prior S8D UI evidence remains applicable, no new visual acceptance claim"
+  ]
+}

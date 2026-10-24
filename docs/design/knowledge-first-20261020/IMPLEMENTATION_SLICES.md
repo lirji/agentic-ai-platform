@@ -199,7 +199,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S8B | 评测集创建、修订与标注界面 | S8A | IMPLEMENT | IN_PROGRESS |
 | S8C | 持久评测执行与逐题结果 | S8B | IMPLEMENT | DONE |
 | S8D | 基线选择、逐题对照与退化门禁 | S8C | IMPLEMENT | DONE |
-| S8E | 运行当前两路链路的可追溯基线 | S8D | VALIDATE | PLANNED |
+| S8E | 运行当前两路链路的可追溯基线 | S8D | VALIDATE | DONE |
 | S8F | 最小跨语言与前端 CI | S8A | ENGINEERING | PLANNED |
 | S9A | 冻结结构化解析与准备包 v2 | S8A | DESIGN | PLANNED |
 | S9B | PDF 入库与页级引用 | S9A, S8E | IMPLEMENT | PLANNED |
@@ -295,7 +295,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-EVAL；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 真实业务资料不足时明确仅机制基线；费用前核账；固定模型/处理/权限/数据版本；无权/无答案/错误但合法引用分别记录；不以样本数虚构质量达标。
 - **Pass / Runtime：** VALIDATE；仅已有获授权环境及累计额度；额度不足不运行付费部分。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G01 G08。
+- **状态 / 并行 / 对应缺口：** DONE / 验收PASS，真实8题及已知M04支撑失败见 quality-mechanism-20261024/TEST_RESULT；parallel=no；G01 G08。
 
 ### S8F · 最小跨语言与前端 CI
 

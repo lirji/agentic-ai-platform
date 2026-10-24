@@ -1,0 +1,61 @@
+{
+  "ledgers": {
+    "chat": {
+      "limitCny": "1",
+      "reservedCny": "0.581704",
+      "calls": 16,
+      "sha256": "d79afa5baf543ca73ba559c540aaf6f71000b7e804a94c25ec76dc3772be20aa"
+    },
+    "embedding": {
+      "limitCny": "1",
+      "reservedCny": "0.34",
+      "calls": 34,
+      "sha256": "d85391ae2138548f0a62f43c7e5699f67c9faff9fc36aae72c97fb9c6bdfd94a"
+    }
+  },
+  "chatWorstCaseAdditionalCny": "0.317612",
+  "embeddingAdditionalCny": "0.08",
+  "questionBounds": [
+    {
+      "questionId": "e4b7d378-826d-48e3-bd24-bc4de22bde9f",
+      "upperInputBytes": 5325,
+      "upperReservedCny": "0.039732"
+    },
+    {
+      "questionId": "e14448f8-b577-4ea9-a36b-9d2e4cacb237",
+      "upperInputBytes": 5312,
+      "upperReservedCny": "0.039680"
+    },
+    {
+      "questionId": "4cb07d92-d71f-468a-a5e5-4d9cb97d5988",
+      "upperInputBytes": 5332,
+      "upperReservedCny": "0.039760"
+    },
+    {
+      "questionId": "9af825f0-ec4b-4dc6-9a0f-2056b0db7b0c",
+      "upperInputBytes": 5317,
+      "upperReservedCny": "0.039700"
+    },
+    {
+      "questionId": "f70853a7-91ad-4b4d-976e-670ab2e7a8c9",
+      "upperInputBytes": 5338,
+      "upperReservedCny": "0.039784"
+    },
+    {
+      "questionId": "3a76df62-ada8-417e-967d-b0e718f835da",
+      "upperInputBytes": 5341,
+      "upperReservedCny": "0.039796"
+    },
+    {
+      "questionId": "333035e3-85f4-4b13-804c-b4e86c10b0cb",
+      "upperInputBytes": 5287,
+      "upperReservedCny": "0.039580"
+    },
+    {
+      "questionId": "60550d61-8015-4579-aeea-c915c24f5cfa",
+      "upperInputBytes": 5287,
+      "upperReservedCny": "0.039580"
+    }
+  ],
+  "providerBill": "UNKNOWN"
+}

@@ -1,0 +1,241 @@
+{
+  "summary": {
+    "datasetId": "fee96d5a-6107-4778-b24f-960e6d418a09",
+    "name": "架构与操作机制基线 · 2026-10-24",
+    "purpose": "MECHANISM",
+    "revision": 1,
+    "questionCount": 8,
+    "definitionDigest": "3098d5be69666ae85223ca50244ea14e09c27279bd6bcc984e0e0d47db57e3e4",
+    "createdAt": "2026-10-24T09:30:33.616383Z"
+  },
+  "bindingState": "AVAILABLE",
+  "definition": {
+    "name": "架构与操作机制基线 · 2026-10-24",
+    "description": "固定 3f28379833a2 来源的 8 题机制集；人工逐题复核，不代表真实业务质量达标。M03 原资料缺一基名次/完整去重键，问题已在运行前限定。",
+    "purpose": "MECHANISM",
+    "questions": [
+      {
+        "questionId": "e4b7d378-826d-48e3-bd24-bc4de22bde9f",
+        "question": "文档发布由谁决定？LlamaIndex 能否绕过授权直接读写业务数据？",
+        "expectation": "ANSWERABLE",
+        "critical": false,
+        "rubric": "指出 Java Knowledge 是唯一发布者；LlamaIndex 只提供转换/检索能力，不能绕过现有授权。",
+        "referenceAnswer": "发布与索引写入仍由 Java Knowledge 统一提交；LlamaIndex 不绕过授权直接读写业务数据。",
+        "documentIds": [
+          "23a2feea-ce55-4549-a0de-583878f70982",
+          "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "afa3cdcb-3406-4839-bf8f-9e4162adf953"
+        ],
+        "evidence": [
+          {
+            "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+            "version": 1,
+            "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+            "relevance": 2
+          }
+        ]
+      },
+      {
+        "questionId": "e14448f8-b577-4ea9-a36b-9d2e4cacb237",
+        "question": "当前能上传并解析什么资料格式？PDF 是否已经支持？",
+        "expectation": "ANSWERABLE",
+        "critical": false,
+        "rubric": "必须指出 UTF-8 TXT/Markdown；不得把规划中的 PDF/OCR/Office 说成已支持。大小限制为补充信息。",
+        "referenceAnswer": "当前支持严格 UTF-8 TXT 和 Markdown，非空、非纯空白且无 NUL，最多 1 MiB；PDF/OCR/Office 仍在后续切片。",
+        "documentIds": [
+          "23a2feea-ce55-4549-a0de-583878f70982",
+          "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "afa3cdcb-3406-4839-bf8f-9e4162adf953"
+        ],
+        "evidence": [
+          {
+            "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+            "version": 1,
+            "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+            "relevance": 2
+          }
+        ]
+      },
+      {
+        "questionId": "4cb07d92-d71f-468a-a5e5-4d9cb97d5988",
+        "question": "两路检索怎样融合分数、处理同分，并保证结果仍是当前可见版本？",
+        "expectation": "ANSWERABLE",
+        "critical": false,
+        "rubric": "说明 RRF 参数 60、同分 chunkId 排序及权威版本/权限复核。原资料未明说 rank 从 1 开始或完整候选去重键，不据此要求回答补充；这两点另以源码核验。不得声称已使用独立 Reranker。",
+        "referenceAnswer": "Java 用 RRF Σ1/(60+rank) 合并两路候选，同分按 chunkId 排序；MySQL 复核 owner、READY、publishedVersion、chunkId 和 batchDigest 后才输出规范块。",
+        "documentIds": [
+          "23a2feea-ce55-4549-a0de-583878f70982",
+          "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "afa3cdcb-3406-4839-bf8f-9e4162adf953"
+        ],
+        "evidence": [
+          {
+            "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+            "version": 1,
+            "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+            "relevance": 2
+          }
+        ]
+      },
+      {
+        "questionId": "9af825f0-ec4b-4dc6-9a0f-2056b0db7b0c",
+        "question": "只有向量索引写入完成，资料是否就可以被用户检索到？",
+        "expectation": "ANSWERABLE",
+        "critical": false,
+        "rubric": "必须指出双索引均确认且权威发布完成才可见；单路写成功、外部可见或旧租约均不构成发布。",
+        "referenceAnswer": "不可以。Qdrant 与 ES 各自确认完成后，还要在有效租约下由 Java 短事务提交文档 READY 和 publishedVersion；单个 sink 完成或旧 owner 均不能发布。",
+        "documentIds": [
+          "23a2feea-ce55-4549-a0de-583878f70982",
+          "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "afa3cdcb-3406-4839-bf8f-9e4162adf953"
+        ],
+        "evidence": [
+          {
+            "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+            "version": 1,
+            "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+            "relevance": 2
+          }
+        ]
+      },
+      {
+        "questionId": "f70853a7-91ad-4b4d-976e-670ab2e7a8c9",
+        "question": "知道 chunkId 后，是否就能绕过权限读取资料？旧版本引用还一定可读吗？",
+        "expectation": "ANSWERABLE",
+        "critical": true,
+        "rubric": "必须拒绝凭 chunkId 绕权；必须指出当前所有者和发布版本校验、失效/无权不返回原文。",
+        "referenceAnswer": "不可以。直接引用仍复核当前所有者和已发布版本；无权、不可访问或版本失效返回 404。",
+        "documentIds": [
+          "23a2feea-ce55-4549-a0de-583878f70982",
+          "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "afa3cdcb-3406-4839-bf8f-9e4162adf953"
+        ],
+        "evidence": [
+          {
+            "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+            "version": 1,
+            "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+            "relevance": 2
+          }
+        ]
+      },
+      {
+        "questionId": "3a76df62-ada8-417e-967d-b0e718f835da",
+        "question": "旧 worker 或旧 epoch 能否覆盖新执行者的结果或检查点？最终状态由谁裁定？",
+        "expectation": "ANSWERABLE",
+        "critical": true,
+        "rubric": "必须明确中央 Task 终态与租约/epoch 裁定，旧执行者不能覆盖新结果；PG 孤立写或最后事件不等于已提交结果。",
+        "referenceAnswer": "不能。旧 owner、旧 epoch、过期租约或取消后的完成都被拒绝；中央 Task 终态是权威，检查点只能恢复中央有效租约接受的 receipt，不能取 PG 任意 latest。",
+        "documentIds": [
+          "23a2feea-ce55-4549-a0de-583878f70982",
+          "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "afa3cdcb-3406-4839-bf8f-9e4162adf953"
+        ],
+        "evidence": [
+          {
+            "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+            "version": 1,
+            "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+            "relevance": 2
+          }
+        ]
+      },
+      {
+        "questionId": "333035e3-85f4-4b13-804c-b4e86c10b0cb",
+        "question": "本公司出差餐补每人每天多少元？",
+        "expectation": "NO_ANSWER",
+        "critical": false,
+        "rubric": "必须说明当前资料不足，不得编造金额；引用可访问并不代表该引用支持餐补金额。",
+        "referenceAnswer": "资料未提供公司报销制度，无法确定餐补金额。",
+        "documentIds": [
+          "23a2feea-ce55-4549-a0de-583878f70982",
+          "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "afa3cdcb-3406-4839-bf8f-9e4162adf953"
+        ],
+        "evidence": []
+      },
+      {
+        "questionId": "60550d61-8015-4579-aeea-c915c24f5cfa",
+        "question": "客户甲去年续费合同金额是多少？",
+        "expectation": "NO_ANSWER",
+        "critical": false,
+        "rubric": "必须说明没有客户甲合同或依据不足；不得用工程预算或示例数字替代合同金额。",
+        "referenceAnswer": "资料未提供客户甲合同，无法确定续费金额。",
+        "documentIds": [
+          "23a2feea-ce55-4549-a0de-583878f70982",
+          "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "afa3cdcb-3406-4839-bf8f-9e4162adf953"
+        ],
+        "evidence": []
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+      "version": 1,
+      "sourceHash": "66d31cd7a28a63db52152f45dfd1442a792fc1a490218ceab2998b7b4538aee3",
+      "batchDigest": "5fa97b4e8d892f2a8d89f5acb65f14040d3ef71c4d2adfa740ecfb51f53dcdc2",
+      "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+    },
+    {
+      "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+      "version": 1,
+      "sourceHash": "ca7ddcd9899766ea34aecc82300bb731986bec2d7e602d7137bcdc3e1e9d3b64",
+      "batchDigest": "79f212276cd2fa02a90776ff863a9833ad0e768198c7304c80321a09dc376b14",
+      "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+    },
+    {
+      "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+      "version": 1,
+      "sourceHash": "250c0223fced3fc603f3d226f8b230ad72f665b5fa3d7690c9b614d0c1715439",
+      "batchDigest": "b5da93c8e53d1120420f8d90d58e83c98074b2e4abdddf5ade3c79c621a665a4",
+      "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+    },
+    {
+      "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+      "version": 1,
+      "sourceHash": "8ba707d145a39d596b963c1b08f89023cf4f272ea32f1dac0aa9f690d980481d",
+      "batchDigest": "21b578e04fccdac4ec4fd46f9e0a807f52e94e2bc8bdaba33e46c40221d15581",
+      "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+    },
+    {
+      "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+      "version": 1,
+      "sourceHash": "2bada63c2c3503e1aab99a3632ab346ec42c647fab7a76970550bad100cf9dfd",
+      "batchDigest": "5c98b2bbed758d6403d233e72513e09f62aa7ea3fc3d72beb80f4128868ba070",
+      "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+    },
+    {
+      "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+      "version": 1,
+      "sourceHash": "d4fe325c6be49ed8b84582800d0a0581dfca7cca231676e8c5e2d204c6f75679",
+      "batchDigest": "d25f3a9cc9c2b8f40f6e8d07ecda49e505b7124281d2a54378fc2f400a0e2ee0",
+      "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "sample": "M01",
+    "questionId": "e4b7d378-826d-48e3-bd24-bc4de22bde9f",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "答复明确 Knowledge 统一提交，LlamaIndex 不得绕过授权；引用 M01 与 M04 的完整段落支持职责和发布条件。",
+    "reviewMethod": "Codex逐题阅读冻结rubric、实际回答和引用原文；由可信developer调用者保存，不代表用户人工签核，不调用额外裁判模型。"
+  },
+  {
+    "sample": "M02",
+    "questionId": "e14448f8-b577-4ea9-a36b-9d2e4cacb237",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "回答正确限制 UTF-8 TXT/Markdown、1 MiB，并明确 PDF/OCR/Office 尚未支持；未把规划当现状。",
+    "reviewMethod": "Codex逐题阅读冻结rubric、实际回答和引用原文；由可信developer调用者保存，不代表用户人工签核，不调用额外裁判模型。"
+  },
+  {
+    "sample": "M03",
+    "questionId": "4cb07d92-d71f-468a-a5e5-4d9cb97d5988",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "回答覆盖 RRF60、同分 chunkId 与 MySQL 权威过滤；没有补造一基名次/完整去重键。该两项在运行前已从无证据要求中剥离并单列源码核验。",
+    "reviewMethod": "Codex逐题阅读冻结rubric、实际回答和引用原文；由可信developer调用者保存，不代表用户人工签核，不调用额外裁判模型。"
+  },
+  {
+    "sample": "M04",
+    "questionId": "9af825f0-ec4b-4dc6-9a0f-2056b0db7b0c",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "FAIL",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "主要结论与双索引发布门槛正确，但“检索和直接引用……不可访问或版本失效会返回404”将直接引用的404扩大到检索。K04搜索是过滤后返回hits/空列表；故supported=FAIL，coverage=PASS。引用身份和定位正确，合法引用未掩盖语义错误。",
+    "reviewMethod": "Codex逐题阅读冻结rubric、实际回答和引用原文；由可信developer调用者保存，不代表用户人工签核，不调用额外裁判模型。"
+  },
+  {
+    "sample": "M05",
+    "questionId": "f70853a7-91ad-4b4d-976e-670ab2e7a8c9",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "回答拒绝凭chunkId绕权，并说明所有者/已发布版本重验与旧版本失效404，关键题通过。",
+    "reviewMethod": "Codex逐题阅读冻结rubric、实际回答和引用原文；由可信developer调用者保存，不代表用户人工签核，不调用额外裁判模型。"
+  },
+  {
+    "sample": "M06",
+    "questionId": "3a76df62-ada8-417e-967d-b0e718f835da",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "回答明确旧owner/epoch/过期租约均拒绝、中央Task终态和凭据权威，关键题通过。附加发布说明可由M04支持，但略显冗余。",
+    "reviewMethod": "Codex逐题阅读冻结rubric、实际回答和引用原文；由可信developer调用者保存，不代表用户人工签核，不调用额外裁判模型。"
+  },
+  {
+    "sample": "M07",
+    "questionId": "333035e3-85f4-4b13-804c-b4e86c10b0cb",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "没有编造餐补金额，明确现有资料不包含制度；拒答通过。返回字段仍为ANSWERED（当前只区分是否召回），且召回了来源说明噪声，作为既有机制限制保留。",
+    "reviewMethod": "Codex逐题阅读冻结rubric、实际回答和引用原文；由可信developer调用者保存，不代表用户人工签核，不调用额外裁判模型。"
+  },
+  {
+    "sample": "M08",
+    "questionId": "60550d61-8015-4579-aeea-c915c24f5cfa",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "没有编造合同金额，明确资料仅为项目机制；拒答通过。ANSWERED字段不能当作已提供业务答案，不能用合法引用证明资料存在合同金额。",
+    "reviewMethod": "Codex逐题阅读冻结rubric、实际回答和引用原文；由可信developer调用者保存，不代表用户人工签核，不调用额外裁判模型。"
+  }
+]

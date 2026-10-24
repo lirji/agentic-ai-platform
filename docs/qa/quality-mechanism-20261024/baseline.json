@@ -1,0 +1,14 @@
+{
+  "baselineId": "bd158640-0389-4107-8491-20444637a9ae",
+  "datasetId": "fee96d5a-6107-4778-b24f-960e6d418a09",
+  "datasetRevision": 1,
+  "revision": 1,
+  "runId": "dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5",
+  "manifestDigest": "759ad0c2480e0ccbf807382f8d77e018cc021f34cbebae1b6decd8958f348643",
+  "reviewDigest": "5cdcb51c1df56d42cb91c78a221dec705064c804cc53001f0a6563d19ea2e68a",
+  "policyVersion": "mechanism-gate-v1",
+  "note": "首份真实当前 RRF60/问答机制基线；已知不足见逐题评审，不代表企业业务质量达标。",
+  "selectedBy": "developer",
+  "createdAt": "2026-10-24T09:32:03.457612Z",
+  "bindingState": "AVAILABLE"
+}

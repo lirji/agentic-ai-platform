@@ -1,0 +1,72 @@
+{
+  "purpose": "MECHANISM",
+  "topK": 5,
+  "retrievalScope": "all-six-documents",
+  "sourceGap": "M03 原固定章节未明说一基名次和完整去重键，运行前将问题限定为原文支持的融合/同分/版本规则；源码机制核验单列，不补造检索正文。",
+  "questions": [
+    {
+      "sample": "M01",
+      "question": "文档发布由谁决定？LlamaIndex 能否绕过授权直接读写业务数据？",
+      "referenceAnswer": "发布与索引写入仍由 Java Knowledge 统一提交；LlamaIndex 不绕过授权直接读写业务数据。",
+      "rubric": "指出 Java Knowledge 是唯一发布者；LlamaIndex 只提供转换/检索能力，不能绕过现有授权。",
+      "expectation": "ANSWERABLE",
+      "critical": false
+    },
+    {
+      "sample": "M02",
+      "question": "当前能上传并解析什么资料格式？PDF 是否已经支持？",
+      "referenceAnswer": "当前支持严格 UTF-8 TXT 和 Markdown，非空、非纯空白且无 NUL，最多 1 MiB；PDF/OCR/Office 仍在后续切片。",
+      "rubric": "必须指出 UTF-8 TXT/Markdown；不得把规划中的 PDF/OCR/Office 说成已支持。大小限制为补充信息。",
+      "expectation": "ANSWERABLE",
+      "critical": false
+    },
+    {
+      "sample": "M03",
+      "question": "两路检索怎样融合分数、处理同分，并保证结果仍是当前可见版本？",
+      "referenceAnswer": "Java 用 RRF Σ1/(60+rank) 合并两路候选，同分按 chunkId 排序；MySQL 复核 owner、READY、publishedVersion、chunkId 和 batchDigest 后才输出规范块。",
+      "rubric": "说明 RRF 参数 60、同分 chunkId 排序及权威版本/权限复核。原资料未明说 rank 从 1 开始或完整候选去重键，不据此要求回答补充；这两点另以源码核验。不得声称已使用独立 Reranker。",
+      "expectation": "ANSWERABLE",
+      "critical": false
+    },
+    {
+      "sample": "M04",
+      "question": "只有向量索引写入完成，资料是否就可以被用户检索到？",
+      "referenceAnswer": "不可以。Qdrant 与 ES 各自确认完成后，还要在有效租约下由 Java 短事务提交文档 READY 和 publishedVersion；单个 sink 完成或旧 owner 均不能发布。",
+      "rubric": "必须指出双索引均确认且权威发布完成才可见；单路写成功、外部可见或旧租约均不构成发布。",
+      "expectation": "ANSWERABLE",
+      "critical": false
+    },
+    {
+      "sample": "M05",
+      "question": "知道 chunkId 后，是否就能绕过权限读取资料？旧版本引用还一定可读吗？",
+      "referenceAnswer": "不可以。直接引用仍复核当前所有者和已发布版本；无权、不可访问或版本失效返回 404。",
+      "rubric": "必须拒绝凭 chunkId 绕权；必须指出当前所有者和发布版本校验、失效/无权不返回原文。",
+      "expectation": "ANSWERABLE",
+      "critical": true
+    },
+    {
+      "sample": "M06",
+      "question": "旧 worker 或旧 epoch 能否覆盖新执行者的结果或检查点？最终状态由谁裁定？",
+      "referenceAnswer": "不能。旧 owner、旧 epoch、过期租约或取消后的完成都被拒绝；中央 Task 终态是权威，检查点只能恢复中央有效租约接受的 receipt，不能取 PG 任意 latest。",
+      "rubric": "必须明确中央 Task 终态与租约/epoch 裁定，旧执行者不能覆盖新结果；PG 孤立写或最后事件不等于已提交结果。",
+      "expectation": "ANSWERABLE",
+      "critical": true
+    },
+    {
+      "sample": "M07",
+      "question": "本公司出差餐补每人每天多少元？",
+      "referenceAnswer": "资料未提供公司报销制度，无法确定餐补金额。",
+      "rubric": "必须说明当前资料不足，不得编造金额；引用可访问并不代表该引用支持餐补金额。",
+      "expectation": "NO_ANSWER",
+      "critical": false
+    },
+    {
+      "sample": "M08",
+      "question": "客户甲去年续费合同金额是多少？",
+      "referenceAnswer": "资料未提供客户甲合同，无法确定续费金额。",
+      "rubric": "必须说明没有客户甲合同或依据不足；不得用工程预算或示例数字替代合同金额。",
+      "expectation": "NO_ANSWER",
+      "critical": false
+    }
+  ]
+}

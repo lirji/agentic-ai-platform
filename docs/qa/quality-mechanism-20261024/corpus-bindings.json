@@ -1,0 +1,295 @@
+{
+  "M01": {
+    "key": "a4afc83b-0c8c-49d9-bac6-915f6fdeb8e5",
+    "job": {
+      "jobId": "75e7448f-08dd-4d8f-9160-c55a82769d86",
+      "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+      "documentVersion": 1,
+      "status": "READY",
+      "stage": "COMPLETE",
+      "contentHash": "ca7ddcd9899766ea34aecc82300bb731986bec2d7e602d7137bcdc3e1e9d3b64",
+      "errorCode": null,
+      "retryable": false,
+      "retryCount": 0,
+      "revision": 5,
+      "createdAt": "2026-10-24T09:30:01.981036Z",
+      "updatedAt": "2026-10-24T09:30:05.051917Z"
+    },
+    "document": {
+      "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+      "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+      "version": 1,
+      "publishedVersion": 1,
+      "status": "READY",
+      "visibility": "OWNER",
+      "contentType": "text/markdown",
+      "sizeBytes": 662,
+      "contentHash": "ca7ddcd9899766ea34aecc82300bb731986bec2d7e602d7137bcdc3e1e9d3b64",
+      "ingestionJobId": "75e7448f-08dd-4d8f-9160-c55a82769d86",
+      "createdAt": "2026-10-24T09:30:01.981036Z",
+      "updatedAt": "2026-10-24T09:30:05.053754Z"
+    },
+    "evidence": {
+      "items": [
+        {
+          "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "version": 1,
+          "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+          "text": "# D02 框架职责；5. 索引写权限\n\n| 模块 | 目标职责 | 边界 |\n\n| --- | --- | --- |\n\n| `rag` / LlamaIndex | Document/Node 转换、Retriever、QueryEngine、证据组织、重排与知识转换流水线 | 不另启顶层 Agent Workflow；不绕过现有授权直接读写业务数据 |\n\n4. **索引写权限**：本轮目标仍由 Knowledge 统一提交；不让原 Java worker 和 LlamaIndex VectorStoreIndex 对同一集合并发维护相同文档。未来若要 Python 直接拥有索引写入，须另立数据所有权迁移决策。\n\n来源：BACKEND_ARCHITECTURE.md，提交 3f28379833a2。完整路径及摘录行号见同批来源清单。",
+          "textHash": "3e7feac609f3ad7b7641dde0438eb7f0f5a05467fbbebdd9fce58df799a1eb4f",
+          "source": {
+            "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+            "locator": "utf8-bytes:0-661"
+          }
+        }
+      ],
+      "nextCursor": null
+    }
+  },
+  "M02": {
+    "key": "ef9037ad-af4a-499d-b60f-56ff23ef9f4a",
+    "job": {
+      "jobId": "474428bd-94ea-400d-b3aa-76cbe60627a7",
+      "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+      "documentVersion": 1,
+      "status": "READY",
+      "stage": "COMPLETE",
+      "contentHash": "d4fe325c6be49ed8b84582800d0a0581dfca7cca231676e8c5e2d204c6f75679",
+      "errorCode": null,
+      "retryable": false,
+      "retryCount": 0,
+      "revision": 5,
+      "createdAt": "2026-10-24T09:30:05.113563Z",
+      "updatedAt": "2026-10-24T09:30:08.059449Z"
+    },
+    "document": {
+      "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+      "displayName": "机制基线 M02 · K01 资料受理",
+      "version": 1,
+      "publishedVersion": 1,
+      "status": "READY",
+      "visibility": "OWNER",
+      "contentType": "text/markdown",
+      "sizeBytes": 520,
+      "contentHash": "d4fe325c6be49ed8b84582800d0a0581dfca7cca231676e8c5e2d204c6f75679",
+      "ingestionJobId": "474428bd-94ea-400d-b3aa-76cbe60627a7",
+      "createdAt": "2026-10-24T09:30:05.113563Z",
+      "updatedAt": "2026-10-24T09:30:08.064686Z"
+    },
+    "evidence": {
+      "items": [
+        {
+          "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+          "version": 1,
+          "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+          "text": "# K01 资料受理\n\n| 输入 | 必需 | 语义 |\n\n| --- | --- | --- |\n\n| `file` part | 是 | 文件名扩展为 `.txt` 或 `.md`，严格 UTF-8，非空且不能只含空白或 NUL；至多 1 MiB |\n\n首片只创建文档第一版；documentId/jobId 由服务器生成 UUID，version=1。更新版本、PDF/OCR/Office 文件在后续解析与版本切片扩展，不能将字节接收当作已经支持解析。\n\n来源：KNOWLEDGE_CONTRACTS.md，提交 3f28379833a2。完整路径及摘录行号见同批来源清单。",
+          "textHash": "e23c63bd4188b81804c80660a70846de4191e4222d325b3a607a9040da68e263",
+          "source": {
+            "displayName": "机制基线 M02 · K01 资料受理",
+            "locator": "utf8-bytes:0-519"
+          }
+        }
+      ],
+      "nextCursor": null
+    }
+  },
+  "M03": {
+    "key": "ddd3f844-7c23-41b5-b78d-fa2f8db2696e",
+    "job": {
+      "jobId": "12a2144d-ed35-4544-af32-13ee2506656b",
+      "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+      "documentVersion": 1,
+      "status": "READY",
+      "stage": "COMPLETE",
+      "contentHash": "250c0223fced3fc603f3d226f8b230ad72f665b5fa3d7690c9b614d0c1715439",
+      "errorCode": null,
+      "retryable": false,
+      "retryCount": 0,
+      "revision": 5,
+      "createdAt": "2026-10-24T09:30:08.245362Z",
+      "updatedAt": "2026-10-24T09:30:11.071279Z"
+    },
+    "document": {
+      "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+      "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+      "version": 1,
+      "publishedVersion": 1,
+      "status": "READY",
+      "visibility": "OWNER",
+      "contentType": "text/markdown",
+      "sizeBytes": 586,
+      "contentHash": "250c0223fced3fc603f3d226f8b230ad72f665b5fa3d7690c9b614d0c1715439",
+      "ingestionJobId": "12a2144d-ed35-4544-af32-13ee2506656b",
+      "createdAt": "2026-10-24T09:30:08.245362Z",
+      "updatedAt": "2026-10-24T09:30:11.087635Z"
+    },
+    "evidence": {
+      "items": [
+        {
+          "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "version": 1,
+          "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+          "text": "# K03/K04 增补：两路融合\n\n- 两路依赖均须成功，不静默降级为空结果。Qdrant/ES 均先限定 tenant/owner/处理版本/可选文档，各最多 100 个候选；Java 按 RRF `Σ1/(60+rank)` 合并，平分按 chunkId 排序。一次有界 MySQL 查询重新校验所有者、READY、publishedVersion、chunkId 与 batchDigest，只输出规范块文本及 `utf8-bytes:start-end` 来源定位。分数不是概率；不承诺候选窗口外全量召回。\n\n来源：PROCESSING_CONTRACTS.md，提交 3f28379833a2。完整路径及摘录行号见同批来源清单。",
+          "textHash": "8138a20173463548aee424ea39b541334d93a0af2fcb1ca5533138055428c807",
+          "source": {
+            "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+            "locator": "utf8-bytes:0-585"
+          }
+        }
+      ],
+      "nextCursor": null
+    }
+  },
+  "M04": {
+    "key": "d3175751-05a2-458a-b304-add13d31a598",
+    "job": {
+      "jobId": "f0993ee2-6f4c-4237-ab5d-280f1f11df4c",
+      "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+      "documentVersion": 1,
+      "status": "READY",
+      "stage": "COMPLETE",
+      "contentHash": "2bada63c2c3503e1aab99a3632ab346ec42c647fab7a76970550bad100cf9dfd",
+      "errorCode": null,
+      "retryable": false,
+      "retryCount": 0,
+      "revision": 5,
+      "createdAt": "2026-10-24T09:30:11.346369Z",
+      "updatedAt": "2026-10-24T09:30:14.083270Z"
+    },
+    "document": {
+      "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+      "displayName": "机制基线 M04 · 双索引与发布",
+      "version": 1,
+      "publishedVersion": 1,
+      "status": "READY",
+      "visibility": "OWNER",
+      "contentType": "text/markdown",
+      "sizeBytes": 699,
+      "contentHash": "2bada63c2c3503e1aab99a3632ab346ec42c647fab7a76970550bad100cf9dfd",
+      "ingestionJobId": "f0993ee2-6f4c-4237-ab5d-280f1f11df4c",
+      "createdAt": "2026-10-24T09:30:11.346369Z",
+      "updatedAt": "2026-10-24T09:30:14.084751Z"
+    },
+    "evidence": {
+      "items": [
+        {
+          "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "version": 1,
+          "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+          "text": "# 双索引与发布\n\n- Qdrant `wait=true` 且确认 completed 后才记 DONE；ES Bulk `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE。超时或部分失败保持 PENDING，显式重试幂等重放该 sink；已 DONE 的 sink 不重写。未完成发布的数据即使在索引可见也不能从 API 返回。\n\n- 两个 sink DONE 后，在带租约条件的短事务中将任务 READY/COMPLETE 和文档 READY/publishedVersion=version 一起提交并记事件。旧 owner、错误批次和单 sink 完成均无法发布。发布响应未知时重读权威账本。\n\n来源：PROCESSING_CONTRACTS.md，提交 3f28379833a2。完整路径及摘录行号见同批来源清单。",
+          "textHash": "5d30a2351af33fb3ce6b64cb3d2c21688c1a2afa923f7477ab1a8cbf703a3bad",
+          "source": {
+            "displayName": "机制基线 M04 · 双索引与发布",
+            "locator": "utf8-bytes:0-698"
+          }
+        }
+      ],
+      "nextCursor": null
+    }
+  },
+  "M05": {
+    "key": "65f00bda-4e44-452d-a744-30d73ccb8c72",
+    "job": {
+      "jobId": "b81bea87-8d52-489e-891e-9c24d56b6856",
+      "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+      "documentVersion": 1,
+      "status": "READY",
+      "stage": "COMPLETE",
+      "contentHash": "66d31cd7a28a63db52152f45dfd1442a792fc1a490218ceab2998b7b4538aee3",
+      "errorCode": null,
+      "retryable": false,
+      "retryCount": 0,
+      "revision": 5,
+      "createdAt": "2026-10-24T09:30:14.491261Z",
+      "updatedAt": "2026-10-24T09:30:17.124067Z"
+    },
+    "document": {
+      "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+      "displayName": "机制基线 M05 · K04 直接引用",
+      "version": 1,
+      "publishedVersion": 1,
+      "status": "READY",
+      "visibility": "OWNER",
+      "contentType": "text/markdown",
+      "sizeBytes": 531,
+      "contentHash": "66d31cd7a28a63db52152f45dfd1442a792fc1a490218ceab2998b7b4538aee3",
+      "ingestionJobId": "b81bea87-8d52-489e-891e-9c24d56b6856",
+      "createdAt": "2026-10-24T09:30:14.491261Z",
+      "updatedAt": "2026-10-24T09:30:17.125848Z"
+    },
+    "evidence": {
+      "items": [
+        {
+          "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+          "version": 1,
+          "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+          "text": "# K04 直接引用\n\n`GET /api/v1/knowledge/documents/{documentId}/versions/{version}/chunks/{chunkId}` 返回同形 KnowledgeHit（score=0 表示直接引用读取，不作排名）；重新检查所有者与已发布版本，不可访问或版本已失效返回 404。K04 详细索引提交/恢复与检索错误码已在 [S3 增补](PROCESSING_CONTRACTS.md#s3java-提交恢复与读取)冻结，不由客户端猜测。\n\n来源：KNOWLEDGE_CONTRACTS.md，提交 3f28379833a2。完整路径及摘录行号见同批来源清单。",
+          "textHash": "ce23720a6dc6d463d426705d2c58e430e529881174bd4ab447164cf6a5e590a3",
+          "source": {
+            "displayName": "机制基线 M05 · K04 直接引用",
+            "locator": "utf8-bytes:0-530"
+          }
+        }
+      ],
+      "nextCursor": null
+    }
+  },
+  "M06": {
+    "key": "eba3e896-1c23-464e-b46e-e1613f011361",
+    "job": {
+      "jobId": "28c388b5-369e-4f31-ad83-bd789bb4ad6b",
+      "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+      "documentVersion": 1,
+      "status": "READY",
+      "stage": "COMPLETE",
+      "contentHash": "8ba707d145a39d596b963c1b08f89023cf4f272ea32f1dac0aa9f690d980481d",
+      "errorCode": null,
+      "retryable": false,
+      "retryCount": 0,
+      "revision": 5,
+      "createdAt": "2026-10-24T09:30:17.628861Z",
+      "updatedAt": "2026-10-24T09:30:20.131920Z"
+    },
+    "document": {
+      "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+      "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+      "version": 1,
+      "publishedVersion": 1,
+      "status": "READY",
+      "visibility": "OWNER",
+      "contentType": "text/markdown",
+      "sizeBytes": 1153,
+      "contentHash": "8ba707d145a39d596b963c1b08f89023cf4f272ea32f1dac0aa9f690d980481d",
+      "ingestionJobId": "28c388b5-369e-4f31-ad83-bd789bb4ad6b",
+      "createdAt": "2026-10-24T09:30:17.628861Z",
+      "updatedAt": "2026-10-24T09:30:20.133220Z"
+    },
+    "evidence": {
+      "items": [
+        {
+          "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "version": 1,
+          "chunkId": "aa652372827fc21abdf63c4e9ce963fc7553532041e739c2fa6e290221b1e25f",
+          "text": "来源：TASK_CONTRACTS.md，提交 3f28379833a2。完整路径及摘录行号见同批来源清单。",
+          "textHash": "84067c32ffc058575801a42cd217c1771220e219f5e08a5c95b66de388abd2d6",
+          "source": {
+            "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+            "locator": "utf8-bytes:1050-1152"
+          }
+        },
+        {
+          "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "version": 1,
+          "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+          "text": "# 不变量与失败窗口 2、3、4\n\n2. 创建/状态/事件在同一短事务提交；唯一键守住创建和事件重放。读取最后一条事件不等于终态，只有中央 Task 终态为准。事件上限每任务 4096，终态保留一个位置；超限拒绝事件而不静默丢弃。\n\n3. heartbeat 不增加用户 revision；用户取消/完成竞争以任务行锁裁决。旧 owner、旧 epoch、过期租约、取消后完成一律拒绝，即使客户端尚在执行。完成已提交的同 operationKey/结果重放允许查询成功，但不能改写终态。\n\n4. 检查点采用“PG 不可变准备写 → 中央凭据提交 → 只恢复凭据指向的快照”。中央 receipt 由有效租约 CAS/行锁提交，旧 worker 不能推进可恢复指针；物理 PG 孤立写可能存在，但不得被当作已提交检查点。新 epoch 使用独立物理 threadId，不读 PG 的任意 latest，也不搬运无凭据 pending writes。S5B 必须实现适配层并验证所有写路径；尚未通过前不启用 AI worker。\n\n来源：TASK_CONTRACTS.md，提交 3f28379833a2。",
+          "textHash": "6e720ffb8bef7a1c1884f9a766e18bf30693c3508f9a70b09ddbc54f6bb287b0",
+          "source": {
+            "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+            "locator": "utf8-bytes:0-1101"
+          }
+        }
+      ],
+      "nextCursor": null
+    }
+  }
+}

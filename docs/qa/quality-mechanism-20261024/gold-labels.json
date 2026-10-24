@@ -1,0 +1,50 @@
+[
+  {
+    "sample": "M01",
+    "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+    "version": 1,
+    "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+    "relevance": 2,
+    "reason": "逐段复核原文后，选取直接支持本题主要主张的完整内容块。M06 的单独来源说明块不含答案事实，未选为金标。"
+  },
+  {
+    "sample": "M02",
+    "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+    "version": 1,
+    "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+    "relevance": 2,
+    "reason": "逐段复核原文后，选取直接支持本题主要主张的完整内容块。M06 的单独来源说明块不含答案事实，未选为金标。"
+  },
+  {
+    "sample": "M03",
+    "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+    "version": 1,
+    "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+    "relevance": 2,
+    "reason": "逐段复核原文后，选取直接支持本题主要主张的完整内容块。M06 的单独来源说明块不含答案事实，未选为金标。"
+  },
+  {
+    "sample": "M04",
+    "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+    "version": 1,
+    "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+    "relevance": 2,
+    "reason": "逐段复核原文后，选取直接支持本题主要主张的完整内容块。M06 的单独来源说明块不含答案事实，未选为金标。"
+  },
+  {
+    "sample": "M05",
+    "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+    "version": 1,
+    "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+    "relevance": 2,
+    "reason": "逐段复核原文后，选取直接支持本题主要主张的完整内容块。M06 的单独来源说明块不含答案事实，未选为金标。"
+  },
+  {
+    "sample": "M06",
+    "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+    "version": 1,
+    "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+    "relevance": 2,
+    "reason": "逐段复核原文后，选取直接支持本题主要主张的完整内容块。M06 的单独来源说明块不含答案事实，未选为金标。"
+  }
+]

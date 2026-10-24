@@ -1,0 +1,95 @@
+[
+  {
+    "sample": "M01",
+    "sourceCommit": "3f28379833a2cffa45547d3ec0e681fc3383e5ec",
+    "sourcePath": "docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md",
+    "section": "D02 框架职责；5. 索引写权限",
+    "sourceLines": [
+      68,
+      20,
+      72,
+      136
+    ],
+    "sourceSha256": "0e37ae049aa840cb6e1b1553116047ccc9aab903fff2bf3dc98840d27800e5c3",
+    "extractedPath": "corpus/M01.md",
+    "extractedSha256": "ca7ddcd9899766ea34aecc82300bb731986bec2d7e602d7137bcdc3e1e9d3b64",
+    "bytes": 662,
+    "characters": 374
+  },
+  {
+    "sample": "M02",
+    "sourceCommit": "3f28379833a2cffa45547d3ec0e681fc3383e5ec",
+    "sourcePath": "docs/design/knowledge-first-20261020/KNOWLEDGE_CONTRACTS.md",
+    "section": "K01 资料受理",
+    "sourceLines": [
+      32,
+      14,
+      35,
+      38
+    ],
+    "sourceSha256": "df573cd9ab923b53bd805ede5dee2eae0a6c107088c3cab9eaf099a57eb081f9",
+    "extractedPath": "corpus/M02.md",
+    "extractedSha256": "d4fe325c6be49ed8b84582800d0a0581dfca7cca231676e8c5e2d204c6f75679",
+    "bytes": 520,
+    "characters": 292
+  },
+  {
+    "sample": "M03",
+    "sourceCommit": "3f28379833a2cffa45547d3ec0e681fc3383e5ec",
+    "sourcePath": "docs/design/knowledge-first-20261020/PROCESSING_CONTRACTS.md",
+    "section": "K03/K04 增补：两路融合",
+    "sourceLines": [
+      99
+    ],
+    "sourceSha256": "32f6fb39bef77c7ba0730e50124472e9c4bd0b5c7ffc7900400ae0865299ee38",
+    "extractedPath": "corpus/M03.md",
+    "extractedSha256": "250c0223fced3fc603f3d226f8b230ad72f665b5fa3d7690c9b614d0c1715439",
+    "bytes": 586,
+    "characters": 321
+  },
+  {
+    "sample": "M04",
+    "sourceCommit": "3f28379833a2cffa45547d3ec0e681fc3383e5ec",
+    "sourcePath": "docs/design/knowledge-first-20261020/PROCESSING_CONTRACTS.md",
+    "section": "双索引与发布",
+    "sourceLines": [
+      91,
+      92
+    ],
+    "sourceSha256": "32f6fb39bef77c7ba0730e50124472e9c4bd0b5c7ffc7900400ae0865299ee38",
+    "extractedPath": "corpus/M04.md",
+    "extractedSha256": "2bada63c2c3503e1aab99a3632ab346ec42c647fab7a76970550bad100cf9dfd",
+    "bytes": 699,
+    "characters": 385
+  },
+  {
+    "sample": "M05",
+    "sourceCommit": "3f28379833a2cffa45547d3ec0e681fc3383e5ec",
+    "sourcePath": "docs/design/knowledge-first-20261020/KNOWLEDGE_CONTRACTS.md",
+    "section": "K04 直接引用",
+    "sourceLines": [
+      95
+    ],
+    "sourceSha256": "df573cd9ab923b53bd805ede5dee2eae0a6c107088c3cab9eaf099a57eb081f9",
+    "extractedPath": "corpus/M05.md",
+    "extractedSha256": "66d31cd7a28a63db52152f45dfd1442a792fc1a490218ceab2998b7b4538aee3",
+    "bytes": 531,
+    "characters": 309
+  },
+  {
+    "sample": "M06",
+    "sourceCommit": "3f28379833a2cffa45547d3ec0e681fc3383e5ec",
+    "sourcePath": "docs/design/knowledge-first-20261020/TASK_CONTRACTS.md",
+    "section": "不变量与失败窗口 2、3、4",
+    "sourceLines": [
+      48,
+      49,
+      50
+    ],
+    "sourceSha256": "f15070f5507678f9581fc0f9cc24dc627fcb2d940b486bea365a81c1e92f50cd",
+    "extractedPath": "corpus/M06.md",
+    "extractedSha256": "8ba707d145a39d596b963c1b08f89023cf4f272ea32f1dac0aa9f690d980481d",
+    "bytes": 1153,
+    "characters": 519
+  }
+]

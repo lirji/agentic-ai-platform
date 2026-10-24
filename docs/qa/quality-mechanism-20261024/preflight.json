@@ -1,0 +1,30 @@
+{
+  "recordedAt": "2026-10-24T09:29:57Z",
+  "ledgers": {
+    "chat": {
+      "limitCny": "1",
+      "reservedCny": "0.581704",
+      "calls": 16,
+      "sha256": "d79afa5baf543ca73ba559c540aaf6f71000b7e804a94c25ec76dc3772be20aa"
+    },
+    "embedding": {
+      "limitCny": "1",
+      "reservedCny": "0.28",
+      "calls": 28,
+      "sha256": "b0f0912f9d5b2b208ca898950dae7de3834c8ececa729a1b4cdbeb35ad797d80"
+    }
+  },
+  "localDevActiveTasks": 0,
+  "localDevActiveIngestions": 0,
+  "health": {
+    "gateway": "UP",
+    "knowledge": "UP",
+    "tasks": "UP",
+    "conversations": "UP"
+  },
+  "model": "deepseek-flash",
+  "maxOutputTokens": 1024,
+  "pricingCheckedAt": "2026-10-21",
+  "previousUnrecordedCalls": "76141042-5c45-4d19-9303-ad35bed42abe and ad30f4b0-873a-401a-bb9f-6923947c894a both SUCCEEDED; no replay",
+  "scope": "Existing local-dev/developer; cumulative chat/embedding limit remains CNY 1 each"
+}

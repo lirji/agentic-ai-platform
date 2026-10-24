@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "files": 31,
+  "localLinks": 189,
+  "json": "parsed",
+  "secretPatterns": "no private keys or token-shaped credentials",
+  "corpusLinks": "original source links preserved; resolved via source-manifest, not rewritten",
+  "pythonFormat": "PASS",
+  "pythonRuff": "PASS",
+  "diffCheck": "PASS"
+}

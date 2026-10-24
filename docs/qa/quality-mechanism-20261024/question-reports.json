@@ -1,0 +1,900 @@
+{
+  "e4b7d378-826d-48e3-bd24-bc4de22bde9f": {
+    "questionId": "e4b7d378-826d-48e3-bd24-bc4de22bde9f",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "文档发布不是在索引可见时直接生效：两个 sink（Qdrant、ES）均确认 DONE 后，需在带租约条件的短事务中把任务 READY/COMPLETE 与文档 READY/publishedVersion=version 一起提交并记事件；旧 owner、错误批次、单 sink 完成均无法发布 [3]。未完成发布的数据即使索引可见也不能从 API 返回 [3]。\n\nLlamaIndex 不能绕过授权直接读写业务数据：其职责限于 Document/Node 转换、Retriever、QueryEngine、证据组织、重排与知识转换流水线，边界明确为“不绕过现有授权直接读写业务数据” [1]。索引写入本轮仍由 Knowledge 统一提交，不让原 Java worker 与 LlamaIndex VectorStoreIndex 对同一集合并发维护相同文档 [1]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "version": 1,
+          "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+          "source": {
+            "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+            "locator": "utf8-bytes:0-661"
+          }
+        },
+        {
+          "citationId": "3",
+          "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "version": 1,
+          "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+          "source": {
+            "displayName": "机制基线 M04 · 双索引与发布",
+            "locator": "utf8-bytes:0-698"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+        "version": 1,
+        "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+        "textHash": "3e7feac609f3ad7b7641dde0438eb7f0f5a05467fbbebdd9fce58df799a1eb4f",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+          "locator": "utf8-bytes:0-661"
+        }
+      },
+      {
+        "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+        "version": 1,
+        "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+        "textHash": "ce23720a6dc6d463d426705d2c58e430e529881174bd4ab447164cf6a5e590a3",
+        "score": 0.03225806451612903,
+        "source": {
+          "displayName": "机制基线 M05 · K04 直接引用",
+          "locator": "utf8-bytes:0-530"
+        }
+      },
+      {
+        "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+        "version": 1,
+        "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+        "textHash": "5d30a2351af33fb3ce6b64cb3d2c21688c1a2afa923f7477ab1a8cbf703a3bad",
+        "score": 0.031746031746031744,
+        "source": {
+          "displayName": "机制基线 M04 · 双索引与发布",
+          "locator": "utf8-bytes:0-698"
+        }
+      },
+      {
+        "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+        "version": 1,
+        "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+        "textHash": "6e720ffb8bef7a1c1884f9a766e18bf30693c3508f9a70b09ddbc54f6bb287b0",
+        "score": 0.03055037313432836,
+        "source": {
+          "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+          "locator": "utf8-bytes:0-1101"
+        }
+      },
+      {
+        "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+        "version": 1,
+        "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+        "textHash": "e23c63bd4188b81804c80660a70846de4191e4222d325b3a607a9040da68e263",
+        "score": 0.030536130536130537,
+        "source": {
+          "displayName": "机制基线 M02 · K01 资料受理",
+          "locator": "utf8-bytes:0-519"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 292,
+      "generationMs": 1973,
+      "verificationMs": 140,
+      "totalMs": 2406
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null
+  },
+  "e14448f8-b577-4ea9-a36b-9d2e4cacb237": {
+    "questionId": "e14448f8-b577-4ea9-a36b-9d2e4cacb237",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "当前仅支持上传文件名扩展为 `.txt` 或 `.md` 的资料，要求严格 UTF-8、非空且不能只含空白或 NUL，大小至多 1 MiB [1]。PDF 目前尚未支持解析：资料明确说明 PDF/OCR/Office 文件属于后续扩展，不能把字节接收当作已经支持解析 [1]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+          "version": 1,
+          "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+          "source": {
+            "displayName": "机制基线 M02 · K01 资料受理",
+            "locator": "utf8-bytes:0-519"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+        "version": 1,
+        "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+        "textHash": "e23c63bd4188b81804c80660a70846de4191e4222d325b3a607a9040da68e263",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "机制基线 M02 · K01 资料受理",
+          "locator": "utf8-bytes:0-519"
+        }
+      },
+      {
+        "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+        "version": 1,
+        "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+        "textHash": "5d30a2351af33fb3ce6b64cb3d2c21688c1a2afa923f7477ab1a8cbf703a3bad",
+        "score": 0.031054405392392875,
+        "source": {
+          "displayName": "机制基线 M04 · 双索引与发布",
+          "locator": "utf8-bytes:0-698"
+        }
+      },
+      {
+        "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+        "version": 1,
+        "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+        "textHash": "6e720ffb8bef7a1c1884f9a766e18bf30693c3508f9a70b09ddbc54f6bb287b0",
+        "score": 0.031024531024531024,
+        "source": {
+          "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+          "locator": "utf8-bytes:0-1101"
+        }
+      },
+      {
+        "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+        "version": 1,
+        "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+        "textHash": "ce23720a6dc6d463d426705d2c58e430e529881174bd4ab447164cf6a5e590a3",
+        "score": 0.016129032258064516,
+        "source": {
+          "displayName": "机制基线 M05 · K04 直接引用",
+          "locator": "utf8-bytes:0-530"
+        }
+      },
+      {
+        "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+        "version": 1,
+        "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+        "textHash": "8138a20173463548aee424ea39b541334d93a0af2fcb1ca5533138055428c807",
+        "score": 0.015873015873015872,
+        "source": {
+          "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+          "locator": "utf8-bytes:0-585"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 142,
+      "generationMs": 1408,
+      "verificationMs": 227,
+      "totalMs": 1779
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null
+  },
+  "4cb07d92-d71f-468a-a5e5-4d9cb97d5988": {
+    "questionId": "4cb07d92-d71f-468a-a5e5-4d9cb97d5988",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "两路检索的融合与版本可见性规则如下：\n\n- **分数融合**：Qdrant 与 ES 两路均须成功，不静默降级为空结果。两路先各自限定 tenant/owner/处理版本/可选文档，各最多取 100 个候选；Java 侧按 RRF `Σ1/(60+rank)` 合并分数。该分数不是概率，也不承诺候选窗口外的全量召回 [1]。\n- **同分处理**：合并时平分按 chunkId 排序 [1]。\n- **保证当前可见版本**：融合后通过一次有界 MySQL 查询重新校验所有者、READY、publishedVersion、chunkId 与 batchDigest，只输出规范块文本及 `utf8-bytes:start-end` 来源定位 [1]。另外，未完成发布的数据即使在索引可见也不能从 API 返回；两个 sink 均 DONE 后在带租约条件的短事务中一起提交任务 READY/COMPLETE 与文档 READY/publishedVersion=version，旧 owner、错误批次或单 sink 完成均无法发布 [2]。\n\n限制说明：以上仅覆盖两路融合与发布可见性规则；未涉及其他检索链路的分数处理细节。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "version": 1,
+          "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+          "source": {
+            "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+            "locator": "utf8-bytes:0-585"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "version": 1,
+          "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+          "source": {
+            "displayName": "机制基线 M04 · 双索引与发布",
+            "locator": "utf8-bytes:0-698"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+        "version": 1,
+        "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+        "textHash": "8138a20173463548aee424ea39b541334d93a0af2fcb1ca5533138055428c807",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+          "locator": "utf8-bytes:0-585"
+        }
+      },
+      {
+        "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+        "version": 1,
+        "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+        "textHash": "5d30a2351af33fb3ce6b64cb3d2c21688c1a2afa923f7477ab1a8cbf703a3bad",
+        "score": 0.03200204813108039,
+        "source": {
+          "displayName": "机制基线 M04 · 双索引与发布",
+          "locator": "utf8-bytes:0-698"
+        }
+      },
+      {
+        "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+        "version": 1,
+        "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+        "textHash": "ce23720a6dc6d463d426705d2c58e430e529881174bd4ab447164cf6a5e590a3",
+        "score": 0.031754032258064516,
+        "source": {
+          "displayName": "机制基线 M05 · K04 直接引用",
+          "locator": "utf8-bytes:0-530"
+        }
+      },
+      {
+        "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+        "version": 1,
+        "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+        "textHash": "e23c63bd4188b81804c80660a70846de4191e4222d325b3a607a9040da68e263",
+        "score": 0.03125763125763126,
+        "source": {
+          "displayName": "机制基线 M02 · K01 资料受理",
+          "locator": "utf8-bytes:0-519"
+        }
+      },
+      {
+        "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+        "version": 1,
+        "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+        "textHash": "3e7feac609f3ad7b7641dde0438eb7f0f5a05467fbbebdd9fce58df799a1eb4f",
+        "score": 0.031009615384615385,
+        "source": {
+          "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+          "locator": "utf8-bytes:0-661"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 145,
+      "generationMs": 2378,
+      "verificationMs": 99,
+      "totalMs": 2623
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null
+  },
+  "9af825f0-ec4b-4dc6-9a0f-2056b0db7b0c": {
+    "questionId": "9af825f0-ec4b-4dc6-9a0f-2056b0db7b0c",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "不能。只有向量索引写入完成，资料还不能被用户检索到。\n\n依据证据：\n\n- 需要两个索引 sink（Qdrant 和 ES）都写入完成并记 DONE，之后还要在带租约条件的短事务中同时提交任务 READY/COMPLETE 和文档 READY/publishedVersion，才算完成发布；单 sink 完成无法发布 [4]。\n- 未完成发布的数据即使索引可见，也不能从 API 返回 [4]。\n- 检索和直接引用读取都会重新校验所有者、READY、publishedVersion 等条件，不可访问或版本失效会返回 404 [2][5]。\n\n所以只完成向量索引写入，既缺另一个 sink 的完成，也缺发布状态提交，用户无法检索到。\n\n限制：证据未展开说明仅 Qdrant 单路可用时的具体表现，相关判断以发布与校验规则为准 [4][5]。",
+      "citations": [
+        {
+          "citationId": "2",
+          "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "version": 1,
+          "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+          "source": {
+            "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+            "locator": "utf8-bytes:0-585"
+          }
+        },
+        {
+          "citationId": "4",
+          "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "version": 1,
+          "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+          "source": {
+            "displayName": "机制基线 M04 · 双索引与发布",
+            "locator": "utf8-bytes:0-698"
+          }
+        },
+        {
+          "citationId": "5",
+          "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+          "version": 1,
+          "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+          "source": {
+            "displayName": "机制基线 M05 · K04 直接引用",
+            "locator": "utf8-bytes:0-530"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+        "version": 1,
+        "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+        "textHash": "3e7feac609f3ad7b7641dde0438eb7f0f5a05467fbbebdd9fce58df799a1eb4f",
+        "score": 0.03177805800756621,
+        "source": {
+          "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+          "locator": "utf8-bytes:0-661"
+        }
+      },
+      {
+        "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+        "version": 1,
+        "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+        "textHash": "8138a20173463548aee424ea39b541334d93a0af2fcb1ca5533138055428c807",
+        "score": 0.031754032258064516,
+        "source": {
+          "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+          "locator": "utf8-bytes:0-585"
+        }
+      },
+      {
+        "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+        "version": 1,
+        "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+        "textHash": "6e720ffb8bef7a1c1884f9a766e18bf30693c3508f9a70b09ddbc54f6bb287b0",
+        "score": 0.031544957774465976,
+        "source": {
+          "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+          "locator": "utf8-bytes:0-1101"
+        }
+      },
+      {
+        "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+        "version": 1,
+        "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+        "textHash": "5d30a2351af33fb3ce6b64cb3d2c21688c1a2afa923f7477ab1a8cbf703a3bad",
+        "score": 0.03149801587301587,
+        "source": {
+          "displayName": "机制基线 M04 · 双索引与发布",
+          "locator": "utf8-bytes:0-698"
+        }
+      },
+      {
+        "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+        "version": 1,
+        "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+        "textHash": "ce23720a6dc6d463d426705d2c58e430e529881174bd4ab447164cf6a5e590a3",
+        "score": 0.03128054740957967,
+        "source": {
+          "displayName": "机制基线 M05 · K04 直接引用",
+          "locator": "utf8-bytes:0-530"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 0.25,
+      "ndcg": 0.4306765580733931
+    },
+    "timing": {
+      "retrievalMs": 201,
+      "generationMs": 1709,
+      "verificationMs": 93,
+      "totalMs": 2005
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null
+  },
+  "f70853a7-91ad-4b4d-976e-670ab2e7a8c9": {
+    "questionId": "f70853a7-91ad-4b4d-976e-670ab2e7a8c9",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "不能。仅知道 chunkId 不能绕过权限：直接引用读取接口会重新检查所有者与已发布版本，不可访问或版本失效时返回 404 [1]；两路融合结果也会用一次有界 MySQL 查询重新校验所有者、READY、publishedVersion、chunkId 与 batchDigest [3]。旧版本引用也不一定可读——版本已失效会返回 404 [1]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+          "version": 1,
+          "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+          "source": {
+            "displayName": "机制基线 M05 · K04 直接引用",
+            "locator": "utf8-bytes:0-530"
+          }
+        },
+        {
+          "citationId": "3",
+          "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "version": 1,
+          "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+          "source": {
+            "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+            "locator": "utf8-bytes:0-585"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+        "version": 1,
+        "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+        "textHash": "ce23720a6dc6d463d426705d2c58e430e529881174bd4ab447164cf6a5e590a3",
+        "score": 0.03252247488101534,
+        "source": {
+          "displayName": "机制基线 M05 · K04 直接引用",
+          "locator": "utf8-bytes:0-530"
+        }
+      },
+      {
+        "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+        "version": 1,
+        "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+        "textHash": "3e7feac609f3ad7b7641dde0438eb7f0f5a05467fbbebdd9fce58df799a1eb4f",
+        "score": 0.032266458495966696,
+        "source": {
+          "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+          "locator": "utf8-bytes:0-661"
+        }
+      },
+      {
+        "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+        "version": 1,
+        "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+        "textHash": "8138a20173463548aee424ea39b541334d93a0af2fcb1ca5533138055428c807",
+        "score": 0.031754032258064516,
+        "source": {
+          "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+          "locator": "utf8-bytes:0-585"
+        }
+      },
+      {
+        "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+        "version": 1,
+        "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+        "textHash": "6e720ffb8bef7a1c1884f9a766e18bf30693c3508f9a70b09ddbc54f6bb287b0",
+        "score": 0.03149801587301587,
+        "source": {
+          "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+          "locator": "utf8-bytes:0-1101"
+        }
+      },
+      {
+        "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+        "version": 1,
+        "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+        "textHash": "e23c63bd4188b81804c80660a70846de4191e4222d325b3a607a9040da68e263",
+        "score": 0.03076923076923077,
+        "source": {
+          "displayName": "机制基线 M02 · K01 资料受理",
+          "locator": "utf8-bytes:0-519"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 136,
+      "generationMs": 1122,
+      "verificationMs": 96,
+      "totalMs": 1356
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null
+  },
+  "3a76df62-ada8-417e-967d-b0e718f835da": {
+    "questionId": "3a76df62-ada8-417e-967d-b0e718f835da",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "不能。旧 owner、旧 epoch、过期租约以及取消后完成的提交一律拒绝，旧 worker 不能推进可恢复指针；完成已提交的同 operationKey/结果重放虽可查询成功，但不能改写终态[1]。检查点恢复只认中央凭据指向的快照，物理 PG 孤立写不得被当作已提交检查点[1]。\n\n最终状态由中央 Task 终态裁定，读取最后一条事件不等于终态[1]。发布时需两个 sink 都 DONE，并在带租约条件的短事务中将任务 READY/COMPLETE 与文档 READY/publishedVersion 一起提交；旧 owner、错误批次和单 sink 完成均无法发布，发布响应未知时重读权威账本[2]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "version": 1,
+          "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+          "source": {
+            "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+            "locator": "utf8-bytes:0-1101"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+          "version": 1,
+          "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+          "source": {
+            "displayName": "机制基线 M04 · 双索引与发布",
+            "locator": "utf8-bytes:0-698"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+        "version": 1,
+        "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+        "textHash": "6e720ffb8bef7a1c1884f9a766e18bf30693c3508f9a70b09ddbc54f6bb287b0",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+          "locator": "utf8-bytes:0-1101"
+        }
+      },
+      {
+        "documentId": "ab9dd67b-3c43-45e2-b3aa-edfe3583c184",
+        "version": 1,
+        "chunkId": "5b0a1fe1b4ee888fc32fcab6e76e2ba22f1ead3be5cb6bcf81be9819a2e080b2",
+        "textHash": "5d30a2351af33fb3ce6b64cb3d2c21688c1a2afa923f7477ab1a8cbf703a3bad",
+        "score": 0.03225806451612903,
+        "source": {
+          "displayName": "机制基线 M04 · 双索引与发布",
+          "locator": "utf8-bytes:0-698"
+        }
+      },
+      {
+        "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+        "version": 1,
+        "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+        "textHash": "ce23720a6dc6d463d426705d2c58e430e529881174bd4ab447164cf6a5e590a3",
+        "score": 0.03149801587301587,
+        "source": {
+          "displayName": "机制基线 M05 · K04 直接引用",
+          "locator": "utf8-bytes:0-530"
+        }
+      },
+      {
+        "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+        "version": 1,
+        "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+        "textHash": "8138a20173463548aee424ea39b541334d93a0af2fcb1ca5533138055428c807",
+        "score": 0.031024531024531024,
+        "source": {
+          "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+          "locator": "utf8-bytes:0-585"
+        }
+      },
+      {
+        "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+        "version": 1,
+        "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+        "textHash": "3e7feac609f3ad7b7641dde0438eb7f0f5a05467fbbebdd9fce58df799a1eb4f",
+        "score": 0.03076923076923077,
+        "source": {
+          "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+          "locator": "utf8-bytes:0-661"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 131,
+      "generationMs": 1472,
+      "verificationMs": 110,
+      "totalMs": 1714
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null
+  },
+  "333035e3-85f4-4b13-804c-b4e86c10b0cb": {
+    "questionId": "333035e3-85f4-4b13-804c-b4e86c10b0cb",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "现有资料未包含本公司出差餐补标准，无法据此回答每人每天多少元。[1][2][3][4][5]",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "version": 1,
+          "chunkId": "aa652372827fc21abdf63c4e9ce963fc7553532041e739c2fa6e290221b1e25f",
+          "source": {
+            "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+            "locator": "utf8-bytes:1050-1152"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+          "version": 1,
+          "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+          "source": {
+            "displayName": "机制基线 M02 · K01 资料受理",
+            "locator": "utf8-bytes:0-519"
+          }
+        },
+        {
+          "citationId": "3",
+          "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+          "version": 1,
+          "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+          "source": {
+            "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+            "locator": "utf8-bytes:0-661"
+          }
+        },
+        {
+          "citationId": "4",
+          "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "version": 1,
+          "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+          "source": {
+            "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+            "locator": "utf8-bytes:0-585"
+          }
+        },
+        {
+          "citationId": "5",
+          "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "version": 1,
+          "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+          "source": {
+            "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+            "locator": "utf8-bytes:0-1101"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+        "version": 1,
+        "chunkId": "aa652372827fc21abdf63c4e9ce963fc7553532041e739c2fa6e290221b1e25f",
+        "textHash": "84067c32ffc058575801a42cd217c1771220e219f5e08a5c95b66de388abd2d6",
+        "score": 0.01639344262295082,
+        "source": {
+          "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+          "locator": "utf8-bytes:1050-1152"
+        }
+      },
+      {
+        "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+        "version": 1,
+        "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+        "textHash": "e23c63bd4188b81804c80660a70846de4191e4222d325b3a607a9040da68e263",
+        "score": 0.016129032258064516,
+        "source": {
+          "displayName": "机制基线 M02 · K01 资料受理",
+          "locator": "utf8-bytes:0-519"
+        }
+      },
+      {
+        "documentId": "23f1e2ba-342c-4b16-811a-eb79bcd96bfc",
+        "version": 1,
+        "chunkId": "ed60fef06d121f8486651059164acbec676874164d8cea6fe8e64a90614579b5",
+        "textHash": "3e7feac609f3ad7b7641dde0438eb7f0f5a05467fbbebdd9fce58df799a1eb4f",
+        "score": 0.015873015873015872,
+        "source": {
+          "displayName": "机制基线 M01 · D02 框架职责；5. 索引写权限",
+          "locator": "utf8-bytes:0-661"
+        }
+      },
+      {
+        "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+        "version": 1,
+        "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+        "textHash": "8138a20173463548aee424ea39b541334d93a0af2fcb1ca5533138055428c807",
+        "score": 0.015625,
+        "source": {
+          "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+          "locator": "utf8-bytes:0-585"
+        }
+      },
+      {
+        "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+        "version": 1,
+        "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+        "textHash": "6e720ffb8bef7a1c1884f9a766e18bf30693c3508f9a70b09ddbc54f6bb287b0",
+        "score": 0.015384615384615384,
+        "source": {
+          "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+          "locator": "utf8-bytes:0-1101"
+        }
+      }
+    ],
+    "metrics": null,
+    "timing": {
+      "retrievalMs": 147,
+      "generationMs": 995,
+      "verificationMs": 141,
+      "totalMs": 1284
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null
+  },
+  "60550d61-8015-4579-aeea-c915c24f5cfa": {
+    "questionId": "60550d61-8015-4579-aeea-c915c24f5cfa",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "提供的证据中没有客户甲续费合同金额的任何信息；现有资料均为知识库检索、任务不变量与资料受理等机制说明，无法回答该问题。[1][2][3][4]",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+          "version": 1,
+          "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+          "source": {
+            "displayName": "机制基线 M05 · K04 直接引用",
+            "locator": "utf8-bytes:0-530"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+          "version": 1,
+          "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+          "source": {
+            "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+            "locator": "utf8-bytes:0-585"
+          }
+        },
+        {
+          "citationId": "3",
+          "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+          "version": 1,
+          "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+          "source": {
+            "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+            "locator": "utf8-bytes:0-1101"
+          }
+        },
+        {
+          "citationId": "4",
+          "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+          "version": 1,
+          "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+          "source": {
+            "displayName": "机制基线 M02 · K01 资料受理",
+            "locator": "utf8-bytes:0-519"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "23a2feea-ce55-4549-a0de-583878f70982",
+        "version": 1,
+        "chunkId": "409349ee171758c61e3625df8dd4db600c10d6b624932cddcfbac330948360a4",
+        "textHash": "ce23720a6dc6d463d426705d2c58e430e529881174bd4ab447164cf6a5e590a3",
+        "score": 0.03177805800756621,
+        "source": {
+          "displayName": "机制基线 M05 · K04 直接引用",
+          "locator": "utf8-bytes:0-530"
+        }
+      },
+      {
+        "documentId": "25c62bcf-7451-4a3e-96fc-805e0f230442",
+        "version": 1,
+        "chunkId": "b7b8a6a2f4e59d023beadd42b90fe3dfb378e8fbcf366d72e8df84373f76eb70",
+        "textHash": "8138a20173463548aee424ea39b541334d93a0af2fcb1ca5533138055428c807",
+        "score": 0.031754032258064516,
+        "source": {
+          "displayName": "机制基线 M03 · K03/K04 增补：两路融合",
+          "locator": "utf8-bytes:0-585"
+        }
+      },
+      {
+        "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+        "version": 1,
+        "chunkId": "d4a01dc426788987fe4e45ef22e9bb8285aac009e46296270b8bb6d2463f8fa8",
+        "textHash": "6e720ffb8bef7a1c1884f9a766e18bf30693c3508f9a70b09ddbc54f6bb287b0",
+        "score": 0.031754032258064516,
+        "source": {
+          "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+          "locator": "utf8-bytes:0-1101"
+        }
+      },
+      {
+        "documentId": "afa3cdcb-3406-4839-bf8f-9e4162adf953",
+        "version": 1,
+        "chunkId": "11e8c9eec16af2229fe2f1e33f3aff3d8f7a9f95a801baa9ed2a54d40f847361",
+        "textHash": "e23c63bd4188b81804c80660a70846de4191e4222d325b3a607a9040da68e263",
+        "score": 0.031746031746031744,
+        "source": {
+          "displayName": "机制基线 M02 · K01 资料受理",
+          "locator": "utf8-bytes:0-519"
+        }
+      },
+      {
+        "documentId": "a3d8a065-37a4-499b-96af-af8ab7deaf19",
+        "version": 1,
+        "chunkId": "aa652372827fc21abdf63c4e9ce963fc7553532041e739c2fa6e290221b1e25f",
+        "textHash": "84067c32ffc058575801a42cd217c1771220e219f5e08a5c95b66de388abd2d6",
+        "score": 0.01639344262295082,
+        "source": {
+          "displayName": "机制基线 M06 · 不变量与失败窗口 2、3、4",
+          "locator": "utf8-bytes:1050-1152"
+        }
+      }
+    ],
+    "metrics": null,
+    "timing": {
+      "retrievalMs": 122,
+      "generationMs": 870,
+      "verificationMs": 99,
+      "totalMs": 1092
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null
+  }
+}

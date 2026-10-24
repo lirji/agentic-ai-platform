@@ -14,7 +14,7 @@
 
 S8A 已冻结 E01 与指标，S8B 基于后端 `39af9f6`、前端 `d2b4dc6` 实现评测定义、不可变修订、原提交恢复、授权原文标注和 React 界面。涉及 Knowledge evaluation 包、V4、共享发布 SQL、精确本地代理路由及质量页面；来源和验证见 [实现映射](qa/quality-datasets-20261021/IMPLEMENTATION_EVIDENCE.md)及 [TEST_RESULT](qa/quality-datasets-20261021/TEST_RESULT.md)。E01 用途筛选补充为数据库过滤并绑定游标。当前状态与 Git 交付仍由唯一 PROGRESS_STATE 维护。
 
-S8C 基于后端 `c810e959`、前端 `427bcb9` 实现持久运行、Tasks失败凭据、独立角色、LangGraph逐题恢复及React运行详情。Knowledge V5 / Tasks V3仅追加，既有QA路径和预算复用；[E02](design/knowledge-first-20261020/EVALUATION_RUN_CONTRACTS.md)、[实现映射](qa/quality-runs-20261021/IMPLEMENTATION_EVIDENCE.md)、[验收](qa/quality-runs-20261021/TEST_RESULT.md)记录边界。S8D在后端44409bf/前端717e8c2上补齐不可变评分/基线、V6和React对照；[E03](design/knowledge-first-20261020/EVALUATION_COMPARISON_CONTRACTS.md)、[实现映射](qa/quality-baselines-20261021/IMPLEMENTATION_EVIDENCE.md)及[验收](qa/quality-baselines-20261021/TEST_RESULT.md)记录范围。S8E真实机制基线尚未完成。
+S8C 基于后端 `c810e959`、前端 `427bcb9` 实现持久运行、Tasks失败凭据、独立角色、LangGraph逐题恢复及React运行详情。Knowledge V5 / Tasks V3仅追加，既有QA路径和预算复用；[E02](design/knowledge-first-20261020/EVALUATION_RUN_CONTRACTS.md)、[实现映射](qa/quality-runs-20261021/IMPLEMENTATION_EVIDENCE.md)、[验收](qa/quality-runs-20261021/TEST_RESULT.md)记录边界。S8D在后端44409bf/前端717e8c2上补齐不可变评分/基线、V6和React对照；[E03](design/knowledge-first-20261020/EVALUATION_COMPARISON_CONTRACTS.md)、[实现映射](qa/quality-baselines-20261021/IMPLEMENTATION_EVIDENCE.md)及[验收](qa/quality-baselines-20261021/TEST_RESULT.md)记录范围。S8E在后端aa355c5上完成6份固定来源真实入库、8题运行和逐题评分，[验收](qa/quality-mechanism-20261024/TEST_RESULT.md)保留1项非关键支撑失败；源码未改。
 
 [框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json)与原比较基线保持历史身份；本片无模型调用和依赖升级。
 
