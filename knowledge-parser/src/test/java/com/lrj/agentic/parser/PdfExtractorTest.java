@@ -78,6 +78,11 @@ class PdfExtractorTest {
         assertThat(result.warnings()).contains(new Extraction.Warning(WarningCode.PAGE_NO_TEXT, "pdf:4"));
     }
 
+    @Test void missingChineseMappingCannotPublishOnlyRemainingLatinText() throws Exception {
+        byte[] source = Files.readAllBytes(Path.of("..", "docs", "qa", "pdf-ingestion-20261024", "fixtures", "missing-font-map.pdf"));
+        rejects(source, Exit.INVALID);
+    }
+
     private static byte[] fixture(String name) throws Exception {
         return Files.readAllBytes(Path.of("..", "docs", "qa", "structured-parsing-20261024", "fixtures", name));
     }

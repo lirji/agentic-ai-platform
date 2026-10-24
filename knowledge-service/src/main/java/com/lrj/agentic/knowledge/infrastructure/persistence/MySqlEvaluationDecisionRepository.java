@@ -151,7 +151,7 @@ public class MySqlEvaluationDecisionRepository implements EvaluationDecisionRepo
         var ids = definition.bindings().stream().map(DocumentBinding::documentId).sorted().toList();
         if (!ids.isEmpty()) {
             if (definitions.lockDocuments(owner, ids).size() != ids.size()) { throw failure(KnowledgeError.EVALUATION_BINDING_INVALID); }
-            if (!definitions.bindings(owner, ids, ProcessingProtocol.PROCESSOR).equals(definition.bindings())) { throw failure(KnowledgeError.EVALUATION_BINDING_INVALID); }
+            if (!definitions.bindings(owner, ids).equals(definition.bindings())) { throw failure(KnowledgeError.EVALUATION_BINDING_INVALID); }
         }
     }
     private DecisionReceipt write(Caller owner, String key, String fingerprint, Supplier<DecisionReceipt> action) {

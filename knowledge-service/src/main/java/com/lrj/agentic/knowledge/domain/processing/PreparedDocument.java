@@ -16,16 +16,17 @@ import java.util.Objects;
 /** 语言中立准备包；索引前逐项验证，不信任 Python 返回的身份、定位和摘要。 */
 public record PreparedDocument(String schemaVersion, String processorVersion, String embeddingModel,
         int dimensions, String tenantId, String ownerId, String documentId, String jobId,
-        long documentVersion, String sourceHash, List<Chunk> chunks, String batchDigest) {
+        long documentVersion, String sourceHash, List<Chunk> chunks, String batchDigest) implements PreparedBatch {
 
     /** 规范块带原文位置；向量只用于投影，引用正文在 Java 权威库保存。 */
     public record Chunk(@JsonProperty(required = true) int ordinal, String chunkId, String text,
             String textHash, @JsonProperty(required = true) int startByte,
-            @JsonProperty(required = true) int endByte, List<Double> vector, String vectorHash) { }
+            @JsonProperty(required = true) int endByte, List<Double> vector, String vectorHash) implements PreparedBatch.Chunk { }
 
     /** 先验证所有不变量再产生任何索引副作用；失败不可通过截断或重算掩盖。 */
     public PreparedDocument validated(Ingestion job, byte[] source) {
         try {
+            require(job.profile() == ProcessingProfile.TEXT_V1);
             require(Objects.equals(schemaVersion, ProcessingProtocol.SCHEMA));
             require(Objects.equals(processorVersion, ProcessingProtocol.PROCESSOR));
             require(Objects.equals(embeddingModel, ProcessingProtocol.MODEL));

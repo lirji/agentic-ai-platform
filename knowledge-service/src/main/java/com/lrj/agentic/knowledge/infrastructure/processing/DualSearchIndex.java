@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.lrj.agentic.knowledge.domain.ContentDigest;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
-import com.lrj.agentic.knowledge.domain.processing.PreparedDocument;
+import com.lrj.agentic.knowledge.domain.processing.PreparedBatch;
+import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingClaim.Sink;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
 import com.lrj.agentic.knowledge.domain.processing.SearchIndex;
@@ -38,7 +39,7 @@ public class DualSearchIndex implements SearchIndex {
 
     /** 双目标分别确认，不能将一个 HTTP 200 当作所有 Bulk 项目完成。 */
     @Override
-    public void write(Sink sink, PreparedDocument document) {
+    public void write(Sink sink, PreparedBatch document) {
         if (sink == Sink.VECTOR) { vectors(document); }
         else { keywords(document); }
     }
@@ -57,7 +58,7 @@ public class DualSearchIndex implements SearchIndex {
         } catch (KnowledgeFailure unavailable) { return false; }
     }
 
-    private void vectors(PreparedDocument document) {
+    private void vectors(PreparedBatch document) {
         var points = document.chunks().stream().map(chunk -> Map.of(
                 "id", pointId(chunk.chunkId(), document.batchDigest()),
                 "vector", chunk.vector(), "payload", payload(document, chunk))).toList();
@@ -68,7 +69,7 @@ public class DualSearchIndex implements SearchIndex {
                 && "completed".equals(result.path("result").path("status").asText()));
     }
 
-    private void keywords(PreparedDocument document) {
+    private void keywords(PreparedBatch document) {
         var body = new ByteArrayOutputStream();
         for (var chunk : document.chunks()) {
             body.writeBytes(json.write(Map.of("index", Map.of("_id", chunk.chunkId() + ":" + document.batchDigest()))));
@@ -97,9 +98,9 @@ public class DualSearchIndex implements SearchIndex {
     public List<Candidate> search(Sink sink, Caller caller, String query, List<Double> vector,
             List<String> documentIds) {
         List<Object> filters = new ArrayList<>();
-        Map<String, Object> identity = Map.of("tenantId", caller.tenantId(), "ownerId", caller.userId(),
-                "processorVersion", ProcessingProtocol.PROCESSOR);
+        Map<String, Object> identity = Map.of("tenantId", caller.tenantId(), "ownerId", caller.userId());
         if (sink == Sink.VECTOR) {
+            filters.add(Map.of("key", "processorVersion", "match", Map.of("any", ProcessingProfile.compatibleVersions())));
             identity.forEach((key, value) -> filters.add(Map.of("key", key, "match", Map.of("value", value))));
             if (!documentIds.isEmpty()) {
                 filters.add(Map.of("key", "documentId", "match", Map.of("any", documentIds)));
@@ -114,6 +115,7 @@ public class DualSearchIndex implements SearchIndex {
             return candidates(response.path("result").path("points"), "payload");
         }
         identity.forEach((key, value) -> filters.add(Map.of("term", Map.of(key, value))));
+        filters.add(Map.of("terms", Map.of("processorVersion", ProcessingProfile.compatibleVersions())));
         if (!documentIds.isEmpty()) { filters.add(Map.of("terms", Map.of("documentId", documentIds))); }
         JsonNode response = request(sink, "POST", "/" + properties.index() + "/_search",
                 json.write(Map.of("size", ProcessingProtocol.CANDIDATES, "track_total_hits", false,
@@ -154,7 +156,7 @@ public class DualSearchIndex implements SearchIndex {
         return json.read(bytes, JsonNode.class, KnowledgeError.INDEX_UNAVAILABLE);
     }
 
-    private static Map<String, Object> payload(PreparedDocument document, PreparedDocument.Chunk chunk) {
+    private static Map<String, Object> payload(PreparedBatch document, PreparedBatch.Chunk chunk) {
         return Map.of("tenantId", document.tenantId(), "ownerId", document.ownerId(),
                 "documentId", document.documentId(), "version", document.documentVersion(),
                 "processorVersion", document.processorVersion(), "chunkId", chunk.chunkId(),

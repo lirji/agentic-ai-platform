@@ -22,7 +22,7 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
         @JsonProperty(required = true) long documentVersion, @JsonProperty(required = true) String sourceHash,
         @JsonProperty(required = true) String extractionDigest, @JsonProperty(required = true) String processorVersion,
         @JsonProperty(required = true) String embeddingModel, @JsonProperty(required = true) int dimensions,
-        @JsonProperty(required = true) List<Chunk> chunks, @JsonProperty(required = true) String batchDigest) {
+        @JsonProperty(required = true) List<Chunk> chunks, @JsonProperty(required = true) String batchDigest) implements PreparedBatch {
 
     /** Knowledge 只发送已持久接受的提取物，调用授权仍由原 P01 身份边界控制。 */
     public record Request(@JsonProperty(required = true) String tenantId, @JsonProperty(required = true) String ownerId,
@@ -31,8 +31,9 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
             @JsonProperty(required = true) Extraction extraction) {
         /** 从权威任务而非客户端身份构造内部请求。 */
         public static Request of(Ingestion job, Extraction extraction) {
+            require(job.profile() == ProcessingProfile.PDF_V2);
             return new Request(job.tenantId(), job.ownerId(), job.documentId(), job.jobId(), job.documentVersion(),
-                    ExtractionProtocol.PDF_PROCESSOR, extraction);
+                    job.profile().processor(), extraction);
         }
     }
 
@@ -44,7 +45,7 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
     public record Chunk(@JsonProperty(required = true) int ordinal, @JsonProperty(required = true) String chunkId,
             @JsonProperty(required = true) String text, @JsonProperty(required = true) String textHash,
             @JsonProperty(required = true) List<Segment> segments, @JsonProperty(required = true) String sourceDigest,
-            @JsonProperty(required = true) List<Double> vector, @JsonProperty(required = true) String vectorHash) { }
+            @JsonProperty(required = true) List<Double> vector, @JsonProperty(required = true) String vectorHash) implements PreparedBatch.Chunk { }
 
     /** 原始字节、提取物和准备结果三者全部绑定，任何检查失败都不得进入索引。 */
     public StructuredPreparedDocument validated(Ingestion job, byte[] source, Extraction extraction) {

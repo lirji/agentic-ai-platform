@@ -5,6 +5,7 @@ import com.lrj.agentic.contract.knowledge.ExtractionProtocol;
 import com.lrj.agentic.contract.knowledge.ExtractionProtocol.Exit;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
+import com.lrj.agentic.knowledge.domain.processing.DocumentExtractor;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.tracing.Tracer;
@@ -37,7 +38,7 @@ import org.springframework.stereotype.Component;
 
 /** 单槽、无等待解析进程；传输线程只持有管道，不传播身份、事务或服务密钥。 */
 @Component
-public class ParserProcess {
+public class ParserProcess implements DocumentExtractor {
     private static final Logger LOG = LoggerFactory.getLogger(ParserProcess.class);
     private static final Duration REAP_WAIT = Duration.ofSeconds(2);
     private final ParserProperties properties;

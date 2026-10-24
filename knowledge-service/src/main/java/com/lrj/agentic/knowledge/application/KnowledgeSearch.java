@@ -8,6 +8,7 @@ import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingRepository;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingRepository.PublishedChunk;
 import com.lrj.agentic.knowledge.domain.processing.SearchIndex;
+import com.lrj.agentic.knowledge.domain.processing.ChunkSources;
 import com.lrj.agentic.security.Caller;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
@@ -64,17 +65,28 @@ public class KnowledgeSearch {
 
     /** 已失效或无权引用的块统一 404，不从历史索引旁路授权。 */
     public Hit citation(Caller caller, String documentId, long version, String chunkId) {
-        uuid(documentId);
-        if (version < 1 || chunkId == null || !chunkId.matches("[0-9a-f]{64}")) {
+        return hit(currentChunk(caller, documentId, version, chunkId), 0);
+    }
+
+    /** K04 正文与 K06 来源复用一次授权查询，后者不会输出此投影中的正文。 */
+    public PublishedChunk currentChunk(Caller caller, String documentId, long version, String chunkId) {
+        versionIdentity(documentId, version);
+        if (chunkId == null || !chunkId.matches("[0-9a-f]{64}")) {
             throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
         }
-        return repository.citation(caller, documentId, version, chunkId).map(chunk -> hit(chunk, 0))
+        return repository.citation(caller, documentId, version, chunkId)
                 .orElseThrow(() -> new KnowledgeFailure(KnowledgeError.NOT_FOUND));
+    }
+
+    /** 版本读取保持一致的规范 UUID/正整数输入边界。 */
+    public static void versionIdentity(String documentId, long version) {
+        uuid(documentId);
+        if (version < 1) { throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID); }
     }
 
     private static Hit hit(PublishedChunk chunk, double score) {
         return new Hit(chunk.documentId(), chunk.version(), chunk.chunkId(), chunk.text(), score,
-                new Source(chunk.displayName(), "utf8-bytes:" + chunk.startByte() + "-" + chunk.endByte()));
+                new Source(chunk.displayName(), ChunkSources.locator(chunk.startByte(), chunk.endByte(), chunk.sourceLocator())));
     }
 
     /** 业务上限作用于 Unicode 码点，拒绝未配对代理字符。 */

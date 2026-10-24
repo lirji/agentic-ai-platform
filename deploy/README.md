@@ -104,7 +104,27 @@ curl --fail-with-body http://127.0.0.1:28080/api/v1/knowledge/ingestions \
   -F "file=@/absolute/path/to/document.md"
 ```
 
-切勿在带 shell tracing 的终端执行含令牌命令。首次仅支持 UTF-8 TXT/Markdown ≤1 MiB；受理返回 `RECEIVED/ACCEPTED`。处理启用且租户在 worker 范围内时，后续推进为 READY 或 FAILED；READY 才有 `publishedVersion`。AI 存活不证明模型账号、预算或生成质量可用。
+切勿在带 shell tracing 的终端执行含令牌命令。支持 UTF-8 TXT/Markdown ≤1 MiB，显式启用 S9B 后可受理原生 PDF ≤10 MiB；受理返回 `RECEIVED/ACCEPTED`。处理启用且租户在 worker 范围内时，后续推进为 READY 或 FAILED；READY 才有 `publishedVersion`。AI 存活不证明模型账号、预算或生成质量可用。
+
+## PDF 解析与页级来源（S9B）
+
+解析由 Knowledge 管理的一次性 Java 子进程完成，PDFBox 3.0.8；不新增常驻服务。先应用 Knowledge V7 兼容迁移，并使用包含 v2 的 Java、Python 和前端版本。原 TXT/MD、旧 v1 准备物和引用继续有效，不重算旧语料。
+
+构建会改写运行中 fat JAR，必须先正常停受影响服务，确认退出后串行构建：
+
+```sh
+python3 deploy/local.py stop --service knowledge
+python3 deploy/local.py stop --service gateway
+mvn -pl knowledge-parser,knowledge-service,edge-gateway -am package
+python3 deploy/local.py start --service gateway
+KNOWLEDGE_PARSING_ENABLED=true KNOWLEDGE_PDF_UPLOAD_ENABLED=true python3 deploy/local.py start --service knowledge
+```
+
+`start` 不会给已存活进程重新注入配置，改变开关须先正常 stop 再 start。本地 helper 固定 Java/JAR 路径；正式配置为 `knowledge.parsing.java-executable` / `jar`。解析与新上传开关默认均为 false。10 MiB PDF、200 页、总提取文字 1 MiB、每任务 100 块；上传 multipart 11 MiB（网关/Servlet/本地身份桥均限制实际字节）。解析器单槽、无等待队列、20 秒、输出 4 MiB/诊断 64 KiB；堆 128 MiB、直接内存 32 MiB、元空间 96 MiB，不等同于操作系统或 RSS 沙箱。
+
+新受理要求 `.pdf`、`application/pdf` 和 `%PDF-` 签名。加密/损坏/缺字体映射/纯图片/资源超限返回稳定解析错误，模型前拒绝；混合图片或空页保留真实页序并告警，无 OCR。K06 仅返回当前可见已发布来源，UI 显示提取文本，不还原 PDF 版式。
+
+回退先关闭 `KNOWLEDGE_PDF_UPLOAD_ENABLED`，保留解析能力以处理已受理任务，以及 V7、提取对象和 v2 兼容读取器；不能直接退回不识别 v2 的旧制品或删除迁移/对象。已验证关闭新上传时已发布 K04/K06 仍 200、新 PDF 415，随后本机已恢复开启。见 [S9B运行证据](../docs/qa/pdf-ingestion-20261024/runtime-validation.json)。失败测试任务、历史对象和账本保留，不自动清理。
 
 ## 持久化与故障边界
 

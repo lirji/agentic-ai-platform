@@ -1,12 +1,13 @@
 package com.lrj.agentic.knowledge.domain;
 
 import com.lrj.agentic.contract.ErrorCode;
+import com.lrj.agentic.contract.knowledge.KnowledgeUploadProtocol;
 
 /** 知识模块统一错误目录；API、任务和日志使用相同稳定编码。 */
 public enum KnowledgeError implements ErrorCode {
     INPUT_INVALID("KNOWLEDGE_INPUT_INVALID", "资料参数无效，请检查后重试。", 400),
-    FILE_TOO_LARGE("KNOWLEDGE_FILE_TOO_LARGE", "资料大小超过当前允许范围。", 413),
-    UNSUPPORTED_FORMAT("KNOWLEDGE_UNSUPPORTED_FORMAT", "当前仅支持 UTF-8 文本和 Markdown 资料。", 415),
+    FILE_TOO_LARGE(KnowledgeUploadProtocol.Failure.FILE_TOO_LARGE),
+    UNSUPPORTED_FORMAT("KNOWLEDGE_UNSUPPORTED_FORMAT", "当前仅支持已启用的文本、Markdown、PDF和DOCX资料。", 415),
     NOT_FOUND("KNOWLEDGE_NOT_FOUND", "资料或任务不存在，或当前不可访问。", 404),
     IDEMPOTENCY_CONFLICT("KNOWLEDGE_IDEMPOTENCY_CONFLICT", "此提交编号已用于不同的资料请求。", 409),
     DUPLICATE_CONTENT("KNOWLEDGE_DUPLICATE_CONTENT", "当前资料已提交，请查看已有文档和任务。", 409),
@@ -43,6 +44,8 @@ public enum KnowledgeError implements ErrorCode {
         this.message = message;
         this.httpStatus = httpStatus;
     }
+
+    KnowledgeError(ErrorCode shared) { this(shared.code(), shared.message(), shared.httpStatus()); }
 
     /** 稳定机器编码。 */
     public String code() { return code; }

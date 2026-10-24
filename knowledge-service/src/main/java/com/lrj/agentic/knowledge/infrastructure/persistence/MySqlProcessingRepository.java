@@ -5,6 +5,14 @@ import com.lrj.agentic.knowledge.domain.IngestionStatus;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.processing.PreparedDocument;
+import com.lrj.agentic.knowledge.domain.processing.PreparedBatch;
+import com.lrj.agentic.knowledge.domain.processing.StructuredPreparedDocument;
+import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
+import com.lrj.agentic.knowledge.domain.processing.ChunkSources;
+import com.lrj.agentic.contract.knowledge.Extraction;
+import com.lrj.agentic.knowledge.infrastructure.processing.ProcessingJson;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingAction;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingClaim;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
@@ -20,6 +28,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /** 租约和发布由真实条件 SQL 裁定；所有事务只包含本地持久化。 */
@@ -28,12 +37,15 @@ public class MySqlProcessingRepository implements ProcessingRepository {
     private final ProcessingMapper mapper;
     private final KnowledgeMapper knowledge;
     private final TransactionTemplate transaction;
+    private final ProcessingJson json;
 
     /** 与受理使用同一事务管理器，但不共享线程或连接上的事务资源。 */
     public MySqlProcessingRepository(ProcessingMapper mapper, KnowledgeMapper knowledge,
-            PlatformTransactionManager manager, @Value("${knowledge.transaction-timeout-seconds:5}") int seconds) {
+            PlatformTransactionManager manager, @Value("${knowledge.transaction-timeout-seconds:5}") int seconds,
+            ProcessingJson json) {
         this.mapper = mapper;
         this.knowledge = knowledge;
+        this.json = json;
         this.transaction = new TransactionTemplate(manager);
         transaction.setTimeout(seconds);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
@@ -67,15 +79,79 @@ public class MySqlProcessingRepository implements ProcessingRepository {
     /** 指针与规范块同事务；任何一行失败都会回滚整个准备接收。 */
     @Override
     public ProcessingClaim prepared(ProcessingClaim claim, ProcessingClaim.PreparedReference reference,
-            PreparedDocument document) {
+            PreparedBatch document, Extraction extraction) {
+        if (!Objects.equals(document.jobId(), claim.job().jobId())
+                || !Objects.equals(document.tenantId(), claim.job().tenantId())
+                || !Objects.equals(document.ownerId(), claim.job().ownerId())
+                || !Objects.equals(document.documentId(), claim.job().documentId())
+                || document.documentVersion() != claim.job().documentVersion()
+                || !Objects.equals(document.sourceHash(), claim.job().source().hash())
+                || !Objects.equals(document.schemaVersion(), claim.job().profile().schema())
+                || !Objects.equals(document.processorVersion(), claim.job().profile().processor())
+                || !Objects.equals(document.batchDigest(), reference.batchDigest())) {
+            throw new KnowledgeFailure(KnowledgeError.PREPARATION_INVALID);
+        }
+        List<PreparedChunkRow> chunks = rows(claim, document, extraction);
         return access(() -> transaction.execute(status -> {
             changed(mapper.prepare(claim, reference));
-            if (mapper.chunks(claim, document) != document.chunks().size()) {
+            if (mapper.chunks(claim, document, chunks) != document.chunks().size()) {
                 throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);
             }
             event(claim.caller(), claim.job().jobId(), claim.worker(), ProcessingAction.PREPARED);
             return snapshot(claim.caller(), claim.job().jobId());
         }));
+    }
+
+    /** 外部对象已经保存；事务只接受一次指针，提交回执未知时先按原租约查询。 */
+    @Override
+    public ProcessingClaim extracted(ProcessingClaim claim, ProcessingClaim.ExtractionReference reference, Extraction extraction) {
+        if (claim.job().profile() != ProcessingProfile.PDF_V2
+                || !Objects.equals(reference.extractionDigest(), extraction.extractionDigest())) {
+            throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
+        }
+        try { extraction.validated(claim.job().source().hash(), claim.job().source().size()); }
+        catch (IllegalArgumentException invalid) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
+        String warnings = new String(json.write(extraction.warnings()), StandardCharsets.UTF_8);
+        try {
+            return transaction.execute(status -> {
+                changed(mapper.extract(claim, reference, warnings));
+                event(claim.caller(), claim.job().jobId(), claim.worker(), ProcessingAction.EXTRACTED);
+                return snapshot(claim.caller(), claim.job().jobId());
+            });
+        } catch (DataAccessException | TransactionException unknown) {
+            // 不再次执行 CAS，更不直接调用模型；只有同一有效租约的完全相同指针才确认已接受。
+            return access(() -> {
+                ProcessingRow row = mapper.current(claim);
+                if (row != null) {
+                    ProcessingClaim observed = row.claim(knowledge.findIngestion(
+                            claim.job().tenantId(), claim.job().ownerId(), claim.job().jobId()).domain());
+                    if (reference.equals(observed.extraction())) { return observed; }
+                }
+                throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);
+            });
+        }
+    }
+
+    private List<PreparedChunkRow> rows(ProcessingClaim claim, PreparedBatch document, Extraction extraction) {
+        if (document instanceof PreparedDocument text) {
+            if (claim.job().profile() != ProcessingProfile.TEXT_V1 || extraction != null) {
+                throw new KnowledgeFailure(KnowledgeError.PREPARATION_INVALID);
+            }
+            return text.chunks().stream().map(chunk -> new PreparedChunkRow(chunk.chunkId(), chunk.ordinal(),
+                    chunk.text(), chunk.textHash(), chunk.startByte(), chunk.endByte(), text.schemaVersion(),
+                    null, null, null, null)).toList();
+        }
+        if (!(document instanceof StructuredPreparedDocument structured) || extraction == null
+                || claim.extraction() == null || !claim.extraction().extractionDigest().equals(extraction.extractionDigest())) {
+            throw new KnowledgeFailure(KnowledgeError.PREPARATION_INVALID);
+        }
+        structured.validated(StructuredPreparedDocument.Request.of(claim.job(), extraction));
+        return structured.chunks().stream().map(chunk -> {
+            var sources = ChunkSources.details(chunk, extraction);
+            return new PreparedChunkRow(chunk.chunkId(), chunk.ordinal(), chunk.text(), chunk.textHash(), null, null,
+                    structured.schemaVersion(), ChunkSources.pdfLocator(sources),
+                    new String(json.write(sources), StandardCharsets.UTF_8), chunk.sourceDigest(), extraction.extractionDigest());
+        }).toList();
     }
 
     /** 不使用进程内布尔值推断持久副作用完成。 */
@@ -140,6 +216,12 @@ public class MySqlProcessingRepository implements ProcessingRepository {
         return access(() -> Optional.ofNullable(mapper.citation(caller, documentId, version, chunkId)));
     }
 
+    /** 元数据也复用当前发布谓词，不提供未发布任务的解析结果旁路。 */
+    @Override
+    public Optional<ProcessingMetadata> metadata(Caller caller, String documentId, long version) {
+        return access(() -> Optional.ofNullable(mapper.metadata(caller, documentId, version)));
+    }
+
     /** 运维计数只使用稳定状态参数。 */
     @Override
     public long count(IngestionStatus status) { return access(() -> mapper.count(status.code())); }
@@ -174,7 +256,7 @@ public class MySqlProcessingRepository implements ProcessingRepository {
 
     private static <T> T access(Supplier<T> operation) {
         try { return operation.get(); }
-        catch (DataAccessException unavailable) {
+        catch (DataAccessException | TransactionException unavailable) {
             throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);
         }
     }

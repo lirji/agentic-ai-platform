@@ -3,11 +3,11 @@ package com.lrj.agentic.knowledge.application;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.ContentDigest;
+import com.lrj.agentic.knowledge.domain.DocumentFormat;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 /** 首条契约的输入边界集中维护，避免控制器和存储分别接受不同内容。 */
@@ -20,11 +20,21 @@ public final class UploadRules {
 
     /** 在任何存储副作用之前验证输入，文件名只参与展示和格式识别。 */
     public static Upload validate(String idempotencyKey, String fileName, String displayName, byte[] bytes) {
+        return validate(idempotencyKey, fileName, displayName, bytes, null, false);
+    }
+
+    /** PDF 新受理由独立开关控制；正文签名和请求媒体类型均不能只信文件名。 */
+    public static Upload validate(String idempotencyKey, String fileName, String displayName, byte[] bytes,
+            String requestContentType, boolean pdfEnabled) {
         if (idempotencyKey == null || !IDEMPOTENCY_KEY.matcher(idempotencyKey).matches()
                 || bytes == null || bytes.length == 0 || fileName == null) {
             throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
         }
-        if (bytes.length > MAX_BYTES) {
+        DocumentFormat format = DocumentFormat.fromFilename(fileName);
+        if (format == DocumentFormat.PDF && !pdfEnabled) {
+            throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT);
+        }
+        if (bytes.length > format.maximum()) {
             throw new KnowledgeFailure(KnowledgeError.FILE_TOO_LARGE);
         }
         String name = displayName == null ? fileName : displayName;
@@ -32,25 +42,25 @@ public final class UploadRules {
                 || name.codePoints().anyMatch(Character::isISOControl)) {
             throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
         }
-        String lower = fileName.toLowerCase(Locale.ROOT);
-        String contentType;
-        if (lower.endsWith(".txt")) {
-            contentType = "text/plain";
-        } else if (lower.endsWith(".md")) {
-            contentType = "text/markdown";
-        } else {
+        String contentType = format.contentType();
+        boolean pdfSignature = bytes.length >= 5
+                && new String(bytes, 0, 5, StandardCharsets.US_ASCII).equals("%PDF-");
+        if (format == DocumentFormat.PDF && (!pdfSignature || !contentType.equalsIgnoreCase(requestContentType))) {
             throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT);
         }
-        try {
-            String text = StandardCharsets.UTF_8.newDecoder()
-                    .onMalformedInput(CodingErrorAction.REPORT)
-                    .onUnmappableCharacter(CodingErrorAction.REPORT)
-                    .decode(ByteBuffer.wrap(bytes)).toString();
-            if (text.isBlank() || text.indexOf('\0') >= 0) {
-                throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+        if (format != DocumentFormat.PDF) {
+            if (pdfSignature) { throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT); }
+            try {
+                String text = StandardCharsets.UTF_8.newDecoder()
+                        .onMalformedInput(CodingErrorAction.REPORT)
+                        .onUnmappableCharacter(CodingErrorAction.REPORT)
+                        .decode(ByteBuffer.wrap(bytes)).toString();
+                if (text.isBlank() || text.indexOf('\0') >= 0) {
+                    throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+                }
+            } catch (CharacterCodingException ignored) {
+                throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT);
             }
-        } catch (CharacterCodingException ignored) {
-            throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT);
         }
         String hash = ContentDigest.sha256(bytes);
         // 使用不允许出现在展示名中的 NUL 分隔，避免不同字段拼接产生相同指纹。

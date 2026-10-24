@@ -59,6 +59,29 @@ class UploadRulesTest {
                 UploadRules.validate(KEY, "a.txt", null, new byte[UploadRules.MAX_BYTES + 1]));
     }
 
+    @Test
+    void pdfRequiresEnabledFormatMimeAndSignatureWithIndependentByteLimit() {
+        byte[] source = "%PDF-1.7\n".getBytes(StandardCharsets.US_ASCII);
+        var accepted = UploadRules.validate(KEY, "来源.PDF", null, source, "application/pdf", true);
+        assertThat(accepted.contentType()).isEqualTo("application/pdf");
+        assertThat(accepted.bytes()).containsExactly(source);
+        for (String mime : new String[]{null, "text/plain", "application/octet-stream"}) {
+            assertError(KnowledgeError.UNSUPPORTED_FORMAT, () ->
+                    UploadRules.validate(KEY, "来源.pdf", null, source, mime, true));
+        }
+        assertError(KnowledgeError.UNSUPPORTED_FORMAT, () ->
+                UploadRules.validate(KEY, "来源.pdf", null, source, "application/pdf", false));
+        assertError(KnowledgeError.UNSUPPORTED_FORMAT, () ->
+                UploadRules.validate(KEY, "来源.txt", null, source, "text/plain", true));
+        assertError(KnowledgeError.UNSUPPORTED_FORMAT, () ->
+                UploadRules.validate(KEY, "来源.pdf", null, new byte[]{65}, "application/pdf", true));
+        int maximum = com.lrj.agentic.contract.knowledge.ExtractionProtocol.MAX_SOURCE_BYTES;
+        byte[] boundary = Arrays.copyOf(source, maximum);
+        assertThat(UploadRules.validate(KEY, "来源.pdf", null, boundary, "application/pdf", true).bytes()).hasSize(maximum);
+        assertError(KnowledgeError.FILE_TOO_LARGE, () ->
+                UploadRules.validate(KEY, "来源.pdf", null, Arrays.copyOf(boundary, maximum + 1), "application/pdf", true));
+    }
+
     private static void assertError(KnowledgeError expected, Runnable action) {
         assertThatThrownBy(action::run).isInstanceOfSatisfying(KnowledgeFailure.class,
                 failure -> assertThat(failure.error()).isEqualTo(expected));

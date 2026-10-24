@@ -1,23 +1,34 @@
-# S9B 验证记录（进行中）
+# S9B PDF 入库与页级引用验收
 
-当前结论：**P03/P04 基础批次验证 PASS；S9B 整体未完成。** 该批次实现独立 PDF 解析、有界进程控制、结构化准备校验和引用来源消费者；尚未开放上传，也未接入提取物持久接受、K06 或前端。后续验收仍按 [PAR-01..15](../../design/knowledge-first-20261020/PARSING_ACCEPTANCE.md) 推进。
+本地验收 **PASS**。PDF 正式上传、提取物持久接受、真实 Embedding、双索引发布、页级引用与前端已接通；交付 CI/提交收据另记。只完成 S9B，DOCX、OCR 和跨块结构分块仍由后续切片负责。用户要求本任务交付后暂停。
 
-## 已验证范围
+## 验证结果
 
-- Java 全模块无数据库回归：86 项通过。最终受影响的解析/协议/进程测试顺序复验 15 项通过；独立解析器打包通过。日志 `.logs/s9b-foundation-java.log`、`s9b-foundation-java-targeted.log`、`s9b-parser-package.log`。首次全量测试与独立解析器打包时间重叠，最终相关模块已单独串行复验，不只依赖交叠构建的测试报告。
-- Python 全部默认测试：326 passed / 49 条件集成 skipped / 19 warnings；Ruff 格式/lint、47 个源文件 mypy 通过。日志 `.logs/s9b-foundation-python.log`、`s9b-foundation-mypy.log`；跳过项不计真实数据库/模型验收。
-- Java/Python 使用同一份原生 PDF 与中文 PDF 金标：实际 PDFBox 提取、LlamaIndex 分块、严格 DTO、原字节 hash、空页、页序、片段 UTF-8 偏移、负零 binary64、所有摘要层一致。伪造位置、遗漏正文、重签摘要后错误偏移、重复/未知/缺失属性和布尔冒充数字均拒绝。
-- 真实 JVM 故障：卡死、stdout/stderr 爆量、128MiB 堆 OOM、异常退出、父线程中断、单槽饱和及已知子孙进程终止；返回前证明进程结束和槽位归还。父进程环境仅显式设置 LANG/TZ，拒绝继承服务配置。
-- 真实打包产物经过实际 ParserProcess 父进程执行两个固定 PDF，分别返回 3/4 页、摘要与共享金标一致，完成后 active=0。日志 `.logs/s9b-{native,chinese}-parent-probe-retry.log`。产物和 12 个嵌入依赖摘要见 [parser-artifact.json](parser-artifact.json)；PDFBox/FontBox 3.0.8，日志使用 JCL→SLF4J/Logback stderr，产物没有 POI 或原 commons-logging。
-- 中文自建 PDF 保留中文/英文字体、空页、旋转双栏、图片页；第 4 页无文字告警，未 OCR 或推断图像文字。[样本来源](fixture-manifest.json)固定源文件及 Noto Sans SC 官方提交/字体摘要；OFL 许可随夹具保存。实际提取见 [chinese-extraction.json](chinese-extraction.json)。
-- P04 HTTP 沿用原身份/owner、总期限和同一并发计数器；v2 运行时 v1 请求得到繁忙，取消后可恢复。QA/评测/研究共用的 CitationSource 接受受约束新 locator 并拒绝伪造页序。5 份登记契约与 4 份共享线格式样本检查通过。
+| 范围 | 结果与证据 |
+| --- | --- |
+| Java 单元/构建 | 最终全模块 91 项通过，18 个套件，0 失败/跳过；随后正常停止 Knowledge/Gateway，再串行打包三个受影响模块并重启。`.logs/s9b-final-java.log`、`s9b-final-package.log` |
+| Python | 326 passed / 49 条件集成 skipped / 19 warnings；Ruff 格式/lint、47 个源文件 mypy PASS。基础批次后 Python 源码未变；跳过项不计真实集成通过。`.logs/s9b-foundation-{python,mypy}.log` |
+| 跨语言协议 | 原生/中文 PDF 的实际 PDFBox 提取、LlamaIndex 分块、严格 DTO 与摘要金标一致，保留 v1 金标；5 个契约、4 个共享样本登记检查 PASS。负零、原字节、片段 UTF-8 偏移、伪造位置/摘要/向量和未知属性等负例均拒绝 |
+| 真实进程故障 | 卡死、堆 OOM、stdout/stderr 爆量、异常退出、中断、单槽饱和及已知子孙回收 PASS；真实父进程运行打包解析 JAR，两样本 3/4 页和摘要匹配，结束 active=0。见 [基础证据](foundation-validation.json) |
+| 真实存储/索引集成 | 39 个不同测试 PASS：结构化处理 12、原处理 7、评测持久化 7、执行 6、比较 7。DB/S3/ES/Qdrant/解析子进程真实运行，向量为合成金标，不冒称付费模型。见 [集成证据](integration-validation.json) |
+| 恢复/并发 | 接受后崩溃不重解析；准备/逐 sink 重放不重嵌入或重写完成 sink；提交成功但事务回执丢失仅查同租约同指针；过期租约不能继续；已接受对象 hash 损坏不回退重解析；数据库 profile/NULL 约束拒绝非法记录 |
+| 真实 HTTP | 6 组大小/MIME/伪装/无 Content-Length 边界；4 类失败 PDF 无准备物/块/发布；2 块实际提取字节/页码/hash 核对；16 次跨 owner/tenant/运行身份拒绝。运行身份 K04 读取 PDF 和评测证据页码 PASS。见 [HTTP 证据](http-validation.json) |
+| 原格式兼容 | dev/test 均应用 V7；升级前 12 个 local-dev 任务状态/摘要不变。旧 S8E 引用/基线只读复验 PASS，原 M04 supported=FAIL 保留。见 [旧链复验](legacy-v1-validation.json) |
+| 关闭新受理 | 最终制品启用解析但关闭 PDF 新受理：已发布 PDF 的 6 次 K04/K06 读取 200，新上传 415，无新模型调用；随后恢复显式开启。保留 V7 和 v2 读取器，不能退回不理解 v2 的旧二进制。见 [运行证据](runtime-validation.json) |
+| 前端 | 67 单元、类型/生产构建、lint/格式 PASS；4 组 Playwright PASS，1440/1024/414px、键盘焦点、刷新、加载/404 隐藏旧正文、真实加密失败均核对。最后一组只重放已保存的真实搜索响应，K04/K06 仍实际 HTTP。见[前端记录](https://github.com/lirji/agentic-ai-platform-web/blob/main/docs/qa/pdf-ingestion-20261024/TEST_RESULT.md) |
 
-## 修正与边界
+## 真实模型与样本
 
-首轮进程故障测试将 macOS Java 自行加入的 `__CF_USER_TEXT_ENCODING` 误判为父环境泄漏；独立仅 LANG/TZ 环境探针证实后修正测试，无扩大父环境继承。首次实际父进程探针把 SimpleMeterRegistry 当作 AutoCloseable，编译失败；改为显式 close 后两个样本通过。两次失败日志均保留。
+正式浏览器上传生成文档 `f76f053b-48d3-4e2a-a3bd-2229d929d794`、任务 `26e7ef5a-5919-47e3-b2e4-5b1e0fa67cec`（READY），两个引用块来自真实第 1/3 页。第 2 页为空，第 4 页只有图片，两页都如实告警且不参与索引。固定中文/英文、旋转双栏 PDF 原 hash 为 `1471561d350b30380fd601f536e934bce8756cbd7c885e1df651ad56340e903c`；字体子集与 OFL 来源见 [fixture-manifest](fixture-manifest.json)。
 
-夹具生成初次借用了 S9A 探针 classpath，曾显示其无 Log4j provider 告警；产品解析 JAR 使用自己的完整依赖及 stderr 配置，两次实际父进程执行均无该告警。固定夹具不能为通过测试静默重生成；完整字体只在忽略目录，仓库保存 PDF 中所需子集及许可。
+本片只增加一次真实入库和一次真实检索，共 2 批 Embedding，保守预留增加 0.02 元。累计 Embedding **44 批 / 0.44 元（上限 1 元）**，聊天 **24 次 / 0.889964 元（上限 1 元）**；不是提供方账单，未挪用 Reranker 额度。后续浏览器/HTTP/回退检查均不再调用模型。原幂等键和恢复号保留于两仓 `.local/s9b-*`，不可删除后重复付费步骤。
 
-没有付费调用；账本仍为聊天 0.889964/1 元（24 次）、Embedding 0.42/1 元（42 批），是保守预留，不是账单。未改运行服务 JAR；在确认无活动 local-dev 任务后正常暂停 qa-worker，以免源代码更新期间意外消费预算。运行/恢复入口见唯一 [PROGRESS_STATE](../../design/knowledge-first-20261020/PROGRESS_STATE.md)。
+## 修正、审查和限制
 
-后续必需：提取接受 CAS/未知提交/失租恢复、兼容迁移、真实双索引混合检索/评测、K06 权限/界面、原预算内有限真实 Embedding、浏览器 1440/1024/414 和最终两仓 CI/Git 交付。当前未证明真实业务样本质量、任意缺失字体映射可恢复、多栏语义顺序、容量 SLA 或完整操作系统沙箱。JVM 堆/直接/元空间限制不等于 RSS 上限。没有独立子 Agent 审查或全局工作流 Runtime Gate 冒称。
+实现期修正了缺字体 Unicode 映射会被库静默略过的问题：现在遇到无映射/替换字符即 `PARSE_INVALID`，固定缺映射 PDF 在模型前拒绝。纯图片、201 页、损坏、加密样本都有真实失败证据。边界样本来源及摘要见 [boundary-fixture-manifest](boundary-fixture-manifest.json)，没有为通过验收重生成成功金标。
+
+原失败记录保留：macOS JVM 自动加入环境变量导致测试误报、探针 SimpleMeterRegistry close 编译错误、集成测试误取 Candidate.documentId、前端警告映射类型和 E2E 循环推断错误、已声明超限请求过早断开引起测试 EPIPE，均已修正后通过；未知长度实际字节检查没有被弱化。回退探针首次误用夹具文件名，在发起上传前失败，随后用已固定文件重验。它们不计成功验收。
+
+本 Agent 逐项审阅租约/未知提交、摘要绑定、发布过滤、K06 权限、实际流量限制、UI 重验与缓存隐藏，未发现未处理的当前切片阻断问题；没有独立子 Agent 审查或全局工作流 Runtime Gate 冒称。代码卫生检查前端 PASS；后端无规范 Java 格式器/静态分析器，按周边风格及手工审查补足并保留限制，未将未运行工具伪称通过。最终源码指纹见 [final-validation](final-validation.json)，基础批次指纹仍单独保留。
+
+U02 真实业务语料尚缺，少量自建样本不证明任意 PDF 版式、多栏语义顺序、OCR、容量 SLA 或完整操作系统隔离。JVM 堆/直接内存/元空间上限不等于 RSS 上限。没有生产部署或旧资料清理；失败夹具、日志、私密账本和运行状态均保留。

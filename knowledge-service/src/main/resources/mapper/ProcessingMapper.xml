@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingMapper">
     <sql id="processingColumns">tenant_id, owner_id, job_id, lease_owner, lease_epoch, attempt_count,
-        prepared_key, prepared_hash, prepared_bytes, batch_digest, vector_state, keyword_state</sql>
+        prepared_key, prepared_hash, prepared_bytes, batch_digest, vector_state, keyword_state,
+        extraction_key, extraction_hash, extraction_bytes, extraction_digest</sql>
     <sql id="owned">tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND job_id = #{id}</sql>
     <sql id="fence">tenant_id = #{claim.job.tenantId} AND owner_id = #{claim.job.ownerId}
         AND job_id = #{claim.job.jobId} AND document_version = #{claim.job.documentVersion}
@@ -17,6 +18,9 @@
     </select>
     <select id="find" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingRow">
         SELECT <include refid="processingColumns"/> FROM knowledge_ingestion WHERE <include refid="owned"/>
+    </select>
+    <select id="current" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingRow">
+        SELECT <include refid="processingColumns"/> FROM knowledge_ingestion WHERE <include refid="fence"/>
     </select>
     <update id="claim">
         UPDATE knowledge_ingestion SET status = 'PROCESSING',
@@ -39,13 +43,23 @@
             stage = 'PUBLISHING', revision = revision + 1, updated_at = UTC_TIMESTAMP(6)
         WHERE <include refid="fence"/> AND prepared_key IS NULL
     </update>
+    <update id="extract">
+        UPDATE knowledge_ingestion SET extraction_key = #{ref.key}, extraction_hash = #{ref.hash},
+            extraction_bytes = #{ref.sizeBytes}, extraction_digest = #{ref.extractionDigest},
+            extraction_warnings = CAST(#{warnings} AS JSON), revision = revision + 1, updated_at = UTC_TIMESTAMP(6)
+        WHERE <include refid="fence"/> AND extraction_key IS NULL AND prepared_key IS NULL
+            AND preparation_schema = #{claim.job.profile.schema} AND processor_version = #{claim.job.profile.processor}
+            AND parser_profile = #{claim.job.profile.parser}
+    </update>
     <insert id="chunks">
         INSERT INTO knowledge_chunk (chunk_id, tenant_id, owner_id, document_id, document_version,
-            job_id, batch_digest, ordinal, text, text_hash, start_byte, end_byte) VALUES
-        <foreach collection="doc.chunks" item="c" separator=",">
+            job_id, batch_digest, ordinal, text, text_hash, start_byte, end_byte,
+            preparation_schema, source_locator, source_json, source_digest, extraction_digest) VALUES
+        <foreach collection="chunks" item="c" separator=",">
             (#{c.chunkId}, #{claim.job.tenantId}, #{claim.job.ownerId}, #{claim.job.documentId},
              #{claim.job.documentVersion}, #{claim.job.jobId}, #{doc.batchDigest}, #{c.ordinal},
-             #{c.text}, #{c.textHash}, #{c.startByte}, #{c.endByte})
+             #{c.text}, #{c.textHash}, #{c.startByte}, #{c.endByte}, #{c.preparationSchema},
+             #{c.sourceLocator}, CAST(#{c.sourceJson} AS JSON), #{c.sourceDigest}, #{c.extractionDigest})
         </foreach>
     </insert>
     <update id="sink">
@@ -93,6 +107,7 @@
     </insert>
     <!-- 搜索、引用与评测标注共用发布权威，避免三处校验逐步漂移。 -->
     <sql id="publishedScope">
+        <bind name="compatibleProfiles" value="@com.lrj.agentic.knowledge.domain.processing.ProcessingProfile@compatibleVersions()"/>
         FROM knowledge_chunk c
         JOIN knowledge_document d ON d.document_id = c.document_id
             AND d.tenant_id = c.tenant_id AND d.owner_id = c.owner_id
@@ -102,10 +117,15 @@
             AND d.status = 'READY' AND d.published_version = c.document_version
             AND d.version = c.document_version AND d.ingestion_job_id = j.job_id
             AND j.status = 'READY' AND j.batch_digest = c.batch_digest
+            AND c.preparation_schema = j.preparation_schema
+            AND c.extraction_digest &lt;=&gt; j.extraction_digest
+            AND j.processor_version IN
+            <foreach collection="compatibleProfiles" item="profile" open="(" close=")" separator=",">#{profile}</foreach>
     </sql>
     <sql id="publishedFrom">
         SELECT c.document_id, c.document_version AS version, c.chunk_id, c.batch_digest, c.text,
-            c.start_byte, c.end_byte, d.display_name
+            c.start_byte, c.end_byte, d.display_name, j.content_hash AS source_hash,
+            c.source_locator, c.source_json, c.source_digest, j.extraction_digest
         <include refid="publishedScope"/>
     </sql>
     <select id="published" resultType="com.lrj.agentic.knowledge.domain.processing.ProcessingRepository$PublishedChunk">
@@ -115,6 +135,13 @@
     <select id="citation" resultType="com.lrj.agentic.knowledge.domain.processing.ProcessingRepository$PublishedChunk">
         <include refid="publishedFrom"/> AND c.document_id = #{documentId}
             AND c.document_version = #{version} AND c.chunk_id = #{chunkId}
+    </select>
+    <select id="metadata" resultType="com.lrj.agentic.knowledge.domain.processing.ProcessingRepository$ProcessingMetadata">
+        SELECT c.document_id, c.document_version AS version, j.content_hash AS source_hash, j.content_type,
+            j.preparation_schema, j.processor_version, j.parser_profile, j.extraction_digest,
+            j.extraction_warnings AS warnings_json
+        <include refid="publishedScope"/> AND c.document_id = #{documentId} AND c.document_version = #{version}
+        ORDER BY c.ordinal LIMIT 1
     </select>
     <select id="count" resultType="long">
         SELECT COUNT(*) FROM knowledge_ingestion WHERE status = #{status}

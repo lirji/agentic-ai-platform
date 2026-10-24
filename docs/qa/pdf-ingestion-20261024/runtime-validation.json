@@ -1,0 +1,74 @@
+{
+  "result": "PASS",
+  "mode": "parsing enabled; new PDF upload disabled after v2 publication",
+  "reads": [
+    {
+      "path": "/api/v1/knowledge/documents/f76f053b-48d3-4e2a-a3bd-2229d929d794/versions/1/processing-metadata",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/knowledge/documents/f76f053b-48d3-4e2a-a3bd-2229d929d794/versions/1/chunks/93e646f589f73a61eff63e56ecb8af20807d138d6e96dcc61a5f3796ee68b468",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/knowledge/documents/f76f053b-48d3-4e2a-a3bd-2229d929d794/versions/1/chunks/93e646f589f73a61eff63e56ecb8af20807d138d6e96dcc61a5f3796ee68b468/source",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/knowledge/documents/f76f053b-48d3-4e2a-a3bd-2229d929d794/versions/1/processing-metadata",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/knowledge/documents/f76f053b-48d3-4e2a-a3bd-2229d929d794/versions/1/chunks/233002b44aa62a8957655ca6dbd18fe74c8bd7b81a7ba43ac9933331a29150ad",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/knowledge/documents/f76f053b-48d3-4e2a-a3bd-2229d929d794/versions/1/chunks/233002b44aa62a8957655ca6dbd18fe74c8bd7b81a7ba43ac9933331a29150ad/source",
+      "status": 200
+    }
+  ],
+  "newUpload": {
+    "status": 415,
+    "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+  },
+  "budgetUnchanged": true,
+  "rollbackBoundary": "retain V7 and v2-compatible consumers; no downgrade to pre-S9B binary",
+  "artifacts": {
+    "knowledge-parser/target/knowledge-parser-0.1.0-SNAPSHOT.jar": "1a1d9c74b6e4f55cd9af1a56474a279a6c1f0d5f11d301e7f4b4d25d14aa86c4",
+    "knowledge-service/target/knowledge-service-0.1.0-SNAPSHOT.jar": "65d8176fc711cf79cee6dacd25b937a211ae2dd742de9d2f0d3b4cbfa90effed",
+    "edge-gateway/target/edge-gateway-0.1.0-SNAPSHOT.jar": "6d8fd974b4c2873bb2abb534f790e1033665bf1a89ee175912b0d65f1ee92d3d"
+  },
+  "restored": {
+    "newPdfUploadEnabled": true,
+    "parsingEnabled": true,
+    "qaWorkerRestored": true,
+    "restoreLog": ".logs/s9b-worker-restore.log"
+  },
+  "centralTaskCounts": [
+    "CANCELLED\t4",
+    "SUCCEEDED\t18",
+    "FAILED\t1"
+  ],
+  "knowledgeJobCounts": [
+    "READY\t13",
+    "FAILED\t5"
+  ],
+  "health": {
+    "gateway": "UP",
+    "knowledge": "UP",
+    "tasks": "UP",
+    "conversations": "UP"
+  },
+  "ledgers": {
+    "embedding": {
+      "calls": 44,
+      "reservedCny": "0.44",
+      "sha256": "affa9a4c034357467e1c9449ea3f467a60b6a8cb3dbe6fef4bcc373bd9bf9b54"
+    },
+    "chat": {
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    }
+  }
+}

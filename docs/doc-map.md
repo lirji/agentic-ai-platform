@@ -18,7 +18,7 @@ S8C 基于后端 `c810e959`、前端 `427bcb9` 实现持久运行、Tasks失败�
 
 [框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json)与原比较基线保持历史身份。S8F基于后端9a0e0b4/前端5960531新增两仓Actions、E02共享报文金标和真实DTO测试，P01沿用原共享金标；[CI契约](design/knowledge-first-20261020/CI_CONTRACTS.md)与[验收](qa/ci-contracts-20261024/TEST_RESULT.md)记录实际检查及限制。S8F无模型调用和依赖升级。
 
-S9A在后端82eb31c上核对UploadRules、PreparedDocument、IngestionRunner、DualSearchIndex、KnowledgeSearch/EvaluationRow及Python CitationSource/处理DTO；[解析设计](design/knowledge-first-20261020/PARSING_DESIGN.md)和[P-v2](design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)对应这些真实变化点。候选制品与自建格式样本见[S9A验收](qa/structured-parsing-20261024/TEST_RESULT.md)，不从探针推导已实现在线PDF/DOCX或生产隔离。 S9B新增[基础批次证据](qa/pdf-ingestion-20261024/IMPLEMENTATION_EVIDENCE.md)：实际解析模块、P04和共享金标；完整持久链路及界面待完成。
+S9A在后端82eb31c上核对UploadRules、PreparedDocument、IngestionRunner、DualSearchIndex、KnowledgeSearch/EvaluationRow及Python CitationSource/处理DTO；[解析设计](design/knowledge-first-20261020/PARSING_DESIGN.md)和[P-v2](design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)对应这些真实变化点。候选制品与自建格式样本见[S9A验收](qa/structured-parsing-20261024/TEST_RESULT.md)，不从探针推导已实现在线PDF/DOCX或生产隔离。 S9B的[实现证据](qa/pdf-ingestion-20261024/IMPLEMENTATION_EVIDENCE.md)覆盖实际解析模块、P04、V7兼容存储、双索引、K06和独立前端；[验收](qa/pdf-ingestion-20261024/TEST_RESULT.md)区分真实模型、隔离故障和浏览器重放，不扩展到DOCX/OCR。
 
 ## 已完成：能力比较（2026-10-21）
 

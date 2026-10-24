@@ -21,8 +21,8 @@ spring:
     clean-disabled: true
   servlet:
     multipart:
-      max-file-size: 1MB
-      max-request-size: 2MB
+      max-file-size: 10MB
+      max-request-size: 11MB
       file-size-threshold: 0
   lifecycle:
     timeout-per-shutdown-phase: 10s
@@ -49,6 +49,11 @@ mybatis-plus:
   global-config:
     banner: false
 knowledge:
+  parsing:
+    enabled: ${KNOWLEDGE_PARSING_ENABLED:false}
+    pdf-upload-enabled: ${KNOWLEDGE_PDF_UPLOAD_ENABLED:false}
+    java-executable: ${KNOWLEDGE_PARSER_JAVA:}
+    jar: ${KNOWLEDGE_PARSER_JAR:}
   evaluation:
     enabled: ${KNOWLEDGE_EVALUATION_ENABLED:false}
     task-endpoint: ${KNOWLEDGE_EVALUATION_TASK_ENDPOINT:http://127.0.0.1:28087}

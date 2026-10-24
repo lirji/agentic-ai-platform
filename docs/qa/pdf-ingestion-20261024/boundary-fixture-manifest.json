@@ -1,0 +1,22 @@
+{
+  "generatedFrom": "fixtures/chinese-pages.pdf",
+  "generator": "probes/PdfBoundaryFixtures.java",
+  "pdfbox": "3.0.8",
+  "cases": [
+    {
+      "path": "fixtures/image-only.pdf",
+      "bytes": 980,
+      "sha256": "a9c91733b9d409c7f15de9a3ddf33dab43bc395b4ab4095cffff59c3434a27f0"
+    },
+    {
+      "path": "fixtures/too-many-pages.pdf",
+      "bytes": 2509,
+      "sha256": "861b781c44d602b27e06bcf6f9c61c27355ab736348c457785a3aae6185fc2eb"
+    },
+    {
+      "path": "fixtures/missing-font-map.pdf",
+      "bytes": 11478,
+      "sha256": "fab2362d2b96f2e72fe15ceb1e56880e087719789d1b5cb2f29c58131bce600f"
+    }
+  ]
+}

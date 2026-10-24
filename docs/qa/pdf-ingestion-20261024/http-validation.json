@@ -1,0 +1,163 @@
+{
+  "boundaries": [
+    {
+      "case": "pdf-size",
+      "status": 413,
+      "code": "KNOWLEDGE_FILE_TOO_LARGE"
+    },
+    {
+      "case": "txt-size",
+      "status": 413,
+      "code": "KNOWLEDGE_FILE_TOO_LARGE"
+    },
+    {
+      "case": "disguised",
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "mime",
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "actual-chunked-no-length",
+      "status": 413
+    },
+    {
+      "case": "identity-bridge-actual-chunked",
+      "status": 413
+    }
+  ],
+  "failures": [
+    {
+      "fixture": "malformed.pdf",
+      "jobId": "a55c1311-3626-4e57-9c7a-73540b1cd64a",
+      "errorCode": "KNOWLEDGE_PARSE_INVALID",
+      "acceptedExtraction": false,
+      "chunks": 0,
+      "published": false
+    },
+    {
+      "fixture": "image-only.pdf",
+      "jobId": "4cbf2f46-47ba-4126-85cf-64e4e3f1e947",
+      "errorCode": "KNOWLEDGE_PARSE_TEXT_UNAVAILABLE",
+      "acceptedExtraction": false,
+      "chunks": 0,
+      "published": false
+    },
+    {
+      "fixture": "too-many-pages.pdf",
+      "jobId": "013bd046-b626-435e-af10-f41ff8e13843",
+      "errorCode": "KNOWLEDGE_PARSE_RESOURCE_LIMIT",
+      "acceptedExtraction": false,
+      "chunks": 0,
+      "published": false
+    },
+    {
+      "fixture": "missing-font-map.pdf",
+      "jobId": "d0e519cf-7ead-49a0-b5ce-64f3ac4a9e00",
+      "errorCode": "KNOWLEDGE_PARSE_INVALID",
+      "acceptedExtraction": false,
+      "chunks": 0,
+      "published": false
+    }
+  ],
+  "sources": [
+    {
+      "chunkId": "93e646f589f73a61eff63e56ecb8af20807d138d6e96dcc61a5f3796ee68b468",
+      "locator": "pdf-pages:1",
+      "sourceHash": "1471561d350b30380fd601f536e934bce8756cbd7c885e1df651ad56340e903c",
+      "extractionDigest": "6f01d6ae8e32193c61568fe31e1d546042a38cb9ca0192aff99768e9a9f823d6",
+      "sourceBytesVerified": true
+    },
+    {
+      "chunkId": "233002b44aa62a8957655ca6dbd18fe74c8bd7b81a7ba43ac9933331a29150ad",
+      "locator": "pdf-pages:3",
+      "sourceHash": "1471561d350b30380fd601f536e934bce8756cbd7c885e1df651ad56340e903c",
+      "extractionDigest": "6f01d6ae8e32193c61568fe31e1d546042a38cb9ca0192aff99768e9a9f823d6",
+      "sourceBytesVerified": true
+    }
+  ],
+  "denials": [
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "runtime-public-source",
+      "status": 401
+    },
+    {
+      "scope": "runtime-public-source",
+      "status": 401
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "runtime-public-source",
+      "status": 401
+    },
+    {
+      "scope": "runtime-public-source",
+      "status": 401
+    }
+  ],
+  "overall": "PASS",
+  "budgetsUnchanged": {
+    "embedding": {
+      "calls": 44,
+      "reservedCny": "0.44",
+      "sha256": "affa9a4c034357467e1c9449ea3f467a60b6a8cb3dbe6fef4bcc373bd9bf9b54"
+    },
+    "chat": {
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    }
+  },
+  "successDocumentId": "f76f053b-48d3-4e2a-a3bd-2229d929d794",
+  "evaluationEvidence": "actual HTTP PDF page locations PASS"
+}

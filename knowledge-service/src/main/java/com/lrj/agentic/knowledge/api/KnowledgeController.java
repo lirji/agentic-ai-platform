@@ -2,6 +2,8 @@ package com.lrj.agentic.knowledge.api;
 
 import com.lrj.agentic.knowledge.application.KnowledgeService;
 import com.lrj.agentic.knowledge.application.UploadRules;
+import com.lrj.agentic.contract.knowledge.ExtractionProtocol;
+import com.lrj.agentic.knowledge.infrastructure.processing.ParserProperties;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.security.JwtTrust;
@@ -25,20 +27,25 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/knowledge")
 public class KnowledgeController {
     private final KnowledgeService service;
+    private final ParserProperties parsing;
 
     /** 通过应用服务保持 HTTP 与领域事务的边界。 */
-    public KnowledgeController(KnowledgeService service) { this.service = service; }
+    public KnowledgeController(KnowledgeService service, ParserProperties parsing) {
+        this.service = service; this.parsing = parsing;
+    }
 
     /** 文件大小在读取前和读取后均校验，避免绕过 Multipart 的边界。 */
     @PostMapping(value = "/ingestions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<KnowledgeViews.IngestionView> submit(@AuthenticationPrincipal Jwt jwt,
             @RequestHeader("Idempotency-Key") String key, @RequestParam("file") MultipartFile file,
             @RequestParam(required = false) String displayName) {
-        if (file.getSize() > UploadRules.MAX_BYTES) {
+        if (file.getSize() > ExtractionProtocol.MAX_SOURCE_BYTES) {
             throw new KnowledgeFailure(KnowledgeError.FILE_TOO_LARGE);
         }
-        try {
-            var upload = UploadRules.validate(key, file.getOriginalFilename(), displayName, file.getBytes());
+        try (var input = file.getInputStream()) {
+            byte[] bytes = input.readNBytes(ExtractionProtocol.MAX_SOURCE_BYTES + 1);
+            var upload = UploadRules.validate(key, file.getOriginalFilename(), displayName, bytes,
+                    file.getContentType(), parsing.pdfUploadEnabled());
             var job = service.submit(JwtTrust.caller(jwt), key, upload);
             return ResponseEntity.accepted()
                     .location(URI.create("/api/v1/knowledge/ingestions/" + job.jobId()))

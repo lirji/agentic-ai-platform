@@ -3,7 +3,10 @@ package com.lrj.agentic.knowledge.application;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.processing.KnowledgeProcessor;
-import com.lrj.agentic.knowledge.domain.processing.PreparedDocument;
+import com.lrj.agentic.contract.knowledge.Extraction;
+import com.lrj.agentic.knowledge.domain.processing.PreparedBatch;
+import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
+import com.lrj.agentic.knowledge.domain.processing.DocumentExtractor;
 import com.lrj.agentic.knowledge.domain.processing.PreparationStore;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingClaim;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingClaim.Sink;
@@ -21,14 +24,16 @@ public class IngestionRunner {
     private final PreparationStore storage;
     private final KnowledgeProcessor processor;
     private final SearchIndex index;
+    private final DocumentExtractor extractor;
 
     /** 依赖以领域端口装配，跨进程 DTO 不进入事务规则。 */
     public IngestionRunner(ProcessingRepository repository, PreparationStore storage,
-            KnowledgeProcessor processor, SearchIndex index) {
+            KnowledgeProcessor processor, SearchIndex index, DocumentExtractor extractor) {
         this.repository = repository;
         this.storage = storage;
         this.processor = processor;
         this.index = index;
+        this.extractor = extractor;
     }
 
     /** 准备包已被接受则复用；每个副作用后均由租约条件确认。 */
@@ -36,14 +41,28 @@ public class IngestionRunner {
         ProcessingClaim claim = initial;
         checkInterrupted();
         byte[] source = storage.source(claim.job());
-        PreparedDocument prepared;
+        Extraction extraction = null;
+        if (claim.job().profile() == ProcessingProfile.PDF_V2) {
+            if (claim.extraction() == null) {
+                extraction = extractor.extract(source);
+                checkInterrupted();
+                var reference = storage.saveExtraction(claim.job(), extraction);
+                checkInterrupted();
+                claim = repository.extracted(claim, reference, extraction);
+            } else {
+                extraction = storage.loadExtraction(claim);
+            }
+        }
+        checkInterrupted();
+        PreparedBatch prepared;
         if (claim.prepared() == null) {
-            prepared = processor.prepare(claim.job(), source).validated(claim.job(), source);
+            prepared = extraction == null ? processor.prepare(claim.job(), source).validated(claim.job(), source)
+                    : processor.prepareStructured(claim.job(), source, extraction).validated(claim.job(), source, extraction);
             checkInterrupted();
             var reference = storage.save(claim.job(), prepared);
-            claim = repository.prepared(claim, reference, prepared);
+            claim = repository.prepared(claim, reference, prepared, extraction);
         } else {
-            prepared = storage.load(claim, source);
+            prepared = storage.load(claim, source, extraction);
         }
         checkInterrupted();
         if (claim.vectorState() != SinkState.DONE) {

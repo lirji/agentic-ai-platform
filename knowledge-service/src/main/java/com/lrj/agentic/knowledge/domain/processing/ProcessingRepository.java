@@ -3,6 +3,7 @@ package com.lrj.agentic.knowledge.domain.processing;
 import com.lrj.agentic.knowledge.domain.Ingestion;
 import com.lrj.agentic.knowledge.domain.IngestionStatus;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
+import com.lrj.agentic.contract.knowledge.Extraction;
 import com.lrj.agentic.security.Caller;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +15,13 @@ public interface ProcessingRepository {
     /** 续租必须仍拥有有效 epoch，超时后不能自行复活。 */
     boolean heartbeat(ProcessingClaim claim, int leaseSeconds);
     /** 首次接受不可变准备包与规范块；旧 owner 或重复替换均拒绝。 */
+    default ProcessingClaim prepared(ProcessingClaim claim, ProcessingClaim.PreparedReference reference,
+            PreparedDocument document) { return prepared(claim, reference, document, null); }
+    /** 首次接受 v1/v2，结构来源必须由已接受提取物映射。 */
     ProcessingClaim prepared(ProcessingClaim claim, ProcessingClaim.PreparedReference reference,
-            PreparedDocument document);
+            PreparedBatch document, Extraction extraction);
+    /** 首次提取接受使用同一租约 fence；结果未知先查询再决定是否允许模型阶段。 */
+    ProcessingClaim extracted(ProcessingClaim claim, ProcessingClaim.ExtractionReference reference, Extraction extraction);
     /** 仅确认实际成功的索引，重复外部写入由稳定 ID 保证幂等。 */
     void sinkDone(ProcessingClaim claim, ProcessingClaim.Sink sink);
     /** 双目标完成才原子发布任务与文档。 */
@@ -28,10 +34,18 @@ public interface ProcessingRepository {
     List<PublishedChunk> published(Caller caller, List<String> chunkIds);
     /** 引用读取再次授权，版本过期与不可见都返回空。 */
     Optional<PublishedChunk> citation(Caller caller, String documentId, long version, String chunkId);
+    /** 与引用同一当前发布范围，不返回未接受或未发布的解析告警。 */
+    Optional<ProcessingMetadata> metadata(Caller caller, String documentId, long version);
     /** 有界状态聚合用于运维；不返回任务输入或身份。 */
     long count(IngestionStatus status);
 
     /** 搜索和直接引用共同使用的权威投影。 */
     record PublishedChunk(String documentId, long version, String chunkId, String batchDigest,
-            String text, int startByte, int endByte, String displayName) { }
+            String text, Integer startByte, Integer endByte, String displayName,
+            String sourceHash, String sourceLocator, String sourceJson, String sourceDigest, String extractionDigest) { }
+
+    /** 内部读取投影；公开接口再明确映射空值、格式与告警。 */
+    record ProcessingMetadata(String documentId, long version, String sourceHash, String contentType,
+            String preparationSchema, String processorVersion, String parserProfile,
+            String extractionDigest, String warningsJson) { }
 }

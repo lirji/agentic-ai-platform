@@ -103,7 +103,7 @@ class KnowledgeProcessingIT {
         var model = new Model();
         AtomicInteger vectors = new AtomicInteger(), keywords = new AtomicInteger();
         SearchIndex fault = new SearchIndex() {
-            @Override public void write(Sink sink, PreparedDocument document) {
+            @Override public void write(Sink sink, com.lrj.agentic.knowledge.domain.processing.PreparedBatch document) {
                 if (sink == Sink.VECTOR) { vectors.incrementAndGet(); }
                 if (sink == Sink.KEYWORD && keywords.incrementAndGet() == 1) {
                     throw new KnowledgeFailure(KnowledgeError.INDEX_UNAVAILABLE);
@@ -115,7 +115,7 @@ class KnowledgeProcessingIT {
                 return searchIndex.search(sink, caller, text, vector, ids);
             }
         };
-        var runner = new IngestionRunner(repository, storage, model, fault);
+        var runner = new IngestionRunner(repository, storage, model, fault, source -> { throw new AssertionError("v1不得调用二进制解析器"); });
         var first = claim(job, "first");
         error(KnowledgeError.INDEX_UNAVAILABLE, () -> runner.run(first));
         repository.fail(first, KnowledgeError.INDEX_UNAVAILABLE, true);

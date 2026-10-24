@@ -1,8 +1,9 @@
 package com.lrj.agentic.knowledge.infrastructure.persistence;
 
-import com.lrj.agentic.knowledge.domain.processing.PreparedDocument;
+import com.lrj.agentic.knowledge.domain.processing.PreparedBatch;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingClaim;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingRepository.PublishedChunk;
+import com.lrj.agentic.knowledge.domain.processing.ProcessingRepository.ProcessingMetadata;
 import com.lrj.agentic.security.Caller;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
@@ -15,12 +16,18 @@ public interface ProcessingMapper {
     int claim(@Param("row") ProcessingRow row, @Param("worker") String worker, @Param("lease") int lease);
     /** 全身份查询领取元数据。 */
     ProcessingRow find(@Param("caller") Caller caller, @Param("id") String id);
+    /** 未知接受结果只查询仍持有原租约的同一任务，不能恢复过期执行者。 */
+    ProcessingRow current(@Param("claim") ProcessingClaim claim);
     /** 只有未过期所有者可续租。 */
     int heartbeat(@Param("claim") ProcessingClaim claim, @Param("lease") int lease);
     /** 接受准备指针的唯一条件写入口。 */
     int prepare(@Param("claim") ProcessingClaim claim, @Param("ref") ProcessingClaim.PreparedReference ref);
+    /** 首次提取物接受与安全告警同事务写入。 */
+    int extract(@Param("claim") ProcessingClaim claim, @Param("ref") ProcessingClaim.ExtractionReference ref,
+            @Param("warnings") String warnings);
     /** 有界批量插入已校验正文，和准备指针同事务。 */
-    int chunks(@Param("claim") ProcessingClaim claim, @Param("doc") PreparedDocument document);
+    int chunks(@Param("claim") ProcessingClaim claim, @Param("doc") PreparedBatch document,
+            @Param("chunks") List<PreparedChunkRow> chunks);
     /** 目标由显式枚举映射固定列。 */
     int sink(@Param("claim") ProcessingClaim claim, @Param("sink") String sink);
     /** 所有推进都由有效领取令牌限制。 */
@@ -42,6 +49,9 @@ public interface ProcessingMapper {
     /** 引用同样不信任索引正文。 */
     PublishedChunk citation(@Param("caller") Caller caller, @Param("documentId") String documentId,
             @Param("version") long version, @Param("chunkId") String chunkId);
+    /** 只读当前可见版本，不读取源对象或暴露存储键。 */
+    ProcessingMetadata metadata(@Param("caller") Caller caller, @Param("documentId") String documentId,
+            @Param("version") long version);
     /** 只用于状态指标聚合。 */
     long count(@Param("status") String status);
 }

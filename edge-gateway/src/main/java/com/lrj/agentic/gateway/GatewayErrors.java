@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lrj.agentic.contract.ApiError;
 import com.lrj.agentic.contract.ErrorCode;
 import com.lrj.agentic.contract.PlatformError;
+import com.lrj.agentic.contract.knowledge.KnowledgeUploadProtocol;
 import com.lrj.agentic.security.IdentityProtocol;
 import java.util.UUID;
 import org.springframework.core.Ordered;
@@ -38,6 +39,14 @@ public class GatewayErrors implements WebFilter, WebExceptionHandler, Ordered {
     /** 代理未获得有效响应时不能伪装成业务受理。 */
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable failure) {
+        if (!exchange.getResponse().isCommitted()) {
+            Throwable cause = failure;
+            for (int depth = 0; cause != null && depth < 8; depth++, cause = cause.getCause()) {
+                if (cause instanceof KnowledgeUploadLimit.LimitExceeded) {
+                    return write(exchange, KnowledgeUploadProtocol.Failure.FILE_TOO_LARGE);
+                }
+            }
+        }
         return exchange.getResponse().isCommitted() ? Mono.error(failure)
                 : write(exchange, PlatformError.INTERNAL_ERROR);
     }

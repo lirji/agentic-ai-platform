@@ -30,9 +30,8 @@ public interface EvaluationMapper extends BaseMapper<EvaluationRow> {
     int accept(@Param("row") CommandRow row);
     /** 写入前锁定所用资料，防止绑定与发布更新交错。 */
     List<String> lockDocuments(@Param("caller") Caller caller, @Param("ids") List<String> ids);
-    /** 复用检索的发布权威谓词；当前只有严格接受的单一 processor profile。 */
-    List<DocumentBinding> bindings(@Param("caller") Caller caller, @Param("ids") List<String> ids,
-            @Param("processor") String processor);
+    /** 复用检索的发布权威谓词，处理版本必须读取实际接受事实。 */
+    List<DocumentBinding> bindings(@Param("caller") Caller caller, @Param("ids") List<String> ids);
     /** 正确证据批量核验，避免逐题 N+1。 */
     List<EvidenceRow> gold(@Param("caller") Caller caller, @Param("ids") List<String> ids);
     /** 直接读取当前块，不触发搜索和模型费用。 */

@@ -152,7 +152,7 @@ public class MySqlEvaluationRepository implements EvaluationRepository {
     @Override
     public List<DocumentBinding> bindings(Caller caller, List<String> documentIds) {
         if (documentIds.isEmpty()) { return List.of(); }
-        return access(() -> List.copyOf(mapper.bindings(caller, documentIds, ProcessingProtocol.PROCESSOR)));
+        return access(() -> List.copyOf(mapper.bindings(caller, documentIds)));
     }
 
     /** 引用、检索和评测选择器共用 XML 发布授权片段。 */

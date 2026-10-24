@@ -5,6 +5,7 @@ import com.lrj.agentic.knowledge.domain.IngestionStage;
 import com.lrj.agentic.knowledge.domain.IngestionStatus;
 import com.lrj.agentic.knowledge.domain.SourceReference;
 import java.time.Instant;
+import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
 
 /** 数据库扁平行与领域原文引用显式映射，避免公开存储结构。 */
 public record IngestionRow(
@@ -12,20 +13,22 @@ public record IngestionRow(
         String idempotencyKey, String requestFingerprint, String sourceBucket, String sourceKey,
         String contentHash, String contentType, long sizeBytes, String status, String stage,
         String errorCode, boolean retryable, int retryCount, long revision,
-        Instant createdAt, Instant updatedAt) {
+        Instant createdAt, Instant updatedAt, String preparationSchema, String processorVersion, String parserProfile) {
     /** 写入快照保持原文指纹、所有者及任务版本一致。 */
     public static IngestionRow from(Ingestion job) {
         return new IngestionRow(job.jobId(), job.tenantId(), job.ownerId(), job.documentId(),
                 job.documentVersion(), job.idempotencyKey(), job.requestFingerprint(),
                 job.source().bucket(), job.source().key(), job.source().hash(),
                 job.source().contentType(), job.source().size(), job.status().code(), job.stage().code(),
-                job.errorCode(), job.retryable(), job.retryCount(), job.revision(), job.createdAt(), job.updatedAt());
+                job.errorCode(), job.retryable(), job.retryCount(), job.revision(), job.createdAt(), job.updatedAt(),
+                job.profile().schema(), job.profile().processor(), job.profile().parser());
     }
     /** 还原领域快照时校验稳定编码。 */
     public Ingestion domain() {
         return new Ingestion(jobId, tenantId, ownerId, documentId, documentVersion, idempotencyKey,
                 requestFingerprint, new SourceReference(sourceBucket, sourceKey, contentHash, contentType, sizeBytes),
                 IngestionStatus.fromCode(status), IngestionStage.fromCode(stage), errorCode,
-                retryable, retryCount, revision, createdAt, updatedAt);
+                retryable, retryCount, revision, createdAt, updatedAt,
+                ProcessingProfile.stored(preparationSchema, processorVersion, parserProfile));
     }
 }

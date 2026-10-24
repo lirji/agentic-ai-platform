@@ -11,7 +11,10 @@ import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.pdfbox.util.Matrix;
+import org.apache.pdfbox.util.Vector;
 
 /** 原生 PDF 文本适配；不读取附件、执行脚本或调用 OCR。 */
 public final class PdfExtractor {
@@ -27,7 +30,7 @@ public final class PdfExtractor {
             int count = document.getNumberOfPages();
             if (count > ExtractionProtocol.MAX_PAGES) { throw new Rejected(Exit.RESOURCE_LIMIT); }
             if (count < 1) { throw new Rejected(Exit.INVALID); }
-            PDFTextStripper stripper = new PDFTextStripper();
+            PDFTextStripper stripper = new MappedTextStripper();
             stripper.setSortByPosition(true);
             stripper.setWordSeparator(" ");
             stripper.setLineSeparator("\n");
@@ -50,6 +53,16 @@ public final class PdfExtractor {
         } catch (Rejected rejected) { throw rejected; }
         catch (InvalidPasswordException encrypted) { throw new Rejected(Exit.ENCRYPTED); }
         catch (IOException | IllegalArgumentException malformed) { throw new Rejected(Exit.INVALID); }
+    }
+
+    /** 字形无法映射为文字时拒绝整份输入，避免跳过中文后把剩余拉丁文字当作完整提取。 */
+    private static final class MappedTextStripper extends PDFTextStripper {
+        @Override
+        protected void showGlyph(Matrix matrix, PDFont font, int code, Vector displacement) throws IOException {
+            String text = font.toUnicode(code);
+            if (text == null || text.isEmpty() || text.indexOf('\ufffd') >= 0) { throw new Rejected(Exit.INVALID); }
+            super.showGlyph(matrix, font, code, displacement);
+        }
     }
 
     /** 库写入时立即计数字符，避免先积累无界 String 后才检查响应长度。 */

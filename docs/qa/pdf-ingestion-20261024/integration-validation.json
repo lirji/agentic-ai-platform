@@ -1,0 +1,53 @@
+{
+  "stage": "PASS",
+  "scope": "isolated Java DB/S3/index/child-process tests; synthetic vectors, no paid model",
+  "migration": "test and dev V7 applied; original 12 local-dev v1 hashes/status unchanged",
+  "log": ".logs/s9b-structured-it-first.log",
+  "suites": [
+    {
+      "name": "com.lrj.agentic.knowledge.EvaluationDecisionIT",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.648"
+    },
+    {
+      "name": "com.lrj.agentic.knowledge.EvaluationPersistenceIT",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.722"
+    },
+    {
+      "name": "com.lrj.agentic.knowledge.EvaluationRunIT",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.247"
+    },
+    {
+      "name": "com.lrj.agentic.knowledge.KnowledgeProcessingIT",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.711"
+    },
+    {
+      "name": "com.lrj.agentic.knowledge.KnowledgeStructuredProcessingIT",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "18.489"
+    }
+  ],
+  "logs": [
+    ".logs/s9b-structured-it-first.log",
+    ".logs/s9b-font-boundary-it.log"
+  ],
+  "distinctTests": 39
+}

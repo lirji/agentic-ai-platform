@@ -8,7 +8,8 @@
     <sql id="ingestionColumns">
         job_id, tenant_id, owner_id, document_id, document_version, idempotency_key,
         request_fingerprint, source_bucket, source_key, content_hash, content_type, size_bytes,
-        status, stage, error_code, retryable, retry_count, revision, created_at, updated_at
+        status, stage, error_code, retryable, retry_count, revision, created_at, updated_at,
+        preparation_schema, processor_version, parser_profile
     </sql>
     <insert id="createDocument">
         INSERT INTO knowledge_document (<include refid="documentColumns"/>)
@@ -22,7 +23,8 @@
                 #{row.documentVersion}, #{row.idempotencyKey}, #{row.requestFingerprint},
                 #{row.sourceBucket}, #{row.sourceKey}, #{row.contentHash}, #{row.contentType},
                 #{row.sizeBytes}, #{row.status}, #{row.stage}, #{row.errorCode}, #{row.retryable},
-                #{row.retryCount}, #{row.revision}, #{row.createdAt}, #{row.updatedAt})
+                #{row.retryCount}, #{row.revision}, #{row.createdAt}, #{row.updatedAt},
+                #{row.preparationSchema}, #{row.processorVersion}, #{row.parserProfile})
     </insert>
     <!-- 每条查询携带服务端验证身份，ID/游标/内容摘要均不能代替授权。 -->
     <select id="findIdempotency" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.IngestionRow">
