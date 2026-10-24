@@ -1,0 +1,28 @@
+{
+  "slice": "S8F",
+  "result": "DELIVERED",
+  "authorization": "user standing authorization for task branches, logical commits, normal merge and push main",
+  "backend": {
+    "branch": "feat/ci-contracts-20261024",
+    "commit": "258149e894e57ecb6bbca32f570f30622f9996af",
+    "remoteMainVerified": true,
+    "method": "fast-forward HEAD:main without force; local main synchronized after receipt commit"
+  },
+  "frontend": {
+    "branch": "feat/ci-contracts-20261024",
+    "commit": "83c0bc6bc9e1c3380f9a24095fb0b7c66603add9",
+    "remoteMainVerified": true,
+    "method": "git merge --ff-only, push origin main"
+  },
+  "ciGate": "ci-gate.json",
+  "scope": "workflows, shared protocol fixtures/tests, CI document script and related documentation; three frontend historical JSON files formatting only",
+  "productionDeployment": false,
+  "worktreesCreated": false,
+  "preserved": [
+    ".local private runtime and budget data",
+    ".logs evidence",
+    ".idea user settings",
+    "isolated CI virtualenv and temporary frontend snapshot"
+  ],
+  "receiptCommit": "subsequent documentation commit in the same task branch; see Git history"
+}

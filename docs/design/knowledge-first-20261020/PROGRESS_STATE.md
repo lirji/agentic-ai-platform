@@ -3,9 +3,9 @@
 ## 当前任务：按能力深化方案连续实施
 
 - 标识：`capability-delivery-20261021`；用户于2026-10-24要求继续，原20项差距/51项计划及本地实施、正常Git合并推送授权有效。完整计划未完成。
-- 状态：S8A–S8E已交付；S8E c23b50c已合并推送origin/main；S8F VERIFYING，本地必需检查PASS，待具体提交的远程Actions结果，不能提前标DONE。
+- 状态：S8A–S8F已交付；S8F DONE，本地及两仓真实Actions必需检查PASS，后端258149e/前端83c0bc6已正常快进推送origin/main。完整51项计划未完成，下一项S9A。
 - 权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、QUALITY_CONTRACTS、E02/E03及QUALITY_ACCEPTANCE；本文件为唯一当前状态。
-- Git：两仓原目录 `feat/ci-contracts-20261024`，后端起点9a0e0b4、前端起点5960531；S8E已交付，S8F允许路径为工作流、ci脚本、既有测试/共享金标与必要文档，无产品/依赖升级或新worktree。
+- Git：后端原目录 `feat/ci-contracts-20261024` 补充S8F验收收据后回main；前端main=83c0bc6。S8F起点后端9a0e0b4/前端5960531，仅工作流、ci脚本、测试/金标与必要文档，无产品/依赖升级或新worktree。
 - S8E结果：[TEST_RESULT](../../qa/quality-mechanism-20261024/TEST_RESULT.md)。6份固定摘录经业务接口发布、7块真实引用、8题执行成功；6道答案题Recall@5=1、MRR=0.875、nDCG=0.905113；2道拒答通过。M04正确证据第4且回答将直接引用404扩大到搜索，supported=FAIL已保存，未重跑模型或修改金标。
 - 基线：dataset `fee96d5a-6107-4778-b24f-960e6d418a09` revision1；run `dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5`；task `a243cd4a-687a-4628-aa38-60d15444dc84` SUCCEEDED；baseline `bd158640-0389-4107-8491-20444637a9ae`。原键与恢复 `.local/s8e-mechanism-state.json`，不得重新创建运行。
 - 评审边界：Codex逐题阅读后经可信 `local-dev/developer` 保存，不冒称用户人工签核。默认前端workbench-user与该基线隔离。M03原固定文档缺一基名次/完整去重键，运行前已限定题目并留证，源码机制单列。无答案文本拒答正确，但ANSWERED仅表示非空召回；来源说明噪声保留为后续S9D/S11/S12依据。
@@ -15,7 +15,8 @@
 - 保留：`.local`凭据/账本/任务状态、`.logs`、`.idea`、target/venv等；无目录清理授权。本片无迁移、依赖变更或生产部署。
 - S8F实现：ci-v1已冻结；两仓Actions固定SHA/只读权限，E02共用JSON金标并经实际Java/Python DTO往返及负例检查，P01沿用原样本。无产品源码/业务依赖变更；前端3份旧QA JSON仅格式修正，值未变。切片索引中S8B旧IN_PROGRESS已依现有验收/交付修正为DONE。
 - S8F验证：Java71、Python296通过/49条件集成跳过、前端59及构建通过，格式/lint/类型PASS；字段改名两端均预期失败。前端首次快照被现有.local访问限制拦截，改用系统临时目录后通过，未弱化规则。见ci-contracts-20261024/TEST_RESULT与各仓.logs/s8f-*。隔离Python环境、前端临时目录保留，路径在前端.local/s8f-web-isolation.json；当前无运行中测试。
-- 下一步：检查当前文档/暂存范围，按持续授权提交并推送两仓任务分支以启动真实CI；所有必需job绑定具体SHA通过后才正常合并main。远程失败须修复/记录，不绕过Gate。随后S9A按既有依赖接续。
+- S8F远程：[CI Gate](../../qa/ci-contracts-20261024/ci-gate.json)绑定后端258149e的run40083073430（java/python/documents）与前端83c0bc6的run40083074868（web），全部success；[Git收据](../../qa/ci-contracts-20261024/delivery-result.json)记录两仓main核对。连接器不支持push运行查询，使用已登录gh读取实际结果；无分支保护改动或部署。
+- 下一步：完成S8F收据文档的正常Git交付；随后在原目录建立S9A任务分支，按backend-architecture-design冻结唯一解析者、原文/提取物/页段表来源及P-v1/v2兼容。只读预查在.local/s9a-research；尚无S9A产品/依赖修改。网页搜索工具连接失败，官方站点直读可用；选型须继续以官方制品/文档核对。
 - 规范：session-handoff、continue-approved-delivery、implementation-validation、update-progress-docs、task-git-delivery；业务建模/并发安全/契约/发布规范。无子Agent授权，无全局Runtime Gate冒称。
 
 ## 历史：20 项差距的框架化实施计划

@@ -1,0 +1,60 @@
+{
+  "skill": "ci-cd-gate",
+  "status": "COMPLETED",
+  "gate": "PASS",
+  "policy": "ci-v1",
+  "repositories": [
+    {
+      "repository": "lirji/agentic-ai-platform",
+      "ref": {
+        "type": "commit",
+        "value": "258149e894e57ecb6bbca32f570f30622f9996af"
+      },
+      "runUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/40083073430",
+      "gate": "PASS",
+      "checks": [
+        {
+          "name": "documents",
+          "required": true,
+          "result": "PASS",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40083073430/job/120840421295",
+          "completedAt": "2026-10-24T09:43:27Z"
+        },
+        {
+          "name": "java",
+          "required": true,
+          "result": "PASS",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40083073430/job/120840421411",
+          "completedAt": "2026-10-24T09:44:16Z"
+        },
+        {
+          "name": "python",
+          "required": true,
+          "result": "PASS",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40083073430/job/120840421434",
+          "completedAt": "2026-10-24T09:44:22Z"
+        }
+      ]
+    },
+    {
+      "repository": "lirji/agentic-ai-platform-web",
+      "ref": {
+        "type": "commit",
+        "value": "83c0bc6bc9e1c3380f9a24095fb0b7c66603add9"
+      },
+      "runUrl": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/40083074868",
+      "gate": "PASS",
+      "checks": [
+        {
+          "name": "web",
+          "required": true,
+          "result": "PASS",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/40083074868/job/120840425154",
+          "completedAt": "2026-10-24T09:44:33Z"
+        }
+      ]
+    }
+  ],
+  "integration": "NOT_RUN: default conditional database/model suites excluded",
+  "productionDeployment": "NOT_AUTHORIZED"
+}

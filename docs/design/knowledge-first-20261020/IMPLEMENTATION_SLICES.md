@@ -200,7 +200,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S8C | 持久评测执行与逐题结果 | S8B | IMPLEMENT | DONE |
 | S8D | 基线选择、逐题对照与退化门禁 | S8C | IMPLEMENT | DONE |
 | S8E | 运行当前两路链路的可追溯基线 | S8D | VALIDATE | DONE |
-| S8F | 最小跨语言与前端 CI | S8A | ENGINEERING | IN_PROGRESS |
+| S8F | 最小跨语言与前端 CI | S8A | ENGINEERING | DONE |
 | S9A | 冻结结构化解析与准备包 v2 | S8A | DESIGN | PLANNED |
 | S9B | PDF 入库与页级引用 | S9A, S8E | IMPLEMENT | PLANNED |
 | S9C | DOCX 段落和表格入库 | S9B | IMPLEMENT | PLANNED |
@@ -305,7 +305,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-RELEASE 的最小 CI 部分已冻结于 [CI_CONTRACTS](CI_CONTRACTS.md)；现有构建与契约为检查依据，不等待 S17 的完整发布契约；无业务迁移。
 - **可观察验收：** 干净环境按锁文件构建；Java/Python DTO 与契约不一致会失败；UI 类型/单元/构建运行；密钥不进日志；真实模型默认不在无预算 CI 调用。
 - **Pass / Runtime：** ENGINEERING；GitHub Actions；必要数据库测试使用隔离资源/显式条件。
-- **状态 / 并行 / 对应缺口：** IN_PROGRESS；本地验证与远程工作流验收中，见 [S8F验收](../../qa/ci-contracts-20261024/TEST_RESULT.md)；parallel=no；G16 G19。
+- **状态 / 并行 / 对应缺口：** DONE；本地与两仓真实Actions必需检查PASS，见 [S8F验收](../../qa/ci-contracts-20261024/TEST_RESULT.md)；parallel=no；G16 G19。
 
 ### S9A · 冻结结构化解析与准备包 v2
 
