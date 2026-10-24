@@ -124,7 +124,7 @@ public class IngestionWorker implements SmartLifecycle {
             } else {
                 KnowledgeError code = error instanceof KnowledgeFailure failure
                         ? failure.error() : KnowledgeError.PROCESSOR_UNAVAILABLE;
-                boolean retryable = code != KnowledgeError.PREPARATION_INVALID && code != KnowledgeError.SOURCE_INVALID;
+                boolean retryable = code.retryableProcessingFailure();
                 try { repository.fail(claim, code, retryable); }
                 catch (KnowledgeFailure conflict) {
                     LOG.warn("knowledge_failure_uncommitted job={} code={}", claim.job().jobId(), conflict.error().code());

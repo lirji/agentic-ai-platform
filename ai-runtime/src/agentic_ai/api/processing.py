@@ -19,6 +19,7 @@ from agentic_ai.processing.identity import (
 )
 from agentic_ai.processing.models import MAX_BODY_BYTES, PrepareRequest, QueryRequest
 from agentic_ai.processing.pipeline import PreparationPipeline
+from agentic_ai.processing.structured import StructuredRequest
 from agentic_ai.rag.errors import EmbeddingError, EmbeddingErrorCode
 from agentic_ai.runtime.processing_config import ProcessingConfig
 
@@ -90,10 +91,10 @@ def processing_router(
     pipeline: PreparationPipeline, verifier: ServiceVerifier, config: ProcessingConfig
 ) -> APIRouter:
     """闭包只保存服务依赖；请求身份和文本始终是调用局部变量。"""
-    router = APIRouter(prefix="/internal/v1/knowledge")
+    router = APIRouter()
     admission = Admission(config.max_concurrent)
 
-    async def execute(request: Request, *, prepare: bool) -> JSONResponse:
+    async def execute(request: Request, *, prepare: bool, structured: bool = False) -> JSONResponse:
         """认证、容量、读入和计算在明确边界中完成，错误不携带底层上下文。"""
         trace_id = str(uuid4())
         code: str
@@ -105,7 +106,14 @@ def processing_router(
             )
             async with admission.admit(), asyncio.timeout(config.deadline_seconds):
                 body = await limited_body(request)
-                if prepare:
+                if structured:
+                    structured_command = StructuredRequest.from_wire(body)
+                    identity.require_owner(structured_command)
+                    structured_result = await until_disconnect(
+                        request, pipeline.prepare_structured(structured_command)
+                    )
+                    content = structured_result.model_dump(mode="json", by_alias=True)
+                elif prepare:
                     command = PrepareRequest.model_validate_json(body, by_name=False)
                     identity.require_owner(command)
                     result = await until_disconnect(request, pipeline.prepare(command))
@@ -140,14 +148,19 @@ def processing_router(
             headers={"X-Request-Id": trace_id},
         )
 
-    @router.post("/prepare")
+    @router.post("/internal/v1/knowledge/prepare")
     async def prepare_document(request: Request) -> JSONResponse:
         """只返回待 Java 核验的准备结果，不改变文档发布状态。"""
         return await execute(request, prepare=True)
 
-    @router.post("/embed-query")
+    @router.post("/internal/v1/knowledge/embed-query")
     async def embed_query(request: Request) -> JSONResponse:
         """只有被委托的 Knowledge 查询能够使用模型额度。"""
         return await execute(request, prepare=False)
+
+    @router.post("/internal/v2/knowledge/prepare")
+    async def prepare_structured(request: Request) -> JSONResponse:
+        """与 v1 共用身份、期限和同一个并发计数器，新增端点不增加模型额度。"""
+        return await execute(request, prepare=True, structured=True)
 
     return router

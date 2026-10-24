@@ -2,9 +2,9 @@
 
 import re
 from enum import StrEnum
-from typing import Annotated, Literal, Self
+from typing import Literal, Self
 
-from pydantic import Field, StringConstraints, field_validator, model_validator
+from pydantic import Field, field_validator, model_validator
 
 from agentic_ai.tasks.models import CanonicalId, Sha256, WireModel
 
@@ -61,7 +61,44 @@ class CitationSource(WireModel):
     """展示名与定位必须来自已授权 Knowledge 响应。"""
 
     display_name: str = Field(min_length=1, max_length=512)
-    locator: Annotated[str, StringConstraints(pattern=r"^utf8-bytes:[0-9]+-[0-9]+$")]
+    locator: str = Field(min_length=1, max_length=512)
+
+    @field_validator("locator")
+    @classmethod
+    def valid_locator(cls, value: str) -> str:
+        """QA、评测和研究共用闭合来源语法；不能把任意模型字符串当作真实页号。"""
+        old = re.fullmatch(r"utf8-bytes:(0|[1-9][0-9]*)-([1-9][0-9]*)", value)
+        if old and 0 <= int(old[1]) < int(old[2]) <= 1024 * 1024:
+            return value
+        if value.startswith("pdf-pages:"):
+            pages = value.removeprefix("pdf-pages:").split(",")
+            if (
+                1 <= len(pages) <= 16
+                and all(re.fullmatch(r"[1-9][0-9]{0,2}", page) for page in pages)
+                and all(int(page) <= 200 for page in pages)
+                and list(map(int, pages)) == sorted(set(map(int, pages)))
+            ):
+                return value
+        if value.startswith("docx-blocks:"):
+            positions = value.removeprefix("docx-blocks:").split(",")
+            if 1 <= len(positions) <= 16 and len(set(positions)) == len(positions):
+                valid = True
+                for position in positions:
+                    paragraph = re.fullmatch(r"p([1-9][0-9]{0,3})", position)
+                    cell = re.fullmatch(
+                        r"t([1-9][0-9]{0,3})r([1-9][0-9]{0,3})c([1-9][0-9]{0,2})", position
+                    )
+                    valid &= bool(
+                        paragraph
+                        and int(paragraph[1]) <= 1000
+                        or cell
+                        and int(cell[1]) <= 1000
+                        and int(cell[2]) <= 1000
+                        and int(cell[3]) <= 100
+                    )
+                if valid:
+                    return value
+        raise ValueError("资料来源定位无效")
 
 
 class KnowledgeHit(WireModel):

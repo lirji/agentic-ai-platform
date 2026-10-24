@@ -8,6 +8,7 @@ from langgraph.graph import END, START, StateGraph
 from langsmith import tracing_context
 from llama_index.core.node_parser import SentenceSplitter
 
+from agentic_ai.processing import structured
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.models import (
     CHUNK_OVERLAP,
@@ -77,6 +78,62 @@ class PreparationPipeline:
         result = await self._embedding.embed((text,))
         self._validate_embedding(result, 1)
         return QueryVector(vector=result.vectors[0])
+
+    async def prepare_structured(
+        self, request: structured.StructuredRequest
+    ) -> structured.StructuredDocument:
+        """P04 逐非空结构块复用同一 LlamaIndex 分块器，不添加隐藏元数据或跨页正文。"""
+        texts: list[str] = []
+        segments: list[tuple[structured.SourceSegment, ...]] = []
+        for block in request.extraction.blocks:
+            if not block.text.strip():
+                continue
+            parts = tuple(self._splitter.split_text(block.text))
+            positions = self._locations(block.text, parts)
+            structured.validate_locations(block.text, parts, positions)
+            texts.extend(parts)
+            segments.extend(
+                (structured.SourceSegment(block_id=block.block_id, start_byte=start, end_byte=end),)
+                for start, end in positions
+            )
+            if len(texts) > MAX_CHUNKS:
+                raise ProcessingError(ProcessingCode.INPUT_TOO_LARGE)
+        if not texts:
+            raise ProcessingError(ProcessingCode.INPUT_INVALID)
+        result = await self._embedding.embed(tuple(texts))
+        self._validate_embedding(result, len(texts))
+        chunks: list[structured.StructuredChunk] = []
+        for ordinal, (text, source_parts) in enumerate(zip(texts, segments, strict=True)):
+            text_hash = digest(text.encode("utf-8"))
+            sources = structured.source_digest(request.extraction, source_parts)
+            chunks.append(
+                structured.StructuredChunk(
+                    ordinal=ordinal,
+                    chunk_id=structured.chunk_identity(request, ordinal, text_hash, sources),
+                    text=text,
+                    text_hash=text_hash,
+                    segments=source_parts,
+                    source_digest=sources,
+                    vector=result.vectors[ordinal],
+                    vector_hash=vector_digest(result.vectors[ordinal]),
+                )
+            )
+        ordered = tuple(chunks)
+        return structured.StructuredDocument(
+            schema_version=structured.STRUCTURED_SCHEMA,
+            tenant_id=request.tenant_id,
+            owner_id=request.owner_id,
+            document_id=request.document_id,
+            job_id=request.job_id,
+            document_version=request.document_version,
+            source_hash=request.extraction.source_hash,
+            extraction_digest=request.extraction.extraction_digest,
+            processor_version=request.processor_version,
+            embedding_model=EMBEDDING_MODEL,
+            dimensions=EMBEDDING_DIMENSIONS,
+            chunks=ordered,
+            batch_digest=structured.batch_digest(request, ordered),
+        ).validated(request)
 
     async def _split(self, state: PreparationState) -> PreparationState:
         """有界输入在当前调用中完成分块，输出超界时拒绝而非截断。"""

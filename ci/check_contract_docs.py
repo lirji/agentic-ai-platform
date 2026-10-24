@@ -10,6 +10,7 @@ REGISTERED_CONTRACTS = {
     "QUALITY_CONTRACTS.md": "quality-v1",
     "EVALUATION_RUN_CONTRACTS.md": "evaluation-run-v1",
     "PROCESSING_CONTRACTS.md": "knowledge-preparation-v1",
+    "STRUCTURED_PROCESSING_CONTRACTS.md": "knowledge-preparation-v2",
 }
 FIXTURES = ROOT / "knowledge-service/src/test/resources"
 
@@ -24,10 +25,21 @@ def main() -> None:
     processing = json.loads((FIXTURES / "processing-golden.json").read_text())
     assert evaluation["protocol"] == REGISTERED_CONTRACTS["EVALUATION_RUN_CONTRACTS.md"]
     assert (
-        processing["prepared"]["schemaVersion"] == REGISTERED_CONTRACTS["PROCESSING_CONTRACTS.md"]
+        processing["prepared"]["schemaVersion"]
+        == REGISTERED_CONTRACTS["PROCESSING_CONTRACTS.md"]
     )
     assert set(evaluation["reports"]) == {"answerable", "noAnswer", "failed"}
-    print("4 registered contracts and 2 shared wire fixtures: PASS")
+    for name in (
+        "structured-processing-golden.json",
+        "structured-processing-chinese-golden.json",
+    ):
+        structured = json.loads((FIXTURES / name).read_text())
+        assert (
+            structured["prepared"]["schemaVersion"]
+            == REGISTERED_CONTRACTS["STRUCTURED_PROCESSING_CONTRACTS.md"]
+        )
+        assert (ROOT / structured["sourceFixture"]).is_file()
+    print("5 registered contracts and 4 shared wire fixtures: PASS")
 
 
 if __name__ == "__main__":

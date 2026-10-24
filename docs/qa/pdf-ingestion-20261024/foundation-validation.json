@@ -1,0 +1,79 @@
+{
+  "slice": "S9B",
+  "phase": "P03/P04 foundation",
+  "phaseResult": "PASS",
+  "sliceStatus": "IN_PROGRESS",
+  "java": {
+    "testsPassed": 86,
+    "failed": 0,
+    "finalSequentialAffectedTests": 15
+  },
+  "python": {
+    "passed": 326,
+    "conditionalSkipped": 49,
+    "warnings": 19,
+    "mypyFiles": 47,
+    "ruff": "PASS"
+  },
+  "realParentProcess": {
+    "nativePages": 3,
+    "chinesePages": 4,
+    "activeAfterBoth": 0,
+    "resultMatchesGolden": true
+  },
+  "newModelCalls": 0,
+  "ledgers": {
+    "chat": {
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942",
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "limitCny": "1"
+    },
+    "embedding": {
+      "sha256": "0af9684a0e3d11561a44cae9e1075565e7cc7bc4b98c2abf0d618ba5f5c4d0b2",
+      "calls": 42,
+      "reservedCny": "0.42",
+      "limitCny": "1"
+    }
+  },
+  "sourceSha256": {
+    "ai-runtime/src/agentic_ai/api/processing.py": "1924993efb99cfb925e64cbcd7f7e104d0635aceac226ca70b0814d92befb4ff",
+    "ai-runtime/src/agentic_ai/processing/models.py": "180abe07e7e9042edaf9c5376f1384ed5d6587a486b46775cff22df6209a413c",
+    "ai-runtime/src/agentic_ai/processing/pipeline.py": "765b48a8168b827ad9657ecd851841108e2724c21fc050412d3b0f17f0d82807",
+    "ai-runtime/src/agentic_ai/processing/structured.py": "9bdbb22d5fabe8d566c1c169febd19d4edaccb64494c5fd9ea6c35d4ed0cbfcb",
+    "ai-runtime/src/agentic_ai/qa/models.py": "24d9f5934b26ef2b188b8659fa42a83e1bcd8bc3dda9ce7303e10a7618e73057",
+    "ai-runtime/tests/test_structured_processing.py": "544efc8adc7d2f9d9f94d3a3eb8cbd37c49516b54c916867d6299aa237d82e7f",
+    "ci/check_contract_docs.py": "b720b8d94f60e31e33b4beef46e644d535651a7787c0be618fa38957ce1bf064",
+    "knowledge-parser/README.md": "847ac0be09d3de4188eb4054c03242d3e8e0aaace47e593a255402950bb0d374",
+    "knowledge-parser/pom.xml": "4f3437b251149d24db1724f377d6be645804e293ca67e89cdd2f9abcb75751d7",
+    "knowledge-parser/src/main/java/com/lrj/agentic/parser/ParserMain.java": "0d43fb280bff65e7d1beb2bbf3409bc30a44d279b410aadd5a79c697ee159c7d",
+    "knowledge-parser/src/main/java/com/lrj/agentic/parser/PdfExtractor.java": "f3ff576b38a908fd9c491384f4dc80c7b176c6818dcd6134c12ea5e88f875146",
+    "knowledge-parser/src/main/resources/logback.xml": "4614f0116705a5c51c52322037f0e24e6a3fd45d00e0da02820479c1cc46c6d3",
+    "knowledge-parser/src/test/java/com/lrj/agentic/parser/PdfExtractorTest.java": "91727890ed5bf817f02088b03a66d4f4f1a3b5c3b091779b2f57fb36ed5c6dc4",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeError.java": "43e0b510d3470a89edbbeaeb8b9ec70aaeba475d2dbdab1d09da961ab8520f62",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/StructuredPreparedDocument.java": "31a2f8a15142ac13466ec5a840ccafa4d744c51c2a1e16322d9da95435ce2081",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/IngestionWorker.java": "717f2c23c469297b8835b361b1ef2add3935c3e88c5fc487c919c424871aab25",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/ParserProcess.java": "8b42a16681e5a5c395de1485f229129f28ca97b6e112f0bf165dc0b80e6e6dec",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/ParserProperties.java": "7be597488019f8e11cd2dcfafece10cc9db8a535fad13ba81a9ce81a613339d0",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/StructuredProcessingTest.java": "b9f0daa08dbe052d78c1062cdd1fc92834ea6deb4661ded019036304d9645319",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/infrastructure/processing/ParserFaultMain.java": "919217225186972ede104fca994c10b3930cdc4b10df9e78d48d3e4f8a3dc5fe",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/infrastructure/processing/ParserProcessTest.java": "203ecc0561f158b71e2fe5ca9e381d504f299ec9983eff5794b1396ca7675397",
+    "knowledge-service/src/test/resources/structured-processing-chinese-golden.json": "26c539f898b409ead71f828c910ea81962ad7e2e7bb3a7689cdf7a2c84927718",
+    "knowledge-service/src/test/resources/structured-processing-golden.json": "a69613aba50c88bd87eeb44a01e15eb1e2a64799d330cc82e7818113ad2f1649",
+    "platform-contracts/src/main/java/com/lrj/agentic/contract/knowledge/Extraction.java": "9b810265ea121f2fa54dcc0ec27b9880d26afe0f03e95573d4b088ee72a19474",
+    "platform-contracts/src/main/java/com/lrj/agentic/contract/knowledge/ExtractionProtocol.java": "55629c71f2711de0d4d20058ba21eeec872a200d5dce27a4019503ba87de6c28",
+    "pom.xml": "e5f24af781d167e3995ca0aa7347ae30abcdcbc5f1894f3e64ee911ab4997b65"
+  },
+  "selfReview": {
+    "independentAgent": false,
+    "findingsFixed": [
+      "macOS injected encoding variable wrongly classified in fault fixture",
+      "actual parent probe requires explicit registry close"
+    ],
+    "remaining": [
+      "S9B durable extraction/publication/migration/K06/UI not implemented",
+      "No production OS sandbox/RSS SLA claim",
+      "Real business corpus and font-mapping fallback not validated"
+    ]
+  }
+}

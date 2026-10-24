@@ -1,0 +1,67 @@
+{
+  "scope": "observed local P03 foundation build, not a reproducible release digest",
+  "jarSha256": "52b581268cea97ef3b751f77db7c8cfaf9a426bf3f616caeeac0e84dc0cf7758",
+  "bytes": 7473689,
+  "dependencies": [
+    {
+      "name": "platform-contracts-0.1.0-SNAPSHOT.jar",
+      "bytes": 19916,
+      "sha256": "57f71d84385feff074da17876e764f85a67eddbd8e1005695a93f369fe9d0949"
+    },
+    {
+      "name": "jackson-annotations-2.21.jar",
+      "bytes": 82104,
+      "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b"
+    },
+    {
+      "name": "pdfbox-3.0.8.jar",
+      "bytes": 2070583,
+      "sha256": "97647cfbde61ebcfc06b4cf8c9b0ffcaaee073396eceb4a7f6836a9b9128903c"
+    },
+    {
+      "name": "pdfbox-io-3.0.8.jar",
+      "bytes": 51906,
+      "sha256": "36a0e04001010b4c764857817412b96339930b19755e728959805cc0352061b2"
+    },
+    {
+      "name": "fontbox-3.0.8.jar",
+      "bytes": 1647000,
+      "sha256": "a1915c24e3edbe0ecec93896dfbf6d41427810b663ade97bd4e8bae86ec3fdab"
+    },
+    {
+      "name": "jcl-over-slf4j-2.0.18.jar",
+      "bytes": 18422,
+      "sha256": "ec5c36d57d2dbe100f84878f944575cb7871da32c7a115b8d7e0721277045d67"
+    },
+    {
+      "name": "slf4j-api-2.0.18.jar",
+      "bytes": 69982,
+      "sha256": "44508fd1576500688c790b190acdd16fec4f8c79a3e0b900afd70503cf055f55"
+    },
+    {
+      "name": "logback-classic-1.5.34.jar",
+      "bytes": 286757,
+      "sha256": "b65e05076a5c1aadb659b4fe4bc5fee31cb26cd70390292eb03e4a7a24cff10f"
+    },
+    {
+      "name": "logback-core-1.5.34.jar",
+      "bytes": 645490,
+      "sha256": "42eda264c0c650c2bec59e66151a88b708a8663dc1b49d788202d53e78b8caae"
+    },
+    {
+      "name": "jackson-databind-2.21.8.jar",
+      "bytes": 1713950,
+      "sha256": "ad77f2285717e2f34c319d988b7c85783a47d0b33f33a501d1fcbf196e61bbaa"
+    },
+    {
+      "name": "jackson-core-2.21.8.jar",
+      "bytes": 599566,
+      "sha256": "604ef7765013daf5cde192e40bc4c8412c4ca93f4aaf7bf8e9a62fad1e1026bb"
+    },
+    {
+      "name": "spring-boot-jarmode-tools-3.5.16.jar",
+      "bytes": 53753,
+      "sha256": "d05beb46a7eac0f1a06733c75828b190a1cb250076ce03be2213aca4a5c0f03f"
+    }
+  ]
+}

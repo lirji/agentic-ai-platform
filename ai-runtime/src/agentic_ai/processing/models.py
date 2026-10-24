@@ -2,7 +2,7 @@
 
 import hashlib
 import struct
-from typing import Annotated, Literal, Self
+from typing import Annotated, Final, Literal, Self
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -10,8 +10,8 @@ from pydantic.alias_generators import to_camel
 
 SCHEMA_VERSION = "knowledge-preparation-v1"
 PROCESSOR_VERSION = "text-v1-char512-overlap64-embedding-v4-1024"
-EMBEDDING_MODEL = "text-embedding-v4"
-EMBEDDING_DIMENSIONS = 1024
+EMBEDDING_MODEL: Final = "text-embedding-v4"
+EMBEDDING_DIMENSIONS: Final = 1024
 MAX_SOURCE_BYTES = 1024 * 1024
 MAX_BODY_BYTES = 6 * MAX_SOURCE_BYTES
 MAX_CHUNKS = 100

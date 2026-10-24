@@ -16,6 +16,7 @@
     <description>独立知识平台 Java 领域服务与入口</description>
     <modules>
         <module>platform-contracts</module>
+        <module>knowledge-parser</module>
         <module>platform-security</module>
         <module>knowledge-service</module>
         <module>async-task-service</module>
@@ -37,6 +38,7 @@
         <httpcore5.version>5.4.4</httpcore5.version>
         <log4j2.version>2.25.5</log4j2.version>
         <bouncycastle.version>1.85.2</bouncycastle.version>
+        <pdfbox.version>3.0.8</pdfbox.version>
     </properties>
     <dependencyManagement>
         <dependencies>

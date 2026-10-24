@@ -202,7 +202,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S8E | 运行当前两路链路的可追溯基线 | S8D | VALIDATE | DONE |
 | S8F | 最小跨语言与前端 CI | S8A | ENGINEERING | DONE |
 | S9A | 冻结结构化解析与准备包 v2 | S8A | DESIGN | DONE |
-| S9B | PDF 入库与页级引用 | S9A, S8E | IMPLEMENT | PLANNED |
+| S9B | PDF 入库与页级引用 | S9A, S8E | IMPLEMENT | IN_PROGRESS |
 | S9C | DOCX 段落和表格入库 | S9B | IMPLEMENT | PLANNED |
 | S9D | LlamaIndex 结构分块及处理版本对照 | S9C, S8D, S10A | IMPLEMENT | PLANNED |
 | S9E | 扫描资料 OCR | S9C, S9D | IMPLEMENT | CONDITIONAL |
@@ -325,7 +325,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-PARSE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 真实多页/空页/旋转/损坏/加密样本；卡死/输出/内存预算；失败不发布；来源/摘要一致；TXT/MD 兼容；UI 不伪造原文 PDF 渲染。
 - **Pass / Runtime：** IMPLEMENT；Java 解析进程与锁定依赖，复用 S3/MySQL/双索引。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G02 G03 G18。
+- **状态 / 并行 / 对应缺口：** IN_PROGRESS；尚未验收；parallel=no；G02 G03 G18。
 
 ### S9C · DOCX 段落和表格入库
 

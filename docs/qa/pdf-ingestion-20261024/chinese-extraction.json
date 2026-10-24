@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "knowledge-extraction-v1",
+  "format": "PDF",
+  "parserProfile": "pdfbox-3.0.8-native-text-v1",
+  "sourceHash": "1471561d350b30380fd601f536e934bce8756cbd7c885e1df651ad56340e903c",
+  "sourceSize": 12203,
+  "blocks": [
+    {
+      "ordinal": 0,
+      "blockId": "b569c46cc0cc425822fc87c37f4925979c74a75f7a46f6f81eac6967287c94bb",
+      "kind": "PDF_PAGE",
+      "text": "知识资料处理说明\n审批记录必须绑定资料版本，引用使用真实页序。\nOriginal bytes and extracted text have separate hashes.\n",
+      "textHash": "3349ae90503af613d0b66689d5b2a3fed2d62fd8c813b2b6e1123fe8523a57fb",
+      "headingLevel": null,
+      "location": {
+        "page": 1
+      }
+    },
+    {
+      "ordinal": 1,
+      "blockId": "7c791fb083fdfa9f259395c6dc8e31b742480b28a1f290b61992761f4b813438",
+      "kind": "PDF_PAGE",
+      "text": "",
+      "textHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "headingLevel": null,
+      "location": {
+        "page": 2
+      }
+    },
+    {
+      "ordinal": 2,
+      "blockId": "f2e0ee731f18f6c565123bfface655027c41d6fb7da0e63f5c24b4522ec8d5b0",
+      "kind": "PDF_PAGE",
+      "text": "第三页左栏：资料独立保存。 右栏：不得猜测缺失文字。\n提取结果不代表原文件版式。\n",
+      "textHash": "38d6c6fbbf0cf55c92943d04dad80e8c7b9251707e2b8816349ce9fac7813ecf",
+      "headingLevel": null,
+      "location": {
+        "page": 3
+      }
+    },
+    {
+      "ordinal": 3,
+      "blockId": "c3dadac2f68da357983c97f99cafe419d879b1f6d208549118b0deccbe0ec1d1",
+      "kind": "PDF_PAGE",
+      "text": "\n",
+      "textHash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "headingLevel": null,
+      "location": {
+        "page": 4
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "code": "PAGE_NO_TEXT",
+      "locationKey": "pdf:2"
+    },
+    {
+      "code": "PAGE_NO_TEXT",
+      "locationKey": "pdf:4"
+    },
+    {
+      "code": "PDF_LAYOUT_APPROXIMATE",
+      "locationKey": null
+    },
+    {
+      "code": "PDF_NON_TEXT_CONTENT_OMITTED",
+      "locationKey": null
+    }
+  ],
+  "extractionDigest": "6f01d6ae8e32193c61568fe31e1d546042a38cb9ca0192aff99768e9a9f823d6"
+}

@@ -1,0 +1,34 @@
+{
+  "source": "task-generated synthetic policy statements; embedded subset of Noto Sans SC under OFL",
+  "fixture": {
+    "path": "fixtures/chinese-pages.pdf",
+    "sha256": "1471561d350b30380fd601f536e934bce8756cbd7c885e1df651ad56340e903c",
+    "bytes": 12203
+  },
+  "fontSource": [
+    {
+      "file": "NotoSansSC-VF.ttf",
+      "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/Variable/TTF/Subset/NotoSansSC-VF.ttf",
+      "bytes": 17773132,
+      "sha256": "d68bafcb48a2707749396aa12bbbd833cb70401f3a9a689fd2902c7e0d295964"
+    },
+    {
+      "file": "OFL.txt",
+      "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/f8d157532fbfaeda587e826d4cd5b21a49186f7c/Sans/LICENSE",
+      "bytes": 4301,
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    }
+  ],
+  "coverage": [
+    "Chinese plus Latin fonts",
+    "empty page 2",
+    "rotated two-column page 3",
+    "image-only page 4"
+  ],
+  "notCovered": [
+    "business corpus quality",
+    "arbitrary layout fidelity",
+    "OCR"
+  ],
+  "frozen": true
+}

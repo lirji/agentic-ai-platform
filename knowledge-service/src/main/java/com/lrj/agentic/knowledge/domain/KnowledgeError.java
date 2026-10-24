@@ -24,6 +24,12 @@ public enum KnowledgeError implements ErrorCode {
     PROCESSOR_UNAVAILABLE("KNOWLEDGE_PROCESSOR_UNAVAILABLE", "知识准备服务暂不可用，请稍后重试。", 503),
     PREPARATION_INVALID("KNOWLEDGE_PREPARATION_INVALID", "知识准备结果未通过完整性校验。", 502),
     SOURCE_INVALID("KNOWLEDGE_SOURCE_INVALID", "原文完整性校验失败。", 502),
+    PARSE_INVALID("KNOWLEDGE_PARSE_INVALID", "资料无法解析，请检查文件是否完整。", 422),
+    PARSE_ENCRYPTED("KNOWLEDGE_PARSE_ENCRYPTED", "暂不支持加密资料，请提供可直接读取的文件。", 422),
+    PARSE_TEXT_UNAVAILABLE("KNOWLEDGE_PARSE_TEXT_UNAVAILABLE", "未提取到可索引文字，请提供含文字的资料。", 422),
+    PARSE_RESOURCE_LIMIT("KNOWLEDGE_PARSE_RESOURCE_LIMIT", "资料超过当前解析范围，请拆分后重试。", 422),
+    PARSE_UNSUPPORTED_STRUCTURE("KNOWLEDGE_PARSE_UNSUPPORTED_STRUCTURE", "资料包含暂不支持的结构，请调整文件后重试。", 422),
+    PARSER_UNAVAILABLE("KNOWLEDGE_PARSER_UNAVAILABLE", "资料解析服务暂不可用，请稍后重试。", 503),
     INDEX_UNAVAILABLE("KNOWLEDGE_INDEX_UNAVAILABLE", "知识检索服务暂不可用，请稍后重试。", 503),
     PROCESSING_EXHAUSTED("KNOWLEDGE_PROCESSING_EXHAUSTED", "任务恢复次数已达上限，请显式重试。", 503),
     BUSY("KNOWLEDGE_BUSY", "知识服务当前繁忙，请稍后重试。", 429);
@@ -44,4 +50,13 @@ public enum KnowledgeError implements ErrorCode {
     public String message() { return message; }
     /** 契约 HTTP 状态。 */
     public int httpStatus() { return httpStatus; }
+
+    /** 确定的输入/完整性失败不能按基础设施故障重新付费；重试仍由原任务显式发起。 */
+    public boolean retryableProcessingFailure() {
+        return switch (this) {
+            case PREPARATION_INVALID, SOURCE_INVALID, PARSE_INVALID, PARSE_ENCRYPTED,
+                    PARSE_TEXT_UNAVAILABLE, PARSE_RESOURCE_LIMIT, PARSE_UNSUPPORTED_STRUCTURE -> false;
+            default -> true;
+        };
+    }
 }

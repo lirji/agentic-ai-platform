@@ -5,13 +5,13 @@
 - 标识：`capability-delivery-20261021`；用户于2026-10-24要求继续，原20项差距/51项计划及本地实施、正常Git合并推送授权有效。完整计划未完成。
 - 状态：S8A–S8F已交付；S8F DONE，本地及两仓真实Actions必需检查PASS，后端258149e/前端83c0bc6已正常快进推送origin/main。完整51项计划未完成；S9A设计/候选探针/真实CI均PASS，196f468已合并推送main。
 - 权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、QUALITY_CONTRACTS、E02/E03及QUALITY_ACCEPTANCE；本文件为唯一当前状态。
-- Git：后端原目录 `feat/structured-parsing-contracts-20261024` 收据收尾，S9A内容196f468已正常合并推送main（起点82eb31c）；前端main=83c0bc6并远程通过，S9A只读前端。无新worktree。
+- Git：后端原目录 `feat/pdf-ingestion-20261024`，起点/HEAD=9d682f5；S9A内容196f468及收据9d682f5均已正常合并推送origin/main。前端main=83c0bc6，尚未修改。无新worktree。
 - S8E结果：[TEST_RESULT](../../qa/quality-mechanism-20261024/TEST_RESULT.md)。6份固定摘录经业务接口发布、7块真实引用、8题执行成功；6道答案题Recall@5=1、MRR=0.875、nDCG=0.905113；2道拒答通过。M04正确证据第4且回答将直接引用404扩大到搜索，supported=FAIL已保存，未重跑模型或修改金标。
 - 基线：dataset `fee96d5a-6107-4778-b24f-960e6d418a09` revision1；run `dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5`；task `a243cd4a-687a-4628-aa38-60d15444dc84` SUCCEEDED；baseline `bd158640-0389-4107-8491-20444637a9ae`。原键与恢复 `.local/s8e-mechanism-state.json`，不得重新创建运行。
 - 评审边界：Codex逐题阅读后经可信 `local-dev/developer` 保存，不冒称用户人工签核。默认前端workbench-user与该基线隔离。M03原固定文档缺一基名次/完整去重键，运行前已限定题目并留证，源码机制单列。无答案文本拒答正确，但ANSWERED仅表示非空召回；来源说明噪声保留为后续S9D/S11/S12依据。
 - 验证：7块当前HTTP/原文字节/textHash、6题独立公式、12次跨tenant/owner拒绝、8次聊天operation归属、无模型只读复验PASS。首个复核脚本误读NO_ANSWER整体metrics=null已纠正，原失败日志保留；无产品/UI改动，不重跑S8D验收。
 - 费用：累计聊天 **0.889964/1元（24次）**，Embedding **0.42/1元（42批）**；本片增加8次聊天0.308260、14批Embedding0.14，均为保守预留，不是账单，提供方usage未知。恢复时检查点之外两次历史调用已确认SUCCEEDED并保留，不清零、不挪用Reranker额度。
-- 运行：Docker恢复，原MySQL/MinIO/PG及本项目ES/Qdrant已启动；四服务readiness UP；Conversations连接已恢复，qa-worker正常运行。其他租户旧入库故障夹具保留，未清理或启动其他项目服务。日志 `.logs/s8e-*`。
+- 运行：Docker恢复，原MySQL/MinIO/PG及本项目ES/Qdrant已启动；四服务readiness UP；Conversations连接已恢复，qa-worker在S9B源代码更新前正常暂停。其他租户旧入库故障夹具保留，未清理或启动其他项目服务。日志 `.logs/s8e-*`。
 - 保留：`.local`凭据/账本/任务状态、`.logs`、`.idea`、target/venv等；无目录清理授权。本片无迁移、依赖变更或生产部署。
 - S8F实现：ci-v1已冻结；两仓Actions固定SHA/只读权限，E02共用JSON金标并经实际Java/Python DTO往返及负例检查，P01沿用原样本。无产品源码/业务依赖变更；前端3份旧QA JSON仅格式修正，值未变。切片索引中S8B旧IN_PROGRESS已依现有验收/交付修正为DONE。
 - S8F验证：Java71、Python296通过/49条件集成跳过、前端59及构建通过，格式/lint/类型PASS；字段改名两端均预期失败。前端首次快照被现有.local访问限制拦截，改用系统临时目录后通过，未弱化规则。见ci-contracts-20261024/TEST_RESULT与各仓.logs/s8f-*。隔离Python环境、前端临时目录保留，路径在前端.local/s8f-web-isolation.json；当前无运行中测试。
@@ -21,7 +21,13 @@
 - S9A修正：原Python引用正则只认utf8-bytes，故先升级消费者再开新格式；保持displayName/locator原字段。生成器漏DOCX tblGrid曾失败，已修正固定夹具，未当成候选缺陷。PyPI TLS失败后使用官方pypdf固定tag源码与隔离venv缓存；原失败日志保留，未改产品依赖。Java探针日志provider告警是S9B/C包装待解决项。
 - S9A验证：最终QA目录中的Java/Python探针复核PASS，Python格式/lint PASS；14份Markdown/255本地文件链接/4个样本hash检查PASS。生产源码8文件指纹保留；无模型、迁移或应用变更。复核副本在.local/s9a-replay-state.json，探针/来源在.local/s9a-probe、s9a-python、s9a-research；日志.logs/s9a-*；当前无运行中探针。
 - S9A交付：run40084212295绑定196f468，java/python/documents全PASS；CI Gate与delivery-result在S9A QA目录。前端未改，所有运行/预算数据保留。
-- 下一步：完成S9A收据正常Git交付后在原目录新建/复用feat/pdf-ingestion-20261024。按backend-implementation、frontend-implementation和runtime-and-deploy实现S9B：受控PDF子进程/提取物接受 → P-v2分块校验 → 版本/来源持久化和兼容检索 → K06/界面 → 无费用故障及真实隔离链路验收。付费前复核原账本；不进入DOCX/OCR产品实现或清理旧数据。
+- S9A收据CI：run40084447704首次Java安装下载校验不一致，构建未执行；保留校验后重试同SHA，attempt2三项全PASS。原失败及重试证据在.logs/s9a-receipt-ci*，未改测试或跳过保护。
+- S9B状态：IN_PROGRESS / 尚未验证。已核对P-v2、PAR-01..15及真实代码；只实施PDF，不实施DOCX/OCR、旧数据清理或新增模型预算。受理开关最后开启，保持v1旧任务/引用。
+- S9B清单：①P03纯协议/独立knowledge-parser及受控执行；②提取物接受/恢复与P04分块；③V7兼容持久化/两路检索/评测真实profile；④K06/前端及运行配置；⑤无费用边界/故障→真实隔离链路→预算核对后有限Embedding→浏览器→CI/Git交付。具体就绪笔记.local/s9b-readiness.md。
+- S9B已实现：P03协议/摘要类型、独立PDF解析JAR及父进程单槽/管道/期限/回收。初次格式/兼容测试PASS；真实JVM卡死/爆量/OOM/中断等4组故障测试PASS，日志.logs/s9b-parser-process-tests-retry.log。首轮故障测试误把macOS Java自行加入的__CF_USER_TEXT_ENCODING当环境继承，独立空环境探针证实后修正测试，未放开父进程环境。
+- S9B基础批次：Java86/Python326通过（49条件集成跳过），格式/lint/mypy PASS；实际父进程+打包JAR完成原生/中文两样本，3/4页和金标一致、active=0；故障测试含已知子孙回收，最终相关Java15项顺序复验PASS。见docs/qa/pdf-ingestion-20261024/{TEST_RESULT,IMPLEMENTATION_EVIDENCE,foundation-validation.json}；完整S9B仍未完成。
+- S9B运行：local-dev无活动任务（18 SUCCEEDED/4 CANCELLED/1 FAILED，知识12 READY），qa-worker已正常暂停，账本仍24/42次、0.889964/0.42元，其他服务未停止。未包装运行中服务JAR，模型调用0。P04/严格提取与Java准备校验、shared v1准入、新locator已验证；提取持久流程未接入，上传未开放。
+- 下一步：按用户同任务分批提交约定保存已验证P03/P04基础批次，保持S9B IN_PROGRESS；随后接提取接受/恢复、V7、真实冻结profile、双索引/评测及K06。任何服务重包装前先停止对应自有进程，不覆盖运行JAR；前端仍未修改。
 - 规范：session-handoff、continue-approved-delivery、implementation-validation、update-progress-docs、task-git-delivery；业务建模/并发安全/契约/发布规范。无子Agent授权，无全局Runtime Gate冒称。
 
 ## 历史：20 项差距的框架化实施计划

@@ -6,8 +6,8 @@
 
 | 仓库 / 必需检查 | 可观察结果 |
 | --- | --- |
-| backend / `java` | JDK21、现有POM依赖与Maven插件构建；全部无数据库单元/本机协议测试通过；P01与E02金标拒绝DTO字段/类型漂移 |
-| backend / `python` | Python3.12按uv.lock安装（locked检查后冻结运行）；Ruff格式/lint、mypy、全部默认pytest通过；P01与E02读取同一份金标 |
+| backend / `java` | JDK21、现有POM依赖与Maven插件构建；全部无数据库单元/本机协议测试通过；P01/P04与E02金标拒绝DTO字段/类型漂移 |
+| backend / `python` | Python3.12按uv.lock安装（locked检查后冻结运行）；Ruff格式/lint、mypy、全部默认pytest通过；P01/P04与E02读取同一份金标 |
 | backend / `documents` | 当前CI登记的契约文件/版本标记与金标路径存在，JSON可解析；差异无空白错误。只验证登记的契约，不冒称所有历史Markdown链接均有效 |
 | frontend / `web` | Node取.nvmrc，pnpm取packageManager，pnpm-lock.yaml冻结安装；格式、lint、类型、全部单元及Vite构建通过 |
 
@@ -18,6 +18,8 @@
 P01沿用 `knowledge-service/src/test/resources/processing-golden.json` 及原Java/Python双端测试，不复制第二份。E02新增同目录 `evaluation-wire-golden.json`，是[E02](EVALUATION_RUN_CONTRACTS.md)与[quality-v1](QUALITY_CONTRACTS.md)的可执行投影：冻结输入、模型profile、含定义/绑定的open、逐题成功/无答案/失败、候选与完成凭据、任务状态编码。
 
 Java通过现有EvaluationJson/RunModels/RunRules读取校验再序列化；Python通过现有Pydantic模型读取再按wire别名序列化。两端输出须与金标JSON结构和值一致；新增/遗漏/改名字段不会被静默吞掉。负例覆盖未知字段、字符串数字、数值金额、失败带成功结果等关键语义。更改协议时先更新正式契约及金标，再同步生产者/消费者，不自动重生成金标来迁就代码。
+
+S9B基础批次登记P-v2与同目录`structured-processing-golden.json`、`structured-processing-chinese-golden.json`：分别绑定冻结原生/中文PDF，Java和Python实际DTO校验提取块、来源片段、覆盖及摘要；没有付费调用或PDF入库上线声明。
 
 这不是完整OpenAPI生成平台，也不覆盖所有已有T/K/Q/A字段；现有单元与集成验收保持各自边界。新增边界按后续slice扩展共享样本，不宣称一份样本证明所有兼容场景。
 
