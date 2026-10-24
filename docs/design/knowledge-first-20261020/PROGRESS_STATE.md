@@ -1,21 +1,22 @@
 # 独立知识平台准备进度
 
-## 当前任务：S9B 完成后按用户要求暂停
+## 当前状态：S9B DONE，后续计划按用户要求暂停
 
-- 标识：`capability-delivery-20261021`；20项差距/51项计划继续有效，完整计划尚未完成。当前只收尾S9B，不进入S9C或后续项。
-- 最新要求：用户“当前任务做完先暂停”；当前S9B实现、本地验收已PASS，正在完成两仓CI和正常Git交付，交付后停止。
-- 权威：本文件为唯一当前状态；任务定义在IMPLEMENTATION_SLICES，契约在STRUCTURED_PROCESSING_CONTRACTS，验收矩阵PARSING_ACCEPTANCE。
-- Git：两仓原目录均为 `feat/pdf-ingestion-20261024`；后端基础批次HEAD=323e663，起点main=9d682f5；前端起点main=83c0bc6。第二批产品/测试/证据待提交，无新worktree，无不明用户改动。
-- S9B实现：PDFBox独立受控解析、P03/P04与严格摘要；V7兼容持久化/提取接受及失租恢复；双索引兼容profile和评测真实版本；K06逐次判权；PDF上传与页级提取文本/告警界面。
-- 本地验证：Java91；Python326通过/49条件跳过（基础后源码未变）；真实DB/S3/ES/Qdrant/子进程39个不同IT；前端67单元/构建/lint/格式、4组Playwright、17截图实际查看；真实HTTP6边界/4坏PDF/2来源/16拒绝。前端kind常量治理后复验PASS，前端hygiene PASS、后端无规范格式器/静态分析器的限制已记录。
-- 证据：docs/qa/pdf-ingestion-20261024/{TEST_RESULT,IMPLEMENTATION_EVIDENCE,final-validation,integration-validation,http-validation,runtime-validation}；前端同名QA目录。基础批次CI run40085667868三项PASS，最终交付CI待绑定当前提交。
-- 兼容：dev/test V7已应用；原12个local-dev v1任务hash/状态不变，旧S8E只读复验PASS，原M04 supported=FAIL保留，未重跑聊天。已发布PDF关闭新受理后6次K04/K06读取200、新上传415；不回退v2读取器或删除V7。
-- 真实PDF：文档f76f053b-48d3-4e2a-a3bd-2229d929d794、任务26e7ef5a-5919-47e3-b2e4-5b1e0fa67cec READY；2块真实第1/3页，第2/4页无文字告警。前端.local/s9b-ui-state.json保存原键与真实搜索结果，不重跑付费步骤。
-- 费用：本片新增入库/搜索各一次，共2批Embedding；当前44批/0.44元，聊天24次/0.889964元，各上限1元，均为保守预留非账单；无额外聊天/Reranker调用。
-- 运行：最终源码打包前已正常停Knowledge/Gateway，随后新制品重启PASS；Knowledge显式解析和PDF受理均true（默认仍false），Gateway/AI/Web均就绪，Tasks/Conversations/模型代理沿原进程。qa-worker已恢复；local-dev中央18成功/4取消/1失败、无活动任务，Knowledge13 READY/5 FAILED，原12个旧任务不变。
-- 保留：两仓.local凭据/预算/幂等恢复、.logs、.idea、target/venv/构建产物，以及原服务/数据库/失败夹具；不删除、不清零、不生产部署。S9B所有新增失败资料保留供追溯。
-- 当前待办：归档最终hygiene与源码指纹→任务分支第二批提交/推送→两仓真实必需CI全PASS→正常合并推送main→交付收据及S9B DONE/全计划PAUSED→停止。S9C仍PLANNED。
-- 采用规范：session-handoff、continue-approved-delivery、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery、ci-cd-gate；architecture-standards的业务建模、并发安全、持久化、契约、发布治理；无子Agent授权，不冒称独立审查或全局Runtime Gate。
+- 标识：`capability-delivery-20261021`；20项差距/51项计划仍有效且未全部完成。S8A–S8F、S9A、S9B已交付，S9C仍PLANNED。
+- 用户最新要求：“当前任务做完先暂停”。当前S9B实现、验收与正常Git交付完成；整体开发状态PAUSED_BY_USER。不启动DOCX、OCR、S9D或其他后续项。
+- 权威：本文件为唯一当前状态；任务定义IMPLEMENTATION_SLICES，正式契约STRUCTURED_PROCESSING_CONTRACTS，验收矩阵PARSING_ACCEPTANCE。恢复时先核对Git及本节，不重新创建已完成任务或付费查询。
+- Git交付：后端基础323e663及持久链路d7a84b1、前端75007cc均正常快进推送origin/main并核对远程；最后文档收据为这些产品提交的后继，准确HEAD读两仓Git。复用原目录feat/pdf-ingestion-20261024任务分支，无新worktree、不强推、不生产部署。
+- CI：后端run40087865551绑定d7a84b1，java/python/documents全部success；前端run40087866711绑定75007cc，web success。docs/qa/pdf-ingestion-20261024/{ci-gate,delivery-result}.json保存精确SHA和实际结果；收据后继的CI可按main当前SHA查询。
+- 本地验收：Java91；Python326通过/49条件集成跳过；真实DB/S3/ES/Qdrant/解析子进程39个不同IT；前端67单元/构建/lint/格式、4组Playwright、17截图实际查看；真实HTTP6边界/4坏PDF/2来源/16权限拒绝。源码指纹、验证边界和日志见同目录TEST_RESULT、IMPLEMENTATION_EVIDENCE和final-validation。
+- 已实现：PDFBox独立受控解析、P03/P04严格摘要与有界执行；V7兼容存储/提取接受/失租与未知提交恢复；双索引兼容profile、评测真实处理版本；K06当前发布判权；PDF上传与提取文本/真实页码/告警界面。
+- 兼容：dev/test V7已应用；原12个local-dev v1任务hash/状态不变；旧S8E只读复验PASS，原M04 supported=FAIL保留，未重跑聊天。已发布v2关闭新受理后6次K04/K06读取200、新上传415；回退须保留V7/v2兼容读取器。
+- 成功资料：文档f76f053b-48d3-4e2a-a3bd-2229d929d794、任务26e7ef5a-5919-47e3-b2e4-5b1e0fa67cec READY，2块来自真实第1/3页，第2/4页无文字告警。前端.local/s9b-ui-state.json保存原键/真实搜索结果，不能清空重跑。
+- 预算：本片真实入库/搜索各一次，增加2批Embedding；累计44批/0.44元，聊天24次/0.889964元，各上限1元，均为保守预留非账单。无额外聊天或Reranker调用，预算不清零。
+- 运行：打包前正常停止Knowledge/Gateway，最终新制品重启并readiness UP；Knowledge显式解析/PDF受理均true（默认仍false），Gateway/AI/Web就绪；Tasks/Conversations/模型代理保留，qa-worker已恢复。local-dev中央18成功/4取消/1失败、无活动任务；Knowledge13 READY/5 FAILED，原12旧任务不变。
+- 保留与清理：.local凭据/账本/幂等恢复、.logs、.idea、运行JAR/venv、前端依赖/产物、DB/S3/失败夹具均保留。没有临时worktree；可重建缓存/产物只在停止依赖服务且获清理授权后处理，本次不删除。
+- 已知边界：U02真实业务语料未提供，少量自建样本不证明任意版式、OCR、容量或RSS沙箱；Java无规范格式器/静态分析器的限制已记录。审查由本Agent完成，无独立子Agent或全局Runtime Gate冒称。
+- 恢复入口：等待用户新指令；如明确恢复后续计划，从S9C所需业务/契约和当前实际环境核对开始。不因“完整51项未完成”自动越过暂停要求。
+- 采用规范：session-handoff、continue-approved-delivery、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery、ci-cd-gate；architecture-standards业务建模、并发安全、持久化、契约和发布治理。
 
 ## 历史：20 项差距的框架化实施计划
 

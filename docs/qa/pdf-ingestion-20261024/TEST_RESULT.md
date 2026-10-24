@@ -1,6 +1,6 @@
 # S9B PDF 入库与页级引用验收
 
-本地验收 **PASS**。PDF 正式上传、提取物持久接受、真实 Embedding、双索引发布、页级引用与前端已接通；交付 CI/提交收据另记。只完成 S9B，DOCX、OCR 和跨块结构分块仍由后续切片负责。用户要求本任务交付后暂停。
+S9B **PASS / DONE**，两仓必需 CI 通过且产品提交已正常合并推送 main。PDF 正式上传、提取物持久接受、真实 Embedding、双索引发布、页级引用与前端已接通；见 [CI Gate](ci-gate.json) 与 [Git交付收据](delivery-result.json)。只完成 S9B，DOCX、OCR 和跨块结构分块仍由后续切片负责。用户要求本任务交付后暂停。
 
 ## 验证结果
 

@@ -1,7 +1,7 @@
 {
   "slice": "S9B",
   "localResult": "PASS",
-  "delivery": "CI pending, authoritative receipt to follow",
+  "delivery": "PASS; exact product commits, required CI and main verification in ci-gate.json / delivery-result.json",
   "java": {
     "unitTests": 91,
     "suites": 18,
