@@ -1,0 +1,40 @@
+{
+  "slice": "S8F",
+  "localResult": "PASS",
+  "remoteResult": "PENDING",
+  "java": {
+    "tests": 71,
+    "command": "mvn -B -ntp test",
+    "log": ".logs/s8f-java-all.log"
+  },
+  "python": {
+    "passed": 296,
+    "skipped": 49,
+    "warnings": 19,
+    "lockedCleanInstall": true,
+    "formatLintTypes": "PASS",
+    "log": ".logs/s8f-python-all.log"
+  },
+  "frontend": {
+    "tests": 59,
+    "files": 13,
+    "lockedCleanInstall": true,
+    "formatLintTypesBuild": "PASS",
+    "log": ".logs/s8f-web-temp-tests.log"
+  },
+  "negativeControl": "negative-control.json",
+  "sourceFence": "source-fingerprint.json",
+  "dependencyChanges": false,
+  "productChanges": false,
+  "modelCalls": 0,
+  "initialFailures": [
+    "Java test compilation corrected",
+    "Three historical frontend QA JSON formatting corrected; values unchanged",
+    "Vite refused .local verification snapshot; verified in system temporary directory instead"
+  ],
+  "limitations": [
+    "conditional database/model tests skipped",
+    "existing frontend chunk size warning retained",
+    "Java default local lifecycle test; remote verify pending"
+  ]
+}

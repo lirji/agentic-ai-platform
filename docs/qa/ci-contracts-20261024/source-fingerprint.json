@@ -1,0 +1,20 @@
+{
+  "backend": {
+    ".github/workflows/ci.yml": "23621c90bc36fc8230e11d826f54ffb340b78ec1cd98614aee0eae7fdadb55b6",
+    "ci/check_contract_docs.py": "5511ae0728e0fa2003980f7955e040588f9aaf936cd5de13be5c6f6c41894d7e",
+    "ai-runtime/tests/test_evaluation_wire_contract.py": "6ad3c344720b0726bf776c6abf714292d07edf792a505ef8f0cb71c61f0eadd1",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationWireContractTest.java": "30408b7594c41f4bb5402f3bab53a25a2da3d4c92bbdb5a0b4065520a1740c9d",
+    "knowledge-service/src/test/resources/evaluation-wire-golden.json": "d475066326bb309742028ccc0efa3c66cd50abf9a0061c1b622b3b3a5366529d",
+    "knowledge-service/src/test/resources/processing-golden.json": "ee15ec4ce292bc17a2ca763afea2e10b2b364b4dad0212f4edf9775c176ed410",
+    "pom.xml": "be8f3c67098fe906e3ed5b5a3545526716eb1d0d37fd1799b0f1b839c58d8090",
+    "ai-runtime/pyproject.toml": "5cfb0fcafcce08f8db6fdcba83c28553ebc62f56875a62d3c0f580aedaa2f8a5",
+    "ai-runtime/uv.lock": "e9751dfe7d66d46ec98963a6910c74ee43fc1ac28def0687be0e2a8b0ad230cb"
+  },
+  "frontend": {
+    ".github/workflows/ci.yml": "589a6d911aca7db213ce9df45682ee20f583f0a24a005182d72d293d2dcb1080",
+    "package.json": "9b4ab63a67b6e0cece4ae378cf1542325c772392e0b51266ef1ae6c14d138383",
+    "pnpm-lock.yaml": "a0f76bc7655eab08ec7cd1fc5f1490f755619a03b1979a2f32bdbec1bcc8216f",
+    ".nvmrc": "a1c56e968c358e10872d64220b3ae759ffe7feaffc4da95fae425dbcca43fe44",
+    "vite.config.ts": "4df0b806d2df5d6fc5373ce725807a17c98e0b6be68fe45076a1f6c07d3168a7"
+  }
+}

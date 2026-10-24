@@ -22,6 +22,7 @@
 - [研究与只读助手契约](docs/design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)、[S6/S7 验收](docs/qa/research-readonly-20261021/TEST_RESULT.md)：任务受理、只读工具、报告、恢复与界面。
 - [文档来源映射](docs/doc-map.md)：参考仓库基线、源码领域与后续同步规则。
 - [任务进度与恢复入口](CODEX_PROGRESS.md)：实施、验证与交付状态。
+- [最小持续集成契约](docs/design/knowledge-first-20261020/CI_CONTRACTS.md)：两仓自动检查、共享 Java/Python 报文金标及无付费运行边界；[S8F验收](docs/qa/ci-contracts-20261024/TEST_RESULT.md)。
 
 ## 当前范围
 

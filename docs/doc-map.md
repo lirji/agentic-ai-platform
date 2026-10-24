@@ -16,7 +16,7 @@ S8A 已冻结 E01 与指标，S8B 基于后端 `39af9f6`、前端 `d2b4dc6` 实�
 
 S8C 基于后端 `c810e959`、前端 `427bcb9` 实现持久运行、Tasks失败凭据、独立角色、LangGraph逐题恢复及React运行详情。Knowledge V5 / Tasks V3仅追加，既有QA路径和预算复用；[E02](design/knowledge-first-20261020/EVALUATION_RUN_CONTRACTS.md)、[实现映射](qa/quality-runs-20261021/IMPLEMENTATION_EVIDENCE.md)、[验收](qa/quality-runs-20261021/TEST_RESULT.md)记录边界。S8D在后端44409bf/前端717e8c2上补齐不可变评分/基线、V6和React对照；[E03](design/knowledge-first-20261020/EVALUATION_COMPARISON_CONTRACTS.md)、[实现映射](qa/quality-baselines-20261021/IMPLEMENTATION_EVIDENCE.md)及[验收](qa/quality-baselines-20261021/TEST_RESULT.md)记录范围。S8E在后端aa355c5上完成6份固定来源真实入库、8题运行和逐题评分，[验收](qa/quality-mechanism-20261024/TEST_RESULT.md)保留1项非关键支撑失败；源码未改。
 
-[框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json)与原比较基线保持历史身份；本片无模型调用和依赖升级。
+[框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json)与原比较基线保持历史身份。S8F基于后端9a0e0b4/前端5960531新增两仓Actions、E02共享报文金标和真实DTO测试，P01沿用原共享金标；[CI契约](design/knowledge-first-20261020/CI_CONTRACTS.md)与[验收](qa/ci-contracts-20261024/TEST_RESULT.md)记录实际检查及限制。S8F无模型调用和依赖升级。
 
 ## 已完成：能力比较（2026-10-21）
 

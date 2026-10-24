@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "mutation": "rename profile.maxOutputTokens to outputLimit in an isolated copy of the golden fixture",
+  "officialFixtureUnchanged": true,
+  "java": {
+    "exit": 1,
+    "test": "EvaluationWireContractTest#sharedGoldenUsesActualDtosAndRules",
+    "reason": "KnowledgeFailure caused by strict unknown field",
+    "log": ".logs/s8f-java-negative.log"
+  },
+  "python": {
+    "exit": 1,
+    "test": "test_actual_wire_model_round_trip[profile-Profile]",
+    "reason": "ValidationError for missing maxOutputTokens and extra outputLimit",
+    "log": ".logs/s8f-python-negative.log"
+  }
+}
