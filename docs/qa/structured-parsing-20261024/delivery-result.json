@@ -1,0 +1,20 @@
+{
+  "slice": "S9A",
+  "result": "DELIVERED",
+  "branch": "feat/structured-parsing-contracts-20261024",
+  "commit": "196f46827a35d94912c352aa76c5f25c25ff1b2f",
+  "remoteMainVerified": true,
+  "method": "git merge --ff-only then normal push origin main",
+  "ciGate": "ci-gate.json",
+  "scope": "design, documentation, owned controlled fixtures and isolated candidate probes only",
+  "productSourceChanged": false,
+  "frontend": "83c0bc6 read-only",
+  "worktreesCreated": false,
+  "preserved": [
+    ".local runtime/budget and candidate probes",
+    ".logs evidence",
+    ".idea user files"
+  ],
+  "receiptCommit": "subsequent documentation commit in same task branch; see Git history",
+  "next": "S9B PDF ingestion and page citations"
+}

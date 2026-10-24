@@ -19,3 +19,5 @@
 设计文档验证、最终探针复核与源码指纹见validation.json。后续必须按PAR-01..15补完整S9B/C/D验收，特别是中文PDF、纵向合并、ZIP/XML/外链、堆/输出/期限故障、真实权限/数据库/索引/界面；当前不冒称这些通过。
 
 Handoff：`backend-architecture-design / S9A / COMPLETED / PASS`，`implementation-validation / S9A-DESIGN / PASS`；正常Git/CI交付后继续S9B，不进入OCR或其它条件格式。
+
+Git：设计提交`196f46827a35d94912c352aa76c5f25c25ff1b2f`的真实java/python/documents均通过，已正常合并推送main，见[CI Gate](ci-gate.json)与[交付记录](delivery-result.json)。本片收据文档提交沿同一分支追加，最终版本见Git历史。

@@ -30,11 +30,12 @@
   "productDependenciesChanged": false,
   "databaseMigration": false,
   "modelCalls": 0,
-  "remoteDeliveryGate": "PENDING until exact commit Actions pass",
+  "remoteDeliveryGate": "PASS",
   "notExecuted": [
     "S9B/C real upload/preparation/publication/UI",
     "OS security sandbox and adversarial resource faults",
     "real business corpus and capacity benchmark"
   ],
-  "lastChange": "Java probe main method documentation only; final artifact compiled; behavior unchanged after successful replay"
+  "lastChange": "Java probe main method documentation only; final artifact compiled; behavior unchanged after successful replay",
+  "ciEvidence": "ci-gate.json"
 }

@@ -1,0 +1,35 @@
+{
+  "skill": "ci-cd-gate",
+  "status": "COMPLETED",
+  "gate": "PASS",
+  "policy": "ci-v1",
+  "repository": "lirji/agentic-ai-platform",
+  "ref": {
+    "type": "commit",
+    "value": "196f46827a35d94912c352aa76c5f25c25ff1b2f"
+  },
+  "runUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/40084212295",
+  "checks": [
+    {
+      "name": "python",
+      "required": true,
+      "result": "PASS",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40084212295/job/120843710864",
+      "completedAt": "2026-10-24T10:01:53Z"
+    },
+    {
+      "name": "java",
+      "required": true,
+      "result": "PASS",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40084212295/job/120843710937",
+      "completedAt": "2026-10-24T10:02:23Z"
+    },
+    {
+      "name": "documents",
+      "required": true,
+      "result": "PASS",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40084212295/job/120843711039",
+      "completedAt": "2026-10-24T10:00:58Z"
+    }
+  ]
+}

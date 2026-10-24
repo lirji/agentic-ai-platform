@@ -3,9 +3,9 @@
 ## 当前任务：按能力深化方案连续实施
 
 - 标识：`capability-delivery-20261021`；用户于2026-10-24要求继续，原20项差距/51项计划及本地实施、正常Git合并推送授权有效。完整计划未完成。
-- 状态：S8A–S8F已交付；S8F DONE，本地及两仓真实Actions必需检查PASS，后端258149e/前端83c0bc6已正常快进推送origin/main。完整51项计划未完成；S9A设计/候选探针PASS，待本片提交的CI与Git交付。
+- 状态：S8A–S8F已交付；S8F DONE，本地及两仓真实Actions必需检查PASS，后端258149e/前端83c0bc6已正常快进推送origin/main。完整51项计划未完成；S9A设计/候选探针/真实CI均PASS，196f468已合并推送main。
 - 权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、QUALITY_CONTRACTS、E02/E03及QUALITY_ACCEPTANCE；本文件为唯一当前状态。
-- Git：后端原目录 `feat/structured-parsing-contracts-20261024`，起点82eb31c（S8F收据已合并推送main且该SHA Actions通过）；前端main=83c0bc6并远程通过，S9A只读前端。无新worktree。
+- Git：后端原目录 `feat/structured-parsing-contracts-20261024` 收据收尾，S9A内容196f468已正常合并推送main（起点82eb31c）；前端main=83c0bc6并远程通过，S9A只读前端。无新worktree。
 - S8E结果：[TEST_RESULT](../../qa/quality-mechanism-20261024/TEST_RESULT.md)。6份固定摘录经业务接口发布、7块真实引用、8题执行成功；6道答案题Recall@5=1、MRR=0.875、nDCG=0.905113；2道拒答通过。M04正确证据第4且回答将直接引用404扩大到搜索，supported=FAIL已保存，未重跑模型或修改金标。
 - 基线：dataset `fee96d5a-6107-4778-b24f-960e6d418a09` revision1；run `dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5`；task `a243cd4a-687a-4628-aa38-60d15444dc84` SUCCEEDED；baseline `bd158640-0389-4107-8491-20444637a9ae`。原键与恢复 `.local/s8e-mechanism-state.json`，不得重新创建运行。
 - 评审边界：Codex逐题阅读后经可信 `local-dev/developer` 保存，不冒称用户人工签核。默认前端workbench-user与该基线隔离。M03原固定文档缺一基名次/完整去重键，运行前已限定题目并留证，源码机制单列。无答案文本拒答正确，但ANSWERED仅表示非空召回；来源说明噪声保留为后续S9D/S11/S12依据。
@@ -20,7 +20,8 @@
 - S9A证据：docs/qa/structured-parsing-20261024；4个固定自建文件，两候选均通过多页/空页/旋转/加密/损坏PDF和中文DOCX/表格/横向合并。Java17个JAR约23.87MB，单次冷读0.88s/RSS148MiB；Python0.16s/RSS38MiB，仅观察非SLA。真实中文PDF/纵向合并/资源故障/HTTP/数据/索引/UI仍归S9B/C，U02真实业务样本缺失不伪称覆盖。
 - S9A修正：原Python引用正则只认utf8-bytes，故先升级消费者再开新格式；保持displayName/locator原字段。生成器漏DOCX tblGrid曾失败，已修正固定夹具，未当成候选缺陷。PyPI TLS失败后使用官方pypdf固定tag源码与隔离venv缓存；原失败日志保留，未改产品依赖。Java探针日志provider告警是S9B/C包装待解决项。
 - S9A验证：最终QA目录中的Java/Python探针复核PASS，Python格式/lint PASS；14份Markdown/255本地文件链接/4个样本hash检查PASS。生产源码8文件指纹保留；无模型、迁移或应用变更。复核副本在.local/s9a-replay-state.json，探针/来源在.local/s9a-probe、s9a-python、s9a-research；日志.logs/s9a-*；当前无运行中探针。
-- 下一步：核对仅设计/QA允许路径，提交并推送feat/structured-parsing-contracts-20261024；具体SHA必需CI通过后正常合并推送main。随后在原目录进入S9B，按已冻结P-v2实现PDF纵向链路并先核原累计费用；不进入OCR/DOCX产品实现或清理旧数据。
+- S9A交付：run40084212295绑定196f468，java/python/documents全PASS；CI Gate与delivery-result在S9A QA目录。前端未改，所有运行/预算数据保留。
+- 下一步：完成S9A收据正常Git交付后在原目录新建/复用feat/pdf-ingestion-20261024。按backend-implementation、frontend-implementation和runtime-and-deploy实现S9B：受控PDF子进程/提取物接受 → P-v2分块校验 → 版本/来源持久化和兼容检索 → K06/界面 → 无费用故障及真实隔离链路验收。付费前复核原账本；不进入DOCX/OCR产品实现或清理旧数据。
 - 规范：session-handoff、continue-approved-delivery、implementation-validation、update-progress-docs、task-git-delivery；业务建模/并发安全/契约/发布规范。无子Agent授权，无全局Runtime Gate冒称。
 
 ## 历史：20 项差距的框架化实施计划
