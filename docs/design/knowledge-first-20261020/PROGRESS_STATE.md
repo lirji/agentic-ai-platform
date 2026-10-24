@@ -3,9 +3,9 @@
 ## 当前任务：按能力深化方案连续实施
 
 - 标识：`capability-delivery-20261021`；用户于2026-10-24要求继续，原20项差距/51项计划及本地实施、正常Git合并推送授权有效。完整计划未完成。
-- 状态：S8A–S8D已交付；S8E DONE / 必需验收PASS，正在Git交付；下一步S8F最小跨语言与前端CI，不等再次确认。
+- 状态：S8A–S8D已交付；S8E DONE / 必需验收PASS / c23b50c已合并推送origin/main；下一步S8F最小跨语言与前端CI，不等再次确认。
 - 权威：CAPABILITY_IMPLEMENTATION_PLAN、IMPLEMENTATION_SLICES、QUALITY_CONTRACTS、E02/E03及QUALITY_ACCEPTANCE；本文件为唯一当前状态。
-- Git：后端原目录复用 `feat/quality-baselines-20261021`，起点/当前HEAD aa355c5，S8E仅QA证据/复核脚本与文档未提交；前端main 5960531只读且干净，无新worktree。
+- Git：后端原目录复用 `feat/quality-baselines-20261021`，当前HEAD c23b50c，S8E仅QA证据/复核脚本与文档已交付；前端main 5960531只读且干净，无新worktree。
 - S8E结果：[TEST_RESULT](../../qa/quality-mechanism-20261024/TEST_RESULT.md)。6份固定摘录经业务接口发布、7块真实引用、8题执行成功；6道答案题Recall@5=1、MRR=0.875、nDCG=0.905113；2道拒答通过。M04正确证据第4且回答将直接引用404扩大到搜索，supported=FAIL已保存，未重跑模型或修改金标。
 - 基线：dataset `fee96d5a-6107-4778-b24f-960e6d418a09` revision1；run `dd417a9e-3cee-4ba4-bcac-fd7bc3af61d5`；task `a243cd4a-687a-4628-aa38-60d15444dc84` SUCCEEDED；baseline `bd158640-0389-4107-8491-20444637a9ae`。原键与恢复 `.local/s8e-mechanism-state.json`，不得重新创建运行。
 - 评审边界：Codex逐题阅读后经可信 `local-dev/developer` 保存，不冒称用户人工签核。默认前端workbench-user与该基线隔离。M03原固定文档缺一基名次/完整去重键，运行前已限定题目并留证，源码机制单列。无答案文本拒答正确，但ANSWERED仅表示非空召回；来源说明噪声保留为后续S9D/S11/S12依据。
@@ -13,7 +13,7 @@
 - 费用：累计聊天 **0.889964/1元（24次）**，Embedding **0.42/1元（42批）**；本片增加8次聊天0.308260、14批Embedding0.14，均为保守预留，不是账单，提供方usage未知。恢复时检查点之外两次历史调用已确认SUCCEEDED并保留，不清零、不挪用Reranker额度。
 - 运行：Docker恢复，原MySQL/MinIO/PG及本项目ES/Qdrant已启动；四服务readiness UP；Conversations连接已恢复，qa-worker正常运行。其他租户旧入库故障夹具保留，未清理或启动其他项目服务。日志 `.logs/s8e-*`。
 - 保留：`.local`凭据/账本/任务状态、`.logs`、`.idea`、target/venv等；无目录清理授权。本片无迁移、依赖变更或生产部署。
-- 下一步：完成当前QA脚本格式/lint、文档/秘密扫描及Git提交合并推送；然后在两仓原目录按S8F冻结最小CI契约、实现工作流/跨语言契约检查、无付费本地与远程验收。后续S9A按既有依赖接续。
+- 下一步：S8E QA脚本格式/lint、32文件与189本地链接检查和正常Git交付通过。接下来在两仓原目录按S8F冻结最小CI契约、实现工作流/跨语言契约检查、无付费本地与远程验收。后续S9A按既有依赖接续。
 - 规范：session-handoff、continue-approved-delivery、implementation-validation、update-progress-docs、task-git-delivery；业务建模/并发安全/契约/发布规范。无子Agent授权，无全局Runtime Gate冒称。
 
 ## 历史：20 项差距的框架化实施计划
