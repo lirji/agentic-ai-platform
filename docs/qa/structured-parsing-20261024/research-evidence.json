@@ -1,0 +1,203 @@
+{
+  "backendBaseline": "82eb31cd937b2a6bca34cf389697cdc8623d4ab5",
+  "selected": {
+    "pdfbox": "3.0.8",
+    "poi-ooxml": "6.0.0",
+    "java": "21.0.11",
+    "directLicense": "Apache-2.0",
+    "introducedIntoProduct": false
+  },
+  "pythonCandidate": {
+    "pypdf": "6.21.2",
+    "commit": "37761bd80d76e52b1470b93a5d36f9c51765205c",
+    "pypdfLicense": "BSD-3-Clause from license text",
+    "python-docx": "1.2.0",
+    "docxLicense": "MIT",
+    "lxml": "5.4.0 (cached probe only, not selected)",
+    "typing-extensions": "4.16.0",
+    "installation": "PyPI TLS failed; official pinned GitHub pypdf source plus offline cached python-docx in isolated venv"
+  },
+  "javaResolvedJars": [
+    {
+      "artifact": "pdfbox-3.0.8.jar",
+      "bytes": 2070583,
+      "sha256": "97647cfbde61ebcfc06b4cf8c9b0ffcaaee073396eceb4a7f6836a9b9128903c"
+    },
+    {
+      "artifact": "pdfbox-io-3.0.8.jar",
+      "bytes": 51906,
+      "sha256": "36a0e04001010b4c764857817412b96339930b19755e728959805cc0352061b2"
+    },
+    {
+      "artifact": "fontbox-3.0.8.jar",
+      "bytes": 1647000,
+      "sha256": "a1915c24e3edbe0ecec93896dfbf6d41427810b663ade97bd4e8bae86ec3fdab"
+    },
+    {
+      "artifact": "commons-logging-1.4.0.jar",
+      "bytes": 75828,
+      "sha256": "d175dbd751dd782a63bde28c7a039520e971f25e84b79c19b8435edc3603e0dc"
+    },
+    {
+      "artifact": "poi-ooxml-6.0.0.jar",
+      "bytes": 2099900,
+      "sha256": "759d97d608ef03b8aa701f56fef0cf9c67fac49f7fa0de4be43c01ca97542c9c"
+    },
+    {
+      "artifact": "poi-6.0.0.jar",
+      "bytes": 3102357,
+      "sha256": "4977f1ae04e1c77e42c81dd94cca008e0d81ff8d0daa8b85e2a0740c3c1da3cc"
+    },
+    {
+      "artifact": "commons-codec-1.23.0.jar",
+      "bytes": 440773,
+      "sha256": "47504a3ce71d73a1b0af07675546b8d8c5af87f82ef12b6381f9eb3c17dd5a5b"
+    },
+    {
+      "artifact": "commons-math3-3.6.1.jar",
+      "bytes": 2213560,
+      "sha256": "1e56d7b058d28b65abd256b8458e3885b674c1d588fa43cd7d1cbb9c7ef2b308"
+    },
+    {
+      "artifact": "SparseBitSet-1.3.jar",
+      "bytes": 25843,
+      "sha256": "f76b85adb0c00721ae267b7cfde4da7f71d3121cc2160c9fc00c0c89f8c53c8a"
+    },
+    {
+      "artifact": "poi-ooxml-lite-6.0.0.jar",
+      "bytes": 6079238,
+      "sha256": "d722039d325de73562ec79758253e6a659750a53d2e8e998bb3da54c0ad157fc"
+    },
+    {
+      "artifact": "xmlbeans-5.4.1.jar",
+      "bytes": 2227616,
+      "sha256": "b8fe946b41983e86496a7a68508af82a41daafd0e2a2cc8c9302c53fcbd9802c"
+    },
+    {
+      "artifact": "commons-compress-1.28.0.jar",
+      "bytes": 1117221,
+      "sha256": "e1522945218456f3649a39bc4afd70ce4bd466221519dba7d378f2141a4642ca"
+    },
+    {
+      "artifact": "commons-lang3-3.18.0.jar",
+      "bytes": 702952,
+      "sha256": "4eeeae8d20c078abb64b015ec158add383ac581571cddc45c68f0c9ae0230720"
+    },
+    {
+      "artifact": "commons-io-2.22.0.jar",
+      "bytes": 609182,
+      "sha256": "2b9a7b1f726fb86216dbd2c8321eabe0221dbd5b1be81c18e1cb53811b104758"
+    },
+    {
+      "artifact": "curvesapi-1.08.jar",
+      "bytes": 117159,
+      "sha256": "ad95b08b8bbf9d7d17e5e00814898fa23324f32bc5b62f1a37801e6a56ce0079"
+    },
+    {
+      "artifact": "log4j-api-2.26.1.jar",
+      "bytes": 351428,
+      "sha256": "f1810a4704ccce019d02bba029dc02a4f2ac0c997f647b465e7d409c1927f822"
+    },
+    {
+      "artifact": "commons-collections4-4.6.0.jar",
+      "bytes": 934384,
+      "sha256": "4e0d0896bac5356cead277bac0283f09813e14417e3e84e0c86b573b54d218a3"
+    }
+  ],
+  "javaJarBytes": 23866930,
+  "officialSources": [
+    {
+      "url": "https://pdfbox.apache.org/download.html",
+      "localEvidenceName": "pdfbox-download",
+      "sha256": "63e10aaa2d8d14ff40931b0e3e87c235347c07be4953d0c71549e9ca0fd2ea9c",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://repo.maven.apache.org/maven2/org/apache/pdfbox/pdfbox/maven-metadata.xml",
+      "localEvidenceName": "pdfbox-metadata",
+      "sha256": "c831e57fe2834b85bce2b23cfca1ba1733fe899fe145ad745416f7183b2f2c0f",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://poi.apache.org/download.html",
+      "localEvidenceName": "poi-download",
+      "sha256": "6cac4fc2341c475b85be4c8d6ba083c465036d43e3a4570ff6a1cfd79d178b62",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/maven-metadata.xml",
+      "localEvidenceName": "poi-metadata",
+      "sha256": "ac13fbad420b1019a18cb85745724b95b5a83d5f507f8492fc0e7635082b8bf3",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://tika.apache.org/security.html",
+      "localEvidenceName": "tika-security",
+      "sha256": "9477c66f7ee0aa6daabff093c568cf8420f1ef36c97a70a608b716c6629ccdc3",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://pdfbox.apache.org/security.html",
+      "localEvidenceName": "pdfbox-security",
+      "sha256": "b6146fdfec48ba41bdfa3cd07e486bec7ad4509b8b35e01318d3494924ce7a64",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://repo.maven.apache.org/maven2/org/apache/pdfbox/pdfbox/3.0.8/pdfbox-3.0.8.pom",
+      "localEvidenceName": "pdfbox-pom",
+      "sha256": "1acfce718edc900dff75b17afd44272b022a4f0e914adbe76531df56862403dd",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml/6.0.0/poi-ooxml-6.0.0.pom",
+      "localEvidenceName": "poi-pom",
+      "sha256": "d8ff5643dfb985a06d6cfb3d7ac06da7c841ad459c59c6ebaba7d1a3be12cfdc",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://poi.apache.org/security.html",
+      "localEvidenceName": "poi-security",
+      "sha256": "cd7d6312fe08dd3e47470f17814a78dc73a0630f8d6e1c1153e235572982fcd2",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://poi.apache.org/components/index.html",
+      "localEvidenceName": "poi-components",
+      "sha256": "8a1ea5122199dace5dd75e1777203bc8093e0b253ded88f620584a98a454f52a",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/py-pdf/pypdf/main/docs/user/extract-text.md",
+      "localEvidenceName": "pypdf-extract",
+      "sha256": "b7c8826b07e23356bb594b2d0e9b64658011fde9748c788c6ae54bab781ae078",
+      "retrieved": "2026-10-24"
+    },
+    {
+      "url": "https://poi.apache.org/components/document/index.html",
+      "localEvidenceName": "poi-secure",
+      "sha256": "38ff9dfceabebb8a67399a61184faaa77d7ca72c4a869f9bde80cf817682ef95",
+      "retrieved": "2026-10-24"
+    }
+  ],
+  "observations": {
+    "java": {
+      "exit": 0,
+      "wallSeconds": 0.88,
+      "maximumRssBytes": 155189248,
+      "log": ".logs/s9a-probe-java-verified.log"
+    },
+    "python": {
+      "exit": 0,
+      "wallSeconds": 0.16,
+      "maximumRssBytes": 39878656,
+      "log": ".logs/s9a-probe-python-verified.log"
+    }
+  },
+  "limits": "single tiny synthetic sample, no throughput/P95/production capacity or OS isolation claim",
+  "initialFailures": [
+    "generated DOCX lacked required tblGrid; fixture generator corrected, both candidates then passed",
+    "PyPI TLS unavailable; official source and cached candidate used"
+  ],
+  "probeLogging": "standalone Java probe has Log4j API provider warning; product parser must bind stderr logging in S9B/C",
+  "modelCalls": 0
+}

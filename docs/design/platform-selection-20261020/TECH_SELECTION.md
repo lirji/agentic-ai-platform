@@ -225,3 +225,11 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 百炼官方当前给出独立重排协议；这只支持候选方案，不证明本项目账号已开通或效果改善。[重排序文档](https://help.aliyun.com/zh/model-studio/rerank) 新格式、Reader、模型加载或依赖变化需重新检查对应许可证、安全公告及实际运行路径，既有 S2/S1 依赖结论不是永久豁免。
 
 完整顺序、条件项及回退规则见[实施方案](../knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)；本轮没有新增模型费用额度或生产部署授权。
+
+## T32 结构化解析选型（S9A，2026-10-24）
+
+选择Knowledge持有原文件和解析作业、一次性Java子进程集成 **PDFBox3.0.8 / POI6.0.0（XWPF）**；Java21兼容已用实际制品编译/运行受控样本。PDFBox/POI为Apache-2.0。pypdf6.21.2/python-docx1.2.0也通过同组样本，观测成本更低，但本期保持原架构的Java解析归属；不把二进制再次送给AI运行时解析。Tika通用格式包本期不引入。
+
+选择依据、其它候选、直接许可证、17个解析JAR及约23.87MB成本、一次进程时间/RSS和新POI主版本风险见 [解析设计](../knowledge-first-20261020/PARSING_DESIGN.md)与[实际制品证据](../../qa/structured-parsing-20261024/research-evidence.json)。资源数字仅小样本观察，JVM堆限制不是总RSS硬隔离。完整制品/日志桥/传递依赖在S9B/C进入产品前锁定并验证，不扩用POI的渲染、宏或PDFBox附件提取。
+
+引入阶段：S9B启用PDF，S9C启用DOCX；S9A只用隔离探针，项目POM/uv.lock和正在运行的服务未变。LlamaIndex0.14.25、Embedding v4/1024及原预算沿用；新[P-v2](../knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)明确旧任务和新profile共存，不自动重算TXT/MD。

@@ -1,0 +1,40 @@
+{
+  "slice": "S9A",
+  "scope": "design and isolated parser selection probes",
+  "result": "PASS",
+  "designReview": "PASS: actual v1/source/consumer boundaries, ownership, hash semantics, resource bounds and compatibility routes reviewed by same agent",
+  "probeReplay": {
+    "java": {
+      "exit": 0,
+      "log": ".logs/s9a-final-java.log"
+    },
+    "python": {
+      "exit": 0,
+      "log": ".logs/s9a-final-python.log"
+    }
+  },
+  "fixtureEvidence": "fixture-manifest.json",
+  "researchEvidence": "research-evidence.json",
+  "documentation": "documentation-validation.json",
+  "productionSourceFence": "source-fingerprint.json",
+  "artifactFingerprint": {
+    "docs/design/knowledge-first-20261020/PARSING_DESIGN.md": "d9b4ec7b4d56b4d180e8a9e569d5ae31113fbd94994f0690b0953ebcc4661eb2",
+    "docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md": "07bcef0f5ddce95be17f11d00a100b3d26125f3471a0f5b06ba6ffbef5ebb60a",
+    "docs/design/knowledge-first-20261020/PARSING_ACCEPTANCE.md": "c88e0a0be76227974d05aedd9ab2cc899a3bb4e6b8772d588e2de3d83fcc7601",
+    "docs/qa/structured-parsing-20261024/probes/java/pom.xml": "65b6687325465eb6e6b35a8a437eae748d91987e3f016f4f835b7e21f928178e",
+    "docs/qa/structured-parsing-20261024/probes/java/src/main/java/ParserProbe.java": "7afdd80ae1f1c5ec039ed8fc5ad1a77281f44102f5f4b3bbdf04aeb604067b3c",
+    "docs/qa/structured-parsing-20261024/probes/python_probe.py": "821c65a4b254fffda74793d4a42b4fee425ad68bec771e9acd486b69dbe104ce"
+  },
+  "pythonProbeFormatLint": "PASS",
+  "productSourceChanged": false,
+  "productDependenciesChanged": false,
+  "databaseMigration": false,
+  "modelCalls": 0,
+  "remoteDeliveryGate": "PENDING until exact commit Actions pass",
+  "notExecuted": [
+    "S9B/C real upload/preparation/publication/UI",
+    "OS security sandbox and adversarial resource faults",
+    "real business corpus and capacity benchmark"
+  ],
+  "lastChange": "Java probe main method documentation only; final artifact compiled; behavior unchanged after successful replay"
+}

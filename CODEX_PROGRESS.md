@@ -2,7 +2,7 @@
 
 - 当前任务：`capability-delivery-20261021`，用户已要求“开始实施”，按 20 项差距的 51 项方案连续推进。
 - 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；稳定任务：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
-- 当前 S8A–S8F 已交付；S8E真实8题机制基线含已知支撑失败，S8F本地及两仓真实CI均PASS。下一项S9A；运行、预算、Git状态和恢复编号见唯一状态，不重跑已确定付费步骤。
+- 当前 S8A–S8F 已交付；S8E真实8题机制基线含已知支撑失败，S8F本地及两仓真实CI均PASS。S9A设计及候选验证PASS，待Git/CI交付；运行、预算、Git状态和恢复编号见唯一状态，不重跑已确定付费步骤。
 - [已交付方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)继续有效；新要求已解除开发暂停，不重做 S0–S7。
 - 沿用已有模型预算和正常 Git 提交/合并/推送授权；不扩大到生产部署、旧数据清理或新增模型费用。详细检查点、运行证据和下一步见唯一状态。
 

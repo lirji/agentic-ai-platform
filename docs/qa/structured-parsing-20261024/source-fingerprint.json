@@ -1,0 +1,10 @@
+{
+  "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/UploadRules.java": "04b23b112659fc034d8297098051b056d1d5c910b7843955bed0a0530e67e192",
+  "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/PreparedDocument.java": "1b6d09422175abf6fc6811da8d89a841f91a1e8f4baced9f504b2c4526614c11",
+  "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/IngestionRunner.java": "3cadaac550596d129673692ada19d26b0dba38d180bb160a4d9c08a5c711c520",
+  "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/DualSearchIndex.java": "0f0ee85b92830774dde32f620a14a5d98b5546926a00a44978cc11c7e8e290e7",
+  "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSearch.java": "f4ac35910cb372fa13bde10aaf55db82de06438a37748b92139b5721045dc5f9",
+  "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationRow.java": "2ea4d3fdbd9dd7e409b8bb78f596b9fa8a297c071b98e7c96499eb50dfe8653a",
+  "ai-runtime/src/agentic_ai/qa/models.py": "d42691ab4f0270f391737dcaf540facf387d9a314bfe374c7ddeb2356a44f0b3",
+  "ai-runtime/src/agentic_ai/processing/models.py": "f4d046bdaf0c7944d54a3aa0fa7b5bc3978054a0ceee7190dc69879970c87f06"
+}

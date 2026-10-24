@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "changedMarkdown": 14,
+  "localFileLinks": 255,
+  "fences": "PASS",
+  "scope": "changed documents, local file targets, fixed sample hashes; no full historical anchor/external-link claim"
+}

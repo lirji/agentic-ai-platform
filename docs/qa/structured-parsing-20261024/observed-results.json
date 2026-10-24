@@ -1,0 +1,55 @@
+{
+  "pdf": [
+    {
+      "page": 1,
+      "rotation": 0,
+      "text": "Alpha policy: original bytes remain immutable.\n"
+    },
+    {
+      "page": 2,
+      "rotation": 0,
+      "text": ""
+    },
+    {
+      "page": 3,
+      "rotation": 90,
+      "text": "Rotated policy: citation page numbers start at one.\n"
+    }
+  ],
+  "docx": "P:资料处理说明\nP:\nP:只解析本文件，不请求外部资源。\nROW:项目|规则\nROW:合并单元格保持来源\nP:外部链接文字\n",
+  "java": [
+    "page=1,rotation=0,empty=false",
+    "page=2,rotation=0,empty=true",
+    "page=3,rotation=90,empty=false",
+    "encrypted.pdf=REJECTED",
+    "malformed.pdf=REJECTED",
+    "docx=Chinese heading, empty paragraph, ordered table, gridSpan, external hyperlink retained as text",
+    "parseMillis=831"
+  ],
+  "python": {
+    "pypdf": "6.21.2",
+    "pages": [
+      {
+        "page": 1,
+        "rotation": 0,
+        "empty": false
+      },
+      {
+        "page": 2,
+        "rotation": 0,
+        "empty": true
+      },
+      {
+        "page": 3,
+        "rotation": 90,
+        "empty": false
+      }
+    ],
+    "rejected": [
+      "encrypted.pdf",
+      "malformed.pdf"
+    ],
+    "docx": "same ordered paragraphs and physical merged cells as Java",
+    "parseMillis": 7.23
+  }
+}

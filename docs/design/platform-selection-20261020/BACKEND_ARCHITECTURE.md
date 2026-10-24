@@ -229,7 +229,7 @@ analyze 失败从上一阶段重执行，可能再次计费；三轮模型/五�
 
 ## 12. 20 项差距的增量架构方案（2026-10-21）
 
-本节细化已确认的三框架/Java 边界，不改变现行 P/K/Q/T/work 协议。完整任务与兼容路线见[能力实施方案](../knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)；新边界先在[契约工作包](../knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)设计并冻结，再实施。本文只给出方案，新产品开发保持暂停。
+本节为2026-10-21的增量方案，用户随后已授权连续实施；实际状态以[进度](../knowledge-first-20261020/PROGRESS_STATE.md)为准。完整任务与兼容路线见[能力实施方案](../knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)；新边界先在[契约工作包](../knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)设计并冻结，再实施，不能把整段规划当已交付。
 
 | 增量能力 | 归属与调用方向 | 任务 |
 | --- | --- | --- |
@@ -246,3 +246,11 @@ analyze 失败从上一阶段重执行，可能再次计费；三轮模型/五�
 P-v2 区分原文件、提取物及片段摘要；原始 PDF 二进制偏移不能解释为提取文本位置。处理 profile、文档 revision 和 index generation 分别版本化；S10D 验证后切换，旧版本未到清理条件前保留，代码回退不回滚已发生的业务事实。
 
 新的业务模块优先加入现有归属服务，使用本库短事务、幂等内部 API 和既有持久 worker。没有新的 MQ、缓存或调度平台前置；持续来源确需业务定时同步时，S18A 按既定 XXL-JOB 约定接入。多 worker、公平准入、共享预算、观测和还原演练分别在 S15–S17 形成证据。
+
+## S9A 结构化来源增量（2026-10-24）
+
+[解析设计](../knowledge-first-20261020/PARSING_DESIGN.md)选择Knowledge管理的一次性Java子进程，PDFBox3.0.8/POI6.0.0只解析原文件，LlamaIndex只处理规范提取块；Python不重复解析、Java不重复分块。原文件、已接受提取物、准备对象各自不可变，引用元数据由原解析结果绑定，短事务/租约与唯一索引发布沿用。
+
+[P-v2](../knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)与旧P-v1共存；旧任务、处理版本和机制基线不回填。公共来源字段保持displayName/locator，但新locator必须先升级Python严格消费者；单处理profile检索过滤扩为明确同Embedding兼容集合。新格式上传在消费者/索引/引用验证后才开启。新模块是解析执行适配，不新增业务服务、数据库、MQ或任意文件工具。
+
+受控样本证明候选基本格式能力；子进程堆/时间/输出与OS隔离的边界分开记录。完整上传、发布、权限、故障、前端及容量验证由S9B/C承担，[样本矩阵](../knowledge-first-20261020/PARSING_ACCEPTANCE.md)列明未执行项。

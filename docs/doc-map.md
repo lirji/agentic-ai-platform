@@ -18,6 +18,8 @@ S8C 基于后端 `c810e959`、前端 `427bcb9` 实现持久运行、Tasks失败�
 
 [框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json)与原比较基线保持历史身份。S8F基于后端9a0e0b4/前端5960531新增两仓Actions、E02共享报文金标和真实DTO测试，P01沿用原共享金标；[CI契约](design/knowledge-first-20261020/CI_CONTRACTS.md)与[验收](qa/ci-contracts-20261024/TEST_RESULT.md)记录实际检查及限制。S8F无模型调用和依赖升级。
 
+S9A在后端82eb31c上核对UploadRules、PreparedDocument、IngestionRunner、DualSearchIndex、KnowledgeSearch/EvaluationRow及Python CitationSource/处理DTO；[解析设计](design/knowledge-first-20261020/PARSING_DESIGN.md)和[P-v2](design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)对应这些真实变化点。候选制品与自建格式样本见[S9A验收](qa/structured-parsing-20261024/TEST_RESULT.md)，不从探针推导已实现在线PDF/DOCX或生产隔离。
+
 ## 已完成：能力比较（2026-10-21）
 
 用户要求暂停知识深化实施，先比较业务与实现细度。本轮权威入口为[能力缺口](../.engineering/exploration/CAPABILITY_GAPS.md)，配套[地图](../.engineering/exploration/CAPABILITY_MAP.md)、[候选](../.engineering/exploration/OPPORTUNITIES.md)、[路线](../.engineering/exploration/EVOLUTION_ROADMAP.md)及[证据](../.engineering/exploration/EVIDENCE_INDEX.md)。当前后端基线 `d61536cbb9179db010f33d7b1cdbda737e22fc92`，React 基线 `d2b4dc6957cfbc81d29a8493dc9aa284aab8e584`，参考 Java 基线保持 `468cec425dd160e80cfc3ab378d3440a8767e4d5`。本轮未重新审计独立 AgentScope，也未执行模型/运行验收。
