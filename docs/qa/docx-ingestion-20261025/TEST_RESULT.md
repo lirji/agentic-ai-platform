@@ -1,6 +1,6 @@
 # S9C DOCX 入库与段落／表格来源验收
 
-2026-10-25，slice=S9C，本地必需验收PASS。后端基线ebcb94b、前端基线185d3fa；准确待交付版本由[源码指纹](final-validation.json)和[制品摘要](artifacts.json)绑定。Git/CI是后续交付步骤，结果单独写入delivery-result.json与ci-gate.json，不以本地测试代替远程检查。
+2026-10-25，slice=S9C，本地必需验收PASS。后端基线ebcb94b、前端基线185d3fa；准确待交付版本由[源码指纹](final-validation.json)和[制品摘要](artifacts.json)绑定。两仓产品提交已正常合并推送main，主分支CI全部通过；见[交付收据](delivery-result.json)与[CI结果](ci-gate.json)。
 
 ## 可观察验收
 

@@ -1,7 +1,7 @@
 {
   "slice": "S9C",
   "localResult": "PASS",
-  "delivery": "PENDING actual Git/CI; tracked separately",
+  "delivery": "DELIVERED; exact commits and main CI in delivery-result.json / ci-gate.json",
   "java": {
     "unitTests": 117,
     "suites": [
