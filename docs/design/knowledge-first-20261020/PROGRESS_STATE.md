@@ -1,17 +1,17 @@
 # 独立知识平台准备进度
 
-## 当前状态：S9D本地验证通过，Git/CI交付中
+## 当前状态：S9D已交付，接续S10B
 
-- 任务：`capability-delivery-20261021`；用户2026-10-25“继续”，20项差距/51任务计划ACTIVE；parallel=no，无子Agent。S8A–F、S9A–C、S10A已交付；当前S9D实施/本地验收DONE、交付待办；下一S10B，不因完成一片停止。
-- S9D计划：契约冻结→结构Node/来源校验→真实共享金标/边界/恢复→同源模型/界面→文档与Git/CI。前四步通过；TEST_RESULT、IMPLEMENTATION_EVIDENCE、runtime-validation等在`docs/qa/structured-chunking-20261025/`，两仓文档/链接/表格、51稳定任务/依赖与注册契约检查PASS；开始交付。
-- Git：后端原目录`feat/structured-chunking-20261025`基线`79368c0`，前端同名分支基线`cdf7e47`，均为本任务未提交修改；无新worktree。S10A内容14300f1、收据79368c0已推送，CI40184332583 PASS；S9C证据仍有效。
+- 任务：`capability-delivery-20261021`；用户2026-10-25“继续”，20项差距/51任务计划ACTIVE；parallel=no，无子Agent。S8A–F、S9A–C、S10A已交付；S9D实施/验收/交付DONE；下一S10B，不因完成一片停止。
+- S9D计划：契约冻结→结构Node/来源校验→真实共享金标/边界/恢复→同源模型/界面→文档与Git/CI。前四步通过；TEST_RESULT、IMPLEMENTATION_EVIDENCE、runtime-validation等在`docs/qa/structured-chunking-20261025/`，两仓文档/链接/表格、51稳定任务/依赖与注册契约检查PASS；两仓交付完成，收据文档落盘。
+- Git：后端原目录`feat/structured-chunking-20261025`基线`79368c0`，前端同名分支基线`cdf7e47`，实现分别3a9c938/81e2513已正常合并推送main；后端CI40186335175、前端CI40186339291 PASS；无新worktree。S10A内容14300f1、收据79368c0已推送，CI40184332583 PASS；S9C证据仍有效。
 - 本地验证：Java126单元、45真实test依赖IT；Python371 PASS/49条件IT跳过/19既有警告；Ruff/mypy PASS；前端72单元、build/types/lint/format、2组Playwright PASS。11正式截图与1诊断图已查看，414长段最终2327px，无水平溢出或空白尾部。Java统一格式器/静态分析器未配置，Code Hygiene保留限制。
 - 功能：新增PDF/DOCX结构profile；真实Document→TextNode、章节/同行格/两相邻页分组；两语言独立来源流与总重叠校验；标题/显式前序表头仅Embedding增强，引用原文不变。旧P04 shape/三种profile/golden及TXT/MD保留。
 - 真实对照：6次成功新资料（含2份workbench-user界面资料）、3次新检索。DOCX同hash13→6块、PDF4→2块，目标来源旧/新均rank1；仅机制证据，不宣称业务质量提升。47来源按字节还原、42跨owner/tenant拒绝；原27行快照不变。
 - 账本纠正：新增9批Embedding实际预留0.111784元（7×0.01+2×0.020892），累计56批/0.581784元，上限1元；chat24次/0.889964元/hash未变。此前简算0.56/0.09不准确，已按账本修正。成功/未知付费步骤不得重跑。
 - 运行：最终Knowledge选模块package PASS，已以STRUCTURE_V3+parsing/pdf/docx=true恢复并通过47来源/42拒绝只读复验；dev/test V9 PASS。Gateway/Tasks/Conversations原PID/JAR保留，AI/worker/模型代理/Web运行；local-dev Knowledge/Tasks在途0；其它隔离测试租户遗留状态不处理。
 - 关闭选择证据：BLOCK_V2下旧v3同键返回原job，新坏DOCX固定v2且解析失败、0模型；profile-switch-validation.json已保存。不再次发写探针。
-- 剩余具体操作：按已保存允许路径提交两仓→任务分支CI→正常合并推送main→main CI及收据→S10B。所有运行测试已结束；未运行生产部署/清理。
+- 剩余具体操作：提交交付收据并核对其CI→原目录新分支feat/document-update-20261025→S10B（已读预研.local/s10b-readiness.md）。所有运行测试已结束；未运行生产部署/清理。
 - 恢复键：后端`.local/s9d-http-state.json`与S9B/C记录、原预算账本、前端`.local/s9c-ui-state.json`全部保留。早期owner误设developer已核实修正；原探针资料和失败日志保留，不删除或重置。
 - 授权：本地有界实现/测试、既有预算内必要模型、正常分支提交合并推送main；不强推、不绕过保护、不生产部署、不清理、不新预算。U01/U02真实业务语料未知；OCR/表格文件条件未触发。
 - 规范：已授权Contracts阶段、backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery、ci-cd-gate；architecture-standards建模/持久化/契约/并发安全/容量/发布章节。原MULTI_CLIENT_DRIFT_BLOCKED不变，不冒称全局Runtime Gate或独立Agent审查。

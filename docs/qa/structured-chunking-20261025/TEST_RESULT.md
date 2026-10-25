@@ -1,6 +1,6 @@
 # S9D 结构分块与处理profile验收
 
-2026-10-25，slice=S9D，本地必需验收PASS；Git/CI待交付。源码版本以[final-validation](final-validation.json)绑定，实施说明见[IMPLEMENTATION_EVIDENCE](IMPLEMENTATION_EVIDENCE.md)。本片未启用更新、撤下、重索引或生产部署。
+2026-10-25，slice=S9D，本地必需验收PASS；两仓实现已正常合并推送main，CI全部通过；见[交付收据](delivery-result.json)和[CI门禁](ci-gate.json)。源码版本以[final-validation](final-validation.json)绑定，实施说明见[IMPLEMENTATION_EVIDENCE](IMPLEMENTATION_EVIDENCE.md)。本片未启用更新、撤下、重索引或生产部署。
 
 | 验收 | 实际证据 | 结果 |
 | --- | --- | --- |

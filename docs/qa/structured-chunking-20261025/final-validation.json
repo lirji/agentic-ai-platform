@@ -1,7 +1,7 @@
 {
   "slice": "S9D",
   "localResult": "PASS",
-  "delivery": "PENDING_GIT_CI",
+  "delivery": "DELIVERED; see delivery-result.json and ci-gate.json for exact implementation commits",
   "checkedAt": "2026-10-25T10:46:36.109254+00:00",
   "baseline": "79368c03096f060f15e7dff2df308e310864cf34",
   "sourceSha256": {

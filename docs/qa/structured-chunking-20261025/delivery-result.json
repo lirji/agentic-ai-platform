@@ -1,0 +1,107 @@
+{
+  "slice": "S9D",
+  "status": "DELIVERED",
+  "checkedAt": "2026-10-25T10:50:59.738657+00:00",
+  "repositories": {
+    "agentic-ai-platform": {
+      "commit": "3a9c938a95e536ab7e361dec0c6f64f336d8f1f3",
+      "branch": "feat/structured-chunking-20261025",
+      "target": "origin/main",
+      "merge": "fast-forward",
+      "remoteVerified": true,
+      "ci": [
+        {
+          "stage": "branch",
+          "id": 40186192524,
+          "sha": "3a9c938a95e536ab7e361dec0c6f64f336d8f1f3",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40186192524",
+          "status": "PASS",
+          "jobs": [
+            {
+              "name": "java",
+              "status": "success"
+            },
+            {
+              "name": "python",
+              "status": "success"
+            },
+            {
+              "name": "documents",
+              "status": "success"
+            }
+          ]
+        },
+        {
+          "stage": "main",
+          "id": 40186335175,
+          "sha": "3a9c938a95e536ab7e361dec0c6f64f336d8f1f3",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40186335175",
+          "status": "PASS",
+          "jobs": [
+            {
+              "name": "python",
+              "status": "success"
+            },
+            {
+              "name": "documents",
+              "status": "success"
+            },
+            {
+              "name": "java",
+              "status": "success"
+            }
+          ]
+        }
+      ]
+    },
+    "agentic-ai-platform-web": {
+      "commit": "81e2513a7b1a0f590be4e92454de3ab065640556",
+      "branch": "feat/structured-chunking-20261025",
+      "target": "origin/main",
+      "merge": "fast-forward",
+      "remoteVerified": true,
+      "ci": [
+        {
+          "stage": "branch",
+          "id": 40186201220,
+          "sha": "81e2513a7b1a0f590be4e92454de3ab065640556",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/40186201220",
+          "status": "PASS",
+          "jobs": [
+            {
+              "name": "web",
+              "status": "success"
+            }
+          ]
+        },
+        {
+          "stage": "main",
+          "id": 40186339291,
+          "sha": "81e2513a7b1a0f590be4e92454de3ab065640556",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/40186339291",
+          "status": "PASS",
+          "jobs": [
+            {
+              "name": "web",
+              "status": "success"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "productionDeployment": false,
+  "worktreesCreated": 0,
+  "cleanupPerformed": false,
+  "preserved": [
+    ".local credentials/ledgers/recovery",
+    ".logs",
+    ".idea",
+    "venvs/build caches",
+    "DB/S3/indexes and failed fixtures"
+  ],
+  "removableAfterSeparateApproval": [
+    "target/dist and test caches when no longer needed"
+  ],
+  "receiptCommit": "Follow-up documentation commit; see Git history without recursive self-hash"
+}
