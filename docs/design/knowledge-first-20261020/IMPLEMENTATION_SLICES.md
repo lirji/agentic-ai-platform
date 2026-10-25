@@ -204,7 +204,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S9A | 冻结结构化解析与准备包 v2 | S8A | DESIGN | DONE |
 | S9B | PDF 入库与页级引用 | S9A, S8E | IMPLEMENT | DONE |
 | S9C | DOCX 段落和表格入库 | S9B | IMPLEMENT | DONE |
-| S9D | LlamaIndex 结构分块及处理版本对照 | S9C, S8D, S10A | IMPLEMENT | PLANNED |
+| S9D | LlamaIndex 结构分块及处理版本对照 | S9C, S8D, S10A | IMPLEMENT | DONE |
 | S9E | 扫描资料 OCR | S9C, S9D | IMPLEMENT | CONDITIONAL |
 | S9F | 表格资料按需支持 | S9C, S9D | IMPLEMENT | CONDITIONAL |
 | S10A | 文档/发布/索引版本与删除语义 | S8A, S9A | DESIGN | DONE |
@@ -339,13 +339,15 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 
 ### S9D · LlamaIndex 结构分块及处理版本对照
 
+实施与本地验证PASS，证据见[TEST_RESULT](../../qa/structured-chunking-20261025/TEST_RESULT.md)；Git/CI状态由PROGRESS_STATE和交付收据记录。
+
 - **结果：** 长章节、表格和代码仍可找到上下文与原文来源。
 - **Needs：** S9C, S8D, S10A。
-- **Owner / 影响路径：** A、K（路径见本节 Owner 表）；范围：结构 Node 转换/分块 profile；准备结果校验与切分度量。
+- **Owner / 影响路径：** A、K、W（路径见本节 Owner 表）；范围：结构 Node 转换/分块 profile；准备结果校验与切分度量；K06前端已注册profile读取兼容与真实多来源验收。
 - **契约 / 迁移归属：** C-PARSE、C-LIFECYCLE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 片段 ID 唯一、原文/增强分离；结构可跨段但来源不伪造；上限拒绝不截断；同集对照且旧 profile 可读；不直接启用全部 splitter。
 - **Pass / Runtime：** IMPLEMENT；现有 Embedding 适配与预算；无额外向量存储。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G03 G07。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G03 G07。
 
 ### S9E · 扫描资料 OCR
 

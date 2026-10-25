@@ -21,7 +21,7 @@ public record Ingestion(
 
     /** 领域快照不能承载媒体类型与固定版本矛盾的任务。 */
     public Ingestion {
-        if (profile == null || profile != ProcessingProfile.forContentType(source.contentType())) {
+        if (profile == null || !profile.supports(DocumentFormat.fromContentType(source.contentType()))) {
             throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
         }
     }

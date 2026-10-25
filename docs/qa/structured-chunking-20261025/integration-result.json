@@ -1,0 +1,39 @@
+{
+  "suites": [
+    {
+      "name": "com.lrj.agentic.knowledge.KnowledgePersistenceIT",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.805"
+    },
+    {
+      "name": "com.lrj.agentic.knowledge.KnowledgeStructuredProcessingIT",
+      "tests": "24",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "33.186"
+    },
+    {
+      "name": "com.lrj.agentic.knowledge.KnowledgeProcessingIT",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.04"
+    },
+    {
+      "name": "com.lrj.agentic.knowledge.EvaluationPersistenceIT",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.811"
+    }
+  ],
+  "log": ".logs/s9d-real-integration-retry.log",
+  "scope": "test DB/S3/ES/Qdrant, synthetic protocol vectors, zero paid models",
+  "testMigration": "9\t1"
+}

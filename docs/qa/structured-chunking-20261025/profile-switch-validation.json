@@ -1,0 +1,26 @@
+{
+  "selection": "BLOCK_V2",
+  "oldV3ReplaySameJob": true,
+  "newAcceptedProfile": "docx-v2-poi6.0.0-char512-overlap64-embedding-v4-1024",
+  "rejectedBeforeEmbedding": true,
+  "probeJobId": "cb55a80d-f0f0-4f0c-8ddc-de518892d217",
+  "readCompatibility": {
+    "sources": 47,
+    "denials": 42,
+    "log": ".logs/s9d-profile-off-reads.log"
+  },
+  "budgetsUnchanged": {
+    "embedding": {
+      "calls": 56,
+      "reservedCny": "0.581784",
+      "limitCny": "1",
+      "sha256": "dd527fb4f67a98c75d8a2bb46a3b1f4b2796f1259dea99479d5643d92f24f812"
+    },
+    "chat": {
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "limitCny": "1",
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    }
+  }
+}

@@ -253,3 +253,8 @@ S9C传递依赖补丁：Boot3.5.16默认Commons Lang3.17.0覆盖了Compress所�
 | 清理 | 暂不启用物理清理；保留期限/引用清单与备份传播另决策 | U07未决；新版本上线不自动授权删旧数据 |
 
 当前模型与维度仍沿已验证text-embedding-v4/1024；profile兼容集合、新受理默认和重建目标分开。无新Reranker额度、向量库、定时清理或生产部署。迁移编号及表字段注释在对应实现中串行落地，本片不预建占位SQL。
+
+
+## T34 结构分块profile（S9D，2026-10-25）
+
+复用锁定LlamaIndex core0.14.25的Document/TextNode、SentenceSplitter及MetadataMode；LangGraph和Embedding适配器不换栈。具体算法/有界context/来源验证见[结构契约第9节](../knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md#9-s9d结构profile2026-10-25冻结实现验收另记)。新typed env `KNOWLEDGE_STRUCTURED_PROFILE=BLOCK_V2|STRUCTURE_V3`默认前者；V9追加已注册三元组，不修改历史迁移/数据。仅原有应用配置与本地启动入口补此项，无新服务/端口/资源/模型预算；开启前须通过新旧共存与两端真实准备/来源验收。

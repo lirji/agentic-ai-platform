@@ -78,3 +78,17 @@ Python现有CitationSource只允许`utf8-bytes`正则，新增locator值并非�
 | R-P06 | 解析成功到接受指针之间崩溃 | 同原文件/profile可重解析；已接受则只读复验，不用新结果覆盖原指针；S9B故障验收 |
 
 S9A完成标准是选型、所有权、正式P-v2、资源边界、兼容路线和可执行样本矩阵一致；本项探针不代替S9B/C的真实HTTP、数据库、子进程故障和前端验收。
+
+
+## S9D结构分块决策（2026-10-25）
+
+当前依赖S9C/S8D/S10A均已交付。新增算法的正式语义冻结于[结构契约第9节](STRUCTURED_PROCESSING_CONTRACTS.md#9-s9d结构profile2026-10-25冻结实现验收另记)，实施与验收仍在进行。
+
+- D-P09：使用锁定LlamaIndex的Document→TextNode，按真实DOCX章节/同行格与最多两相邻PDF页构造Document；保留SentenceSplitter512/64。旧逐块profile及TXT/MD不变，避免重写既有片段身份。
+- D-P10：分块后添加有界真实标题/显式表头metadata；模型增强输入与返回原文分离，两端独立重建所有原文segments和完整覆盖。增强可由提取物/profile确定性复现，P04线结构不变；输入捕获测试补足向量hash不能证明输入的限制。
+- D-P11：默认BLOCK_V2，仅新受理可选STRUCTURE_V3；任务恢复/检索/来源读取使用持久三元组和闭合兼容集合。V9只扩profile约束，禁止借本片实现尚待S10B的生命周期/代次。
+- D-P12：相同原文件隔离owner做机制对照；原S8E金标不重绑，没有代表性语料不声称质量提升。代码内容保真，不增加AST parser或其它splitter。
+
+框架依据：锁定0.14.25本地schema.py与node_parser/interface.py、text/sentence.py；[官方Node parser文档](https://developers.llamaindex.ai/python/framework/module_guides/loading/node_parsers/)、[官方Document metadata文档](https://developers.llamaindex.ai/python/framework/module_guides/loading/documents_and_nodes/usage_documents/)（2026-10-25核验）。无依赖升级或新模型。
+
+一致性复核：生产者/消费者均守P04来源规则；K06现有1..16来源对象及locator可承载；现场发现前端metadata仍按MIME单profile校验，须同步扩闭合注册表并实际UI验证；发布和权限仍归Knowledge；配置仅影响新任务；共享预算/并发不增加。S9D补入W已有消费者最小兼容路径，Needs/ID/业务边界不变，同一Agent复核不冒称独立Agent审查。

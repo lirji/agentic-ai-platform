@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-10-25T10:44:38.251027+00:00",
+  "restored": {
+    "structuredProfile": "STRUCTURE_V3",
+    "parsing": true,
+    "pdfUpload": true,
+    "docxUpload": true
+  },
+  "readiness": {
+    "knowledge": "UP",
+    "gateway": "UP",
+    "tasks": "UP",
+    "conversations": "UP"
+  },
+  "qaWorkerRunning": true,
+  "legacyRowsPreserved": 27,
+  "newRows": 7,
+  "unaffectedPidsAndJarsPreserved": true,
+  "activeLocalJobs": {
+    "knowledge": 0,
+    "tasks": 0
+  },
+  "migrations": {
+    "agentic_knowledge": "9\t1",
+    "agentic_knowledge_test": "9\t1"
+  },
+  "budgets": {
+    "embedding": {
+      "calls": 56,
+      "reservedCny": "0.581784",
+      "limitCny": "1",
+      "sha256": "dd527fb4f67a98c75d8a2bb46a3b1f4b2796f1259dea99479d5643d92f24f812"
+    },
+    "chat": {
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "limitCny": "1",
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    }
+  },
+  "readOnlyValidation": {
+    "sourceChecks": 47,
+    "denials": 42,
+    "newModelCalls": 0,
+    "log": ".logs/s9d-final-reads.log"
+  },
+  "artifacts": {
+    "knowledge-service": "0f12538a6660e4ea4efe01917733bb22f158b81c4e0d35cd7737cbc22419459f",
+    "knowledge-parser": "85b3a324de32a457a665953c9aff2aaf6345e7225bb586b925914ac7ac5edb74",
+    "edge-gateway": "6d8fd974b4c2873bb2abb534f790e1033665bf1a89ee175912b0d65f1ee92d3d",
+    "async-task-service": "48ae11716a500cc0a9d9d303fc468eb855335cf8cfc34fc23a94171d699ca5cd",
+    "conversation-service": "b803ae475011d7f3bd87c36de503649e29c68edde0f837f708a3f7d576ce1d69"
+  },
+  "productionDeployment": false
+}

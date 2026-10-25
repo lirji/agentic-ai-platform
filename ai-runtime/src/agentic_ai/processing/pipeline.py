@@ -7,6 +7,7 @@ from typing import TypedDict
 from langgraph.graph import END, START, StateGraph
 from langsmith import tracing_context
 from llama_index.core.node_parser import SentenceSplitter
+from llama_index.core.schema import Document, MetadataMode, TextNode
 
 from agentic_ai.processing import structured
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
@@ -82,25 +83,35 @@ class PreparationPipeline:
     async def prepare_structured(
         self, request: structured.StructuredRequest
     ) -> structured.StructuredDocument:
-        """P04 逐非空结构块复用同一 LlamaIndex 分块器，不添加隐藏元数据或跨页正文。"""
+        """P04固定版本选择分块策略；先验证所有来源/容量，再消耗模型预算。"""
         texts: list[str] = []
         segments: list[tuple[structured.SourceSegment, ...]] = []
-        for block in request.extraction.blocks:
-            if not block.text.strip():
-                continue
-            parts = tuple(self._splitter.split_text(block.text))
-            positions = self._locations(block.text, parts)
-            structured.validate_locations(block.text, parts, positions)
-            texts.extend(parts)
-            segments.extend(
-                (structured.SourceSegment(block_id=block.block_id, start_byte=start, end_byte=end),)
-                for start, end in positions
-            )
-            if len(texts) > MAX_CHUNKS:
-                raise ProcessingError(ProcessingCode.INPUT_TOO_LARGE)
+        inputs: list[str] = []
+        if request.processor_version.structural:
+            texts, segments, inputs = self._structure_nodes(request)
+        else:
+            for block in request.extraction.blocks:
+                if not block.text.strip():
+                    continue
+                parts = tuple(self._splitter.split_text(block.text))
+                positions = self._locations(block.text, parts)
+                structured.validate_locations(block.text, parts, positions)
+                texts.extend(parts)
+                segments.extend(
+                    (
+                        structured.SourceSegment(
+                            block_id=block.block_id, start_byte=start, end_byte=end
+                        ),
+                    )
+                    for start, end in positions
+                )
+                if len(texts) > MAX_CHUNKS:
+                    raise ProcessingError(ProcessingCode.INPUT_TOO_LARGE)
+            inputs = texts
         if not texts:
             raise ProcessingError(ProcessingCode.INPUT_INVALID)
-        result = await self._embedding.embed(tuple(texts))
+        structured.validate_sources(request, tuple(texts), tuple(segments))
+        result = await self._embedding.embed(tuple(inputs))
         self._validate_embedding(result, len(texts))
         chunks: list[structured.StructuredChunk] = []
         for ordinal, (text, source_parts) in enumerate(zip(texts, segments, strict=True)):
@@ -134,6 +145,50 @@ class PreparationPipeline:
             chunks=ordered,
             batch_digest=structured.batch_digest(request, ordered),
         ).validated(request)
+
+    def _structure_nodes(
+        self,
+        request: structured.StructuredRequest,
+    ) -> tuple[list[str], list[tuple[structured.SourceSegment, ...]], list[str]]:
+        """结构Document交给真实LlamaIndex；metadata后加，避免挤占原文分块预算。"""
+        texts: list[str] = []
+        segments: list[tuple[structured.SourceSegment, ...]] = []
+        inputs: list[str] = []
+        for group in structured.structure_groups(request.extraction):
+            source = group.text
+            document = Document(id_=group.blocks[0].block_id, text=source)
+            nodes = self._splitter.get_nodes_from_documents([document], show_progress=False)
+            if len(texts) + len(nodes) > MAX_CHUNKS:
+                raise ProcessingError(ProcessingCode.INPUT_TOO_LARGE)
+            parts = tuple(node.get_content(MetadataMode.NONE) for node in nodes)
+            positions = self._locations(source, parts)
+            structured.validate_locations(source, parts, positions)
+            for node, text, (start, end) in zip(nodes, parts, positions, strict=True):
+                if not isinstance(node, TextNode):
+                    raise ProcessingError(ProcessingCode.RESULT_INVALID)
+                offset = 0
+                sources: list[structured.SourceSegment] = []
+                for block in group.blocks:
+                    length = len(block.text.encode("utf-8"))
+                    left, right = max(start, offset), min(end, offset + length)
+                    if left < right:
+                        sources.append(
+                            structured.SourceSegment(
+                                block_id=block.block_id,
+                                start_byte=left - offset,
+                                end_byte=right - offset,
+                            )
+                        )
+                    offset += length + 1
+                # 只有已验证来源形成增强；技术ID/hash/位置与自动LLM metadata都不入模型。
+                node.metadata = {"source_context": group.context} if group.context else {}
+                node.metadata_template = "{value}"
+                node.text_template = "{metadata_str}\n\n{content}"
+                node.excluded_llm_metadata_keys = ["source_context"]
+                texts.append(text)
+                segments.append(tuple(sources))
+                inputs.append(node.get_content(MetadataMode.EMBED))
+        return texts, segments, inputs
 
     async def _split(self, state: PreparationState) -> PreparationState:
         """有界输入在当前调用中完成分块，输出超界时拒绝而非截断。"""

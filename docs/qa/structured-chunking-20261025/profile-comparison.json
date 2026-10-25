@@ -1,0 +1,188 @@
+{
+  "dataset": "two fixed self-owned raw files, separate owner scopes; S9C DOCX legacy result reused",
+  "realModels": true,
+  "cases": [
+    {
+      "format": "DOCX",
+      "sameRawSourceHash": "407bf69c7fc221189b3a658b8b8a61bdfe5b6bd75ce4fc0270df2d6fe2fdaca0",
+      "query": "资料审核需要多久？",
+      "legacy": {
+        "documentId": "ab3d5d8d-0910-43b1-833f-2dda9bc9d121",
+        "chunkCount": 13,
+        "returnedHits": 5,
+        "matchingSourceRanks": [
+          1
+        ],
+        "hits": [
+          {
+            "rank": 1,
+            "chunkId": "8fb90f692a3531ec0dd11da6aa73b94b669b779867c410aaf6cc1d6b081d7812",
+            "locator": "docx-blocks:t1r2c1",
+            "textHash": "cb9d93fbd09308b4665c4e8aed4926fa7c79ce9732c0125c124caccaeee0ac39"
+          },
+          {
+            "rank": 2,
+            "chunkId": "f16eaa317d67ad4166bb84e6f88b02169f16d99305dbbefbdbfa2c79818d6afe",
+            "locator": "docx-blocks:p3",
+            "textHash": "e7dbf119dbfa09d28bf52c264be6cef2d7bccb2337b9ef2da3ddbbbdbcfe3586"
+          },
+          {
+            "rank": 3,
+            "chunkId": "1e6f2a8266c19bdb373564a3a44e67e81b903172a9b05f6874de20ff60025bd5",
+            "locator": "docx-blocks:p1",
+            "textHash": "d686e2414de54f8f548aef1acfd69d8c6a9800ea8608e7693276ccd0133ba2a6"
+          },
+          {
+            "rank": 4,
+            "chunkId": "1329f1efab996ef9935786b2251c4e0b74e824f50bb49573986ea370077892c0",
+            "locator": "docx-blocks:t1r2c3",
+            "textHash": "89c0bfb2fe3eb3127d1a3444c2fd029c1e58185468390d6a3a599e5b61f18a0b"
+          },
+          {
+            "rank": 5,
+            "chunkId": "b1bd281f93f1cf167505997389372096d4d78219d3219f58965ff5004c3bf7c5",
+            "locator": "docx-blocks:t1r4c3",
+            "textHash": "4d90a98f8fb7172d42c488c04a20a528b5cac1b10c03884d79b87f0b02ac59ca"
+          }
+        ]
+      },
+      "structure": {
+        "documentId": "05fad9de-0933-4254-bd10-fa99e3417af2",
+        "chunkCount": 6,
+        "returnedHits": 5,
+        "matchingSourceRanks": [
+          1
+        ],
+        "hits": [
+          {
+            "rank": 1,
+            "chunkId": "e5755fad8c08539cf24672fcfedc1cecc9d7ee562f6f65e795b48e2cb1dc0b3b",
+            "locator": "docx-blocks:t1r2c1,t1r2c3",
+            "textHash": "41f785136008653e6bb2baacf53348ae375ff43dc2db0ef63775ae42d5c44f6e"
+          },
+          {
+            "rank": 2,
+            "chunkId": "83365d506cc7faf98c137579151c5fee771a7c9297d346418ed4f34ecaa4dbe1",
+            "locator": "docx-blocks:p1,p3",
+            "textHash": "8a17c934d877ebf3f4d0f50ea04d14db9e6fd15eabcadc0979afeb3eabde9c53"
+          },
+          {
+            "rank": 3,
+            "chunkId": "759374ef19d59a76b0ff0e6bd7a8984a144fc5d2ab06518fa6ca85566d0ad63e",
+            "locator": "docx-blocks:t1r4c1,t1r4c2,t1r4c3",
+            "textHash": "a930ef1fd94d85cbad252db67e0815babb9b31796e09ded3fd3aafc047b20736"
+          },
+          {
+            "rank": 4,
+            "chunkId": "a7256b12c2bc4eedf1dde9ff2799083b36b4b41e70d60e96a9eee5022621ae05",
+            "locator": "docx-blocks:t1r1c1,t1r1c2,t1r1c3",
+            "textHash": "03f3c05511c7c1a3036552e2ad115dbca97cb1a561e1225071958ab6d009a1cd"
+          },
+          {
+            "rank": 5,
+            "chunkId": "ce7c7ddc6c57de1dbd216454438c445489b0430ced1f7f27f9f6aebfe0734be7",
+            "locator": "docx-blocks:p4",
+            "textHash": "1fd8e1e4f5081135412a211dbe0fa124eac0a1e0513e128973aeef26fdb28297"
+          }
+        ]
+      },
+      "sourceCoverage": "all chunks independently rebuilt from extraction bytes in http-source-validation.json"
+    },
+    {
+      "format": "PDF",
+      "sameRawSourceHash": "468f79d9d638ecbd34d59d752f919965cec3e95fdc6421988ffffea352d0ff74",
+      "query": "The review deadline is two business days.",
+      "legacy": {
+        "documentId": "50e2c90e-4286-4b7d-924e-a80f409fc756",
+        "chunkCount": 4,
+        "returnedHits": 4,
+        "matchingSourceRanks": [
+          1
+        ],
+        "hits": [
+          {
+            "rank": 1,
+            "chunkId": "673f3f376d0c6e669d0631ada1f44f60b18a672d4c5606e7d6384fc7728af507",
+            "locator": "pdf-pages:2",
+            "textHash": "71e5ec17cc45fa1ae9438c5ef23608ef3087639abb4b775cf49a7f2ccb9cb7b3"
+          },
+          {
+            "rank": 2,
+            "chunkId": "9139bb9cfcf72f7234bbe9775f15df3fd38545a43da299b0ebe55cda29938bd8",
+            "locator": "pdf-pages:4",
+            "textHash": "f1d8ab74bcc006f6e0c501778828b3963065f0ae6d1aaeffef920c914ac2d037"
+          },
+          {
+            "rank": 3,
+            "chunkId": "e80be5b3533f0e2c68712a10259c6c4b07b5d04eada845302a7fc81879d242c2",
+            "locator": "pdf-pages:1",
+            "textHash": "6c624eccd5648752c6518caf86e58536ff965320b72579a3ceea2d5e672e44a8"
+          },
+          {
+            "rank": 4,
+            "chunkId": "9653c696181b708b46e8802e7ae8acf378ed89dd8bb849872f0df70aae7bc320",
+            "locator": "pdf-pages:5",
+            "textHash": "4b4fd962539cf82d79bde2768229e4208f8f936a896f0d64319b7c5b18b14779"
+          }
+        ]
+      },
+      "structure": {
+        "documentId": "65be3c59-479b-4e66-97c4-6682071f57a1",
+        "chunkCount": 2,
+        "returnedHits": 2,
+        "matchingSourceRanks": [
+          1
+        ],
+        "hits": [
+          {
+            "rank": 1,
+            "chunkId": "5a73d46d5d7236b08b852e4b826877aa0e05f8433e2085873142f0eaaffc96ac",
+            "locator": "pdf-pages:1,2",
+            "textHash": "709af7626ada6b1377171d9ae1f44d9a9103ec086fa8e70ceabc78b85ecfa911"
+          },
+          {
+            "rank": 2,
+            "chunkId": "54fa9454bc91e35d812cc67434864214734a1ef683fa686437216a0c9a0a7bc2",
+            "locator": "pdf-pages:4,5",
+            "textHash": "4443af9b683cd5bcf6466f3969b4dace8481f084f0fef23900b327c2c81103c0"
+          }
+        ]
+      },
+      "sourceCoverage": "all chunks independently rebuilt from extraction bytes in http-source-validation.json"
+    }
+  ],
+  "budgetStart": {
+    "embedding": {
+      "calls": 47,
+      "reservedCny": "0.47",
+      "limitCny": "1",
+      "sha256": "0d06f0f530710e6fe69c6100088c12d5f6c2b8151eb76d05cccacacb9fcb5c79"
+    },
+    "chat": {
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "limitCny": "1",
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    }
+  },
+  "budgetEnd": {
+    "embedding": {
+      "calls": 56,
+      "reservedCny": "0.581784",
+      "limitCny": "1",
+      "sha256": "dd527fb4f67a98c75d8a2bb46a3b1f4b2796f1259dea99479d5643d92f24f812"
+    },
+    "chat": {
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "limitCny": "1",
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    }
+  },
+  "reservationDeltaCny": "0.111784",
+  "reservationNotProviderBill": true,
+  "noBusinessQualityClaim": true,
+  "legacyEvaluationBindings": "S8E unchanged; no chunk-ID rebinding",
+  "additionalUiCopies": 2,
+  "reservationCorrection": "Exact ledger sum: 7 batches × 0.01 plus 2 long-input batches × 0.020892 = 0.111784; not 9 × 0.01."
+}

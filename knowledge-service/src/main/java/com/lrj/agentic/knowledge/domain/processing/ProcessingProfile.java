@@ -5,13 +5,18 @@ import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.DocumentFormat;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Objects;
 
 /** 已启用处理版本注册表；受理后以数据库保存的三元组恢复，不跟随配置替换算法。 */
 public enum ProcessingProfile {
     TEXT_V1(ProcessingProtocol.SCHEMA, ProcessingProtocol.PROCESSOR, null),
     PDF_V2(ExtractionProtocol.PREPARATION_SCHEMA, ExtractionProtocol.PDF_PROCESSOR, ExtractionProtocol.PDF_PARSER),
-    DOCX_V2(ExtractionProtocol.PREPARATION_SCHEMA, ExtractionProtocol.DOCX_PROCESSOR, ExtractionProtocol.DOCX_PARSER);
+    DOCX_V2(ExtractionProtocol.PREPARATION_SCHEMA, ExtractionProtocol.DOCX_PROCESSOR, ExtractionProtocol.DOCX_PARSER),
+    PDF_V3(ExtractionProtocol.PREPARATION_SCHEMA,
+            "pdf-v3-pdfbox3.0.8-pages512-overlap64-embedding-v4-1024", ExtractionProtocol.PDF_PARSER),
+    DOCX_V3(ExtractionProtocol.PREPARATION_SCHEMA,
+            "docx-v3-poi6.0.0-structure512-overlap64-ctx256-embedding-v4-1024", ExtractionProtocol.DOCX_PARSER);
 
     private final String schema;
     private final String processor;
@@ -29,11 +34,23 @@ public enum ProcessingProfile {
     /** v1直接使用UTF-8原文，其它已注册版本必须经过已接受的提取物。 */
     public boolean structured() { return parser != null; }
 
+    /** 跨块来源只对新算法开放，schema相同不代表旧版本可以改变行为。 */
+    public boolean structural() { return this == PDF_V3 || this == DOCX_V3; }
+
+    /** 受理默认值与历史合法集合分开，关闭新算法不会破坏已持久版本。 */
+    public boolean supports(DocumentFormat format) {
+        return switch (format) {
+            case TEXT, MARKDOWN -> this == TEXT_V1;
+            case PDF -> this == PDF_V2 || this == PDF_V3;
+            case DOCX -> this == DOCX_V2 || this == DOCX_V3;
+        };
+    }
+
     /** 解析命令由持久版本决定，不能根据文件名或当前上传开关重新选择。 */
     public ExtractionProtocol.Format format() {
         return switch (this) {
-            case PDF_V2 -> ExtractionProtocol.Format.PDF;
-            case DOCX_V2 -> ExtractionProtocol.Format.DOCX;
+            case PDF_V2, PDF_V3 -> ExtractionProtocol.Format.PDF;
+            case DOCX_V2, DOCX_V3 -> ExtractionProtocol.Format.DOCX;
             case TEXT_V1 -> throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
         };
     }
@@ -54,5 +71,5 @@ public enum ProcessingProfile {
     }
 
     /** 已注册profile固定使用同一模型/1024维；候选过滤和权威SQL共用闭合列表。 */
-    public static List<String> compatibleVersions() { return List.of(TEXT_V1.processor, PDF_V2.processor, DOCX_V2.processor); }
+    public static List<String> compatibleVersions() { return Arrays.stream(values()).map(ProcessingProfile::processor).toList(); }
 }

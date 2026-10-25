@@ -6,13 +6,8 @@ import com.lrj.agentic.contract.knowledge.ExtractionProtocol;
 import com.lrj.agentic.knowledge.domain.Ingestion;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /** P04 独立线类型；保留 v1 DTO 原样，不能往旧包加入 null 字段造成严格消费者漂移。 */
@@ -42,7 +37,7 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
     public record Segment(@JsonProperty(required = true) String blockId,
             @JsonProperty(required = true) int startByte, @JsonProperty(required = true) int endByte) { }
 
-    /** 当前 profile 每块只含一个来源片段，跨页连接留给新处理版本。 */
+    /** 旧profile限单片段，新结构profile最多16个；位置仍只属于真实提取块。 */
     public record Chunk(@JsonProperty(required = true) int ordinal, @JsonProperty(required = true) String chunkId,
             @JsonProperty(required = true) String text, @JsonProperty(required = true) String textHash,
             @JsonProperty(required = true) List<Segment> segments, @JsonProperty(required = true) String sourceDigest,
@@ -60,8 +55,9 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
     public StructuredPreparedDocument validated(Request request) {
         try {
             Extraction extraction = request.extraction().validated(request.extraction().sourceHash(), request.extraction().sourceSize());
+            ProcessingProfile profile = ProcessingProfile.stored(schemaVersion, processorVersion, extraction.parserProfile());
             require(ExtractionProtocol.PREPARATION_SCHEMA.equals(schemaVersion)
-                    && extraction.format().processor().equals(processorVersion)
+                    && profile.structured() && profile.format() == extraction.format()
                     && processorVersion.equals(request.processorVersion())
                     && ProcessingProtocol.MODEL.equals(embeddingModel) && dimensions == ProcessingProtocol.DIMENSIONS);
             require(Objects.equals(tenantId, request.tenantId()) && Objects.equals(ownerId, request.ownerId())
@@ -70,23 +66,15 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
                     && Objects.equals(sourceHash, extraction.sourceHash())
                     && Objects.equals(extractionDigest, extraction.extractionDigest()));
             require(chunks != null && !chunks.isEmpty() && chunks.size() <= ProcessingProtocol.MAX_CHUNKS);
-            Map<String, Extraction.Block> blocks = new HashMap<>();
-            extraction.blocks().forEach(block -> blocks.put(block.blockId(), block));
-            Map<String, List<Chunk>> grouped = new HashMap<>();
             List<String> manifest = new ArrayList<>(List.of(schemaVersion, processorVersion, embeddingModel,
                     Integer.toString(dimensions), extractionDigest, "chunks"));
-            int previousBlock = -1;
             for (int ordinal = 0; ordinal < chunks.size(); ordinal++) {
                 Chunk chunk = chunks.get(ordinal);
                 require(chunk != null && chunk.ordinal() == ordinal && Extraction.validText(chunk.text())
                         && !Extraction.blank(chunk.text())
                         && chunk.text().codePointCount(0, chunk.text().length()) <= ProcessingProtocol.CHUNK_SIZE
-                        && chunk.segments() != null && chunk.segments().size() == 1);
-                Segment segment = chunk.segments().getFirst();
-                require(segment != null);
-                Extraction.Block block = blocks.get(segment.blockId());
-                require(block != null && block.ordinal() >= previousBlock);
-                previousBlock = block.ordinal();
+                        && chunk.segments() != null && !chunk.segments().isEmpty()
+                        && chunk.segments().size() <= ChunkSources.MAX_SEGMENTS);
                 require(Objects.equals(Extraction.digest(chunk.text()), chunk.textHash()));
                 require(Objects.equals(sourceDigest(extractionDigest, chunk.segments()), chunk.sourceDigest()));
                 String identity = Extraction.digest(String.join("\n", "prepared-chunk-v2", tenantId, ownerId,
@@ -95,14 +83,11 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
                 require(Objects.equals(identity, chunk.chunkId()));
                 require(Objects.equals(PreparedDocument.vectorHash(chunk.vector()), chunk.vectorHash()));
                 manifest.add(chunk.chunkId() + ":" + chunk.sourceDigest() + ":" + chunk.vectorHash());
-                grouped.computeIfAbsent(block.blockId(), ignored -> new ArrayList<>()).add(chunk);
             }
-            for (Extraction.Block block : extraction.blocks()) {
-                validateLocations(block.text(), grouped.getOrDefault(block.blockId(), List.of()));
-            }
+            StructuredSources.validate(profile, extraction, chunks);
             require(Objects.equals(Extraction.digest(String.join("\n", manifest)), batchDigest));
             return this;
-        } catch (IllegalArgumentException | NullPointerException invalid) {
+        } catch (IllegalArgumentException | NullPointerException | KnowledgeFailure invalid) {
             throw new KnowledgeFailure(KnowledgeError.PREPARATION_INVALID);
         }
     }
@@ -112,32 +97,6 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
         List<String> fields = new ArrayList<>(List.of("extraction-segments-v1", extractionDigest));
         segments.forEach(part -> fields.add(part.blockId() + ":" + part.startByte() + ":" + part.endByte()));
         return Extraction.digest(String.join("\n", fields));
-    }
-
-    private static void validateLocations(String text, List<Chunk> chunks) {
-        byte[] source = text.getBytes(StandardCharsets.UTF_8);
-        int previousStart = -1;
-        int previousEnd = 0;
-        for (Chunk chunk : chunks) {
-            Segment segment = chunk.segments().getFirst();
-            int start = segment.startByte();
-            int end = segment.endByte();
-            require(start >= 0 && start > previousStart && end > start && end > previousEnd && end <= source.length);
-            require(slice(source, start, end).equals(chunk.text()));
-            if (start > previousEnd) { require(Extraction.blank(slice(source, previousEnd, start))); }
-            else {
-                String overlap = slice(source, start, previousEnd);
-                require(overlap.codePointCount(0, overlap.length()) <= ProcessingProtocol.CHUNK_OVERLAP);
-            }
-            previousStart = start;
-            previousEnd = end;
-        }
-        require(Extraction.blank(slice(source, previousEnd, source.length)));
-    }
-
-    private static String slice(byte[] bytes, int start, int end) {
-        try { return StandardCharsets.UTF_8.newDecoder().decode(ByteBuffer.wrap(bytes, start, end - start)).toString(); }
-        catch (CharacterCodingException invalid) { throw new KnowledgeFailure(KnowledgeError.PREPARATION_INVALID); }
     }
 
     private static void require(boolean valid) {

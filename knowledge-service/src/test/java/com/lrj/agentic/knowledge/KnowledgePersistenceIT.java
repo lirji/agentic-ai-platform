@@ -135,7 +135,9 @@ class KnowledgePersistenceIT {
                 properties.accessKey(), properties.secretKey(), 2, 1, 2);
         var store = new S3SourceStore(s3, denied);
         assertThat(store.available()).isFalse();
-        var failing = new KnowledgeService(repository, store);
+        var failing = new KnowledgeService(repository, store,
+                new com.lrj.agentic.knowledge.config.ProcessingAdmissionProperties(
+                        com.lrj.agentic.knowledge.config.ProcessingAdmissionProperties.Mode.BLOCK_V2));
         String key = UUID.randomUUID().toString();
         assertError(KnowledgeError.STORAGE_UNAVAILABLE, () -> failing.submit(owner, key, upload(key, "失败原文")));
         assertThat(repository.byIdempotency(owner, key)).isEmpty();

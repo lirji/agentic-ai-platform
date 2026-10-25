@@ -10,11 +10,14 @@ import com.lrj.agentic.knowledge.application.KnowledgeSearch;
 import com.lrj.agentic.knowledge.application.KnowledgeService;
 import com.lrj.agentic.knowledge.application.KnowledgeSources;
 import com.lrj.agentic.knowledge.application.UploadRules;
+import com.lrj.agentic.knowledge.config.ProcessingAdmissionProperties;
 import com.lrj.agentic.knowledge.domain.DocumentFormat;
 import com.lrj.agentic.knowledge.domain.Ingestion;
 import com.lrj.agentic.knowledge.domain.IngestionStatus;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
+import com.lrj.agentic.knowledge.domain.KnowledgeRepository;
+import com.lrj.agentic.knowledge.domain.SourceStore;
 import com.lrj.agentic.knowledge.domain.processing.*;
 import com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationMapper;
 import com.lrj.agentic.knowledge.infrastructure.persistence.KnowledgeMapper;
@@ -50,7 +53,10 @@ import org.springframework.transaction.TransactionSystemException;
 class KnowledgeStructuredProcessingIT {
     private static final Path CHINESE = Path.of("../docs/qa/pdf-ingestion-20261024/fixtures/chinese-pages.pdf");
     private static final Path DOCX = Path.of("../docs/qa/docx-ingestion-20261025/fixtures/chinese-structure.docx");
+    private static final Path STRUCTURE_FIXTURES = Path.of("../docs/qa/structured-chunking-20261025/fixtures");
     @Autowired KnowledgeService knowledge;
+    @Autowired KnowledgeRepository registrations;
+    @Autowired SourceStore sourceStore;
     @Autowired ProcessingRepository repository;
     @Autowired PreparationStore storage;
     @Autowired SearchIndex index;
@@ -61,6 +67,51 @@ class KnowledgeStructuredProcessingIT {
     @Autowired EvaluationMapper evaluations;
     @Autowired PlatformTransactionManager transactions;
     @Autowired JdbcTemplate jdbc;
+
+    @Test void structuralAndLegacyProfilesCoexistWithRealSourcesAndIndependentAdmissionSwitch() throws Exception {
+        Caller owner = owner();
+        var model = new Model();
+        List<Ingestion> accepted = new ArrayList<>(List.of(docx(owner, Files.readAllBytes(DOCX)),
+                pdf(owner, Files.readAllBytes(CHINESE)), structural(owner, DocumentFormat.DOCX), structural(owner, DocumentFormat.PDF)));
+        String key = UUID.randomUUID().toString();
+        accepted.add(knowledge.submit(owner, key, UploadRules.validate(key, "资料.txt", null, "资料正文保留。".getBytes(StandardCharsets.UTF_8))));
+        var search = search(model, index);
+        var sources = new KnowledgeSources(repository, search, json);
+        for (Ingestion job : accepted) {
+            var claimed = claim(job, "five-profiles");
+            assertThat(claimed.job().jobId()).isEqualTo(job.jobId());
+            runner(model, index, parser).run(claimed);
+            assertThat(knowledge.ingestion(owner, job.jobId()).profile()).isEqualTo(job.profile());
+            assertThat(sources.metadata(owner, job.documentId(), 1).processorVersion()).isEqualTo(job.profile().processor());
+            if (job.profile().structural()) {
+                List<String> ids = jdbc.queryForList("SELECT chunk_id FROM knowledge_chunk WHERE job_id=? ORDER BY ordinal", String.class, job.jobId());
+                assertThat(ids).hasSize(job.profile() == ProcessingProfile.DOCX_V3 ? 10 : 2);
+                assertThat(sources.source(owner, job.documentId(), 1, ids.getFirst()).segments()).hasSize(2);
+                assertThat(search.citation(owner, job.documentId(), 1, ids.getFirst()).text()).doesNotContain("章节：", "表头：");
+                String query = job.profile() == ProcessingProfile.PDF_V3 ? "review" : "资料";
+                for (var sink : ProcessingClaim.Sink.values()) {
+                    var candidates = index.search(sink, owner, query, model.query(owner, query), List.of(job.documentId()));
+                    assertThat(candidates).isNotEmpty();
+                    assertThat(repository.published(owner, candidates.stream().map(SearchIndex.Candidate::chunkId).toList()))
+                            .allSatisfy(row -> assertThat(row.documentId()).isEqualTo(job.documentId()));
+                }
+                for (Caller denied : List.of(new Caller(owner.tenantId(), "other"), new Caller("other-tenant", owner.userId()))) {
+                    error(KnowledgeError.NOT_FOUND, () -> sources.metadata(denied, job.documentId(), 1));
+                    error(KnowledgeError.NOT_FOUND, () -> sources.source(denied, job.documentId(), 1, ids.getFirst()));
+                }
+            }
+        }
+        assertThat(evaluations.bindings(owner, accepted.stream().map(Ingestion::documentId).toList()))
+                .extracting(value -> value.processorVersion()).containsExactlyInAnyOrderElementsOf(ProcessingProfile.compatibleVersions());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM flyway_schema_history WHERE version='9' AND success=1", Integer.class)).isOne();
+        var job = accepted.get(2);
+        var upload = structureUpload(DocumentFormat.DOCX, job.idempotencyKey());
+        assertThat(knowledge.submit(owner, job.idempotencyKey(), upload).profile()).isEqualTo(ProcessingProfile.DOCX_V3);
+        assertThat(knowledge.submit(owner(), UUID.randomUUID().toString(), upload).profile()).isEqualTo(ProcessingProfile.DOCX_V2);
+        assertThatThrownBy(() -> jdbc.update("UPDATE knowledge_ingestion SET processor_version=? WHERE job_id=?",
+                ProcessingProfile.PDF_V3.processor(), job.jobId())).isInstanceOf(org.springframework.dao.DataAccessException.class);
+        assertThat(knowledge.ingestion(owner, job.jobId()).profile()).isEqualTo(ProcessingProfile.DOCX_V3);
+    }
 
     @Test void publishesDocxWithTrueAnchorsAndAllThreeProfilesInBothIndexes() throws Exception {
         Caller owner = owner();
@@ -212,9 +263,12 @@ class KnowledgeStructuredProcessingIT {
     }
 
     @ParameterizedTest
-    @EnumSource(value = DocumentFormat.class, names = {"PDF", "DOCX"})
-    void acceptedPreparationAndCompletedSinkSurviveFailureWithoutParsingOrEmbeddingAgain(DocumentFormat documentFormat) throws Exception {
-        var job = documentFormat == DocumentFormat.DOCX ? docx(owner(), Files.readAllBytes(DOCX)) : pdf(owner(), Files.readAllBytes(CHINESE));
+    @EnumSource(value = ProcessingProfile.class, names = {"PDF_V2", "DOCX_V2", "PDF_V3", "DOCX_V3"})
+    void acceptedPreparationAndCompletedSinkSurviveFailureWithoutParsingOrEmbeddingAgain(ProcessingProfile profile) throws Exception {
+        DocumentFormat documentFormat = profile.format() == com.lrj.agentic.contract.knowledge.ExtractionProtocol.Format.DOCX
+                ? DocumentFormat.DOCX : DocumentFormat.PDF;
+        var job = profile.structural() ? structural(owner(), documentFormat)
+                : documentFormat == DocumentFormat.DOCX ? docx(owner(), Files.readAllBytes(DOCX)) : pdf(owner(), Files.readAllBytes(CHINESE));
         var model = new Model();
         AtomicInteger parses = new AtomicInteger(), vectors = new AtomicInteger(), keywords = new AtomicInteger();
         SearchIndex fault = new SearchIndex() {
@@ -356,6 +410,17 @@ class KnowledgeStructuredProcessingIT {
         String key = UUID.randomUUID().toString();
         return knowledge.submit(owner, key, UploadRules.validate(key, "中文资料.docx", null, bytes, DocumentFormat.DOCX.contentType(), false, true));
     }
+    private UploadRules.Upload structureUpload(DocumentFormat format, String key) throws Exception {
+        String filename = format == DocumentFormat.DOCX ? "long-structure.docx" : "adjacent-pages.pdf";
+        return UploadRules.validate(key, filename, null, Files.readAllBytes(STRUCTURE_FIXTURES.resolve(filename)),
+                format.contentType(), true, true);
+    }
+    private Ingestion structural(Caller owner, DocumentFormat format) throws Exception {
+        var selected = new KnowledgeService(registrations, sourceStore,
+                new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.STRUCTURE_V3));
+        String key = UUID.randomUUID().toString();
+        return selected.submit(owner, key, structureUpload(format, key));
+    }
     private static Caller owner() { return new Caller("pdf-it-" + UUID.randomUUID(), "owner"); }
     private static Caller caller(Ingestion job) { return new Caller(job.tenantId(), job.ownerId()); }
     private ProcessingClaim claim(Ingestion job, String worker) { return repository.claim(worker, 60, job.tenantId()).orElseThrow(); }
@@ -381,8 +446,13 @@ class KnowledgeStructuredProcessingIT {
         public List<Double> query(Caller owner, String query) { return java.util.Collections.nCopies(1024, 0.125); }
         public StructuredPreparedDocument prepareStructured(Ingestion job, byte[] source, Extraction extraction) {
             structuredCalls.incrementAndGet();
-            String fixture = job.profile() == ProcessingProfile.DOCX_V2
-                    ? "/structured-processing-docx-golden.json" : "/structured-processing-chinese-golden.json";
+            String fixture = switch (job.profile()) {
+                case DOCX_V2 -> "/structured-processing-docx-golden.json";
+                case PDF_V2 -> "/structured-processing-chinese-golden.json";
+                case DOCX_V3 -> "/structured-v3-long-docx-golden.json";
+                case PDF_V3 -> "/structured-v3-pdf-golden.json";
+                case TEXT_V1 -> throw new AssertionError("v1不能进入结构准备");
+            };
             try (var input = getClass().getResourceAsStream(fixture)) {
                 var golden = json.read(new ObjectMapper().readTree(input).get("prepared").toString().getBytes(StandardCharsets.UTF_8),
                         StructuredPreparedDocument.class, KnowledgeError.PREPARATION_INVALID);

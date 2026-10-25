@@ -191,6 +191,7 @@ def environment(mode: str) -> dict[str, str]:
         "KNOWLEDGE_PARSING_ENABLED": os.environ.get("KNOWLEDGE_PARSING_ENABLED", "false"),
         "KNOWLEDGE_PDF_UPLOAD_ENABLED": os.environ.get("KNOWLEDGE_PDF_UPLOAD_ENABLED", "false"),
         "KNOWLEDGE_DOCX_UPLOAD_ENABLED": os.environ.get("KNOWLEDGE_DOCX_UPLOAD_ENABLED", "false"),
+        "KNOWLEDGE_STRUCTURED_PROFILE": os.environ.get("KNOWLEDGE_STRUCTURED_PROFILE", "BLOCK_V2"),
         "KNOWLEDGE_PARSER_JAVA": str(Path(shutil.which("java") or "/usr/bin/java").resolve()),
         "KNOWLEDGE_PARSER_JAR": str(
             ROOT / "knowledge-parser/target/knowledge-parser-0.1.0-SNAPSHOT.jar"

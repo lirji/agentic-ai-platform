@@ -1,6 +1,6 @@
 # Codex Progress
 
-- 当前任务：`capability-delivery-20261021`，S9C已交付，S10A生命周期设计已通过验证并完成main/CI交付，接续S9D结构分块与profile对照。
+- 当前任务：`capability-delivery-20261021`，S9C与S10A已交付，当前S9D实施/本地验收通过、Git/CI交付中，随后S10B。
 - 最新要求：2026-10-25“继续”，原批准51项计划持续执行，先前暂停已解除。
 - 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；任务定义：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
 - 最近完成证据：[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)与[两仓交付收据](docs/qa/docx-ingestion-20261025/delivery-result.json)。本地服务/历史资料/预算/恢复键保留，不重跑已付费步骤、不清理、不生产部署。

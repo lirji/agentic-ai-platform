@@ -14,7 +14,8 @@ import java.util.TreeSet;
 
 /** 来源展示和详细片段只有一个转换入口，防止搜索/引用/评测各自拼出不同坐标。 */
 public final class ChunkSources {
-    private static final int MAX_SEGMENTS = 16;
+    /** 准备结果和公开来源共用同一上限，防止两条读取路径各自放宽。 */
+    static final int MAX_SEGMENTS = 16;
     private static final int MAX_LOCATOR_CHARS = 512;
     private ChunkSources() { }
 

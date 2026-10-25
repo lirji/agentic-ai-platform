@@ -2,11 +2,13 @@
 
 import json
 import math
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import Annotated, Final, Literal, Self
 
 from pydantic import Field, field_validator, model_validator
 
+from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.models import (
     CHUNK_OVERLAP,
     CHUNK_SIZE,
@@ -33,6 +35,9 @@ MAX_TEXT_BYTES = 1024 * 1024
 MAX_PAGES = 200
 MAX_BLOCKS = 1000
 MAX_COLUMNS = 100
+MAX_SEGMENTS = 16
+MAX_CONTEXT = 256
+MAX_GROUP_PAGES = 2
 DOCX_WARNINGS: Final = frozenset(
     {
         "DOCX_HEADER_FOOTER_OMITTED",
@@ -44,6 +49,32 @@ DOCX_WARNINGS: Final = frozenset(
 )
 INVALID_STRUCTURE = "结构化提取物未通过协议校验"
 INVALID_PREPARED = "结构化准备结果未通过协议校验"
+
+
+class StructuredProfile(StrEnum):
+    """算法版本使用显式稳定code；新受理选择不能改变已保存任务的语义。"""
+
+    PDF_BLOCK = PDF_PROCESSOR
+    DOCX_BLOCK = DOCX_PROCESSOR
+    PDF_STRUCTURE = "pdf-v3-pdfbox3.0.8-pages512-overlap64-embedding-v4-1024"
+    DOCX_STRUCTURE = "docx-v3-poi6.0.0-structure512-overlap64-ctx256-embedding-v4-1024"
+
+    @property
+    def structural(self) -> bool:
+        """跨块和增强只对新版本开放，不能让旧golden静默改变。"""
+        return self in (self.PDF_STRUCTURE, self.DOCX_STRUCTURE)
+
+    @property
+    def source_format(self) -> str:
+        """同一个模型并不表示解析来源格式可以互换。"""
+        return "PDF" if self in (self.PDF_BLOCK, self.PDF_STRUCTURE) else "DOCX"
+
+    @classmethod
+    def parse(cls, value: object) -> Self:
+        """严格JSON对象和字节入口均拒绝数字、布尔及任意未知版本。"""
+        if not isinstance(value, str):
+            raise ValueError(INVALID_STRUCTURE)
+        return cls(value)
 
 
 class BlockKind(StrEnum):
@@ -316,16 +347,19 @@ class StructuredRequest(OwnedRequest):
     document_id: str
     job_id: str
     document_version: int = Field(ge=1, le=2147483647)
-    processor_version: Literal[
-        "pdf-v2-pdfbox3.0.8-char512-overlap64-embedding-v4-1024",
-        "docx-v2-poi6.0.0-char512-overlap64-embedding-v4-1024",
-    ]
+    processor_version: StructuredProfile
     extraction: Extraction
+
+    @field_validator("processor_version", mode="before")
+    @classmethod
+    def stable_profile(cls, value: object) -> StructuredProfile:
+        """只接收已注册完整算法code。"""
+        return StructuredProfile.parse(value)
 
     @model_validator(mode="after")
     def profile_matches_format(self) -> Self:
         """已注册但属于另一格式的版本也拒绝，不给错误版本生成向量。"""
-        if self.processor_version != FORMAT_PROFILES[self.extraction.format][1]:
+        if self.processor_version.source_format != self.extraction.format:
             raise ValueError(INVALID_STRUCTURE)
         return self
 
@@ -362,13 +396,13 @@ class SourceSegment(WireModel):
 
 
 class StructuredChunk(WireModel):
-    """当前 profile 严格逐块；跨页策略必须使用后续新 profile。"""
+    """线形状不变；具体profile是否允许多来源由完整结果校验器决定。"""
 
     ordinal: int = Field(ge=0, lt=MAX_CHUNKS)
     chunk_id: Digest
     text: str = Field(min_length=1, max_length=CHUNK_SIZE, repr=False)
     text_hash: Digest
-    segments: tuple[SourceSegment, ...] = Field(min_length=1, max_length=1)
+    segments: tuple[SourceSegment, ...] = Field(min_length=1, max_length=MAX_SEGMENTS)
     source_digest: Digest
     vector: tuple[Annotated[float, Field(allow_inf_nan=False)], ...] = Field(
         min_length=EMBEDDING_DIMENSIONS, max_length=EMBEDDING_DIMENSIONS, repr=False
@@ -442,14 +476,17 @@ class StructuredDocument(OwnedRequest):
     document_version: int
     source_hash: Digest
     extraction_digest: Digest
-    processor_version: Literal[
-        "pdf-v2-pdfbox3.0.8-char512-overlap64-embedding-v4-1024",
-        "docx-v2-poi6.0.0-char512-overlap64-embedding-v4-1024",
-    ]
+    processor_version: StructuredProfile
     embedding_model: Literal["text-embedding-v4"]
     dimensions: Literal[1024]
     chunks: tuple[StructuredChunk, ...] = Field(min_length=1, max_length=MAX_CHUNKS)
     batch_digest: Digest
+
+    @field_validator("processor_version", mode="before")
+    @classmethod
+    def stable_profile(cls, value: object) -> StructuredProfile:
+        """读取旧包与新包使用同一闭合注册表。"""
+        return StructuredProfile.parse(value)
 
     def validated(self, request: StructuredRequest) -> Self:
         """绑定完整请求与来源，不以摘要本身替代文本区间校验。"""
@@ -468,15 +505,7 @@ class StructuredDocument(OwnedRequest):
             or self.batch_digest != batch_digest(request, self.chunks)
         ):
             raise ValueError(INVALID_PREPARED)
-        blocks = {block.block_id: block for block in request.extraction.blocks}
-        grouped: dict[str, list[StructuredChunk]] = {}
-        last_block = -1
         for ordinal, chunk in enumerate(self.chunks):
-            segment = chunk.segments[0]
-            block = blocks.get(segment.block_id)
-            if block is None or block.ordinal < last_block:
-                raise ValueError(INVALID_PREPARED)
-            last_block = block.ordinal
             if (
                 chunk.ordinal != ordinal
                 or chunk.text_hash != digest(chunk.text.encode("utf-8"))
@@ -487,14 +516,141 @@ class StructuredDocument(OwnedRequest):
                 or any(not math.isfinite(value) for value in chunk.vector)
             ):
                 raise ValueError(INVALID_PREPARED)
-            grouped.setdefault(block.block_id, []).append(chunk)
-        for block in request.extraction.blocks:
-            chunks = grouped.get(block.block_id, [])
-            validate_locations(
-                block.text,
-                tuple(chunk.text for chunk in chunks),
-                tuple(
-                    (chunk.segments[0].start_byte, chunk.segments[0].end_byte) for chunk in chunks
-                ),
-            )
+        validate_sources(
+            request,
+            tuple(chunk.text for chunk in self.chunks),
+            tuple(chunk.segments for chunk in self.chunks),
+        )
         return self
+
+
+@dataclass(frozen=True)
+class SourceGroup:
+    """结构组只引用当前提取物；上下文不成为原文或跨请求可变状态。"""
+
+    blocks: tuple[ExtractionBlock, ...]
+    context: str
+
+    @property
+    def text(self) -> str:
+        """LF是契约声明的连接符，不trim原提取文本。"""
+        return "\n".join(block.text for block in self.blocks)
+
+
+def structure_groups(extraction: Extraction) -> tuple[SourceGroup, ...]:
+    """真实标题/表格行/空页形成边界，不从内容猜章节或表头。"""
+    groups: list[SourceGroup] = []
+    pending: list[ExtractionBlock] = []
+    headings: list[ExtractionBlock] = []
+    headers: dict[int, list[ExtractionBlock]] = {}
+    key: tuple[object, ...] | None = None
+
+    def flush() -> None:
+        if not pending:
+            return
+        parts: list[str] = []
+        if headings:
+            parts.extend(["章节：", *(block.text for block in headings)])
+        first = pending[0].location
+        if isinstance(first, TableLocation):
+            prior = [
+                block.text
+                for block in headers.get(first.table_index, [])
+                if isinstance(block.location, TableLocation) and block.location.row < first.row
+            ]
+            if prior:
+                parts.extend(["表头：", *prior])
+        # 先计算长度再连接，不能让超长标题复制进每个Node耗尽内存。
+        if sum(map(len, parts)) + max(0, len(parts) - 1) > MAX_CONTEXT:
+            raise ProcessingError(ProcessingCode.INPUT_TOO_LARGE)
+        groups.append(SourceGroup(tuple(pending), "\n".join(parts)))
+        pending.clear()
+
+    for block in extraction.blocks:
+        if block.heading_level is not None:
+            flush()
+            headings = [
+                item
+                for item in headings
+                if item.heading_level is not None and item.heading_level < block.heading_level
+            ]
+            if block.text.strip():
+                headings.append(block)
+        location = block.location
+        current: tuple[object, ...] = (block.kind,)
+        if isinstance(location, TableLocation):
+            current = (block.kind, location.body_index, location.table_index, location.row)
+        if current != key or len(pending) == MAX_SEGMENTS:
+            flush()
+        key = current
+        if isinstance(location, PdfLocation):
+            if pending:
+                last = pending[-1].location
+                if (
+                    len(pending) == MAX_GROUP_PAGES
+                    or not isinstance(last, PdfLocation)
+                    or location.page != last.page + 1
+                ):
+                    flush()
+            if not block.text.strip():
+                flush()
+        if block.text.strip():
+            pending.append(block)
+            if isinstance(location, TableLocation) and location.header:
+                headers.setdefault(location.table_index, []).append(block)
+    flush()
+    return tuple(groups)
+
+
+def validate_sources(
+    request: StructuredRequest,
+    texts: tuple[str, ...],
+    segments: tuple[tuple[SourceSegment, ...], ...],
+) -> None:
+    """规范来源流同时证明连续覆盖与总重叠，防止分块间各自64而累计越界。"""
+    blocks = tuple(block for block in request.extraction.blocks if block.text.strip())
+    raw = "\n".join(block.text for block in blocks).encode("utf-8")
+    starts: dict[str, tuple[int, ExtractionBlock]] = {}
+    offset = 0
+    for block in blocks:
+        starts[block.block_id] = (offset, block)
+        offset += len(block.text.encode("utf-8")) + 1
+    membership = (
+        {
+            block.block_id: index
+            for index, group in enumerate(structure_groups(request.extraction))
+            for block in group.blocks
+        }
+        if request.processor_version.structural
+        else {block.block_id: index for index, block in enumerate(blocks)}
+    )
+    positions: list[tuple[int, int]] = []
+    limit = MAX_SEGMENTS if request.processor_version.structural else 1
+    for text, parts in zip(texts, segments, strict=True):
+        if not 1 <= len(parts) <= limit:
+            raise ValueError(INVALID_PREPARED)
+        pieces: list[str] = []
+        previous_block = -1
+        group_id: int | None = None
+        first_start = last_end = 0
+        for part in parts:
+            entry = starts.get(part.block_id)
+            if entry is None:
+                raise ValueError(INVALID_PREPARED)
+            base, block = entry
+            source = block.text.encode("utf-8")
+            if (
+                block.ordinal <= previous_block
+                or not 0 <= part.start_byte < part.end_byte <= len(source)
+                or (group_id is not None and membership[part.block_id] != group_id)
+            ):
+                raise ValueError(INVALID_PREPARED)
+            if not pieces:
+                first_start = base + part.start_byte
+            last_end = base + part.end_byte
+            pieces.append(source[part.start_byte : part.end_byte].decode("utf-8"))
+            previous_block, group_id = block.ordinal, membership[part.block_id]
+        if "\n".join(pieces) != text:
+            raise ValueError(INVALID_PREPARED)
+        positions.append((first_start, last_end))
+    validate_locations(raw.decode("utf-8"), texts, tuple(positions))

@@ -36,7 +36,7 @@ public class KnowledgeSources {
                 .orElseThrow(() -> new KnowledgeFailure(KnowledgeError.NOT_FOUND));
         var profile = ProcessingProfile.stored(row.preparationSchema(), row.processorVersion(), row.parserProfile());
         var format = DocumentFormat.fromContentType(row.contentType());
-        if (format.profile() != profile) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
+        if (!profile.supports(format)) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
         if (profile.structured() && (row.warningsJson() == null || row.extractionDigest() == null)) {
             throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
         }

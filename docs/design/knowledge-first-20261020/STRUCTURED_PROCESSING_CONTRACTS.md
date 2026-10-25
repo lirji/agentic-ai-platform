@@ -16,7 +16,7 @@
 
 枚举用显式稳定code，Java/Python按同一契约映射；本契约列出的字段均必需，可空字段显式传null。拒绝未知字段、未知枚举、重复JSON属性、非法Unicode/NUL、非规范UUID、布尔/文本冒充数字。SHA-256为64位小写十六进制，字节用UTF-8无BOM；不做Unicode NFC/NFKC重写。业务提示复用现有错误/消息机制，不另建全局错误目录。
 
-S9B只启用PDF profile；S9C验收后才能启用DOCX。后续结构分块必须新profile，不用同一processorVersion悄悄更改内容或片段身份。
+S9B只启用PDF profile；S9C验收后才能启用DOCX。后续结构分块必须新profile，不用同一processorVersion悄悄更改内容或片段身份。S9D新增版本见第9节；旧版本和摘要算法不变。
 
 ## 2. 原文件受理
 
@@ -68,11 +68,11 @@ Warning为`{code,locationKey}`，locationKey为实际block来源或null（格式
 
 请求为`{tenantId,ownerId,documentId,jobId,documentVersion,processorVersion,extraction}`。身份/UUID/版本规则沿v1；HTTP正文≤6MiB，extraction已按P03持久接受。Python独立重算提取摘要和结构/文本约束；它不持有原文件，所以不声称独立验证原始二进制hash，只能验证Java委托绑定。未知profile、字段、模型或维度在任何付费调用前拒绝。
 
-初始LlamaIndex profile逐非空block执行既有字符SentenceSplitter语义：512码点、重叠≤64，定位到该block的原提取文本；不跨块、不加入标题/提示前缀/自动metadata到Embedding正文；空白块不调用模型。超过总100块在Embedding前整体拒绝，不截断。S9D可用新profile实现结构/跨块策略，仍遵守下面的片段规则。
+初始LlamaIndex profile逐非空block执行既有字符SentenceSplitter语义：512码点、重叠≤64，定位到该block的原提取文本；不跨块、不加入标题/提示前缀/自动metadata到Embedding正文；空白块不调用模型。超过总100块在Embedding前整体拒绝，不截断。S9D新profile遵守第9节结构策略和下面的片段规则。
 
 200返回`{schemaVersion,tenantId,ownerId,documentId,jobId,documentVersion,sourceHash,extractionDigest,processorVersion,embeddingModel,dimensions,chunks,batchDigest}`。
 
-chunk为`{ordinal,chunkId,text,textHash,segments,sourceDigest,vector,vectorHash}`，ordinal连续从0，总1..100；text非空白、≤512码点；vector正好1024个有限binary64数，拒绝布尔/NaN/Inf。segment为`{blockId,startByte,endByte}`，区间指向**该提取块text的UTF-8字节**，左闭右开、非空、码点边界，不指向原文件二进制。每块1..16个segment；初始PDF/DOCX profile只允许1个。16个是后续profile的硬上限，不表示当前已实现跨块。
+chunk为`{ordinal,chunkId,text,textHash,segments,sourceDigest,vector,vectorHash}`，ordinal连续从0，总1..100；text非空白、≤512码点；vector正好1024个有限binary64数，拒绝布尔/NaN/Inf。segment为`{blockId,startByte,endByte}`，区间指向**该提取块text的UTF-8字节**，左闭右开、非空、码点边界，不指向原文件二进制。每块1..16个segment；初始PDF/DOCX profile只允许1个，S9D新profile允许1..16个。
 
 同一chunk的text必须等于按顺序取出segment字节后以单个LF连接的结果；连接LF是声明的结构分隔符，不冒称原文件字符。segment按原结构顺序，无重复、倒退或越界；跨chunk重叠仍≤64码点，且各非空block的非空白内容都被覆盖，不能遗漏中间文字。只校验textHash而不重建segment不合格。
 
@@ -157,3 +157,22 @@ UI明确显示“提取文本”、PDF真实页序/DOCX段表位置和告警；�
 原任务总期限、失租和逐sink恢复继续有效。新worker读旧任务的v1 schema/profile，不换解析器；旧准备包不补v2字段。二进制新受理开关最后开启；Python/Java/前端/CI共享来源规则先到位。关闭新受理不删除既有任务或引用；回退版本必须仍能读取v2提取/准备对象、locator和新表列，否则暂停该类worker并保持数据，不能硬交给v1程序。
 
 完整生命周期/更新/撤下/重索引以S10A[生命周期契约](LIFECYCLE_CONTRACTS.md)为准，按S10B–D实施；S9D只新增算法profile，不因S9新增格式自动创建内容v2、旧数据回填或索引清理。S8E原金标绑定保持原批次与原来源；新增格式的机制样本单独标注，不能把旧标注当新块质量结论。
+
+## 9. S9D结构profile（2026-10-25冻结，实现验收另记）
+
+| 格式 | 新processorVersion | parser / schema |
+| --- | --- | --- |
+| PDF | `pdf-v3-pdfbox3.0.8-pages512-overlap64-embedding-v4-1024` | 原PDF parser / preparation-v2 |
+| DOCX | `docx-v3-poi6.0.0-structure512-overlap64-ctx256-embedding-v4-1024` | 原DOCX parser / preparation-v2 |
+
+**受理与兼容。** `KNOWLEDGE_STRUCTURED_PROFILE`为类型化配置，闭合值`BLOCK_V2`（默认）或`STRUCTURE_V3`；未知值启动失败。仅新PDF/DOCX任务选择算法，TXT/MD不变，用户不能在上传API指定版本。幂等重放和任务恢复始终读取原持久三元组；切回BLOCK_V2不影响已存在v3的处理、检索和引用。数据库只追加V9三元组约束扩展；现有五种profile均与同一Embedding兼容。关闭新选择不是回滚到不认识v3的旧程序。
+
+**Document分组。** 按真实提取块顺序遍历。非空白块以一个LF连接，原块文字不trim；空白块保留提取身份但不加入Document。DOCX遇到任何真实标题（含空标题）先结束前组；标题栈弹出大于等于当前级别的项，非空标题入栈。连续普通段/标题后的段落成组，最多16个非空块；段落与表格不能混组。表格只合并同一tableIndex/bodyIndex/锚格row的格，每组最多16个非空块；矩形合并仍只有原锚格。PDF按顺序最多两个物理相邻的非空页一组，空页阻断跨页连接。空白段可以跳过，但空白表格/行仍结束原段/行组，不跨真实结构边界。
+
+**Node转换。** 锁定LlamaIndex SentenceSplitter的`get_nodes_from_documents`转换每个Document，字符tokenizer、保留分句符的分句器、512/64与旧版本相同；禁用metadata继承及prev/next关系。分块完成后才添加增强metadata，避免它隐式占用正文512预算。用单调有界搜索独立将Node原text定位回组文字并映射为原块UTF-8片段；不信任框架对重复文本给出的首个位置。超过100chunk/16segment或无法完整还原时，在任何Embedding调用前整体拒绝；不截断。
+
+**增强与原文。** PDF不推断标题。DOCX每组的增强来自当前非空真实标题栈和该表中严格早于当前行的显式header锚格（原序，跳过空白格）；不猜第一行为表头，不使用后续行。固定上下文模板：有标题时`章节：\n`加标题原文以LF连接；有表头时`表头：\n`加表头原文以LF连接；两个部分用LF连接；整体上下文最多256码点，超出按INPUT_TOO_LARGE拒绝，不裁剪。组内全部Node使用同一上下文。仅存入metadata键`source_context`，metadata_template=`{value}`，text_template=`{metadata_str}\n\n{content}`；按LlamaIndex MetadataMode.EMBED生成模型输入，NONE产生回传text。无上下文时模型输入就是原text。技术ID、hash、坐标不加入Embedding，LLM模式排除此metadata，不调用默认模型/Settings。框架对增强字符串外侧strip属于固定profile；原文不会因此重写。context不进入segments，也不显示成引用原句；它可由已绑定提取物与profile确定性重建，P04不加字段。向量摘要不能证明模型输入，真实输入捕获另作验收证据。
+
+**两端独立验证。** 在所有非空白提取块以单LF连接的规范来源流上建立原块字节起点。每chunk的segments严格原序、无重复、落在同一个上述结构组；LF拼接结果必须同时等于chunk.text和来源流从首片起点到末片终点的连续区间，禁止跳过中间非空白块。跨chunk起点与终点均严格递增，空隙只能为空白，整个重叠区间（含跨块LF）的码点总数≤64；末尾无遗漏非空白正文。初始profile仍限单segment。所有hash/ID/批次规则沿第5节，不能仅重签摘要绕过结构/覆盖限制。
+
+**对照边界。** 固定原文件字节/hash与来源坐标，在隔离owner下接受旧/新profile，或复用同文件已有真实结果；比较块数、覆盖、跨结构来源、模型输入增强和相同查询召回。S8E原金标/批次不重绑；新ID不直接与旧ID比较。代码只验Unicode/换行/文本来源保真，不宣称AST分块。U01/U02未提供代表性业务语料时仅报告机制对照，不能宣称检索质量提升。无新聊天、Reranker、模型预算、数据库或框架依赖。

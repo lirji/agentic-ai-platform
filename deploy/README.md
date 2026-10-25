@@ -142,6 +142,8 @@ KNOWLEDGE_PARSING_ENABLED=true KNOWLEDGE_PDF_UPLOAD_ENABLED=true KNOWLEDGE_DOCX_
 
 本机 dev/test V8 与跨格式读取已实测；关闭 `KNOWLEDGE_DOCX_UPLOAD_ENABLED` 后已发布 K04/K06 仍可读，新受理返回 415，随后恢复开启。复现与限制见 [S9C验收](../docs/qa/docx-ingestion-20261025/TEST_RESULT.md)。浏览器恢复文件在前端 `.local/s9c-ui-state.json`，HTTP 恢复在后端 `.local/s9c-http-state.json`；保留这些键、历史资料和累计模型账本，不重复成功的付费操作。
 
+S9D新增 `KNOWLEDGE_STRUCTURED_PROFILE`，默认 `BLOCK_V2`；`STRUCTURE_V3`选择真实章节/同行格或有限相邻页分块。未知值启动失败；仅新受理生效，TXT/MD、幂等重放和在途任务不换版本。先部署兼容Python/Java并应用V9，再开启新选择；切回BLOCK_V2后仍需保留v3读取/恢复能力。增强标题/显式表头限256码点，超限整体拒绝，引用正文不含增强文案；详细规则见[结构契约第9节](../docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md#9-s9d结构profile2026-10-25冻结实现验收另记)。本机dev/test V9、真实同源profile对照、关闭选择后的47来源读取与42次拒绝均通过，最终本机已恢复STRUCTURE_V3及三个解析/格式开关；详见[S9D验收](../docs/qa/structured-chunking-20261025/TEST_RESULT.md)。线上环境未部署。
+
 ## 持久化与故障边界
 
 原文先写 S3，短 MySQL 事务再写文档/任务；没有跨存储原子事务。未知提交结果保留对象，不删除可能已被获胜任务引用的数据。同键重放依赖数据库唯一约束，可安全重新查询。暂未提供清理工具；非终态及仍需幂等的数据不删除。原文孤儿清理必须先核对引用、保留窗口及任务状态，在后续 worker 运维切片实现有界流程。

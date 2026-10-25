@@ -23,7 +23,7 @@
 - [文档来源映射](docs/doc-map.md)：参考仓库基线、源码领域与后续同步规则。
 - [任务进度与恢复入口](CODEX_PROGRESS.md)：实施、验证与交付状态。
 - [最小持续集成契约](docs/design/knowledge-first-20261020/CI_CONTRACTS.md)：两仓自动检查、共享 Java/Python 报文金标及无付费运行边界；[S8F验收](docs/qa/ci-contracts-20261024/TEST_RESULT.md)。
-- [结构化资料设计](docs/design/knowledge-first-20261020/PARSING_DESIGN.md)与[P-v2契约](docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)：已接通原生PDF及DOCX上传，引用保留真实页码或段落/表格位置，兼容旧TXT/MD。DOCX标题、表头、矩形合并与缺失信息告警见[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)；新受理须按[运行说明](deploy/README.md)显式开启，不支持OCR。
+- [结构化资料设计](docs/design/knowledge-first-20261020/PARSING_DESIGN.md)与[P-v2契约](docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)：已接通原生PDF及DOCX上传，引用保留真实页码或段落/表格位置，兼容旧TXT/MD。DOCX标题、表头、矩形合并与缺失信息告警见[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)；新受理须按[运行说明](deploy/README.md)显式开启，不支持OCR。[S9D验收](docs/qa/structured-chunking-20261025/TEST_RESULT.md)补齐按章节、表格行和相邻页分块及新旧profile兼容，引用保持原文。
 
 - [文档生命周期设计](docs/design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)：区分内容修订、发布版和索引代次，定义更新失败、撤下/逻辑删除、旧引用与清理边界；[S10A设计验证](docs/qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md)。这些接口按后续切片实现，当前未启用。
 

@@ -49,6 +49,8 @@ mybatis-plus:
   global-config:
     banner: false
 knowledge:
+  admission:
+    structured-profile: ${KNOWLEDGE_STRUCTURED_PROFILE:BLOCK_V2}
   parsing:
     enabled: ${KNOWLEDGE_PARSING_ENABLED:false}
     pdf-upload-enabled: ${KNOWLEDGE_PDF_UPLOAD_ENABLED:false}
