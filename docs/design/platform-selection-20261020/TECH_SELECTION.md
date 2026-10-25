@@ -237,3 +237,19 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 2026-10-25产品实施：S9B/C已将PDFBox3.0.8、POI6.0.0纳入 `knowledge-parser`，POI日志经根POM锁定的 `log4j-to-slf4j` 进入原stderr日志链；不引入Log4j Core。XMLBeans5.4.1、Commons Compress1.28.0/IO2.22.0/Collections4.6.0及仅parser覆盖的Lang3.21.0随固定制品核验，实际依赖、许可证与JAR摘要见[S9C制品证据](../../qa/docx-ingestion-20261025/artifacts.json)。V8与DOCX来源消费者是开启受理的前置，默认开关false；无新Python包、模型、数据库或预算。
 
 S9C传递依赖补丁：Boot3.5.16默认Commons Lang3.17.0覆盖了Compress所需3.18.0，处于CVE-2025-48924影响范围；仅knowledge-parser覆盖到已核验3.21.0，避免新引入链路携带已知问题。官方公告/版本来源及最终制品见[S9C研究记录](../../qa/docx-ingestion-20261025/research-evidence.json)，原服务依赖不随此模块属性改变。
+
+
+## T33 生命周期持久化与状态选择（S10A，2026-10-25，设计）
+
+沿用Java21/Boot3.5、MyBatis-Plus+Mapper XML、现有MySQL/S3/Qdrant/ES与Knowledge worker。此次没有新增或升级软件依赖；[生命周期契约](../knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)与原架构S10A节是语义依据。
+
+| 选择点 | 候选与结论 | 成本/重新评估条件 |
+| --- | --- | --- |
+| 版本所有权 | 选择Knowledge内容修订+复用ingestion代次+CAS发布；否决只增document.version及由Python直接发布 | 新增有意义的数据关系与兼容窗口；保持单一写Owner |
+| 状态实现 | 选择显式枚举、集中迁移表/守卫和短事务；已评估COLA独立状态机，暂不新增；不引入工作流引擎 | 当前状态正交且事件有限；复杂多级审批/可配置迁移出现后再评估，不把框架调用当事务成功 |
+| 处理协议 | P05新增generation封装；复用现有分块/Embedding实现，旧P01/P04读写不篡改 | 需新共享金标与双语言校验；同profile不同代身份必须唯一 |
+| 外部副作用 | 复用持久任务、不可变准备包、逐sink凭据；无需新增MQ/Outbox平台 | 仅本作业的索引提交恢复，原任务表已经提供持久交接；未知费用继续保守预留 |
+| 历史读取 | Tasks的知识结果读取适配调用Knowledge有界K08检查；不跨服务直读库、不在React单独补权限 | 新受限服务身份与依赖失败关闭读取；端点/密钥按实现片接入，S10A不新增Runtime |
+| 清理 | 暂不启用物理清理；保留期限/引用清单与备份传播另决策 | U07未决；新版本上线不自动授权删旧数据 |
+
+当前模型与维度仍沿已验证text-embedding-v4/1024；profile兼容集合、新受理默认和重建目标分开。无新Reranker额度、向量库、定时清理或生产部署。迁移编号及表字段注释在对应实现中串行落地，本片不预建占位SQL。

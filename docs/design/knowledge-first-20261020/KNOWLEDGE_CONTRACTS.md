@@ -37,7 +37,7 @@
 
 首片只创建文档第一版；documentId/jobId 由服务器生成 UUID，version=1。更新版本、PDF/OCR/Office 文件在后续解析与版本切片扩展，不能将字节接收当作已经支持解析。
 
-S9B/C增量已经接入原生PDF和普通DOCX；新格式受理、媒体类型、资源上限、处理版本及K06来源以[结构化解析契约](STRUCTURED_PROCESSING_CONTRACTS.md)为准，默认独立开关关闭。S9C的V8仅扩展MIME长度与DOCX profile检查，不改变本节第一版受理与所有者幂等语义。更新/删除/重索引仍由后续S10冻结并实施。
+S9B/C增量已经接入原生PDF和普通DOCX；新格式受理、媒体类型、资源上限、处理版本及K06来源以[结构化解析契约](STRUCTURED_PROCESSING_CONTRACTS.md)为准，默认独立开关关闭。S9C的V8仅扩展MIME长度与DOCX profile检查，不改变本节第一版受理与所有者幂等语义。更新/删除/重索引语义已由S10A在[生命周期契约](LIFECYCLE_CONTRACTS.md)冻结，按S10B–D实施；当前尚未启用。
 
 - 服务端计算原文 SHA-256；请求指纹同时绑定规范化格式、展示名及内容哈希。同键同指纹返回同一 jobId/documentId；同键异参 409。
 - 内容去重仅在相同租户和所有者范围内。同内容不同提交编号返回 `KNOWLEDGE_DUPLICATE_CONTENT`，不泄露其他人是否有相同资料。

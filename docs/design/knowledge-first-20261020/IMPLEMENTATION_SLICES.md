@@ -207,7 +207,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S9D | LlamaIndex 结构分块及处理版本对照 | S9C, S8D, S10A | IMPLEMENT | PLANNED |
 | S9E | 扫描资料 OCR | S9C, S9D | IMPLEMENT | CONDITIONAL |
 | S9F | 表格资料按需支持 | S9C, S9D | IMPLEMENT | CONDITIONAL |
-| S10A | 文档/发布/索引版本与删除语义 | S8A, S9A | DESIGN | PLANNED |
+| S10A | 文档/发布/索引版本与删除语义 | S8A, S9A | DESIGN | DONE |
 | S10B | 文档更新与原子发布切换 | S10A, S9D | IMPLEMENT | PLANNED |
 | S10C | 撤下、逻辑删除与引用失效 | S10B | IMPLEMENT | PLANNED |
 | S10D | 版本化重索引和处理 profile 切换 | S10B, S10C, S9D | IMPLEMENT | PLANNED |
@@ -377,15 +377,15 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-LIFECYCLE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 当前 v1 固定版本、全局 processor filter 的兼容影响列清；旧任务重试不覆盖新发布版；需要业务确定的保留规则单列。
 - **Pass / Runtime：** DESIGN；无新增 Runtime。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G04 G19。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G04 G19。设计/文档验证见[TEST_RESULT](../../qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md)，产品验收仍按LC矩阵待实施。
 
 ### S10B · 文档更新与原子发布切换
 
 - **结果：** 用户可更新已有文档，处理失败时仍能使用旧发布版。
 - **Needs：** S10A, S9D。
-- **Owner / 影响路径：** K、A、W（路径见本节 Owner 表）；范围：Knowledge 版本迁移、更新受理/处理/发布及 React 版本详情。
+- **Owner / 影响路径：** K、A、T、Q、G、W（路径见本节 Owner 表）；范围：Knowledge 版本迁移、P05代次封装、更新受理/处理/发布、Tasks知识结果/事件读取适配与Conversation上下文、K08受限身份及React版本详情；来源见S10A生命周期契约，保证更新失效不只保护点击引用。
 - **契约 / 迁移归属：** C-LIFECYCLE、C-PARSE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
-- **可观察验收：** 真实 DB 并发更新/重复提交；准备或单 sink 失败不切换；发布指针 CAS；历史引用按契约显示；恢复不会混合准备结果。
+- **可观察验收：** 真实 DB 并发更新/重复提交；准备或单 sink 失败不切换；发布指针 CAS；历史引用/历史答案及事件正文按契约失效；恢复不会混合准备结果；适用LC-01–11、15–16、20–21、24。
 - **Pass / Runtime：** IMPLEMENT；既有 Knowledge worker、MySQL/S3/Qdrant/ES。
 - **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G04 G18。
 
@@ -393,9 +393,9 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 
 - **结果：** 用户能撤下无效资料，并理解旧引用为何不可用。
 - **Needs：** S10B。
-- **Owner / 影响路径：** K、A、Q、W（路径见本节 Owner 表）；范围：可见性状态、撤下/删除命令、引用与历史结果读取适配。
+- **Owner / 影响路径：** K、A、T、Q、G、W（路径见本节 Owner 表）；范围：可见性状态、撤下/逻辑删除命令，复用S10B历史结果判权并覆盖全部任务/事件/上下文/评测读取。
 - **契约 / 迁移归属：** C-LIFECYCLE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
-- **可观察验收：** 搜索/问答/研究/详情及历史引用统一拒绝；在途任务不得重新发布；并发更新/撤下合法；不隐式物理清空原文或备份。
+- **可观察验收：** 搜索/问答/研究/详情及历史引用统一拒绝；在途任务不得重新发布；并发更新/撤下合法；不隐式物理清空原文或备份；适用LC-12–16、21–24。
 - **Pass / Runtime：** IMPLEMENT；无新组件；只用隔离测试数据验证删除行为。
 - **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G04 G18。
 

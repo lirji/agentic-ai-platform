@@ -14,6 +14,7 @@
 | [实施切片 S8–S18](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices) | 51 项稳定任务、逐项依赖、Owner/路径、契约、Runtime 与可观察验收 | 新任务唯一清单；保留 S0–S7 |
 | [最小CI契约](design/knowledge-first-20261020/CI_CONTRACTS.md)、[S8F验收](qa/ci-contracts-20261024/TEST_RESULT.md) | 两仓冻结安装、共享报文回归、必需检查和无付费边界 | ci-v1；实际远程状态以验收绑定SHA为准 |
 | [解析设计](design/knowledge-first-20261020/PARSING_DESIGN.md)、[P-v2](design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)、[样本矩阵](design/knowledge-first-20261020/PARSING_ACCEPTANCE.md) | 唯一解析者、原文件/提取物、页段表来源、资源/恢复/版本窗口 | S9A/B已交付；[S9C DOCX验收](qa/docx-ingestion-20261025/TEST_RESULT.md)记录段落/表格、合并、权限与真实界面证据；完整计划已恢复，跨结构新profile仍属S9D |
+| [生命周期契约](design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)、[验收矩阵](design/knowledge-first-20261020/LIFECYCLE_ACCEPTANCE.md) | 内容/发布/索引代次、更新失败旧版可用、撤下/删除及历史读取、迁移/回退/清理资格 | S10A设计；S9D/S10B–F按依赖实施，当前不提供新生命周期接口 |
 | [契约工作包](design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)、[框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json) | 新协议待冻结范围、锁定接口及适配风险 | 不是新线上 schema；未改依赖或运行配置 |
 | [质量契约](design/knowledge-first-20261020/QUALITY_CONTRACTS.md)、[样本验收](design/knowledge-first-20261020/QUALITY_ACCEPTANCE.md) | E01 评测集/修订/标注、质量指标、运行归属与首批机制资料 | S8A 冻结，S8B 实施依据 |
 | [评测定义验收](qa/quality-datasets-20261021/TEST_RESULT.md)、[实现映射](qa/quality-datasets-20261021/IMPLEMENTATION_EVIDENCE.md) | S8B 真实保存/修订、权限/发布绑定、原文标注与失败恢复 | 结果与限制见验收；执行/基线由 S8C/D 接续 |
@@ -26,7 +27,7 @@
 | [比较证据](../.engineering/exploration/EVIDENCE_INDEX.md) | 26 组证据、147 处固定提交文件引用、配置与验证边界 | 本轮只读取证，未重跑模型或应用测试 |
 | [首期业务与工程约定](design/knowledge-first-20261020/BRIEF.md) | 独立性、业务范围、React、技能结构规范、参考资产与后续准备 | 用户决定已记录；闭环细化和顺序区分工程建议 |
 | [目标架构](design/platform-selection-20261020/BACKEND_ARCHITECTURE.md) | 三框架组合、模块与状态边界、任务恢复、安全、契约交接及 P0–P4 阶段 | 已确认架构基线；S0–S7 当前实现及剩余边界见进度/能力报告 |
-| [技术与组件选型](design/platform-selection-20261020/TECH_SELECTION.md) | 32 项决策、候选版本、基础组件、真实 Embedding 默认与引入条件 | 组件方向已确认；锁定组合及限定业务验收见 S0–S7，系统质量/容量仍待验证 |
+| [技术与组件选型](design/platform-selection-20261020/TECH_SELECTION.md) | 33 项决策、候选版本、基础组件、真实 Embedding 默认与引入条件 | 组件方向已确认；锁定组合及限定业务验收见 S0–S7，系统质量/容量仍待验证 |
 | [选型证据](design/platform-selection-20261020/evidence/README.md) | 候选依赖输入/输出、包元数据与原项目事实核对 | 随文档迁入；不是应用锁文件 |
 | [React 架构](design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md) | 全新前端的任务、路由、模块、状态与视觉验收方向 | S4–S7 已实现资料、问答、研究和助手；独立前端验收见进度 |
 | [契约基线](design/knowledge-first-20261020/CONTRACTS.md) | 内部 Embedding、存活端点及 K/Q/T 契约入口 | R/P/K/T/Q 及 work 契约分阶段冻结；当前业务执行见 S5D/S6 契约与验收 |

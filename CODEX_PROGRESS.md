@@ -1,11 +1,9 @@
 # Codex Progress
 
-- 当前任务：`capability-delivery-20261021`，S9C DOCX入库与段落/表格来源已实现，本地验收、两仓main CI和Git交付通过，正在保存收据后继续S10A设计。
-- 最新要求：2026-10-25“继续”，已恢复原批准计划，从S9C DOCX段落/表格入库开始；S9B完成证据仍有效，不重复付费步骤。
+- 当前任务：`capability-delivery-20261021`，S9C已交付，S10A生命周期设计验证通过，正在正常Git/CI交付，随后继续S9D。
+- 最新要求：2026-10-25“继续”，原批准51项计划持续执行，先前暂停已解除。
 - 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；任务定义：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
-- 本次[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)与[交付收据](docs/qa/docx-ingestion-20261025/delivery-result.json)已保存。
-- 历史[S9B验收](docs/qa/pdf-ingestion-20261024/TEST_RESULT.md)与[交付收据](docs/qa/pdf-ingestion-20261024/delivery-result.json)记录当前证据；准确HEAD读Git，收据为已验证产品提交的文档后继。
-- 完整20项差距/51项计划未完成；本地服务/历史资料/预算/恢复键保留，不重跑已付费步骤、不清理、不生产部署。
+- 最近完成证据：[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)与[两仓交付收据](docs/qa/docx-ingestion-20261025/delivery-result.json)。本地服务/历史资料/预算/恢复键保留，不重跑已付费步骤、不清理、不生产部署。
 
 ## 前期可行性任务记录
 

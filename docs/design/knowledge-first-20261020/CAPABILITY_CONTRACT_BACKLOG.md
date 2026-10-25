@@ -10,7 +10,7 @@
 | --- | --- | --- | --- |
 | C-EVAL | S8A；Knowledge + AI/Tasks 执行适配 | 数据集/题目/标注修订；证据文档/版本/片段身份；运行定义和权限范围；逐题结果/门禁；创建、运行、查询、基线和放弃行为 | 修改定义使旧基线失效；运行 idempotency 与 taskId 关联；旧租约不能改报告；空召回/无答案/超时/失败分开；历史报告不能泄露撤权资料 |
 | C-PARSE | S9A；Knowledge/Python 准备契约 Owner | [解析设计](PARSING_DESIGN.md)、[P-v2正式契约](STRUCTURED_PROCESSING_CONTRACTS.md)、[样本矩阵](PARSING_ACCEPTANCE.md)：原文件/提取物/结构来源/告警/profile及资源预算 | P-v1/v2并存；原文件与提取文本hash分开；来源/摘要独立校验；未知结构/超限明确失败；新locator消费者和兼容检索profile先升级，再开新格式 |
-| C-LIFECYCLE | S10A；Knowledge | document revision、published revision、index generation/profile；更新、撤下、删除、重索引及历史引用规则；幂等/版本冲突/清理资格 | 更新失败保留旧发布版；并发只有合法版本推进；已删除/撤下不能被重试或恢复重新发布；旧版本与索引代次分开；清理不是普通更新隐式行为 |
+| C-LIFECYCLE | S10A；Knowledge；已冻结[knowledge-lifecycle-v1](LIFECYCLE_CONTRACTS.md) | document revision、published revision、index generation/profile；更新、撤下、删除、重索引及历史引用规则；幂等/版本冲突/清理资格 | 更新失败保留旧发布版；并发只有合法版本推进；已删除/撤下不能被重试或恢复重新发布；旧版本与索引代次分开；清理不是普通更新隐式行为 |
 | C-RETRIEVAL | S11A；Knowledge + Python RAG 边界 | 可信调用者/owner 委托；查询与向量模型；两路权威候选、原始 sourceRank、doc/version/chunk/batchDigest；RRF/重排/最终验证；策略标识与诊断 | 正文返回/外发前授权；过滤后内部名次不压缩，对外不泄露无权数量/ID或名次空位；候选上限/总 deadline；新旧路径不重复融合；引用失效和重排失败不同错误 |
 | C-RERANK | S11A/D；Python 模型适配 + 预算 Owner | query/document 输入、候选映射、topN、分数语义、模型版本、大小/超时/额度；正常/降级结果 | 重复/越界索引和非法分数拒绝；未知计费结果不盲重试；原分数与重排分数分开；回退必须显式；独立费用账本、地域和数据边界 |
 | C-QA2 | S12A/B；Conversation + Python QA | 指定历史轮次/摘要引用、检索问题变换、证据支持/拒答类别、引用与答案版本、评价标记 | 不改原问题权威；历史答案不是新证据；恢复前重新校验历史/资料权限；语义裁判失败不伪装成验证通过 |

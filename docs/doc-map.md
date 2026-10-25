@@ -22,6 +22,8 @@ S9A在后端82eb31c上核对UploadRules、PreparedDocument、IngestionRunner、D
 
 S9C基线backend `ebcb94b` / frontend `185d3fa`：POI/XWPF、三种profile与闭合段/格来源、V8 MIME扩展、独立DOCX受理开关、Python结构校验和现有上传/引用UI同步到运行手册、架构/选型增量及[S9C验收](qa/docx-ingestion-20261025/TEST_RESULT.md)。新旧资料并存、故障恢复、实际来源权限和浏览器已核对；Git/CI结果由同目录交付收据记录。没有新模型预算、OCR、服务或数据库。
 
+S10A基线backend `88dcf6c` / frontend `cdf7e47`：KnowledgeService/ProcessingMapper/旧唯一约束、profile注册、Tasks结果读取与评测绑定的真实事实，对应[原架构S10A增量](design/platform-selection-20261020/BACKEND_ARCHITECTURE.md)、T33及[生命周期契约](design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)。生命周期状态与内容修订/索引代次分开，历史正文需服务端判权，保留期限未知不自动清理；本片仅设计，源码与运行文件未改。
+
 ## 已完成：能力比较（2026-10-21）
 
 用户要求暂停知识深化实施，先比较业务与实现细度。本轮权威入口为[能力缺口](../.engineering/exploration/CAPABILITY_GAPS.md)，配套[地图](../.engineering/exploration/CAPABILITY_MAP.md)、[候选](../.engineering/exploration/OPPORTUNITIES.md)、[路线](../.engineering/exploration/EVOLUTION_ROADMAP.md)及[证据](../.engineering/exploration/EVIDENCE_INDEX.md)。当前后端基线 `d61536cbb9179db010f33d7b1cdbda737e22fc92`，React 基线 `d2b4dc6957cfbc81d29a8493dc9aa284aab8e584`，参考 Java 基线保持 `468cec425dd160e80cfc3ab378d3440a8767e4d5`。本轮未重新审计独立 AgentScope，也未执行模型/运行验收。

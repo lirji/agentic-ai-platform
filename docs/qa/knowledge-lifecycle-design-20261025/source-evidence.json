@@ -1,0 +1,212 @@
+{
+  "slice": "S10A",
+  "scope": "local repository evidence; no application execution",
+  "backendBaseline": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+  "frontendBaseline": "cdf7e471ff418261e594d9c232bc880da0243c12",
+  "files": [
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeService.java",
+      "sha256": "d0ae738dbd1bf1f2db14a19d8a9c08f6bca1678f8d761dac9d112cf9c069aa86"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSources.java",
+      "sha256": "5f9cf5a5008d6b0ea369188726e930598fdc4cea6b44463bbe30698726ffd7b6"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSearch.java",
+      "sha256": "00b3d6109c508e8ba66ed2ac94b9ea0ad8f518f057e318653f0b268f88f73af0"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/UploadRules.java",
+      "sha256": "417d5c81f266bb51e00133cede929b5286e0cdaf04cf0aa8c4726cb465d6fd75"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationService.java",
+      "sha256": "4e0e7b1d1718fd0d02ce011022e31b60055985ec83c863e42aee9eb144e33739"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationRunService.java",
+      "sha256": "5f118f384b29087f818ba40dd98cf0ff98abf99b05c4e106df410978ec1bcfe8"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/Document.java",
+      "sha256": "5abfa469c9a6970b8b78a9700a63a49980b831336e4d672be55ce8540ca4dc26"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/Ingestion.java",
+      "sha256": "3636a5ae18a5df91dde4cb915c221469eb40232109322f6618fec871516e094c"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeError.java",
+      "sha256": "4fd96acbe7e6a58fe46311fded016227df89ba9345240ee36ea7464c80ced7c1"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingProfile.java",
+      "sha256": "baa90b014a188f85ca416f822a592a0f9a42c662174f5ea0a3ce2e5dbd8eec37"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationModels.java",
+      "sha256": "da17194c35830855b22146d9d3fff076b12695024c9bac09a056a1a5cd4a0636"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlProcessingRepository.java",
+      "sha256": "4c6a0b0b7f0286f02b8f4ab0ff3e1fd32a6a4156199c02ed8b6029c714328e12"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationRow.java",
+      "sha256": "679df23459337c25c63fa810116c8a69d8a4b4ec1147483bcc0c76010c53fff2"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/DualSearchIndex.java",
+      "sha256": "e28885f3b6eea5158012d73f3bc8c851461e3435de355d63b3575d18e4b1e242"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/storage/S3SourceStore.java",
+      "sha256": "9e83e646374e54769283d4c01812a1a1d4474e42727cd741bc20b778c7e1b306"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/resources/mapper/KnowledgeMapper.xml",
+      "sha256": "14d39c00464729c7828207666c8c7b389b2a6746f361644329bb54ddfb87d869"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/resources/mapper/ProcessingMapper.xml",
+      "sha256": "cc5c13913ab8abd0740e7172c353b54a15aedc1ee7e91674315af19c3a6dd93e"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/resources/mapper/EvaluationMapper.xml",
+      "sha256": "62d21b803fc41efc98c7bc3ab7a47f414d8e64dbafc32ad5c4c7e841fa08e8e4"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/resources/db/migration/V1__knowledge_registration.sql",
+      "sha256": "720159a60711e869841ce6c3d10433f3f1b646c1784afe9a1aa619102f999e8a"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/resources/db/migration/V2__knowledge_processing.sql",
+      "sha256": "5611133be871858b3513395dbe7a1697435b0386e2d7f567dd139fd584b32740"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/resources/db/migration/V7__structured_preparation.sql",
+      "sha256": "1340492931743df03d494b7744e3260212307a3503237ae5ee2dd7ff07eee7b4"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "knowledge-service/src/main/resources/db/migration/V8__docx_processing_profile.sql",
+      "sha256": "e455863600af179856ea02be4dfc4ac1738dbb2725309b89899a7c498c4ec2c9"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "ai-runtime/src/agentic_ai/processing/models.py",
+      "sha256": "180abe07e7e9042edaf9c5376f1384ed5d6587a486b46775cff22df6209a413c"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "ai-runtime/src/agentic_ai/processing/structured.py",
+      "sha256": "b4858c3b617ecb882271ce14b237a187e2963fbe63a3919f6dd5f0df40f9a43c"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "ai-runtime/src/agentic_ai/processing/pipeline.py",
+      "sha256": "765b48a8168b827ad9657ecd851841108e2724c21fc050412d3b0f17f0d82807"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "ai-runtime/src/agentic_ai/qa/knowledge.py",
+      "sha256": "e3ded9477dc702017e03aad80125c5728c3135094811bd5c3f79866c84ce677d"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "ai-runtime/src/agentic_ai/qa/pipeline.py",
+      "sha256": "2fdc9976e34c4d3c6fb3ec225844c660653cffa021059802a255a0027b250861"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskService.java",
+      "sha256": "ee9f820df33d630bee712395faff36d3aebc1eeca010815d0c94f370a4afb42a"
+    },
+    {
+      "repo": "agentic-ai-platform",
+      "revision": "88dcf6cd4ccf340dd0c53b6bd2cb480146904205",
+      "path": "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationService.java",
+      "sha256": "22c662675d3ad4dfe6ee3bbbd216b286787c804f75272ff11c41b056e4586f2e"
+    },
+    {
+      "repo": "agentic-ai-platform-web",
+      "revision": "cdf7e471ff418261e594d9c232bc880da0243c12",
+      "path": "src/pages/DocumentPage.tsx",
+      "sha256": "bbc28daed3faa30747f77129130eb9d22666e31c135d85d72fe9275909bd499a"
+    },
+    {
+      "repo": "agentic-ai-platform-web",
+      "revision": "cdf7e471ff418261e594d9c232bc880da0243c12",
+      "path": "src/pages/ChatPage.tsx",
+      "sha256": "b2ca8cebe159e3e4f0a667c6e350947933dc749b79afe44a3243364259898ee6"
+    },
+    {
+      "repo": "agentic-ai-platform-web",
+      "revision": "cdf7e471ff418261e594d9c232bc880da0243c12",
+      "path": "src/pages/WorkPage.tsx",
+      "sha256": "45e2fba923760b1e399442febbe683bdd74a1b18f3cc84bfe05374b9da3d0488"
+    },
+    {
+      "repo": "agentic-ai-platform-web",
+      "revision": "cdf7e471ff418261e594d9c232bc880da0243c12",
+      "path": "src/features/knowledge/citation-state.ts",
+      "sha256": "e0630222b784927ed4a8f0de0b56d300673d5ff7436ea285c013cd2b3ea08e50"
+    },
+    {
+      "repo": "agentic-ai-platform-web",
+      "revision": "cdf7e471ff418261e594d9c232bc880da0243c12",
+      "path": "src/features/knowledge/model.ts",
+      "sha256": "981971ad168cae0603aac0333bfca77555bebd52e6480eb07035e275f4666d2d"
+    }
+  ]
+}

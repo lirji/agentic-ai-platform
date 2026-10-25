@@ -10,7 +10,7 @@
 - [与 langchain4j-platform 的能力差距](.engineering/exploration/CAPABILITY_GAPS.md)：业务与实现深度的 20 项对照及固定源码证据，为新计划提供依据。
 - [首期业务与工程约定](docs/design/knowledge-first-20261020/BRIEF.md)：独立运行、业务优先级、React 与技能代码规范，以及模型、数据和代码参考资产。
 - [目标架构](docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md)：三框架职责、模块与数据所有权、任务恢复、安全边界及 P0–P4 演进建议。
-- [技术与组件选型](docs/design/platform-selection-20261020/TECH_SELECTION.md)：32 项决策、候选版本、基础组件、取舍与验证条件；附可复现的依赖解析证据。
+- [技术与组件选型](docs/design/platform-selection-20261020/TECH_SELECTION.md)：33 项决策、候选版本、基础组件、取舍与验证条件；附可复现的依赖解析证据。
 - [React 前端设计](docs/design/knowledge-first-20261020/FRONTEND_ARCHITECTURE.md)、[现行契约](docs/design/knowledge-first-20261020/CONTRACTS.md)、[新增契约工作包](docs/design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)及[实施切片](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md)：S0–S7 历史与 S8–S18 后续任务；工作包不代表新协议已冻结。
 - [中央 AI 任务](docs/design/knowledge-first-20261020/TASK_CONTRACTS.md)：执行租约、持久事件、取消/恢复与检查点提交凭据；[S5A 验收](docs/qa/durable-ai-tasks-20261020/TEST_RESULT.md)。
 - [图检查点恢复](docs/design/knowledge-first-20261020/CHECKPOINT_CONTRACTS.md)：不可变快照、执行代次隔离、中央凭据与安全解码；[S5B 验收](docs/qa/ai-checkpoint-recovery-20261021/TEST_RESULT.md)。
@@ -24,6 +24,8 @@
 - [任务进度与恢复入口](CODEX_PROGRESS.md)：实施、验证与交付状态。
 - [最小持续集成契约](docs/design/knowledge-first-20261020/CI_CONTRACTS.md)：两仓自动检查、共享 Java/Python 报文金标及无付费运行边界；[S8F验收](docs/qa/ci-contracts-20261024/TEST_RESULT.md)。
 - [结构化资料设计](docs/design/knowledge-first-20261020/PARSING_DESIGN.md)与[P-v2契约](docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)：已接通原生PDF及DOCX上传，引用保留真实页码或段落/表格位置，兼容旧TXT/MD。DOCX标题、表头、矩形合并与缺失信息告警见[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)；新受理须按[运行说明](deploy/README.md)显式开启，不支持OCR。
+
+- [文档生命周期设计](docs/design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)：区分内容修订、发布版和索引代次，定义更新失败、撤下/逻辑删除、旧引用与清理边界；[S10A设计验证](docs/qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md)。这些接口按后续切片实现，当前未启用。
 
 ## 当前范围
 

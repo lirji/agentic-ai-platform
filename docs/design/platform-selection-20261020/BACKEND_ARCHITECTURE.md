@@ -256,3 +256,64 @@ P-v2 区分原文件、提取物及片段摘要；原始 PDF 二进制偏移不�
 受控样本证明候选基本格式能力；子进程堆/时间/输出与OS隔离的边界分开记录。完整上传、发布、权限、故障、前端及容量验证由S9B/C承担，[样本矩阵](../knowledge-first-20261020/PARSING_ACCEPTANCE.md)列明未执行项。
 
 S9B/C产品已接通上述链路，受控文件、真实存储/索引/权限和浏览器证据见[S9C验收](../../qa/docx-ingestion-20261025/TEST_RESULT.md)。K01只进行有界容器元数据判别，正文仍唯一归解析子进程；Java/Python分别验证提取摘要及位置，固定profile在受理时冻结。V8仅扩展MIME字段与DOCX profile约束，保留v1/PDF；原发布判权和逐sink恢复不变。受控样本不代表任意版式、业务语料覆盖或容量已验收。
+
+## S10A 生命周期增量（2026-10-25，设计）
+
+目标是更新失败仍能使用旧发布版，同内容重建索引不伪造内容更新，撤下/逻辑删除能阻断旧任务和历史正文读取。Brownfield范围为既有Knowledge及其AI/Tasks/Conversation/React消费者；不新增服务、数据库、MQ、调度器或状态机依赖。正式字段、命令和并发守卫归[生命周期契约](../knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)，验收归[生命周期矩阵](../knowledge-first-20261020/LIFECYCLE_ACCEPTANCE.md)。本节是原架构的增量，不是已部署事实。
+
+### 事实、假设与风险
+
+| ID | 类型 | 已核对结论/影响 |
+| --- | --- | --- |
+| F-LC01 | Fact | KnowledgeService首次受理硬编码version=1；Document把IngestionStatus用作资料状态；单一ingestionJobId兼任最新受理与发布来源 |
+| F-LC02 | Fact | ProcessingMapper.publishedScope同时要求d.version=published_version=c.document_version且d.ingestion_job_id=j.job_id；因此不能只增加“上传v2”而保留旧发布可见 |
+| F-LC03 | Fact | V1/V2唯一约束限制每内容版本一个job、每内容版本一个ordinal；chunkId/batchDigest不绑定job或独立generation，同profile重建可能碰撞 |
+| F-LC04 | Fact | S9B/C已把单一processor查询过滤扩为TXT/PDF/DOCX闭合兼容集合；Ingestion/KnowledgeSources仍按MIME与唯一profile相等检查，尚不能同格式多算法共存 |
+| F-LC05 | Fact | 准备和逐sink恢复已有租约owner/epoch、不可变S3指针、同事务发布；当前claim/publish先job后document加锁，需要与新增管理命令统一锁序 |
+| F-LC06 | Fact | QA/研究生成和恢复时已有引用重验，React打开引用会重验；Tasks公共get/listWork直接返回已存result，不会因文档以后撤下自动保护历史答案 |
+| F-LC07 | Fact | E01定义/运行读取已以当前绑定相等抑制失效内容；绑定含version/profile/batch，但同内容同profile重建需generation明确身份或新的代次批次保证 |
+| A-LC01 | Assumption | 本期仍为owner独享、沿现有可信JWT；正式组织共享U03未冻结，不能把当前模型推广为企业ACL完成 |
+| A-LC02 | Assumption | U07保留期未知，所有物理副本保留；撤下与逻辑删除是在线可见性变更，未经独立设计不提供恢复原ID |
+| R-LC01 | Risk | 数据库提交前后存在网络/模型外发竞态；保证每个后续动作重新核验，不承诺收回已外发字节 |
+| R-LC02 | Risk | 旧代索引可占据候选上限；S10D须有界扩大且明确索引未收敛，不把过滤后的耗尽当无答案；容量U06仍未验证 |
+| R-LC03 | Risk | 生命周期数据出现后回退到v1程序会误读/复活资料；需保留新schema读取能力和墓碑检查，关闭新命令不能替代它们 |
+
+事实证据以本片QA目录的固定提交路径/摘要为准，不能据旧注释宣称更新/删除已实现。
+
+### 决策与模块所有权
+
+| ID | 决策 | 选择原因与代价 |
+| --- | --- | --- |
+| D-LC01 | 分开不可变内容修订、处理代次、发布指针与管理revision | 一个内容可重建多代索引；发布不等于最新受理；增加显式列和读取关联，避免复用一个version表示四种状态 |
+| D-LC02 | Knowledge聚合拥有lifecycle、activeJobId和发布CAS；单文档仅一个当前处理意图 | 有界串行化并发管理；正在处理时新更新返回409，可先查状态；不引入分布式锁 |
+| D-LC03 | 复用knowledge_ingestion作为每代处理记录，新增不可变内容修订及命令/审计记录 | 保留现有恢复和sink凭据；无需第二套worker/任务权威；中央Tasks不接管Knowledge原始入库 |
+| D-LC04 | 显式枚举+集中迁移表/守卫+MySQL条件更新 | 已评估COLA独立状态机：当前3种可见性、4种作业状态及有限事件可正交表达，无多级审批/动态编排需求；引入依赖不能替代数据库CAS，因此暂不采用 |
+| D-LC05 | 新P05封装绑定generation，旧P01/P04与原ID永久按原语义读取 | 同profile重建不会碰撞或让迟到写覆盖；成本是新增一套严格边界DTO与共享金标，分块和向量算法仍复用 |
+| D-LC06 | 当前发布版本才可读取原文与派生历史输出 | 延续K04/K06的保守规则；更新后旧答案可能不可读，UI必须解释并允许基于当前资料重新发起，不能静默重生成 |
+| D-LC07 | 结果拥有者负责公开读取适配，Knowledge仅提供当前引用权威 | Tasks结果保持不可变和摘要可对账；通过有界内部读API验证，禁止跨库查询/写入或仅前端隐藏 |
+| D-LC08 | 清理与更新/撤下/重索引分离，当前物理清理关闭 | 内容寻址对象/历史评测/检查点可能共享；期限及传播未定，不猜统一保留天数 |
+
+| 数据/模块 | 唯一写Owner | 写入与恢复边界 |
+| --- | --- | --- |
+| knowledge_document | Knowledge领域命令 | latest内容指针、lifecycle、revision、last_generation、activeJobId、当前发布元组；受理/发布/撤下/删除短事务；失败代次不复用 |
+| knowledge_document_revision（目标） | Knowledge受理用例 | tenant/owner/doc/contentRevision唯一；原文件hash/大小/MIME/展示名/源引用/创建时间不可变；失败版本也保留 |
+| knowledge_ingestion | Knowledge原worker | indexGeneration、原始profile/输入、发布基线、lease、提取/准备指针、sink与作业状态；job是代次记录，不再每内容仅一job |
+| 生命周期command/event（目标） | Knowledge领域命令 | 原键/指纹/回执与管理审计同事务；actor、operation、前后revision、文档及job身份；不存原文和凭据 |
+| knowledge_chunk/S3/索引 | Knowledge写索引适配 | 每job块集合一次接受；SQL决定可见性，索引残留不是读取许可；外部IO不持事务锁 |
+| AI处理模块 | Python准备图 | LlamaIndex解析后Node/分块/Embedding；不分配业务版本、不发布、不删旧索引 |
+| Tasks结果读取适配/Conversation上下文 | 各服务自己的公开读取边界 | 不改原终态内容或digest；Knowledge拒绝或不可验证时不输出旧答案/事件/上下文 |
+| React资料及历史结果 | 真实API消费 | 同时显示最新受理与当前发布、原键恢复、来源失效；不以本地缓存或解析文案决定授权 |
+
+### 一致性与恢复轨迹
+
+1. owner提交更新，服务器验证expectedRevision/幂等和文件，把内容寻址对象写S3，再在短事务分配新contentRevision/generation并保存旧发布基线。新受理与命令回执一同提交；旧发布指针不动。
+2. 原worker按document→job锁序领取；原文件/提取/准备每次都与冻结输入校验。准备成功先持久S3再一次CAS接受，不在后续sink重试中重新Embedding。
+3. 双sink逐目标提交及确认，最后在同一MySQL事务比较activeJobId、旧发布元组、lifecycle和lease，再切换发布指针/记录job完成。任一不相等回滚，不用任务READY替代当前发布事实。
+4. 失败仅改变该job。新意图受理后旧job重试409；旧worker继续外部写最多产生不可见旧代对象，不会覆盖新代对象。撤下/删除清除activeJobId并改变可见性，因此任何迟到发布都失败。
+5. 当前检索、直接引用、历史结果交付及恢复使用同一权威条件。结果副本不授予权限；Knowledge不可用时显式503，无旧正文回退。
+
+新表/列通过追加Flyway迁移和实际数据库约束实现，禁止修改已执行V1–V8。先兼容读、受理/worker受控升级、回填旧generation=1且不改任何内容摘要，再启用新命令；保留原始失败/未知结果并逐行核对。详细扩展/回退、数据保留和上线前置见契约第7–8节。本次设计没有执行DDL、回填或停服务。
+
+审计关联commandId/documentId/jobId/generation、稳定动作与前后revision、traceId；不把正文/密钥放入日志。现有度量扩展发布CAS冲突、失效意图、sink恢复、候选耗尽、历史内容拒绝计数，按有限原因枚举分组，不以documentId/tenant作指标标签。新SLO、RTO/RPO和费用目标仍由U06/U07决定，不编造生产验收。
+
+下游顺序：S9D先多profile分块；S10B实现新修订/原子发布及版本失效读取保护，S10C实现撤下/逻辑删除和全链路历史保护，S10D实现同版多代、对账/候选恢复；S10E处理活跃内容去重，S10F诊断。各片沿原DAG不并行，当前无新增Runtime。Contracts阶段必须承接这些守卫和边界；详细请求属于生命周期契约，不能另建竞争schema。
