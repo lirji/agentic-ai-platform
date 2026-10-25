@@ -83,19 +83,33 @@ class CitationSource(WireModel):
             positions = value.removeprefix("docx-blocks:").split(",")
             if 1 <= len(positions) <= 16 and len(set(positions)) == len(positions):
                 valid = True
+                previous_paragraph = previous_table = previous_row = previous_column = 0
+                table_closed = False
                 for position in positions:
                     paragraph = re.fullmatch(r"p([1-9][0-9]{0,3})", position)
                     cell = re.fullmatch(
                         r"t([1-9][0-9]{0,3})r([1-9][0-9]{0,3})c([1-9][0-9]{0,2})", position
                     )
-                    valid &= bool(
-                        paragraph
-                        and int(paragraph[1]) <= 1000
-                        or cell
-                        and int(cell[1]) <= 1000
-                        and int(cell[2]) <= 1000
-                        and int(cell[3]) <= 100
-                    )
+                    if paragraph:
+                        next_paragraph = int(paragraph[1])
+                        valid &= previous_paragraph < next_paragraph <= 1000
+                        previous_paragraph, table_closed = next_paragraph, True
+                    elif cell:
+                        next_table, next_row, next_column = map(int, cell.groups())
+                        valid &= next_table <= 1000 and next_row <= 1000 and next_column <= 100
+                        valid &= next_table > previous_table or (
+                            next_table == previous_table
+                            and not table_closed
+                            and (next_row, next_column) > (previous_row, previous_column)
+                        )
+                        previous_table, previous_row, previous_column = (
+                            next_table,
+                            next_row,
+                            next_column,
+                        )
+                        table_closed = False
+                    else:
+                        valid = False
                 if valid:
                     return value
         raise ValueError("资料来源定位无效")

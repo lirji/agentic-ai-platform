@@ -104,7 +104,7 @@ curl --fail-with-body http://127.0.0.1:28080/api/v1/knowledge/ingestions \
   -F "file=@/absolute/path/to/document.md"
 ```
 
-切勿在带 shell tracing 的终端执行含令牌命令。支持 UTF-8 TXT/Markdown ≤1 MiB，显式启用 S9B 后可受理原生 PDF ≤10 MiB；受理返回 `RECEIVED/ACCEPTED`。处理启用且租户在 worker 范围内时，后续推进为 READY 或 FAILED；READY 才有 `publishedVersion`。AI 存活不证明模型账号、预算或生成质量可用。
+切勿在带 shell tracing 的终端执行含令牌命令。支持 UTF-8 TXT/Markdown ≤1 MiB，显式启用对应开关后可受理原生 PDF / 普通 DOCX ≤10 MiB；受理返回 `RECEIVED/ACCEPTED`。处理启用且租户在 worker 范围内时，后续推进为 READY 或 FAILED；READY 才有 `publishedVersion`。AI 存活不证明模型账号、预算或生成质量可用。
 
 ## PDF 解析与页级来源（S9B）
 
@@ -125,6 +125,22 @@ KNOWLEDGE_PARSING_ENABLED=true KNOWLEDGE_PDF_UPLOAD_ENABLED=true python3 deploy/
 新受理要求 `.pdf`、`application/pdf` 和 `%PDF-` 签名。加密/损坏/缺字体映射/纯图片/资源超限返回稳定解析错误，模型前拒绝；混合图片或空页保留真实页序并告警，无 OCR。K06 仅返回当前可见已发布来源，UI 显示提取文本，不还原 PDF 版式。
 
 回退先关闭 `KNOWLEDGE_PDF_UPLOAD_ENABLED`，保留解析能力以处理已受理任务，以及 V7、提取对象和 v2 兼容读取器；不能直接退回不识别 v2 的旧制品或删除迁移/对象。已验证关闭新上传时已发布 K04/K06 仍 200、新 PDF 415，随后本机已恢复开启。见 [S9B运行证据](../docs/qa/pdf-ingestion-20261024/runtime-validation.json)。失败测试任务、历史对象和账本保留，不自动清理。
+
+## DOCX 段落和表格来源（S9C）
+
+同一个解析子进程使用 POI 6.0.0 / XWPF，Java 21 和既有日志桥；不引入常驻解析服务。Knowledge V8 在 V7 上追加 DOCX profile 约束，并将文档和任务的 `content_type` 扩至 128 字符以容纳标准 DOCX MIME。不能修改已执行的 V7，回退也须保留 V8 和 DOCX 兼容消费者。
+
+先按上一节停止受影响服务并构建。Python 源码变更前正常停止 AI 和问答 worker，验证后用 `start-ai` / `start-qa` 恢复。新 DOCX 受理独立开启，默认 false：
+
+```sh
+KNOWLEDGE_PARSING_ENABLED=true KNOWLEDGE_PDF_UPLOAD_ENABLED=true KNOWLEDGE_DOCX_UPLOAD_ENABLED=true python3 deploy/local.py start --service knowledge
+```
+
+入口同时核对 `.docx`、`application/vnd.openxmlformats-officedocument.wordprocessingml.document`、ZIP 签名与普通 Word 主部件；任意 ZIP、其它 Office、DOCM/宏拒绝。解析前核实实际解压字节、CRC、安全 XML 与关系：最多 2000 条目、单条 16 MiB、合计 32 MiB、压缩比 100（≤100 KiB 小条目宽限），不依赖声明长度。总正文≤1 MiB、结构块≤1000、表格≤100列，沿用单槽 20 秒和 JVM/输出上限。此进程隔离不等于操作系统或 RSS 沙箱。
+
+保留正文顺序、空段/空格、有效标题、显式表头、矩形合并锚格；只对非空块按既有 512/64 profile 分块，最多 100 个片段，超限整体拒绝。页眉页脚、批注、脚注尾注和普通图片明确告警；外链只保留文字。文本框、修订、嵌入 OLE、altChunk、嵌套表及未知绘图结构失败，不静默截断。引用展示真实段落、表格行列和跨度，DOCX 不提供伪造页码，也不还原 Word 排版。
+
+本机 dev/test V8 与跨格式读取已实测；关闭 `KNOWLEDGE_DOCX_UPLOAD_ENABLED` 后已发布 K04/K06 仍可读，新受理返回 415，随后恢复开启。复现与限制见 [S9C验收](../docs/qa/docx-ingestion-20261025/TEST_RESULT.md)。浏览器恢复文件在前端 `.local/s9c-ui-state.json`，HTTP 恢复在后端 `.local/s9c-http-state.json`；保留这些键、历史资料和累计模型账本，不重复成功的付费操作。
 
 ## 持久化与故障边界
 

@@ -105,7 +105,7 @@ public class MySqlProcessingRepository implements ProcessingRepository {
     /** 外部对象已经保存；事务只接受一次指针，提交回执未知时先按原租约查询。 */
     @Override
     public ProcessingClaim extracted(ProcessingClaim claim, ProcessingClaim.ExtractionReference reference, Extraction extraction) {
-        if (claim.job().profile() != ProcessingProfile.PDF_V2
+        if (!claim.job().profile().structured() || extraction == null || extraction.format() != claim.job().profile().format()
                 || !Objects.equals(reference.extractionDigest(), extraction.extractionDigest())) {
             throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
         }
@@ -149,7 +149,7 @@ public class MySqlProcessingRepository implements ProcessingRepository {
         return structured.chunks().stream().map(chunk -> {
             var sources = ChunkSources.details(chunk, extraction);
             return new PreparedChunkRow(chunk.chunkId(), chunk.ordinal(), chunk.text(), chunk.textHash(), null, null,
-                    structured.schemaVersion(), ChunkSources.pdfLocator(sources),
+                    structured.schemaVersion(), ChunkSources.structuredLocator(sources),
                     new String(json.write(sources), StandardCharsets.UTF_8), chunk.sourceDigest(), extraction.extractionDigest());
         }).toList();
     }

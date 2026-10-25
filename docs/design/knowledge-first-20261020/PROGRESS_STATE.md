@@ -1,22 +1,23 @@
 # 独立知识平台准备进度
 
-## 当前状态：S9B DONE，后续计划按用户要求暂停
+## 当前状态：S9C本地验收收尾，完整交付继续
 
-- 标识：`capability-delivery-20261021`；20项差距/51项计划仍有效且未全部完成。S8A–S8F、S9A、S9B已交付，S9C仍PLANNED。
-- 用户最新要求：“当前任务做完先暂停”。当前S9B实现、验收与正常Git交付完成；整体开发状态PAUSED_BY_USER。不启动DOCX、OCR、S9D或其他后续项。
-- 权威：本文件为唯一当前状态；任务定义IMPLEMENTATION_SLICES，正式契约STRUCTURED_PROCESSING_CONTRACTS，验收矩阵PARSING_ACCEPTANCE。恢复时先核对Git及本节，不重新创建已完成任务或付费查询。
-- Git交付：后端基础323e663及持久链路d7a84b1、前端75007cc均正常快进推送origin/main并核对远程；最后文档收据为这些产品提交的后继，准确HEAD读两仓Git。复用原目录feat/pdf-ingestion-20261024任务分支，无新worktree、不强推、不生产部署。
-- CI：后端run40087865551绑定d7a84b1，java/python/documents全部success；前端run40087866711绑定75007cc，web success。docs/qa/pdf-ingestion-20261024/{ci-gate,delivery-result}.json保存精确SHA和实际结果；收据后继的CI可按main当前SHA查询。
-- 本地验收：Java91；Python326通过/49条件集成跳过；真实DB/S3/ES/Qdrant/解析子进程39个不同IT；前端67单元/构建/lint/格式、4组Playwright、17截图实际查看；真实HTTP6边界/4坏PDF/2来源/16权限拒绝。源码指纹、验证边界和日志见同目录TEST_RESULT、IMPLEMENTATION_EVIDENCE和final-validation。
-- 已实现：PDFBox独立受控解析、P03/P04严格摘要与有界执行；V7兼容存储/提取接受/失租与未知提交恢复；双索引兼容profile、评测真实处理版本；K06当前发布判权；PDF上传与提取文本/真实页码/告警界面。
-- 兼容：dev/test V7已应用；原12个local-dev v1任务hash/状态不变；旧S8E只读复验PASS，原M04 supported=FAIL保留，未重跑聊天。已发布v2关闭新受理后6次K04/K06读取200、新上传415；回退须保留V7/v2兼容读取器。
-- 成功资料：文档f76f053b-48d3-4e2a-a3bd-2229d929d794、任务26e7ef5a-5919-47e3-b2e4-5b1e0fa67cec READY，2块来自真实第1/3页，第2/4页无文字告警。前端.local/s9b-ui-state.json保存原键/真实搜索结果，不能清空重跑。
-- 预算：本片真实入库/搜索各一次，增加2批Embedding；累计44批/0.44元，聊天24次/0.889964元，各上限1元，均为保守预留非账单。无额外聊天或Reranker调用，预算不清零。
-- 运行：打包前正常停止Knowledge/Gateway，最终新制品重启并readiness UP；Knowledge显式解析/PDF受理均true（默认仍false），Gateway/AI/Web就绪；Tasks/Conversations/模型代理保留，qa-worker已恢复。local-dev中央18成功/4取消/1失败、无活动任务；Knowledge13 READY/5 FAILED，原12旧任务不变。
-- 保留与清理：.local凭据/账本/幂等恢复、.logs、.idea、运行JAR/venv、前端依赖/产物、DB/S3/失败夹具均保留。没有临时worktree；可重建缓存/产物只在停止依赖服务且获清理授权后处理，本次不删除。
-- 已知边界：U02真实业务语料未提供，少量自建样本不证明任意版式、OCR、容量或RSS沙箱；Java无规范格式器/静态分析器的限制已记录。审查由本Agent完成，无独立子Agent或全局Runtime Gate冒称。
-- 恢复入口：等待用户新指令；如明确恢复后续计划，从S9C所需业务/契约和当前实际环境核对开始。不因“完整51项未完成”自动越过暂停要求。
-- 采用规范：session-handoff、continue-approved-delivery、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery、ci-cd-gate；architecture-standards业务建模、并发安全、持久化、契约和发布治理。
+- 标识：`capability-delivery-20261021`；用户2026-10-25“继续”已解除S9B后暂停。原20项差距/51项计划继续有效，S8A–F、S9A/B已交付；当前S9C，下一依赖可执行项是S10A设计，再到S9D。不得以单片完成替代完整计划。
+- 唯一状态为本文件；定义见IMPLEMENTATION_SLICES，协议为STRUCTURED_PROCESSING_CONTRACTS，验收为PARSING_ACCEPTANCE。S9B有效证据保留在docs/qa/pdf-ingestion-20261024，不重复其付费链路。
+- Git：后端/前端原目录均feat/docx-ingestion-20261025，基线ebcb94b / 185d3fa；无新worktree。当前S9C修改尚未提交，允许范围为parser/contracts、Knowledge上传/profile/来源/V8、Python结构消费者、现有前端上传/引用及对应运行说明/测试/QA。没有无关用户改动混入。
+- 授权：正常分支提交、验证后合并推送origin/main持续有效；不强推、不绕过保护、不生产部署、不清理、不新增模型预算。parallel=no，不使用子Agent。
+- 实现：POI6.0.0同受控子进程，闭合段/格/标题/跨度/告警、实际ZIP/XML限制，P04固定逐块512/64、上限100，三种profile兼容与K06当前发布判权；前端真实接口展示提取文本和真实位置。V8只扩展两表MIME至128及DOCX profile CHECK，dev/test均已应用。
+- 样本：fixtures/chinese-structure.docx固定hash407bf69c7fc221189b3a658b8b8a61bdfe5b6bd75ce4fc0270df2d6fe2fdaca0；15结构块/2空块/13非空片段，POI和LlamaIndex共享金标不静默重写。真实业务语料U02未提供，不宣称业务覆盖率/OCR/任意版式/容量或RSS沙箱。
+- 验证：Java全仓117单元通过；Python349通过/49条件集成跳过及Ruff/mypy通过；42个不同真实DB/S3/索引/子进程IT（结构21+兼容21）通过。前端70单元、build/typecheck/lint/format及5组Playwright通过，19截图已实际查看。HTTP11入口拒绝、7异步失败、3真实来源、45权限/版本拒绝通过，无新增模型费用。
+- 兼容：V8启动后18个旧local-dev任务逐行不变，Tasks/Conversations进程和JAR未覆盖；关闭DOCX新受理后7次K04/K06读取200、新上传415，已恢复开关。源码变更后的最后依赖制品还在复验，详见下一条。
+- 收尾修正：未知空绘图/矢量形状明确失败，真实VML/DrawingML图片告警通过；Python块类型改显式稳定枚举。新增解析依赖被Boot BOM降为Commons Lang3.17.0，官方CVE-2025-48924已核实；仅parser固定3.21.0，原因/来源在research-evidence.json。最终依赖复验通过，日志.logs/s9c-dependency-final-it.log，制品中已确认仅有Lang3.21.0。
+- 运行：最终Knowledge已恢复就绪（parsing/pdf/docx=true），AI/Gateway/Tasks/Conversations/模型代理/Web和qa-worker正常保留；最终JAR/金标/6次只读来源与原18任务复核通过，预算不变。不得package/verify覆盖活动服务或并行Maven。
+- 真实成功：文档ab3d5d8d-0910-43b1-833f-2dda9bc9d121，任务dd882b66-98a8-42d2-941f-0d132b73d0ef，READY 13片段；检索命中2×2合并锚格。前端.local/s9c-ui-state.json保存原键和真实hits；后端.local/s9c-http-state.json保存失败任务，未知回执先查询。
+- 预算：本片入库2批+检索1批Embedding，共新增0.03元保守预留；累计47批/0.47元，上限1元；聊天24次/0.889964元，上限1元不变。预留非账单，无新增聊天或Reranker调用，账本不能清零。
+- 验收/制品目录：docs/qa/docx-ingestion-20261025；TEST_RESULT/final-validation已写入，S9C本地必需验收PASS/DONE；CI/Git收据待实际交付后记录，不提前计远程完成。当前code-hygiene后端COMPLETE_WITH_LIMITATIONS（无Java统一格式器/静态分析器，Python已实际检查），前端COMPLETE；无全局Runtime Gate或独立Agent审查冒称，原MULTI_CLIENT_DRIFT_BLOCKED仍未变。
+- 下一步：完成文档/规范检查→两仓正常提交/合并推送与CI→继续S10A。所有模型成功结果复用，浏览器现有截图绑定未变的UI代码。
+- 保留：.local凭据/账本/恢复键、.logs、.idea、JAR/venv、前端依赖/产物、DB/S3/失败夹具；无临时worktree、不删除任何用户内容。Git交付时再核对未跟踪/忽略文件归属。
+- 规范：session-handoff、continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery、ci-cd-gate；architecture-standards的建模、持久化、契约、并发安全、中间件、容量和发布章节。沿已批准契约，不重选领域或新增基础设施。
 
 ## 历史：20 项差距的框架化实施计划
 

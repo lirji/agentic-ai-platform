@@ -31,7 +31,8 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
             @JsonProperty(required = true) Extraction extraction) {
         /** 从权威任务而非客户端身份构造内部请求。 */
         public static Request of(Ingestion job, Extraction extraction) {
-            require(job.profile() == ProcessingProfile.PDF_V2);
+            require(job.profile().structured() && extraction != null && extraction.format() == job.profile().format()
+                    && job.profile().parser().equals(extraction.parserProfile()));
             return new Request(job.tenantId(), job.ownerId(), job.documentId(), job.jobId(), job.documentVersion(),
                     job.profile().processor(), extraction);
         }
@@ -60,7 +61,7 @@ public record StructuredPreparedDocument(@JsonProperty(required = true) String s
         try {
             Extraction extraction = request.extraction().validated(request.extraction().sourceHash(), request.extraction().sourceSize());
             require(ExtractionProtocol.PREPARATION_SCHEMA.equals(schemaVersion)
-                    && ExtractionProtocol.PDF_PROCESSOR.equals(processorVersion)
+                    && extraction.format().processor().equals(processorVersion)
                     && processorVersion.equals(request.processorVersion())
                     && ProcessingProtocol.MODEL.equals(embeddingModel) && dimensions == ProcessingProtocol.DIMENSIONS);
             require(Objects.equals(tenantId, request.tenantId()) && Objects.equals(ownerId, request.ownerId())

@@ -90,9 +90,7 @@ public final class PdfExtractor {
     }
 
     /** 固定机器结果，不携带可能含文档内容的底层异常链。 */
-    public static final class Rejected extends IOException {
-        private final Exit exit;
-        Rejected(Exit exit) { this.exit = exit; }
-        public Exit exit() { return exit; }
+    public static final class Rejected extends ParseFailure {
+        Rejected(Exit exit) { super(exit); }
     }
 }

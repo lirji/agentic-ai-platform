@@ -9,7 +9,8 @@ import java.util.ArrayList;
 public final class ParserFaultMain {
     private ParserFaultMain() { }
     public static void main(String[] args) throws Exception {
-        String[] request = new String(System.in.readAllBytes(), StandardCharsets.UTF_8).split("\\|", 2);
+        byte[] source = System.in.readAllBytes();
+        String[] request = new String(source, StandardCharsets.UTF_8).split("\\|", 2);
         Files.writeString(Path.of(request[1]), Long.toString(ProcessHandle.current().pid()));
         // 若父进程泄漏任何服务密钥或 JVM 注入变量，测试会得到不同退出码。
         var environment = new java.util.HashSet<>(System.getenv().keySet());
@@ -37,7 +38,25 @@ public final class ParserFaultMain {
             case "empty" -> System.exit(22);
             case "abnormal" -> System.exit(77);
             case "malformed" -> System.out.write("{}".getBytes(StandardCharsets.UTF_8));
+            case "wrong-format" -> {
+                String hash = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(source));
+                String textHash = hash("fixture");
+                String block = hash(String.join("\n", "extraction-block-v1", "poi-6.0.0-body-v1", hash,
+                        "0", "PARAGRAPH", "docx:p:1:1", "-", textHash));
+                String digest = hash(String.join("\n", "knowledge-extraction-v1", "DOCX", "poi-6.0.0-body-v1",
+                        hash, Integer.toString(source.length), "blocks", block + ":" + textHash, "warnings", ""));
+                String result = """
+                        {"schemaVersion":"knowledge-extraction-v1","format":"DOCX","parserProfile":"poi-6.0.0-body-v1",
+                        "sourceHash":"%s","sourceSize":%d,"blocks":[{"ordinal":0,"blockId":"%s","kind":"PARAGRAPH",
+                        "text":"fixture","textHash":"%s","headingLevel":null,"location":{"bodyIndex":1,"paragraphIndex":1}}],
+                        "warnings":[],"extractionDigest":"%s"}
+                        """.formatted(hash, source.length, block, textHash, digest);
+                System.out.write(result.getBytes(StandardCharsets.UTF_8));
+            }
             default -> System.exit(91);
         }
+    }
+    private static String hash(String text) throws Exception {
+        return java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(text.getBytes(StandardCharsets.UTF_8)));
     }
 }

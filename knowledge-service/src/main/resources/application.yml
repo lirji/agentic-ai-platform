@@ -52,6 +52,7 @@ knowledge:
   parsing:
     enabled: ${KNOWLEDGE_PARSING_ENABLED:false}
     pdf-upload-enabled: ${KNOWLEDGE_PDF_UPLOAD_ENABLED:false}
+    docx-upload-enabled: ${KNOWLEDGE_DOCX_UPLOAD_ENABLED:false}
     java-executable: ${KNOWLEDGE_PARSER_JAVA:}
     jar: ${KNOWLEDGE_PARSER_JAR:}
   evaluation:

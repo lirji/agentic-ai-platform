@@ -42,9 +42,9 @@ public class IngestionRunner {
         checkInterrupted();
         byte[] source = storage.source(claim.job());
         Extraction extraction = null;
-        if (claim.job().profile() == ProcessingProfile.PDF_V2) {
+        if (claim.job().profile().structured()) {
             if (claim.extraction() == null) {
-                extraction = extractor.extract(source);
+                extraction = extractor.extract(source, claim.job().profile().format());
                 checkInterrupted();
                 var reference = storage.saveExtraction(claim.job(), extraction);
                 checkInterrupted();

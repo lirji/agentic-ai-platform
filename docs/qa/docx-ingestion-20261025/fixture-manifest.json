@@ -1,0 +1,47 @@
+{
+  "provenance": "Self-authored controlled Chinese OOXML; not customer corpus. Stable generator and frozen actual POI extraction; test vectors only in shared preparation golden.",
+  "files": {
+    "fixtures/alt-chunk.docx": {
+      "sha256": "18e66574844ae3138094ba2e0958ff46a65ee28533726bde35ea73b9314f6d9b",
+      "bytes": 5328
+    },
+    "fixtures/build_fixture.py": {
+      "sha256": "6e6b65b8a7741a01bc554d9e62bebd0fc3a5359bc4e4d6f805af1aa59a5daf5f",
+      "bytes": 6140
+    },
+    "fixtures/chinese-extraction.json": {
+      "sha256": "85fa33149841cf7ea9306b700d7e1b0872a25dbafbbda44b25f3c380b445f672",
+      "bytes": 7045
+    },
+    "fixtures/chinese-structure.docx": {
+      "sha256": "407bf69c7fc221189b3a658b8b8a61bdfe5b6bd75ce4fc0270df2d6fe2fdaca0",
+      "bytes": 7187
+    },
+    "fixtures/empty.docx": {
+      "sha256": "801d73dc901d2d3cc30448002c0ccdafabb7b2cfcb99efc0155a0ab3a8ac1528",
+      "bytes": 5252
+    },
+    "fixtures/nested-table.docx": {
+      "sha256": "fd402c69e56ce5241de0cba735aedb54a5e93e08089cf813bb1d68e17b2d18ea",
+      "bytes": 5372
+    },
+    "fixtures/revisions.docx": {
+      "sha256": "546bfb28d1bde20483a93c407874e13579cb71aedcfb29f8dc9d43619a7948bd",
+      "bytes": 5354
+    },
+    "fixtures/too-many-blocks.docx": {
+      "sha256": "2272c0887a0a8ef9d73ee4022b88b8982ffa616a8949e3667e1b0683b4d5e33c",
+      "bytes": 11291
+    },
+    "fixtures/xml-entity.docx": {
+      "sha256": "3a6e5292d2ecef8f5ad2574c4d55364306d3eef1099a111de189fb26b6a0e790",
+      "bytes": 7242
+    }
+  },
+  "extraction": {
+    "blocks": 15,
+    "emptyBlocks": 2,
+    "nonemptyChunks": 13
+  },
+  "sharedPreparationGoldenSha256": "c0c255631dc6cd800ebb933a8f71c0d1212ad009136ed4a41e195deeb7ec2555"
+}

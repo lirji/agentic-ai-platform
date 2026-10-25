@@ -1,0 +1,64 @@
+{
+  "log": ".logs/s9c-storage-compatibility-it.log",
+  "suites": [
+    {
+      "suite": "KnowledgePersistenceIT",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "persistsOriginalAndScopesReplayDedupAndVisibility",
+        "cursorPaginatesAuthorizedRowsAndRejectsInvalidInputs",
+        "schemaHasCommentsAndApplicationCannotRunDdl",
+        "noXsltViewsOrFragmentStreamingAreConfigured",
+        "realStorageAccessDeniedCreatesNoDocumentOrTask",
+        "concurrentSameCommandHasOneDocumentAndOneJob",
+        "losingInsertRollsBackDocumentBeforeReadingCommittedWinner"
+      ],
+      "reportSha256": "cb63cb7f6403622ebe1c3132dd2f176f6ac4727b1aa39c7e9f63d3f7993db63d"
+    },
+    {
+      "suite": "KnowledgeProcessingIT",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "changedVectorAndWrongSourceCannotBeAccepted",
+        "onlyOneConcurrentWorkerClaimsOneJob",
+        "unpublishedCandidatesAreFilteredAndPublicationRollsBackBothRowsOnConflict",
+        "expiredOwnerCannotRenewPrepareFailOrPublishAfterTakeover",
+        "databaseRejectsIncompletePreparedMetadataEvenWhenCheckWouldBeUnknown",
+        "repeatedProcessCrashesReachBoundedFailureAndRetryUsesCas",
+        "persistedPreparationAndCompletedSinkAreReusedAfterFailureAndNewWorker"
+      ],
+      "reportSha256": "99bdb29cf7a5369d946820d551af745966f6df686e1197bcea8235ca47df561f"
+    },
+    {
+      "suite": "EvaluationPersistenceIT",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "noAnswerCorpusAndGoldSourceAreBothValidated",
+        "everyReadAndMutationUsesTenantAndOwnerPredicates",
+        "concurrentSameKeyHasOneDatasetRevisionAndReceipt",
+        "metadataAndEvidencePaginationUseStableScopedCursors",
+        "concurrentRevisionReplayDoesNotBecomeARevisionConflict",
+        "compareAndSetProtectsHistoryAndFailedCommandHasNoReceipt",
+        "changedPublicationSuppressesHistoricalBodyButOriginalReceiptStillResolves"
+      ],
+      "reportSha256": "3464ff49d2d1b743a908e95fbc8ab1482bb57f854e5d2d62704c940007707451"
+    },
+    {
+      "suite": "KnowledgeStructuredProcessingIT",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "cases": [
+        "acceptedPreparationAndCompletedSinkSurviveFailureWithoutParsingOrEmbeddingAgain(DocumentFormat)[1]",
+        "acceptedPreparationAndCompletedSinkSurviveFailureWithoutParsingOrEmbeddingAgain(DocumentFormat)[2]"
+      ],
+      "reportSha256": "4884ebb9bb50d8833a867426898a043f9aab49870d9610009b7f6b316c2cc28e"
+    }
+  ]
+}

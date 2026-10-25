@@ -45,7 +45,7 @@ public class KnowledgeController {
         try (var input = file.getInputStream()) {
             byte[] bytes = input.readNBytes(ExtractionProtocol.MAX_SOURCE_BYTES + 1);
             var upload = UploadRules.validate(key, file.getOriginalFilename(), displayName, bytes,
-                    file.getContentType(), parsing.pdfUploadEnabled());
+                    file.getContentType(), parsing.pdfUploadEnabled(), parsing.docxUploadEnabled());
             var job = service.submit(JwtTrust.caller(jwt), key, upload);
             return ResponseEntity.accepted()
                     .location(URI.create("/api/v1/knowledge/ingestions/" + job.jobId()))

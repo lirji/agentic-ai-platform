@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "migrationVersion": 8,
+  "legacyRows": 18,
+  "legacyHash": "9d5e381454437efe72054bf27a17a5c0eaa58e7f0e3ec763938ba94adea2d1b0",
+  "budgetsUnchanged": {
+    "chat-budget-20261020.json": {
+      "reservedCny": "0.889964",
+      "calls": 24,
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    },
+    "embedding-budget-20261020.json": {
+      "reservedCny": "0.44",
+      "calls": 44,
+      "sha256": "affa9a4c034357467e1c9449ea3f467a60b6a8cb3dbe6fef4bcc373bd9bf9b54"
+    }
+  },
+  "preservedJars": {
+    "tasks": {
+      "pid": 67629,
+      "sha256": "48ae11716a500cc0a9d9d303fc468eb855335cf8cfc34fc23a94171d699ca5cd"
+    },
+    "conversations": {
+      "pid": 57108,
+      "sha256": "b803ae475011d7f3bd87c36de503649e29c68edde0f837f708a3f7d576ce1d69"
+    }
+  },
+  "readiness": [
+    "AI",
+    "Knowledge",
+    "Gateway"
+  ],
+  "flags": {
+    "parsing": true,
+    "pdfUpload": true,
+    "docxUpload": true
+  }
+}

@@ -233,3 +233,7 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 选择依据、其它候选、直接许可证、17个解析JAR及约23.87MB成本、一次进程时间/RSS和新POI主版本风险见 [解析设计](../knowledge-first-20261020/PARSING_DESIGN.md)与[实际制品证据](../../qa/structured-parsing-20261024/research-evidence.json)。资源数字仅小样本观察，JVM堆限制不是总RSS硬隔离。完整制品/日志桥/传递依赖在S9B/C进入产品前锁定并验证，不扩用POI的渲染、宏或PDFBox附件提取。
 
 引入阶段：S9B启用PDF，S9C启用DOCX；S9A只用隔离探针，项目POM/uv.lock和正在运行的服务未变。LlamaIndex0.14.25、Embedding v4/1024及原预算沿用；新[P-v2](../knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)明确旧任务和新profile共存，不自动重算TXT/MD。
+
+2026-10-25产品实施：S9B/C已将PDFBox3.0.8、POI6.0.0纳入 `knowledge-parser`，POI日志经根POM锁定的 `log4j-to-slf4j` 进入原stderr日志链；不引入Log4j Core。XMLBeans5.4.1、Commons Compress1.28.0/IO2.22.0/Collections4.6.0及仅parser覆盖的Lang3.21.0随固定制品核验，实际依赖、许可证与JAR摘要见[S9C制品证据](../../qa/docx-ingestion-20261025/artifacts.json)。V8与DOCX来源消费者是开启受理的前置，默认开关false；无新Python包、模型、数据库或预算。
+
+S9C传递依赖补丁：Boot3.5.16默认Commons Lang3.17.0覆盖了Compress所需3.18.0，处于CVE-2025-48924影响范围；仅knowledge-parser覆盖到已核验3.21.0，避免新引入链路携带已知问题。官方公告/版本来源及最终制品见[S9C研究记录](../../qa/docx-ingestion-20261025/research-evidence.json)，原服务依赖不随此模块属性改变。

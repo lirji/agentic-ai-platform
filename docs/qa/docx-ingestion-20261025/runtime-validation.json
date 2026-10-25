@@ -1,0 +1,50 @@
+{
+  "overall": "PASS",
+  "uploadDisabledReads": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "newUploadDisabled": 415,
+  "restored": {
+    "parsing": true,
+    "pdfUpload": true,
+    "docxUpload": true,
+    "qaWorker": true
+  },
+  "budgetsUnchangedDuringFlagCheck": {
+    "embedding": {
+      "calls": 47,
+      "reservedCny": "0.47",
+      "sha256": "0d06f0f530710e6fe69c6100088c12d5f6c2b8151eb76d05cccacacb9fcb5c79"
+    },
+    "chat": {
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    }
+  },
+  "activeKnowledgeBeforeAndAfter": 0,
+  "preservedLiveTaskAndConversationJars": true,
+  "note": "Flag check completed before qa_local.start helper-name error; restoration already succeeded. Correct chat_local.start entry used subsequently; no upload/search repeated.",
+  "finalParserJarSha256": "85b3a324de32a457a665953c9aff2aaf6345e7225bb586b925914ac7ac5edb74",
+  "finalGoldenUnchanged": true,
+  "finalReadChecks": 6,
+  "finalBudgets": {
+    "embedding": {
+      "calls": 47,
+      "reservedCny": "0.47",
+      "sha256": "0d06f0f530710e6fe69c6100088c12d5f6c2b8151eb76d05cccacacb9fcb5c79"
+    },
+    "chat": {
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    }
+  },
+  "legacy18RowsUnchanged": true
+}

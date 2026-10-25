@@ -13,10 +13,11 @@ public final class ParserMain {
     public static void main(String[] args) {
         int exit = Exit.INTERNAL.code();
         try {
-            if (args.length != 2 || !ExtractionProtocol.Format.PDF.code().equals(args[0])) {
+            if (args.length != 2) {
                 System.exit(Exit.INVALID.code());
                 return;
             }
+            ExtractionProtocol.Format format = ExtractionProtocol.Format.fromCode(args[0]);
             int size = Integer.parseInt(args[1]);
             if (size < 1 || size > ExtractionProtocol.MAX_SOURCE_BYTES) {
                 System.exit(Exit.RESOURCE_LIMIT.code());
@@ -27,7 +28,11 @@ public final class ParserMain {
                 System.exit(Exit.INVALID.code());
                 return;
             }
-            byte[] json = new ObjectMapper().writeValueAsBytes(new PdfExtractor().extract(source));
+            var extraction = switch (format) {
+                case PDF -> new PdfExtractor().extract(source);
+                case DOCX -> new DocxExtractor().extract(source);
+            };
+            byte[] json = new ObjectMapper().writeValueAsBytes(extraction);
             if (json.length > ExtractionProtocol.MAX_OUTPUT_BYTES) {
                 System.exit(Exit.RESOURCE_LIMIT.code());
                 return;
@@ -35,7 +40,7 @@ public final class ParserMain {
             System.out.write(json);
             System.out.flush();
             exit = Exit.SUCCESS.code();
-        } catch (PdfExtractor.Rejected rejected) {
+        } catch (ParseFailure rejected) {
             exit = rejected.exit().code();
         } catch (OutOfMemoryError | StackOverflowError exhausted) {
             exit = Exit.RESOURCE_LIMIT.code();

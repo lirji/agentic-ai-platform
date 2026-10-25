@@ -1,0 +1,355 @@
+{
+  "boundaries": [
+    {
+      "case": "mime",
+      "bytes": 5354,
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "signature",
+      "bytes": 9,
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "arbitrary-zip",
+      "bytes": 121,
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "other-office",
+      "bytes": 5348,
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "macro-type",
+      "bytes": 5328,
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "macro-binary",
+      "bytes": 5481,
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "docm-extension",
+      "bytes": 5354,
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "encrypted-office",
+      "bytes": 24,
+      "status": 422,
+      "code": "KNOWLEDGE_PARSE_ENCRYPTED"
+    },
+    {
+      "case": "metadata-dtd",
+      "bytes": 5404,
+      "status": 415,
+      "code": "KNOWLEDGE_UNSUPPORTED_FORMAT"
+    },
+    {
+      "case": "inflate-ratio",
+      "bytes": 3340,
+      "status": 422,
+      "code": "KNOWLEDGE_PARSE_RESOURCE_LIMIT"
+    },
+    {
+      "case": "source-limit-plus-one",
+      "bytes": 10485761,
+      "status": 413,
+      "code": "KNOWLEDGE_FILE_TOO_LARGE"
+    }
+  ],
+  "failures": [
+    {
+      "fixture": "exact-limit-revisions.docx",
+      "sourceBytes": 10485760,
+      "sha256": "c7684cf918166b520874f0bf223d3b422d561952506cf133a47ba8f01e7d9cc1",
+      "jobId": "b0f18812-5ee8-440f-b96a-c3d8ae680551",
+      "errorCode": "KNOWLEDGE_PARSE_UNSUPPORTED_STRUCTURE",
+      "retryable": false,
+      "acceptedExtraction": false,
+      "publishedChunks": 0
+    },
+    {
+      "fixture": "empty.docx",
+      "sourceBytes": 5252,
+      "sha256": "801d73dc901d2d3cc30448002c0ccdafabb7b2cfcb99efc0155a0ab3a8ac1528",
+      "jobId": "1f2a0ff7-dc97-4416-b838-54d449dd5a62",
+      "errorCode": "KNOWLEDGE_PARSE_TEXT_UNAVAILABLE",
+      "retryable": false,
+      "acceptedExtraction": false,
+      "publishedChunks": 0
+    },
+    {
+      "fixture": "too-many-blocks.docx",
+      "sourceBytes": 11291,
+      "sha256": "2272c0887a0a8ef9d73ee4022b88b8982ffa616a8949e3667e1b0683b4d5e33c",
+      "jobId": "5952d689-4101-4bf5-b9bd-2d9e80ed2146",
+      "errorCode": "KNOWLEDGE_PARSE_RESOURCE_LIMIT",
+      "retryable": false,
+      "acceptedExtraction": false,
+      "publishedChunks": 0
+    },
+    {
+      "fixture": "revisions.docx",
+      "sourceBytes": 5354,
+      "sha256": "546bfb28d1bde20483a93c407874e13579cb71aedcfb29f8dc9d43619a7948bd",
+      "jobId": "f07c7926-1e70-4dbb-8bd3-94fa5f3c0e12",
+      "errorCode": "KNOWLEDGE_PARSE_UNSUPPORTED_STRUCTURE",
+      "retryable": false,
+      "acceptedExtraction": false,
+      "publishedChunks": 0
+    },
+    {
+      "fixture": "nested-table.docx",
+      "sourceBytes": 5372,
+      "sha256": "fd402c69e56ce5241de0cba735aedb54a5e93e08089cf813bb1d68e17b2d18ea",
+      "jobId": "730b3a03-3674-489e-a0a2-1b2d87ba3661",
+      "errorCode": "KNOWLEDGE_PARSE_UNSUPPORTED_STRUCTURE",
+      "retryable": false,
+      "acceptedExtraction": false,
+      "publishedChunks": 0
+    },
+    {
+      "fixture": "alt-chunk.docx",
+      "sourceBytes": 5328,
+      "sha256": "18e66574844ae3138094ba2e0958ff46a65ee28533726bde35ea73b9314f6d9b",
+      "jobId": "6829ae40-a008-464d-8726-82301bf3ccd3",
+      "errorCode": "KNOWLEDGE_PARSE_UNSUPPORTED_STRUCTURE",
+      "retryable": false,
+      "acceptedExtraction": false,
+      "publishedChunks": 0
+    },
+    {
+      "fixture": "xml-entity.docx",
+      "sourceBytes": 7242,
+      "sha256": "3a6e5292d2ecef8f5ad2574c4d55364306d3eef1099a111de189fb26b6a0e790",
+      "jobId": "3f24e5e5-2fbd-4202-9c01-02ec77d04771",
+      "errorCode": "KNOWLEDGE_PARSE_INVALID",
+      "retryable": false,
+      "acceptedExtraction": false,
+      "publishedChunks": 0
+    }
+  ],
+  "sources": [
+    {
+      "chunkId": "1e6f2a8266c19bdb373564a3a44e67e81b903172a9b05f6874de20ff60025bd5",
+      "locator": "docx-blocks:p1",
+      "trueLocationAndBytes": true
+    },
+    {
+      "chunkId": "f676055e233debe91a51bb3eda65fb5c1765898f0e5ec95e945df83c165415d7",
+      "locator": "docx-blocks:t1r1c1",
+      "trueLocationAndBytes": true
+    },
+    {
+      "chunkId": "8fb90f692a3531ec0dd11da6aa73b94b669b779867c410aaf6cc1d6b081d7812",
+      "locator": "docx-blocks:t1r2c1",
+      "trueLocationAndBytes": true
+    }
+  ],
+  "denials": [
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "scope",
+      "status": 403
+    },
+    {
+      "scope": "scope",
+      "status": 403
+    },
+    {
+      "scope": "scope",
+      "status": 403
+    },
+    {
+      "scope": "anonymous",
+      "status": 401
+    },
+    {
+      "scope": "anonymous",
+      "status": 401
+    },
+    {
+      "scope": "anonymous",
+      "status": 401
+    },
+    {
+      "scope": "unpublished-version",
+      "status": 404
+    },
+    {
+      "scope": "unpublished-version",
+      "status": 404
+    },
+    {
+      "scope": "unpublished-version",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "scope",
+      "status": 403
+    },
+    {
+      "scope": "scope",
+      "status": 403
+    },
+    {
+      "scope": "scope",
+      "status": 403
+    },
+    {
+      "scope": "anonymous",
+      "status": 401
+    },
+    {
+      "scope": "anonymous",
+      "status": 401
+    },
+    {
+      "scope": "anonymous",
+      "status": 401
+    },
+    {
+      "scope": "unpublished-version",
+      "status": 404
+    },
+    {
+      "scope": "unpublished-version",
+      "status": 404
+    },
+    {
+      "scope": "unpublished-version",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "owner",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "tenant",
+      "status": 404
+    },
+    {
+      "scope": "scope",
+      "status": 403
+    },
+    {
+      "scope": "scope",
+      "status": 403
+    },
+    {
+      "scope": "scope",
+      "status": 403
+    },
+    {
+      "scope": "anonymous",
+      "status": 401
+    },
+    {
+      "scope": "anonymous",
+      "status": 401
+    },
+    {
+      "scope": "anonymous",
+      "status": 401
+    },
+    {
+      "scope": "unpublished-version",
+      "status": 404
+    },
+    {
+      "scope": "unpublished-version",
+      "status": 404
+    },
+    {
+      "scope": "unpublished-version",
+      "status": 404
+    }
+  ],
+  "overall": "PASS",
+  "budgetsUnchanged": {
+    "embedding": {
+      "calls": 47,
+      "reservedCny": "0.47",
+      "sha256": "0d06f0f530710e6fe69c6100088c12d5f6c2b8151eb76d05cccacacb9fcb5c79"
+    },
+    "chat": {
+      "calls": 24,
+      "reservedCny": "0.889964",
+      "sha256": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+    }
+  },
+  "documentId": "ab3d5d8d-0910-43b1-833f-2dda9bc9d121"
+}

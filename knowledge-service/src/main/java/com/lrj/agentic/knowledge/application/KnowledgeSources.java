@@ -37,7 +37,7 @@ public class KnowledgeSources {
         var profile = ProcessingProfile.stored(row.preparationSchema(), row.processorVersion(), row.parserProfile());
         var format = DocumentFormat.fromContentType(row.contentType());
         if (format.profile() != profile) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
-        if (profile == ProcessingProfile.PDF_V2 && (row.warningsJson() == null || row.extractionDigest() == null)) {
+        if (profile.structured() && (row.warningsJson() == null || row.extractionDigest() == null)) {
             throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
         }
         List<Extraction.Warning> warnings = profile == ProcessingProfile.TEXT_V1 ? List.of()
@@ -59,10 +59,10 @@ public class KnowledgeSources {
             if (row.sourceJson() == null) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
             details = List.of(json.read(row.sourceJson().getBytes(StandardCharsets.UTF_8),
                     ChunkSources.Detail[].class, KnowledgeError.SOURCE_INVALID));
-            if (!Objects.equals(ChunkSources.pdfLocator(details), row.sourceLocator())
+            if (!Objects.equals(ChunkSources.structuredLocator(details), row.sourceLocator())
                     || details.stream().anyMatch(part -> part.blockId() == null || !part.blockId().matches("[0-9a-f]{64}")
                         || part.startByte() < 0 || part.endByte() <= part.startByte() || part.endByte() > ExtractionProtocol.MAX_TEXT_BYTES
-                        || part.headingLevel() != null)
+                        || !ChunkSources.validStructure(part))
                     || !Objects.equals(StructuredPreparedDocument.sourceDigest(row.extractionDigest(), details.stream()
                         .map(part -> new StructuredPreparedDocument.Segment(part.blockId(), part.startByte(), part.endByte())).toList()),
                         row.sourceDigest())) {

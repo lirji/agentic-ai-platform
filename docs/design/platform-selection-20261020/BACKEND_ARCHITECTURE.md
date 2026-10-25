@@ -254,3 +254,5 @@ P-v2 区分原文件、提取物及片段摘要；原始 PDF 二进制偏移不�
 [P-v2](../knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)与旧P-v1共存；旧任务、处理版本和机制基线不回填。公共来源字段保持displayName/locator，但新locator必须先升级Python严格消费者；单处理profile检索过滤扩为明确同Embedding兼容集合。新格式上传在消费者/索引/引用验证后才开启。新模块是解析执行适配，不新增业务服务、数据库、MQ或任意文件工具。
 
 受控样本证明候选基本格式能力；子进程堆/时间/输出与OS隔离的边界分开记录。完整上传、发布、权限、故障、前端及容量验证由S9B/C承担，[样本矩阵](../knowledge-first-20261020/PARSING_ACCEPTANCE.md)列明未执行项。
+
+S9B/C产品已接通上述链路，受控文件、真实存储/索引/权限和浏览器证据见[S9C验收](../../qa/docx-ingestion-20261025/TEST_RESULT.md)。K01只进行有界容器元数据判别，正文仍唯一归解析子进程；Java/Python分别验证提取摘要及位置，固定profile在受理时冻结。V8仅扩展MIME字段与DOCX profile约束，保留v1/PDF；原发布判权和逐sink恢复不变。受控样本不代表任意版式、业务语料覆盖或容量已验收。

@@ -115,7 +115,7 @@ class KnowledgeProcessingIT {
                 return searchIndex.search(sink, caller, text, vector, ids);
             }
         };
-        var runner = new IngestionRunner(repository, storage, model, fault, source -> { throw new AssertionError("v1不得调用二进制解析器"); });
+        var runner = new IngestionRunner(repository, storage, model, fault, (source, format) -> { throw new AssertionError("v1不得调用二进制解析器"); });
         var first = claim(job, "first");
         error(KnowledgeError.INDEX_UNAVAILABLE, () -> runner.run(first));
         repository.fail(first, KnowledgeError.INDEX_UNAVAILABLE, true);

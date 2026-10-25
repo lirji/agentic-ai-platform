@@ -13,7 +13,7 @@
 | [能力实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md) | 框架分工、批次与 G01–G20 映射、三条关键路径、兼容及验收 | 完整计划；43 项主线、8 项条件任务，S8 开始实施 |
 | [实施切片 S8–S18](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices) | 51 项稳定任务、逐项依赖、Owner/路径、契约、Runtime 与可观察验收 | 新任务唯一清单；保留 S0–S7 |
 | [最小CI契约](design/knowledge-first-20261020/CI_CONTRACTS.md)、[S8F验收](qa/ci-contracts-20261024/TEST_RESULT.md) | 两仓冻结安装、共享报文回归、必需检查和无付费边界 | ci-v1；实际远程状态以验收绑定SHA为准 |
-| [解析设计](design/knowledge-first-20261020/PARSING_DESIGN.md)、[P-v2](design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)、[样本矩阵](design/knowledge-first-20261020/PARSING_ACCEPTANCE.md) | 唯一解析者、原文件/提取物、页段表来源、资源/恢复/版本窗口 | S9A设计已交付；[S9B原生PDF入库/页级引用验收](qa/pdf-ingestion-20261024/TEST_RESULT.md)及两仓CI/Git交付PASS，后续按用户要求暂停，DOCX待S9C |
+| [解析设计](design/knowledge-first-20261020/PARSING_DESIGN.md)、[P-v2](design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)、[样本矩阵](design/knowledge-first-20261020/PARSING_ACCEPTANCE.md) | 唯一解析者、原文件/提取物、页段表来源、资源/恢复/版本窗口 | S9A/B已交付；[S9C DOCX验收](qa/docx-ingestion-20261025/TEST_RESULT.md)记录段落/表格、合并、权限与真实界面证据；完整计划已恢复，跨结构新profile仍属S9D |
 | [契约工作包](design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md)、[框架证据](design/knowledge-first-20261020/FRAMEWORK_EVIDENCE.json) | 新协议待冻结范围、锁定接口及适配风险 | 不是新线上 schema；未改依赖或运行配置 |
 | [质量契约](design/knowledge-first-20261020/QUALITY_CONTRACTS.md)、[样本验收](design/knowledge-first-20261020/QUALITY_ACCEPTANCE.md) | E01 评测集/修订/标注、质量指标、运行归属与首批机制资料 | S8A 冻结，S8B 实施依据 |
 | [评测定义验收](qa/quality-datasets-20261021/TEST_RESULT.md)、[实现映射](qa/quality-datasets-20261021/IMPLEMENTATION_EVIDENCE.md) | S8B 真实保存/修订、权限/发布绑定、原文标注与失败恢复 | 结果与限制见验收；执行/基线由 S8C/D 接续 |

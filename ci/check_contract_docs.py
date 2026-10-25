@@ -32,6 +32,7 @@ def main() -> None:
     for name in (
         "structured-processing-golden.json",
         "structured-processing-chinese-golden.json",
+        "structured-processing-docx-golden.json",
     ):
         structured = json.loads((FIXTURES / name).read_text())
         assert (
@@ -39,7 +40,7 @@ def main() -> None:
             == REGISTERED_CONTRACTS["STRUCTURED_PROCESSING_CONTRACTS.md"]
         )
         assert (ROOT / structured["sourceFixture"]).is_file()
-    print("5 registered contracts and 4 shared wire fixtures: PASS")
+    print("5 registered contracts and 5 shared wire fixtures: PASS")
 
 
 if __name__ == "__main__":

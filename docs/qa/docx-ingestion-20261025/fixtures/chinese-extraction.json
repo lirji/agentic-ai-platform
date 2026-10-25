@@ -1,0 +1,235 @@
+{
+  "schemaVersion" : "knowledge-extraction-v1",
+  "format" : "DOCX",
+  "parserProfile" : "poi-6.0.0-body-v1",
+  "sourceHash" : "407bf69c7fc221189b3a658b8b8a61bdfe5b6bd75ce4fc0270df2d6fe2fdaca0",
+  "sourceSize" : 7187,
+  "blocks" : [ {
+    "ordinal" : 0,
+    "blockId" : "57e255ebf3a013ed70870cbe3b29dd79671e665a04e4959ee6316a8181500283",
+    "kind" : "PARAGRAPH",
+    "text" : "资料办理说明",
+    "textHash" : "d686e2414de54f8f548aef1acfd69d8c6a9800ea8608e7693276ccd0133ba2a6",
+    "headingLevel" : 1,
+    "location" : {
+      "bodyIndex" : 1,
+      "paragraphIndex" : 1
+    }
+  }, {
+    "ordinal" : 1,
+    "blockId" : "070b1c53f40ce0f6c110b0a74641d40fbe32a57786791e6f9f0958f040f55158",
+    "kind" : "PARAGRAPH",
+    "text" : "",
+    "textHash" : "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 2,
+      "paragraphIndex" : 2
+    }
+  }, {
+    "ordinal" : 2,
+    "blockId" : "4403d727d1a48bede0db8b2cd473234d4c4d29c3c3cc2238dd4712edbf528c0b",
+    "kind" : "PARAGRAPH",
+    "text" : "本资料用于验证段落和表格来源，审核时限为两个工作日。",
+    "textHash" : "e7dbf119dbfa09d28bf52c264be6cef2d7bccb2337b9ef2da3ddbbbdbcfe3586",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 3,
+      "paragraphIndex" : 3
+    }
+  }, {
+    "ordinal" : 3,
+    "blockId" : "8dc1587eb86aac42ca66a6b29998291d1943fb779eeb50f8e9af6c0b879c7019",
+    "kind" : "TABLE_CELL",
+    "text" : "项目",
+    "textHash" : "79f326be4409d51fe60f4edc03b20c4b94de952d626e1616790e7b2384f08f00",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 4,
+      "tableIndex" : 1,
+      "row" : 1,
+      "column" : 1,
+      "rowSpan" : 1,
+      "columnSpan" : 1,
+      "header" : true
+    }
+  }, {
+    "ordinal" : 4,
+    "blockId" : "6e0ef37e3953a6a5759f8803821bab7e9d316134054171417a2e84365817da53",
+    "kind" : "TABLE_CELL",
+    "text" : "办理规则",
+    "textHash" : "0a2557932d869dfecdd8004f1eaee6160d69cacde0fbbfcd3ce644cbeb6bfa62",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 4,
+      "tableIndex" : 1,
+      "row" : 1,
+      "column" : 2,
+      "rowSpan" : 1,
+      "columnSpan" : 1,
+      "header" : true
+    }
+  }, {
+    "ordinal" : 5,
+    "blockId" : "69820acf8d21e28561ffd70524913b3c1601fe5420ed9eaf8fb2cf9b02f0240d",
+    "kind" : "TABLE_CELL",
+    "text" : "备注",
+    "textHash" : "daede9881787abe74c94e686be78a4eabc85a09688433027ea55ac583919bc1e",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 4,
+      "tableIndex" : 1,
+      "row" : 1,
+      "column" : 3,
+      "rowSpan" : 1,
+      "columnSpan" : 1,
+      "header" : true
+    }
+  }, {
+    "ordinal" : 6,
+    "blockId" : "de3aa6f3e46410599bcad8b5e126fed661c266d7485eced8d0d56ca921681570",
+    "kind" : "TABLE_CELL",
+    "text" : "资料审核\n两个工作日",
+    "textHash" : "cb9d93fbd09308b4665c4e8aed4926fa7c79ce9732c0125c124caccaeee0ac39",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 4,
+      "tableIndex" : 1,
+      "row" : 2,
+      "column" : 1,
+      "rowSpan" : 2,
+      "columnSpan" : 2,
+      "header" : false
+    }
+  }, {
+    "ordinal" : 7,
+    "blockId" : "2e77c9646497f20012f3278522d39da25d70c87a5fb71a701d58cbeb113fe48f",
+    "kind" : "TABLE_CELL",
+    "text" : "提交材料",
+    "textHash" : "89c0bfb2fe3eb3127d1a3444c2fd029c1e58185468390d6a3a599e5b61f18a0b",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 4,
+      "tableIndex" : 1,
+      "row" : 2,
+      "column" : 3,
+      "rowSpan" : 1,
+      "columnSpan" : 1,
+      "header" : false
+    }
+  }, {
+    "ordinal" : 8,
+    "blockId" : "3839ab486ba7b26352d3afb31774d6f1ebdf8a3c814fc6e033839943abc9aaa5",
+    "kind" : "TABLE_CELL",
+    "text" : "",
+    "textHash" : "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 4,
+      "tableIndex" : 1,
+      "row" : 3,
+      "column" : 3,
+      "rowSpan" : 1,
+      "columnSpan" : 1,
+      "header" : false
+    }
+  }, {
+    "ordinal" : 9,
+    "blockId" : "994a518eafe6439de85ddff54a604e11da0adfee698f4855c79f769e5088b92f",
+    "kind" : "TABLE_CELL",
+    "text" : "咨询",
+    "textHash" : "e1202ad4634b61ed08b881c7f85cfe9064bfaac1378f9040574729896d9b567c",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 4,
+      "tableIndex" : 1,
+      "row" : 4,
+      "column" : 1,
+      "rowSpan" : 1,
+      "columnSpan" : 1,
+      "header" : false
+    }
+  }, {
+    "ordinal" : 10,
+    "blockId" : "19b13c45ae264fed0a618905a9cf06dbacf86592b0fc51a86916e2417f72df44",
+    "kind" : "TABLE_CELL",
+    "text" : "工作日 09:00–17:00",
+    "textHash" : "fcef55374475410dd32ceb293e8e561b92b312c37fc95be0191c395cfb2cba74",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 4,
+      "tableIndex" : 1,
+      "row" : 4,
+      "column" : 2,
+      "rowSpan" : 1,
+      "columnSpan" : 1,
+      "header" : false
+    }
+  }, {
+    "ordinal" : 11,
+    "blockId" : "119784afd108f0e73b4a20e45f53291ddf4880eb857a00a9668d4ac322e99e46",
+    "kind" : "TABLE_CELL",
+    "text" : "线上受理",
+    "textHash" : "4d90a98f8fb7172d42c488c04a20a528b5cac1b10c03884d79b87f0b02ac59ca",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 4,
+      "tableIndex" : 1,
+      "row" : 4,
+      "column" : 3,
+      "rowSpan" : 1,
+      "columnSpan" : 1,
+      "header" : false
+    }
+  }, {
+    "ordinal" : 12,
+    "blockId" : "66a0797d5f7d93eefe61dcf7b7ae53c7f812d2acef62da6cd8be26fae375d7d3",
+    "kind" : "PARAGRAPH",
+    "text" : "查询\t办理说明\n仅保留链接文字。",
+    "textHash" : "1fd8e1e4f5081135412a211dbe0fa124eac0a1e0513e128973aeef26fdb28297",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 5,
+      "paragraphIndex" : 4
+    }
+  }, {
+    "ordinal" : 13,
+    "blockId" : "8c7711042db570451f3a54f79e74dd0c4ce7c4454e73dcf3a10cfc429352cb7b",
+    "kind" : "PARAGRAPH",
+    "text" : "注意事项",
+    "textHash" : "684cbfad835fe07de14a518dedfa00d311d641df62b0f1b8f061d585d83bc133",
+    "headingLevel" : 2,
+    "location" : {
+      "bodyIndex" : 6,
+      "paragraphIndex" : 5
+    }
+  }, {
+    "ordinal" : 14,
+    "blockId" : "245ed7304a044bb297b6a997e5f7290e106474bbf5ffbb3ef4777698d3e9b283",
+    "kind" : "PARAGRAPH",
+    "text" : "附件图示不参与文字检索。",
+    "textHash" : "b9524dd96e46fb0a3335aefb3e4b26a0cc9b431117c4b552183dce45005cd5d4",
+    "headingLevel" : null,
+    "location" : {
+      "bodyIndex" : 7,
+      "paragraphIndex" : 6
+    }
+  } ],
+  "warnings" : [ {
+    "code" : "DOCX_COMMENTS_OMITTED",
+    "locationKey" : null
+  }, {
+    "code" : "DOCX_EXTERNAL_LINK_TEXT_ONLY",
+    "locationKey" : null
+  }, {
+    "code" : "DOCX_FOOTNOTES_ENDNOTES_OMITTED",
+    "locationKey" : null
+  }, {
+    "code" : "DOCX_HEADER_FOOTER_OMITTED",
+    "locationKey" : null
+  }, {
+    "code" : "DOCX_NON_TEXT_CONTENT_OMITTED",
+    "locationKey" : null
+  } ],
+  "extractionDigest" : "f676b03cd662d82f48707d0aa5b561c14895928d046246dc723c6cd46acbad51"
+}

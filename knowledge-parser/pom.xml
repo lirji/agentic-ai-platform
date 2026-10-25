@@ -5,11 +5,17 @@
     <parent><groupId>com.lrj.agentic</groupId><artifactId>agentic-ai-platform</artifactId><version>0.1.0-SNAPSHOT</version></parent>
     <artifactId>knowledge-parser</artifactId>
     <description>Knowledge 管理的一次性解析进程，不启动 HTTP 或 Spring 上下文</description>
+    <properties>
+        <!-- 仅修正本解析模块的传递依赖：Boot默认3.17.0处于CVE-2025-48924范围，不能将Compress要求降级。 -->
+        <commons-lang3.version>3.21.0</commons-lang3.version>
+    </properties>
     <dependencies>
         <dependency><groupId>com.lrj.agentic</groupId><artifactId>platform-contracts</artifactId></dependency>
         <dependency><groupId>org.apache.pdfbox</groupId><artifactId>pdfbox</artifactId><version>${pdfbox.version}</version>
             <exclusions><exclusion><groupId>commons-logging</groupId><artifactId>commons-logging</artifactId></exclusion></exclusions>
         </dependency>
+        <dependency><groupId>org.apache.poi</groupId><artifactId>poi-ooxml</artifactId><version>${poi.version}</version></dependency>
+        <dependency><groupId>org.apache.logging.log4j</groupId><artifactId>log4j-to-slf4j</artifactId></dependency>
         <dependency><groupId>org.slf4j</groupId><artifactId>jcl-over-slf4j</artifactId></dependency>
         <dependency><groupId>ch.qos.logback</groupId><artifactId>logback-classic</artifactId></dependency>
         <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId></dependency>

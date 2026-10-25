@@ -9,7 +9,9 @@ import java.util.Locale;
 public enum DocumentFormat {
     TEXT("TEXT", "text/plain", ".txt", ExtractionProtocol.MAX_TEXT_BYTES, ProcessingProfile.TEXT_V1),
     MARKDOWN("MARKDOWN", "text/markdown", ".md", ExtractionProtocol.MAX_TEXT_BYTES, ProcessingProfile.TEXT_V1),
-    PDF("PDF", "application/pdf", ".pdf", ExtractionProtocol.MAX_SOURCE_BYTES, ProcessingProfile.PDF_V2);
+    PDF("PDF", "application/pdf", ".pdf", ExtractionProtocol.MAX_SOURCE_BYTES, ProcessingProfile.PDF_V2),
+    DOCX("DOCX", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx",
+            ExtractionProtocol.MAX_SOURCE_BYTES, ProcessingProfile.DOCX_V2);
     private final String code;
     private final String contentType;
     private final String suffix;

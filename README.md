@@ -23,7 +23,7 @@
 - [文档来源映射](docs/doc-map.md)：参考仓库基线、源码领域与后续同步规则。
 - [任务进度与恢复入口](CODEX_PROGRESS.md)：实施、验证与交付状态。
 - [最小持续集成契约](docs/design/knowledge-first-20261020/CI_CONTRACTS.md)：两仓自动检查、共享 Java/Python 报文金标及无付费运行边界；[S8F验收](docs/qa/ci-contracts-20261024/TEST_RESULT.md)。
-- [结构化资料设计](docs/design/knowledge-first-20261020/PARSING_DESIGN.md)与[P-v2契约](docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)：PDF/DOCX解析选型、页/段/表来源与旧格式兼容；S9B已接通原生PDF上传、页级引用及真实链路验证，见[S9B验收](docs/qa/pdf-ingestion-20261024/TEST_RESULT.md)；DOCX仍待S9C。
+- [结构化资料设计](docs/design/knowledge-first-20261020/PARSING_DESIGN.md)与[P-v2契约](docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)：已接通原生PDF及DOCX上传，引用保留真实页码或段落/表格位置，兼容旧TXT/MD。DOCX标题、表头、矩形合并与缺失信息告警见[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)；新受理须按[运行说明](deploy/README.md)显式开启，不支持OCR。
 
 ## 当前范围
 

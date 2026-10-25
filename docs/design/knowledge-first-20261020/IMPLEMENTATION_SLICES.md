@@ -203,7 +203,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S8F | 最小跨语言与前端 CI | S8A | ENGINEERING | DONE |
 | S9A | 冻结结构化解析与准备包 v2 | S8A | DESIGN | DONE |
 | S9B | PDF 入库与页级引用 | S9A, S8E | IMPLEMENT | DONE |
-| S9C | DOCX 段落和表格入库 | S9B | IMPLEMENT | PLANNED |
+| S9C | DOCX 段落和表格入库 | S9B | IMPLEMENT | DONE |
 | S9D | LlamaIndex 结构分块及处理版本对照 | S9C, S8D, S10A | IMPLEMENT | PLANNED |
 | S9E | 扫描资料 OCR | S9C, S9D | IMPLEMENT | CONDITIONAL |
 | S9F | 表格资料按需支持 | S9C, S9D | IMPLEMENT | CONDITIONAL |
@@ -335,7 +335,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-PARSE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 真实中文标题/空段/表格/合并单元格样本；不执行宏/外链；表头不丢；异常资源有界；同一文件重试来源稳定。
 - **Pass / Runtime：** IMPLEMENT；沿 S9B 子进程，不新增解析服务。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G02 G03 G18。
+- **状态 / 并行 / 对应缺口：** DONE；2026-10-25本地验收PASS，证据docs/qa/docx-ingestion-20261025/TEST_RESULT.md；Git/CI交付状态见PROGRESS_STATE；parallel=no；G02 G03 G18。
 
 ### S9D · LlamaIndex 结构分块及处理版本对照
 

@@ -1,0 +1,145 @@
+{
+  "parserJar": {
+    "path": "knowledge-parser/target/knowledge-parser-0.1.0-SNAPSHOT.jar",
+    "sha256": "85b3a324de32a457a665953c9aff2aaf6345e7225bb586b925914ac7ac5edb74",
+    "bytes": 27542832
+  },
+  "libraries": [
+    {
+      "jar": "platform-contracts-0.1.0-SNAPSHOT.jar",
+      "sha256": "846edecbf28cea60cad4fa6c4cfd6716b615b1e0c96dfc2d248d172225921e0e",
+      "bytes": 30137
+    },
+    {
+      "jar": "jackson-annotations-2.21.jar",
+      "sha256": "53ca085f4a150f703f49e1aabd935bd03b43e1ea3d55d135438292af22cef56b",
+      "bytes": 82104
+    },
+    {
+      "jar": "pdfbox-3.0.8.jar",
+      "sha256": "97647cfbde61ebcfc06b4cf8c9b0ffcaaee073396eceb4a7f6836a9b9128903c",
+      "bytes": 2070583
+    },
+    {
+      "jar": "pdfbox-io-3.0.8.jar",
+      "sha256": "36a0e04001010b4c764857817412b96339930b19755e728959805cc0352061b2",
+      "bytes": 51906
+    },
+    {
+      "jar": "fontbox-3.0.8.jar",
+      "sha256": "a1915c24e3edbe0ecec93896dfbf6d41427810b663ade97bd4e8bae86ec3fdab",
+      "bytes": 1647000
+    },
+    {
+      "jar": "poi-ooxml-6.0.0.jar",
+      "sha256": "759d97d608ef03b8aa701f56fef0cf9c67fac49f7fa0de4be43c01ca97542c9c",
+      "bytes": 2099900
+    },
+    {
+      "jar": "poi-6.0.0.jar",
+      "sha256": "4977f1ae04e1c77e42c81dd94cca008e0d81ff8d0daa8b85e2a0740c3c1da3cc",
+      "bytes": 3102357
+    },
+    {
+      "jar": "commons-codec-1.18.0.jar",
+      "sha256": "ba005f304cef92a3dede24a38ad5ac9b8afccf0d8f75839d6c1338634cf7f6e4",
+      "bytes": 373045
+    },
+    {
+      "jar": "commons-math3-3.6.1.jar",
+      "sha256": "1e56d7b058d28b65abd256b8458e3885b674c1d588fa43cd7d1cbb9c7ef2b308",
+      "bytes": 2213560
+    },
+    {
+      "jar": "SparseBitSet-1.3.jar",
+      "sha256": "f76b85adb0c00721ae267b7cfde4da7f71d3121cc2160c9fc00c0c89f8c53c8a",
+      "bytes": 25843
+    },
+    {
+      "jar": "poi-ooxml-lite-6.0.0.jar",
+      "sha256": "d722039d325de73562ec79758253e6a659750a53d2e8e998bb3da54c0ad157fc",
+      "bytes": 6079238
+    },
+    {
+      "jar": "xmlbeans-5.4.1.jar",
+      "sha256": "b8fe946b41983e86496a7a68508af82a41daafd0e2a2cc8c9302c53fcbd9802c",
+      "bytes": 2227616
+    },
+    {
+      "jar": "commons-compress-1.28.0.jar",
+      "sha256": "e1522945218456f3649a39bc4afd70ce4bd466221519dba7d378f2141a4642ca",
+      "bytes": 1117221
+    },
+    {
+      "jar": "commons-lang3-3.21.0.jar",
+      "sha256": "a2af247ec4db6eb8947e18e23e0433e4871a7c5d0a40e1f92e46ede54ae1defe",
+      "bytes": 749083
+    },
+    {
+      "jar": "commons-io-2.22.0.jar",
+      "sha256": "2b9a7b1f726fb86216dbd2c8321eabe0221dbd5b1be81c18e1cb53811b104758",
+      "bytes": 609182
+    },
+    {
+      "jar": "curvesapi-1.08.jar",
+      "sha256": "ad95b08b8bbf9d7d17e5e00814898fa23324f32bc5b62f1a37801e6a56ce0079",
+      "bytes": 117159
+    },
+    {
+      "jar": "log4j-api-2.25.5.jar",
+      "sha256": "64777f73ea0b3104c04eb82befbdccc30a425a19e83ad06cb2f93aa303511863",
+      "bytes": 351427
+    },
+    {
+      "jar": "commons-collections4-4.6.0.jar",
+      "sha256": "4e0d0896bac5356cead277bac0283f09813e14417e3e84e0c86b573b54d218a3",
+      "bytes": 934384
+    },
+    {
+      "jar": "log4j-to-slf4j-2.25.5.jar",
+      "sha256": "b68e8b47342dbc9b35644a14fe2efc0b7bf18da703910cd05ad5501ffe07bba1",
+      "bytes": 24173
+    },
+    {
+      "jar": "slf4j-api-2.0.18.jar",
+      "sha256": "44508fd1576500688c790b190acdd16fec4f8c79a3e0b900afd70503cf055f55",
+      "bytes": 69982
+    },
+    {
+      "jar": "jcl-over-slf4j-2.0.18.jar",
+      "sha256": "ec5c36d57d2dbe100f84878f944575cb7871da32c7a115b8d7e0721277045d67",
+      "bytes": 18422
+    },
+    {
+      "jar": "logback-classic-1.5.34.jar",
+      "sha256": "b65e05076a5c1aadb659b4fe4bc5fee31cb26cd70390292eb03e4a7a24cff10f",
+      "bytes": 286757
+    },
+    {
+      "jar": "logback-core-1.5.34.jar",
+      "sha256": "42eda264c0c650c2bec59e66151a88b708a8663dc1b49d788202d53e78b8caae",
+      "bytes": 645490
+    },
+    {
+      "jar": "jackson-databind-2.21.8.jar",
+      "sha256": "ad77f2285717e2f34c319d988b7c85783a47d0b33f33a501d1fcbf196e61bbaa",
+      "bytes": 1713950
+    },
+    {
+      "jar": "jackson-core-2.21.8.jar",
+      "sha256": "604ef7765013daf5cde192e40bc4c8412c4ca93f4aaf7bf8e9a62fad1e1026bb",
+      "bytes": 599566
+    },
+    {
+      "jar": "spring-boot-jarmode-tools-3.5.16.jar",
+      "sha256": "d05beb46a7eac0f1a06733c75828b190a1cb250076ce03be2213aca4a5c0f03f",
+      "bytes": 53753
+    }
+  ],
+  "knowledgeJarSha256": "40df77f61b05ba0c2675b1d238f01d2c95fbd88b71deee3d952c015e0ec96e6c",
+  "versionSources": [
+    "pom.xml",
+    "knowledge-parser/pom.xml"
+  ],
+  "licenseSources": "research-evidence.json; Apache POI/Commons/XMLBeans Apache-2.0, curvesapi BSD-3-Clause; retained PDFBox and logging deps follow S9B"
+}

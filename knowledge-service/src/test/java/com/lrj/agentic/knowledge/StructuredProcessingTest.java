@@ -39,6 +39,25 @@ class StructuredProcessingTest {
         assertThat(mapper.readTree(json.write(result))).isEqualTo(tree.get("prepared"));
     }
 
+    @Test void actualDocxAndLlamaIndexKeepHeadingMergedCellAndEmptyBlockIdentity() throws Exception {
+        JsonNode tree;
+        try (var input = getClass().getResourceAsStream("/structured-processing-docx-golden.json")) { tree = mapper.readTree(input); }
+        var request = request(tree);
+        byte[] source = Files.readAllBytes(Path.of("..").resolve(tree.path("sourceFixture").asText()));
+        request.extraction().validated(Extraction.digest(source), source.length);
+        var result = prepared(tree).validated(request);
+        assertThat(request.extraction().blocks()).hasSize(15);
+        assertThat(result.chunks()).hasSize(13);
+        assertThat(result.chunks().get(5).text()).isEqualTo("资料审核\n两个工作日");
+        assertThat(result.chunks().get(5).segments().getFirst().blockId()).isEqualTo(request.extraction().blocks().get(6).blockId());
+        assertThat(Double.doubleToRawLongBits(result.chunks().getFirst().vector().get(1))).isEqualTo(Long.MIN_VALUE);
+        assertThat(mapper.readTree(json.write(result))).isEqualTo(tree.get("prepared"));
+        var wrong = new StructuredPreparedDocument.Request(request.tenantId(), request.ownerId(), request.documentId(),
+                request.jobId(), request.documentVersion(), com.lrj.agentic.contract.knowledge.ExtractionProtocol.PDF_PROCESSOR,
+                request.extraction());
+        assertThatThrownBy(() -> result.validated(wrong)).isInstanceOf(KnowledgeFailure.class);
+    }
+
     @Test void rejectsMissingNullDuplicateUnknownAndCoercedFields() throws Exception {
         String valid = fixture().path("request").path("extraction").toString();
         for (String changed : List.of(valid.replace("\"headingLevel\":null,", ""),

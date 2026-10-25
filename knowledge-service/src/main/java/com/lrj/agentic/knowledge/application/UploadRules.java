@@ -26,12 +26,18 @@ public final class UploadRules {
     /** PDF 新受理由独立开关控制；正文签名和请求媒体类型均不能只信文件名。 */
     public static Upload validate(String idempotencyKey, String fileName, String displayName, byte[] bytes,
             String requestContentType, boolean pdfEnabled) {
+        return validate(idempotencyKey, fileName, displayName, bytes, requestContentType, pdfEnabled, false);
+    }
+
+    /** 两种二进制格式独立受理；DOCX还核对普通Word容器，不能把任意ZIP存成可处理资料。 */
+    public static Upload validate(String idempotencyKey, String fileName, String displayName, byte[] bytes,
+            String requestContentType, boolean pdfEnabled, boolean docxEnabled) {
         if (idempotencyKey == null || !IDEMPOTENCY_KEY.matcher(idempotencyKey).matches()
                 || bytes == null || bytes.length == 0 || fileName == null) {
             throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
         }
         DocumentFormat format = DocumentFormat.fromFilename(fileName);
-        if (format == DocumentFormat.PDF && !pdfEnabled) {
+        if (format == DocumentFormat.PDF && !pdfEnabled || format == DocumentFormat.DOCX && !docxEnabled) {
             throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT);
         }
         if (bytes.length > format.maximum()) {
@@ -48,7 +54,11 @@ public final class UploadRules {
         if (format == DocumentFormat.PDF && (!pdfSignature || !contentType.equalsIgnoreCase(requestContentType))) {
             throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT);
         }
-        if (format != DocumentFormat.PDF) {
+        if (format == DocumentFormat.DOCX) {
+            if (!contentType.equalsIgnoreCase(requestContentType)) { throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT); }
+            DocxUploadContainer.validate(bytes);
+        }
+        if (!format.profile().structured()) {
             if (pdfSignature) { throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT); }
             try {
                 String text = StandardCharsets.UTF_8.newDecoder()

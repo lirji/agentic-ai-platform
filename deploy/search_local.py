@@ -190,6 +190,7 @@ def environment(mode: str) -> dict[str, str]:
         # 新受理与已有任务恢复可独立关闭；固定本仓解析 JAR，不接受请求传入路径。
         "KNOWLEDGE_PARSING_ENABLED": os.environ.get("KNOWLEDGE_PARSING_ENABLED", "false"),
         "KNOWLEDGE_PDF_UPLOAD_ENABLED": os.environ.get("KNOWLEDGE_PDF_UPLOAD_ENABLED", "false"),
+        "KNOWLEDGE_DOCX_UPLOAD_ENABLED": os.environ.get("KNOWLEDGE_DOCX_UPLOAD_ENABLED", "false"),
         "KNOWLEDGE_PARSER_JAVA": str(Path(shutil.which("java") or "/usr/bin/java").resolve()),
         "KNOWLEDGE_PARSER_JAR": str(
             ROOT / "knowledge-parser/target/knowledge-parser-0.1.0-SNAPSHOT.jar"

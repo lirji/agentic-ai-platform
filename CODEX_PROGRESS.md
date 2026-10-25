@@ -1,7 +1,7 @@
 # Codex Progress
 
-- 当前任务：`capability-delivery-20261021`，S9B PDF入库与页级引用已实现、验证并正常合并推送两仓main。
-- 最新要求：“当前任务做完先暂停”。已完成S9B，整体后续计划PAUSED_BY_USER；S9C仍PLANNED，不自动继续。
+- 当前任务：`capability-delivery-20261021`，S9C DOCX入库与段落/表格来源已实现，处于验证与Git交付收尾。
+- 最新要求：2026-10-25“继续”，已恢复原批准计划，从S9C DOCX段落/表格入库开始；S9B完成证据仍有效，不重复付费步骤。
 - 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；任务定义：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
 - [S9B验收](docs/qa/pdf-ingestion-20261024/TEST_RESULT.md)与[交付收据](docs/qa/pdf-ingestion-20261024/delivery-result.json)记录当前证据；准确HEAD读Git，收据为已验证产品提交的文档后继。
 - 完整20项差距/51项计划未完成；本地服务/历史资料/预算/恢复键保留，不重跑已付费步骤、不清理、不生产部署。

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lrj.agentic.contract.knowledge.ExtractionProtocol.Format;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -34,6 +35,7 @@ class ParserProcessTest {
             failure(fixture, "empty", KnowledgeError.PARSE_TEXT_UNAVAILABLE);
             failure(fixture, "abnormal", KnowledgeError.PARSER_UNAVAILABLE);
             failure(fixture, "malformed", KnowledgeError.SOURCE_INVALID);
+            failure(fixture, "wrong-format", KnowledgeError.SOURCE_INVALID);
         }
     }
 
@@ -52,14 +54,14 @@ class ParserProcessTest {
             AtomicReference<Throwable> failure = new AtomicReference<>();
             AtomicReference<Boolean> interrupted = new AtomicReference<>();
             Thread worker = new Thread(() -> {
-                try { fixture.parser.extract(request("hang", pid)); }
+                try { fixture.parser.extract(request("hang", pid), Format.PDF); }
                 catch (Throwable error) { failure.set(error); }
                 finally { interrupted.set(Thread.currentThread().isInterrupted()); }
             });
             worker.start();
             try {
                 awaitPid(pid);
-                assertThatThrownBy(() -> fixture.parser.extract(request("invalid", directory.resolve("unused.pid"))))
+                assertThatThrownBy(() -> fixture.parser.extract(request("invalid", directory.resolve("unused.pid")), Format.DOCX))
                         .isInstanceOfSatisfying(KnowledgeFailure.class, error -> assertThat(error.error()).isEqualTo(KnowledgeError.BUSY));
             } finally { worker.interrupt(); worker.join(6000); }
             assertThat(worker.isAlive()).isFalse();
@@ -71,11 +73,11 @@ class ParserProcessTest {
     }
 
     @Test void disabledAndMissingRuntimeFailBeforeProcessCreation() {
-        assertThatThrownBy(() -> new ParserProperties(true, false, Path.of("/does-not-exist"), Path.of("/missing.jar")))
+        assertThatThrownBy(() -> new ParserProperties(true, false, false, Path.of("/does-not-exist"), Path.of("/missing.jar")))
                 .isInstanceOf(IllegalArgumentException.class);
-        var disabled = new ParserProcess(new ParserProperties(false, false, null, null),
+        var disabled = new ParserProcess(new ParserProperties(false, false, false, null, null),
                 new ProcessingJson(new ObjectMapper()), Tracer.NOOP, new SimpleMeterRegistry());
-        assertThatThrownBy(() -> disabled.extract(new byte[] {1})).isInstanceOfSatisfying(KnowledgeFailure.class,
+        assertThatThrownBy(() -> disabled.extract(new byte[] {1}, Format.PDF)).isInstanceOfSatisfying(KnowledgeFailure.class,
                 error -> assertThat(error.error()).isEqualTo(KnowledgeError.PARSER_UNAVAILABLE));
         disabled.close();
     }
@@ -89,7 +91,7 @@ class ParserProcessTest {
 
     private void failure(Fixture fixture, String mode, KnowledgeError expected) throws Exception {
         Path pid = directory.resolve(mode + ".pid");
-        assertThatThrownBy(() -> fixture.parser.extract(request(mode, pid)))
+        assertThatThrownBy(() -> fixture.parser.extract(request(mode, pid), Format.PDF))
                 .isInstanceOfSatisfying(KnowledgeFailure.class, error -> assertThat(error.error()).isEqualTo(expected));
         assertDead(pid);
         assertThat(fixture.meters.get("knowledge.parser.active").gauge().value()).isZero();
@@ -108,7 +110,7 @@ class ParserProcessTest {
             output.closeEntry();
         }
         var meters = new SimpleMeterRegistry();
-        var properties = new ParserProperties(true, false, Path.of(System.getProperty("java.home"), "bin", "java"), jar);
+        var properties = new ParserProperties(true, false, false, Path.of(System.getProperty("java.home"), "bin", "java"), jar);
         return new Fixture(new ParserProcess(properties, new ProcessingJson(new ObjectMapper()), Tracer.NOOP, meters, timeout), meters);
     }
 

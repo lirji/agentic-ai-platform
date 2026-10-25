@@ -1,0 +1,29 @@
+{
+  "log": ".logs/s9c-dependency-final-it.log",
+  "tests": 21,
+  "errors": 0,
+  "failures": 0,
+  "testNames": [
+    "invalidDocxNeverReachesModelOrPublishes(String, KnowledgeError)[1]",
+    "invalidDocxNeverReachesModelOrPublishes(String, KnowledgeError)[2]",
+    "invalidDocxNeverReachesModelOrPublishes(String, KnowledgeError)[3]",
+    "invalidDocxNeverReachesModelOrPublishes(String, KnowledgeError)[4]",
+    "invalidDocxNeverReachesModelOrPublishes(String, KnowledgeError)[5]",
+    "invalidDocxNeverReachesModelOrPublishes(String, KnowledgeError)[6]",
+    "docxAcceptedExtractionResumesAndWrongRegisteredFormatCannotReplaceIt",
+    "publishesDocxWithTrueAnchorsAndAllThreeProfilesInBothIndexes",
+    "acceptedExtractionSurvivesCrashWithoutReparsing",
+    "corruptAcceptedObjectFailsBeforeModelAndNeverSilentlyReparses",
+    "oldLeaseCannotAcceptOrReplaceExtractionAndIncompleteRowsFailDatabaseChecks",
+    "acceptedPreparationAndCompletedSinkSurviveFailureWithoutParsingOrEmbeddingAgain(DocumentFormat)[1]",
+    "acceptedPreparationAndCompletedSinkSurviveFailureWithoutParsingOrEmbeddingAgain(DocumentFormat)[2]",
+    "invalidBinaryNeverReachesModelOrPublishes(String, KnowledgeError)[1]",
+    "invalidBinaryNeverReachesModelOrPublishes(String, KnowledgeError)[2]",
+    "invalidBinaryNeverReachesModelOrPublishes(String, KnowledgeError)[3]",
+    "invalidBinaryNeverReachesModelOrPublishes(String, KnowledgeError)[4]",
+    "invalidBinaryNeverReachesModelOrPublishes(String, KnowledgeError)[5]",
+    "unknownCommitReceiptIsResolvedBySameLeaseReadBeforeModelStage",
+    "publishesPdfAndV1TogetherWithTruePagesWarningsAndEvaluationProfiles",
+    "unknownReceiptCannotReviveExpiredLease"
+  ]
+}

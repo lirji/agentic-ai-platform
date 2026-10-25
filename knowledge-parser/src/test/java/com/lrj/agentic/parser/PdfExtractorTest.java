@@ -23,7 +23,7 @@ class PdfExtractorTest {
         Extraction result = extractor.extract(source);
         assertThat(result.sourceHash()).isEqualTo("fe650e9df49f9366931b8c86d1a31f75671b4f06a50a9e899ba432ee1dc1ccbc");
         assertThat(result.blocks()).hasSize(3);
-        assertThat(result.blocks().stream().map(block -> block.location().page())).containsExactly(1, 2, 3);
+        assertThat(result.blocks().stream().map(block -> ((com.lrj.agentic.contract.knowledge.Extraction.PdfLocation) block.location()).page())).containsExactly(1, 2, 3);
         assertThat(result.blocks().get(1).text()).isBlank();
         assertThat(result.blocks().get(2).text()).contains("Rotated");
         assertThat(result.warnings()).contains(new Extraction.Warning(WarningCode.PAGE_NO_TEXT, "pdf:2"));

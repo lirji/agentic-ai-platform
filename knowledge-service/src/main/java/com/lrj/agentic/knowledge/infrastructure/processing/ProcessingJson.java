@@ -22,6 +22,7 @@ public class ProcessingJson {
         mapper = source.copy().disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
                 .disable(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
                 .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                        DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS,
                         DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES,
                         DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
                 .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION);

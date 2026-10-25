@@ -105,7 +105,9 @@ public class S3PreparationStore implements PreparationStore {
     }
 
     private static void validateExtraction(Ingestion job, Extraction extraction) {
-        if (job.profile() != ProcessingProfile.PDF_V2) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
+        if (!job.profile().structured() || extraction == null || extraction.format() != job.profile().format()) {
+            throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
+        }
         try { extraction.validated(job.source().hash(), job.source().size()); }
         catch (IllegalArgumentException invalid) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
     }

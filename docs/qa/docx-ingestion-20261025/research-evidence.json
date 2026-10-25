@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-10-25",
+  "decision": "retain frozen POI6.0.0 in existing isolated parser; no new service",
+  "officialSources": [
+    {
+      "url": "https://poi.apache.org/download.html",
+      "observed": "6.0.0 stable, released 2026-10-22; Maven components 6.0.0; Apache-2.0"
+    },
+    {
+      "url": "https://poi.apache.org/",
+      "observed": "POI6 requires Java17+; duplicate ZIP names rejected since5.4.0; XMLBeans XXE historical guidance"
+    },
+    {
+      "url": "https://poi.apache.org/security.html",
+      "observed": "untrusted parsing may consume memory/time and throw broad exceptions; separate process, bounded temp area and timeout recommended"
+    },
+    {
+      "url": "https://poi.apache.org/apidocs/dev/org/apache/poi/openxml4j/util/ZipSecureFile.html",
+      "observed": "per-entry and ratio limits exist; total bytes and count still enforced by application"
+    }
+  ],
+  "runtimeCompatibility": "existing JDK21; keep current bounded JVM and stderr-only logging bridge",
+  "limitations": "not an OS/RSS sandbox or proof of arbitrary DOCX compatibility",
+  "transitiveReview": {
+    "commonsLang": {
+      "found": "3.17.0 inherited from Spring Boot3.5.16",
+      "fixedInParserOnly": "3.21.0",
+      "reason": "CVE-2025-48924 affects versions below3.18.0; 3.21.0 also bounds class name/dimensions",
+      "securitySource": "https://svn.apache.org/repos/infra/websites/production/commons/content/proper/commons-lang/security.html",
+      "releaseSource": "https://commons.apache.org/proper/commons-lang/changes.html"
+    },
+    "commonsCompress": "1.28.0; reviewed https://commons.apache.org/proper/commons-compress/security.html; listed fixes through1.26.0 included",
+    "commonsIO": "2.22.0; reviewed https://commons.apache.org/proper/commons-io/security.html; CVE-2024-47554 fixed since2.14.0",
+    "scope": "new parser dependencies; no assertion of exhaustive system vulnerability audit"
+  }
+}

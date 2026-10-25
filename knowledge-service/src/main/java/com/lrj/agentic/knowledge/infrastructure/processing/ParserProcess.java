@@ -66,8 +66,9 @@ public class ParserProcess implements DocumentExtractor {
     }
 
     /** 返回前验证原字节绑定；失败时先回收已知进程，再归还槽位。 */
-    public Extraction extract(byte[] source) {
+    public Extraction extract(byte[] source, ExtractionProtocol.Format format) {
         if (!properties.enabled() || closed.get()) { throw new KnowledgeFailure(KnowledgeError.PARSER_UNAVAILABLE); }
+        if (format == null) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
         if (source.length < 1 || source.length > ExtractionProtocol.MAX_SOURCE_BYTES) {
             throw new KnowledgeFailure(KnowledgeError.PARSE_RESOURCE_LIMIT);
         }
@@ -86,7 +87,7 @@ public class ParserProcess implements DocumentExtractor {
             }
             temporary = Files.createTempDirectory("knowledge-parser-",
                     PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------")));
-            var builder = new ProcessBuilder(command(temporary, source.length)).directory(temporary.toFile());
+            var builder = new ProcessBuilder(command(temporary, source.length, format)).directory(temporary.toFile());
             builder.environment().clear();
             builder.environment().putAll(Map.of("LANG", "C.UTF-8", "TZ", "UTC"));
             process = new ManagedChild(builder.start());
@@ -111,8 +112,10 @@ public class ParserProcess implements DocumentExtractor {
             if (child.process.exitValue() != Exit.SUCCESS.code()) { throw new KnowledgeFailure(exitError(child.process.exitValue())); }
             await(input, deadline);
             try {
-                return json.read(bytes, Extraction.class, KnowledgeError.SOURCE_INVALID)
+                Extraction extraction = json.read(bytes, Extraction.class, KnowledgeError.SOURCE_INVALID)
                         .validated(Extraction.digest(source), source.length);
+                if (extraction.format() != format) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
+                return extraction;
             } catch (IllegalArgumentException invalid) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
         } catch (KnowledgeFailure failure) {
             meters.counter("knowledge.parser.failures", "code", failure.error().code()).increment();
@@ -151,11 +154,11 @@ public class ParserProcess implements DocumentExtractor {
         }
     }
 
-    private List<String> command(Path temporary, int size) {
+    private List<String> command(Path temporary, int size, ExtractionProtocol.Format format) {
         return List.of(properties.javaExecutable().toString(), "-Xmx128m", "-XX:MaxDirectMemorySize=32m",
                 "-XX:MaxMetaspaceSize=96m", "-XX:ActiveProcessorCount=2", "-Djava.awt.headless=true",
                 "-Djava.io.tmpdir=" + temporary, "-Duser.home=" + temporary, "-Dpdfbox.fontcache=" + temporary,
-                "-jar", properties.jar().toString(), ExtractionProtocol.Format.PDF.code(), Integer.toString(size));
+                "-jar", properties.jar().toString(), format.code(), Integer.toString(size));
     }
 
     private static byte[] read(ManagedChild process, InputStream input, int limit, boolean retain,
