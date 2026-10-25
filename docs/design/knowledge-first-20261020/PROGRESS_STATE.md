@@ -1,15 +1,16 @@
 # 独立知识平台准备进度
 
-## 当前状态：S10A设计验证通过，交付后继续S9D
+## 当前状态：S10A设计已交付，继续S9D
 
-- 任务：`capability-delivery-20261021`；2026-10-25用户“继续”，原20项差距/51项计划有效；S8A–F、S9A–C已交付，S10A设计DONE/文档验证PASS，Git/CI待交付；下一项S9D。parallel=no，无子Agent。
+- 任务：`capability-delivery-20261021`；2026-10-25用户“继续”，原20项差距/51项计划有效；S8A–F、S9A–C已交付，S10A设计DONE/文档验证PASS，设计提交14300f1及分支/main CI均已交付；下一项S9D。parallel=no，无子Agent。
 - 本片计划：核对当前受理/租约/发布/引用和评测消费者→在原架构中补生命周期模型→冻结C-LIFECYCLE接口、并发/撤下/清理与版本兼容→验收矩阵和文档验证→正常Git/CI交付→S9D。
 - Git：后端原目录`feat/knowledge-lifecycle-design-20261025`，基线`88dcf6c`；前端原目录`main`/`cdf7e47`只读。无新worktree；本片仅设计/验收/索引/进度文档，不写产品代码或迁移占位SQL。
 - 已完成：S9C产品后端`3499697`、前端`094182c`已正常合并推送main，两个main CI全部成功；收据见[delivery-result](../../qa/docx-ingestion-20261025/delivery-result.json)、[ci-gate](../../qa/docx-ingestion-20261025/ci-gate.json)。收据提交为产品文档后继，当前准确HEAD读Git。
 - 事实：当前document.version固定1；document.status与入库状态耦合，publishedScope要求version=publishedVersion且job为当前任务。profile过滤已由单一processor扩为TXT/PDF/DOCX闭合兼容列表；同一MIME仍只映射一个profile，原按文档版本唯一的任务/块约束不支持同版多代重索引。
 - 设计已完成：原架构D-LC01–08、T33、LIFECYCLE_CONTRACTS、LC-01–24验收矩阵、前端/契约入口及S10B/C影响路径。新增last_generation避免失败代次复用；旧发布的元数据/评测hash不借用失败新稿；历史答案与SSE服务端重验先于更新启用。
 - 验证：34个真实源码文件与基线摘要一致；Markdown/本地链接/表格、6条不变量/8项决策/24项未来验收、51个ID及原依赖无环均PASS。见../../qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md与validation.json；状态图仅结构检查，未渲染。源代码/运行/依赖和前端未改、无模型/迁移操作。
-- 下一步：文档提交/任务分支CI/正常合并推送main与收据→S9D结构分块与profile对照。U07具体保留期只阻止物理清理/生产承诺；当前清理关闭，无需为此暂停S9D。
+- S10A交付收据：../../qa/knowledge-lifecycle-design-20261025/delivery-result.json，main CI 40184205681 PASS。收据为文档后继，不覆盖产品源码；两仓均只有原目录，无待清理worktree。
+- 下一步：提交本次交付收据→从main创建S9D任务分支，冻结本片profile细节后实现结构分块与同输入对照。只读预研及未冻结建议保存在.local/s9d-design-notes.md，LlamaIndex无模型探针.local/s9d-node-probe.json通过。U07具体保留期只阻止物理清理/生产承诺；当前清理关闭，无需为此暂停S9D。
 - 原授权继续：正常分支提交、验证后合并推送origin/main；不强推、不绕过保护、不生产部署、不清理、不新增模型预算。
 - 运行：S9C最终制品与服务已恢复；Knowledge(parsing/pdf/docx=true)、AI/Gateway/Tasks/Conversations/模型代理/Web/qa-worker保留。本片不启动模型、构建或数据迁移；不得并行Maven或package/verify覆盖活动JAR。
 - 付费状态保留：Embedding累计47批/0.47元、chat24次/0.889964元（各1元上限，预留非账单）。原.local/s9c-ui-state.json、s9c-http-state.json和S9B恢复键不可清空；成功文档ab3d5d8d-0910-43b1-833f-2dda9bc9d121、任务dd882b66-98a8-42d2-941f-0d132b73d0ef，13片段，不重复执行。

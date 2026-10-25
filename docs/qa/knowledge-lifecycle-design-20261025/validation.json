@@ -1,14 +1,14 @@
 {
   "slice": "S10A",
   "status": "PASS",
-  "checkedAt": "2026-10-25T10:15:10.585810+00:00",
+  "checkedAt": "2026-10-25T10:19:50.322848+00:00",
   "scope": "design/documents only; not runtime acceptance",
   "sourceFilesVerified": 34,
   "sourceChanges": 0,
   "frontendHead": "cdf7e471ff418261e594d9c232bc880da0243c12",
   "frontendChanges": 0,
   "markdownFiles": 16,
-  "localLinks": 303,
+  "localLinks": 305,
   "tables": 52,
   "stableTaskIds": 51,
   "dependenciesUnchanged": true,
@@ -35,6 +35,8 @@
     "docs/design/platform-selection-20261020/TECH_SELECTION.md",
     "docs/doc-map.md",
     "docs/qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md",
+    "docs/qa/knowledge-lifecycle-design-20261025/ci-gate.json",
+    "docs/qa/knowledge-lifecycle-design-20261025/delivery-result.json",
     "docs/qa/knowledge-lifecycle-design-20261025/source-evidence.json",
     "docs/qa/knowledge-lifecycle-design-20261025/validation.json"
   ],
@@ -52,7 +54,7 @@
     "docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md": "8733789aad6637dabf7edbe98bb3d0a78055ff78a766f67a039dcc3732a62f3c",
     "docs/design/platform-selection-20261020/TECH_SELECTION.md": "2422e036b0db6f90ea14d35127d79c0d8ffb0456cd3e3d4eaa6f429aff2138b2",
     "docs/doc-map.md": "8dbca699eb7f828e0ad4923d7d9f3b2a2046822baa50a3219242a9bfa5f6caa4",
-    "docs/qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md": "af2ddeef655348e7035826166de652d76928cb31d3d4408c57dc3274d99d37c6"
+    "docs/qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md": "0e93a39737ecfea9a8559bd3704b3f68dd6fc15e5ec33079f41a5a9ce32ab814"
   },
   "review": "same agent second pass; no delegated independent review",
   "newModelCalls": 0,

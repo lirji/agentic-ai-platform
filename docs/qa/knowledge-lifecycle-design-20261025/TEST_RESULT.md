@@ -37,4 +37,4 @@
 
 U01真实业务语料、U03正式共享身份、U06规模/SLO、U07保留/灾备仍未决；原计划允许本地/隔离机制先行，本片不补造业务天数、容量、质量提升或RTO/RPO。后续产品验收均明确待执行。
 
-SKILL_HANDOFF: backend-architecture-design和Contracts阶段，slice=S10A，status=COMPLETED，gate=PASS_WITH_ASSUMPTIONS（上述已显式限定的未知项不阻断S9D）；project-documentation/implementation-slicing已同步原文档和Owner路径。交update-progress-docs记录DONE，再按task-git-delivery/ci-cd-gate完成设计文档交付；随后直接继续S9D。实际Git/CI结果另见本目录交付收据，未产生前不声明远程交付完成。
+SKILL_HANDOFF: backend-architecture-design和Contracts阶段，slice=S10A，status=COMPLETED，gate=PASS_WITH_ASSUMPTIONS（上述已显式限定的未知项不阻断S9D）；project-documentation/implementation-slicing已同步原文档和Owner路径。交update-progress-docs记录DONE，再按task-git-delivery/ci-cd-gate完成设计文档交付；随后直接继续S9D。设计提交`14300f1`已正常合并推送main，分支和main CI均通过；见[交付收据](delivery-result.json)与[CI结果](ci-gate.json)。
