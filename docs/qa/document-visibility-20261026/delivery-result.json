@@ -1,0 +1,69 @@
+{
+  "slice": "S10C",
+  "status": "DELIVERED",
+  "targetBranch": "main",
+  "taskBranch": "feat/document-visibility-20261026",
+  "repositories": {
+    "backend": {
+      "implementationCommit": "26518e52f7766d6b555d70874c9877f68102c81f",
+      "mergedAndPushedToMain": true,
+      "ci": {
+        "branch": {
+          "repo": "agentic-ai-platform",
+          "id": 40364296696,
+          "sha": "26518e52f7766d6b555d70874c9877f68102c81f",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40364296696"
+        },
+        "main": {
+          "repo": "agentic-ai-platform",
+          "id": 40364713196,
+          "sha": "26518e52f7766d6b555d70874c9877f68102c81f",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40364713196"
+        }
+      }
+    },
+    "frontend": {
+      "implementationCommit": "46c3babc8d55fd0ca65cd3a2c99aef40409f643b",
+      "mergedAndPushedToMain": true,
+      "ci": {
+        "branch": {
+          "repo": "agentic-ai-platform-web",
+          "id": 40364311515,
+          "sha": "46c3babc8d55fd0ca65cd3a2c99aef40409f643b",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/40364311515"
+        },
+        "main": {
+          "repo": "agentic-ai-platform-web",
+          "id": 40364750615,
+          "sha": "46c3babc8d55fd0ca65cd3a2c99aef40409f643b",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/40364750615"
+        }
+      }
+    }
+  },
+  "validation": "TEST_RESULT.md; backend validation.json contains exact source manifest",
+  "sideEffects": {
+    "normalFastForward": true,
+    "forcePush": false,
+    "productionDeployment": false,
+    "physicalDeletion": false
+  },
+  "worktrees": {
+    "created": false,
+    "removed": false
+  },
+  "preserve": [
+    ".local fixed keys, credentials, budget ledgers and recovery records",
+    ".logs and screenshots",
+    "MySQL/S3/ES/Qdrant/PG retained data"
+  ],
+  "receiptRevision": "Use Git history for this documentation commit; implementation source is unchanged. Final receipt CI is checked before S10D."
+}

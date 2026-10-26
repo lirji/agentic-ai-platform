@@ -1,6 +1,6 @@
 # Codex Progress
 
-- 当前任务：`capability-delivery-20261021`；S10C撤下/逻辑删除本地验收PASS，正在Git/CI交付，之后连续S10D；保留20%额度的窗口检查已建立。
+- 当前任务：`capability-delivery-20261021`；S10C实现已合并推送main且CI通过，完成收据后连续S10D；保留20%额度的窗口检查已建立。
 - 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；任务定义：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
 - 两仓原目录任务分支`feat/document-visibility-20261026`；沿已批准计划持续实施/验证/正常Git交付，无生产部署或清理。固定键/账本/历史资料保留，不重跑已成功或未知付费步骤。
 

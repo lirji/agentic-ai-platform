@@ -1,19 +1,20 @@
 # 独立知识平台准备进度
 
-## 当前状态：S10C实现与验收PASS，正在两仓Git/CI交付
+## 当前状态：S10C实现已交付，收据验证后连续S10D
 
-- 任务：`capability-delivery-20261021`；已批准51项计划，parallel=no。S8A–F、S9A–D、S10A/B已交付；S10C本地DONE/验证PASS，当前必须完成提交、分支CI、正常合并推送main及最终CI，然后连续开始S10D。S10D/E仍PLANNED。
+- 任务：`capability-delivery-20261021`；已批准51项计划，parallel=no。S8A–F、S9A–D、S10A/B已交付；S10C DONE/验证PASS，实现已正常合并推送main且分支/main CI均PASS；正在提交交付收据，当前文档CI通过后连续开始S10D。S10D/E仍PLANNED。
 - S10C证据：[验收](../../qa/document-visibility-20261026/TEST_RESULT.md)、[实现](../../qa/document-visibility-20261026/IMPLEMENTATION_EVIDENCE.md)、[源码清单](../../qa/document-visibility-20261026/validation.json)。K07撤下/逻辑删除、在途隔离、owner管理与删除404、全部旧正文授权、原键恢复；适用LC-12–16、21–24。无物理清理/恢复上架，不提前实施S10D/E。
 - 已完成：Java138单元+108集成PASS；React83单元/类型/ESLint/构建、14协议浏览器场景、真实撤下/删除/修复后再次删除PASS，1440/1024/414截图已查看；真实6个PG墓碑恢复模型0调用；评测/历史Tasks/SSE/Conversation/K04/K05/K06/K08、Knowledge停机503、六写开关全关闭兼容PASS。日志两仓`.logs/s10c-*`。
 - 修正：定向真实DB复现并修复同键DELETE首次回执查询后的404竞态；未知提交立即隐藏缓存正文与更新入口，实际丢响应/404后仍仅一个POST并按原键恢复。验收脚本时序/DTO/路径问题已修复，原失败日志保留；无未解决必需FAIL。
 - Allowed Change Set：Knowledge lifecycle/Processing审计/测试、默认关闭双开关、既有白名单；前端K07客户端/详情与确认恢复、对应测试/截图；规范进度、运行说明、验收。无新依赖/基础设施/迁移，V10及旧金标未改。
-- Git：两仓原目录`feat/document-visibility-20261026`，基线backend7ba26c4 / frontend83d24db；本片未提交改动均已归属，无新worktree。按完整逻辑单元提交、正常合并推送origin/main，不强推/绕过保护/生产部署。
+- Git：两仓原目录`feat/document-visibility-20261026`，基线backend7ba26c4 / frontend83d24db；实现26518e5/46c3bab已提交并合并推送main；原分支复用完成收据，无新worktree。按完整逻辑单元提交、正常合并推送origin/main，不强推/绕过保护/生产部署。
 - 本地运行：Knowledge dev/test V10、Tasks dev/test V4；create/generation/updates/withdrawals/deletions=true、backfill=false，解析/PDF/DOCX及STRUCTURE_V3保持。Java/AI/model-proxy/qa-worker已恢复；local-dev在途0。构建前正常停止旧Java，不覆盖活动JAR。
 - 模型预算：Embedding65批/0.671784元（本片3份隔离资料+2次失效查询），chat24次/0.889964元，各1元累计上限不变。新调用前核对账本，不重置或重跑未知付费操作；S10B实际资料保留，S10C仅操作独立样本。
 - 额度要求：用户要求预留20%。恢复/阶段边界运行`python3 .local/check_session_quota.py`，最新客户端约52%已用；接近78%开始收尾，80%前停止新工作并保存检查点。窗口快照有滞后，与项目模型两本账本独立。
 - 恢复入口：先核对Git/CI和`.local/s10c-http-state.json`、`s10c-privacy-state.json`；已完成命令只读查询/重放，不重新造样本或恢复墓碑。保留固定键、密钥、账本、日志、截图、DB/S3/索引/PG；20条历史隔离租户RECEIVED不清理。
 - 规范：backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/契约/并发/容量/发布及个人状态机细则。原MULTI_CLIENT_DRIFT_BLOCKED未改，沿批准手工专业pass；U01/U03/U06/U07不扩大为生产承诺。
-- 下一步：验证源码清单/文档与差异，S10C两仓提交推分支并检查CI，通过后正常合并推main；写交付收据与最终CI，然后开始S10D固定快照重索引。用户连续授权有效，不再要求“继续”。
+- 交付收据：[delivery-result](../../qa/document-visibility-20261026/delivery-result.json)。实现分支CI40364296696/40364311515、main CI40364713196/40364750615均PASS；最后文档提交的CI需按真实HEAD核对，不递归填写自身hash。
+- 下一步：完成当前收据文档的两仓分支/main交付与CI，然后开始S10D固定快照重索引。用户连续授权有效，不再要求“继续”。
 
 ## 历史：20 项差距的框架化实施计划
 

@@ -1,6 +1,6 @@
 # S10C 验收结果
 
-状态：**本地实现与必需验收PASS；Git/CI交付状态另由收据记录**。本次唯一切片S10C，源码指纹见[validation.json](validation.json)。复核由同一Agent分阶段执行，不冒称独立Agent或机器Runtime认证。
+状态：**本地实现与必需验收PASS；实现已正常合并推送main，分支/main CI均通过**。本次唯一切片S10C，源码指纹见[validation.json](validation.json)。复核由同一Agent分阶段执行，不冒称独立Agent或机器Runtime认证。
 
 | 验收 | 结果 | 证据与观察 |
 | --- | --- | --- |
@@ -27,3 +27,5 @@
 前端截图及逐项视觉观察见其[验收记录](../../../../agentic-ai-platform-web/docs/qa/document-visibility-20261026/TEST_RESULT.md)。两仓日志均在忽略目录：`s10c-http-*`、`s10c-pg-*`、`s10c-authority-outage.log`、`s10c-writes-closed-recheck.log`、`s10c-browser-*`及`s10c-ui-final-*`。原始运行编号保存在`.local/s10c-http-state.json`、`.local/s10c-privacy-state.json`。
 
 限制：未部署生产；S10D重索引、S10E查重、恢复上架、物理删除/清理不在本片。U01真实业务语料、U03共享身份、U06容量/SLO、U07保留/灾备要求仍未决。Vite原有大块提示和LangGraph测试警告保留。原MULTI_CLIENT_DRIFT_BLOCKED现状未改，沿批准手工专业pass执行。
+
+Git交付详情见[delivery-result.json](delivery-result.json)，文档收据提交号以Git历史为准。
