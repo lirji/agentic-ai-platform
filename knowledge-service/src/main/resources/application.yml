@@ -53,6 +53,8 @@ knowledge:
     create-enabled: ${KNOWLEDGE_LIFECYCLE_CREATE_ENABLED:true}
     generation-enabled: ${KNOWLEDGE_LIFECYCLE_GENERATION_ENABLED:false}
     updates-enabled: ${KNOWLEDGE_LIFECYCLE_UPDATES_ENABLED:false}
+    withdrawals-enabled: ${KNOWLEDGE_LIFECYCLE_WITHDRAWALS_ENABLED:false}
+    deletions-enabled: ${KNOWLEDGE_LIFECYCLE_DELETIONS_ENABLED:false}
     backfill-enabled: ${KNOWLEDGE_LIFECYCLE_BACKFILL_ENABLED:false}
   citation-reader:
     enabled: ${KNOWLEDGE_CITATION_READER_ENABLED:false}

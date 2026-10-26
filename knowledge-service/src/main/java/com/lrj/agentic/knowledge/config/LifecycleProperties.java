@@ -10,7 +10,8 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("knowledge.lifecycle")
 public record LifecycleProperties(@DefaultValue("true") boolean createEnabled,
         @DefaultValue("false") boolean generationEnabled, @DefaultValue("false") boolean updatesEnabled,
-        @DefaultValue("false") boolean backfillEnabled) {
+        @DefaultValue("false") boolean backfillEnabled,
+        @DefaultValue("false") boolean withdrawalsEnabled, @DefaultValue("false") boolean deletionsEnabled) {
     /** 更新必须用代次身份；历史读取保护由发布验证先完成后再打开开关。 */
     @AssertTrue(message = "更新必须同时启用代次准备协议")
     public boolean isGenerationRequiredForUpdates() { return !updatesEnabled || generationEnabled; }

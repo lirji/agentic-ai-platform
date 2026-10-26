@@ -19,4 +19,6 @@ public interface LifecycleRepository {
     List<GenerationView> generations(Caller caller, String id, long before, int limit);
     /** 命令、不可变修订、处理任务及文档CAS同事务。 */
     CommandReceipt update(Caller caller, Update update);
+    /** 可见性、在途任务隔离、幂等回执和审计同事务，不执行物理删除。 */
+    CommandReceipt visibility(Caller caller, VisibilityCommand command);
 }

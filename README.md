@@ -25,7 +25,7 @@
 - [最小持续集成契约](docs/design/knowledge-first-20261020/CI_CONTRACTS.md)：两仓自动检查、共享 Java/Python 报文金标及无付费运行边界；[S8F验收](docs/qa/ci-contracts-20261024/TEST_RESULT.md)。
 - [结构化资料设计](docs/design/knowledge-first-20261020/PARSING_DESIGN.md)与[P-v2契约](docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)：已接通原生PDF及DOCX上传，引用保留真实页码或段落/表格位置，兼容旧TXT/MD。DOCX标题、表头、矩形合并与缺失信息告警见[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)；新受理须按[运行说明](deploy/README.md)显式开启，不支持OCR。[S9D验收](docs/qa/structured-chunking-20261025/TEST_RESULT.md)补齐按章节、表格行和相邻页分块及新旧profile兼容，引用保持原文。
 
-- [文档生命周期设计](docs/design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)：区分内容修订、发布版和索引代次，定义更新失败、撤下/逻辑删除、旧引用与清理边界；[S10A设计验证](docs/qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md)。这些接口按后续切片实现，当前未启用。
+- [文档生命周期设计](docs/design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)：区分内容修订、发布版和索引代次，定义更新失败、撤下/逻辑删除、旧引用与清理边界；[S10A设计验证](docs/qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md)。更新、撤下与逻辑删除已按S10B/C实现；重索引仍按后续切片推进。
 
 ## 当前范围
 
@@ -37,4 +37,4 @@
 
 质量评测已接入 Knowledge 与独立 React `/quality`：定义/证据按修订保存，可持久运行、取消和恢复，查看逐题回答、召回指标、引用与已知耗时/费用；未知提交核对原任务，失效绑定隐藏正文。执行采用现行问答链路与 LangGraph 检查点，[S8C 验收](docs/qa/quality-runs-20261021/TEST_RESULT.md)记录真实恢复与界面证据。人工评分、不可变基线选择和逐题比较已实现，[S8D验收](docs/qa/quality-baselines-20261021/TEST_RESULT.md)记录并发、恢复和界面证据；[S8E真实机制基线](docs/qa/quality-mechanism-20261024/TEST_RESULT.md)已完成8题，保留1项非关键支撑失败；仅为项目文档机制集，不代表业务质量达标。
 
-文档更新与版本历史现已接通：新版处理失败保留旧发布，成功发布后旧引用和依赖旧资料的历史正文重新判权；详见[S10B验收](docs/qa/document-update-20261026/TEST_RESULT.md)。撤下/删除及重索引仍待后续切片。
+文档更新与版本历史现已接通：新版处理失败保留旧发布，成功发布后旧引用和依赖旧资料的历史正文重新判权；详见[S10B验收](docs/qa/document-update-20261026/TEST_RESULT.md)。撤下与逻辑删除也已接通，含旧引用/历史正文失效与原键恢复，见[S10C验收](docs/qa/document-visibility-20261026/TEST_RESULT.md)；重索引仍待S10D。

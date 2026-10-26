@@ -27,6 +27,13 @@ public interface LifecycleMapper {
     int acceptUpdate(@Param("caller") Caller caller, @Param("input") Update input, @Param("job") IngestionRow job);
     /** 唯一管理命令键由数据库裁定并发赢家。 */
     int command(@Param("caller") Caller caller, @Param("input") Update input, @Param("job") IngestionRow job);
+    /** 撤下/删除保留发布指针，只清空当前处理意图并CAS递增管理修订。 */
+    int changeVisibility(@Param("caller") Caller caller, @Param("input") VisibilityCommand input,
+            @Param("target") String target);
+    /** 主动终止在途作业使旧租约立即失效；不覆盖历史READY或原FAILED诊断。 */
+    int isolateJob(@Param("caller") Caller caller, @Param("id") String jobId, @Param("code") String code);
+    /** 可见性命令没有处理代次，回执的三个处理字段均为空。 */
+    int visibilityCommand(@Param("caller") Caller caller, @Param("input") VisibilityCommand input);
     /** 现时资源所有者核对后才能返回命令回执。 */
     LifecycleRows.Command findCommand(@Param("caller") Caller caller, @Param("key") String key);
     /** 管理元数据与旧K02隔离，删除详情不返回。 */

@@ -277,10 +277,21 @@ K07 更新/版本历史、P05 代次准备、K08 历史引用重验已实现，[
 
 `python3 deploy/local.py init-lifecycle` 幂等创建 `.local/lifecycle.json` 和独立 `task-knowledge-reader-{private,public}.pem`（0600，不覆盖已有材料）。此步骤不迁移、不发模型请求、不自动开启更新。连接标识 `TASK-KNOWLEDGE-K08`：Tasks仅持独立签名私钥，Knowledge仅收验签公钥，Gateway/AI/Conversations不注入该私钥；配置变量见 [env.example](env.example)。正式环境改用受控 secret 引用。
 
-`.local/lifecycle.json` 的四个布尔字段是本地重启的写开关来源：`createEnabled=true`、`generationEnabled=false`、`updatesEnabled=false`、`backfillEnabled=false` 为初值。测试环境不继承开发写开关。更新依赖 generation；回填要求另外三项均为false，并自动关闭Knowledge worker。缺失/多余字段、错误类型和不安全材料权限拒绝启动。
+`.local/lifecycle.json` 是本地重启的写开关来源，S10B原有四个布尔字段：`createEnabled=true`、`generationEnabled=false`、`updatesEnabled=false`、`backfillEnabled=false` 为初值。测试环境不继承开发写开关。更新依赖 generation；回填要求所有写开关（含S10C撤下/删除）均为false，并自动关闭Knowledge worker。缺少原四项、多余字段、错误类型和不安全材料权限拒绝启动；S10C两个新字段缺省为false以兼容旧配置。
 
 升级顺序：保存原字段/模型账本摘要与在途状态；停止qa-worker、Knowledge及受影响Java服务/AI；在旧进程停止后构建。将四项设置为false/false/false/true并先启动AI、Knowledge完成扩展和真实对象回填；来源不一致时停止，保留已核对标记，不修改已执行迁移。随后启动Tasks、Conversations、Gateway及新版前端，验证历史读取保护；先启用generation及create，再开放updates。解析开关和 `KNOWLEDGE_STRUCTURED_PROFILE=STRUCTURE_V3` 仍沿上节通过环境显式传入启动命令，不由生命周期配置隐式改选profile。
 
 本机已完成上述顺序：54份旧资料、54任务、62块原字段摘要不变；测试可恢复状态位于 `.local/s10b-*.json`，不要删除或重建固定键/账本。`docs/qa/document-update-20261026/http_probe.py` 是依赖这些隔离夹具的分阶段验收工具，不是生产迁移脚本。
 
-本机当前create/generation/updates=true、backfill=false，Knowledge与qa-worker已恢复；未知提交先查原键。需要关闭新命令时将updates/generation/create设false并受控重启，保留当前兼容新旧schema的代码；已验证关闭后P05读取及原键回执仍正常。不得退回只识别v1的旧writer。停机不删除DB/S3/索引/PG，失败稿/旧代次保留；撤下/逻辑删除、清理不在本片范围。
+S10B验收结束时create/generation/updates=true、backfill=false，Knowledge与qa-worker已恢复；未知提交先查原键。需要关闭新命令时将updates/generation/create设false并受控重启，保留当前兼容新旧schema的代码；已验证关闭后P05读取及原键回执仍正常。不得退回只识别v1的旧writer。停机不删除DB/S3/索引/PG，失败稿/旧代次保留；S10B未包含撤下/删除，S10C增量见下节；物理清理仍关闭。
+
+
+## S10C 撤下与逻辑删除
+
+K07新增 `POST /api/v2/knowledge/documents/{id}/withdrawals` 与 `/deletions`，只接受 `expectedRevision` 和原 `Idempotency-Key`。200表示可见性与在途任务隔离已同事务提交，不代表物理删除；成功回执不含正文或新处理任务。删除后详情404，原owner仍可按命令键查询/重放。未知响应先核对原键，禁止新建键猜测结果。
+
+配置新增 `withdrawalsEnabled=false`、`deletionsEnabled=false`，分别绑定 `KNOWLEDGE_LIFECYCLE_WITHDRAWALS_ENABLED` 与 `KNOWLEDGE_LIFECYCLE_DELETIONS_ENABLED`。原四字段配置可以原样启动，新命令保持关闭；test环境不继承dev开关。启用前须先升级并验证Tasks、QA/研究/助手、Conversation、评测和前端的当前引用重验，不能混入只看READY的旧reader/writer。无新迁移，仍为Knowledge V10 / Tasks V4。
+
+本机S10C验收结束时create/generation/updates/withdrawals/deletions=true、backfill=false，解析/PDF/DOCX开关与STRUCTURE_V3保持显式配置；Java、AI、qa-worker已恢复。关闭所有写开关并重启兼容版本仍保留墓碑、当前发布读取与原命令回执，不能以关闭开关恢复已撤下资料。故障演练已验证Knowledge不可用时历史GET/SSE返回503，恢复后继续拒绝失效引用。
+
+隔离验收资料/固定键/PG快照在`.local/s10c-*.json`，分阶段工具位于`docs/qa/document-visibility-20261026/{http_probe,pg_probe}.py`，先查状态再执行，不作为生产工具或清理入口。撤下保留owner管理历史、逻辑删除隐藏详情；S3、ES、Qdrant、数据库历史与备份不做物理删除。没有恢复上架接口；同内容重新上传在S10E前仍受原唯一约束限制。验收与限制见[S10C TEST_RESULT](../docs/qa/document-visibility-20261026/TEST_RESULT.md)。

@@ -1,4 +1,4 @@
-"""S10B 本地发布开关及 Tasks→Knowledge 独立只读身份；由 local.py 统一进入。"""
+"""本地发布/可见性开关及 Tasks→Knowledge 独立只读身份；由 local.py 统一进入。"""
 
 from __future__ import annotations
 
@@ -13,12 +13,16 @@ DEFAULTS = {
     "createEnabled": True,
     "generationEnabled": False,
     "updatesEnabled": False,
+    "withdrawalsEnabled": False,
+    "deletionsEnabled": False,
     "backfillEnabled": False,
 }
 FLAGS = {
     "createEnabled": "KNOWLEDGE_LIFECYCLE_CREATE_ENABLED",
     "generationEnabled": "KNOWLEDGE_LIFECYCLE_GENERATION_ENABLED",
     "updatesEnabled": "KNOWLEDGE_LIFECYCLE_UPDATES_ENABLED",
+    "withdrawalsEnabled": "KNOWLEDGE_LIFECYCLE_WITHDRAWALS_ENABLED",
+    "deletionsEnabled": "KNOWLEDGE_LIFECYCLE_DELETIONS_ENABLED",
     "backfillEnabled": "KNOWLEDGE_LIFECYCLE_BACKFILL_ENABLED",
 }
 
@@ -53,12 +57,16 @@ def environment(mode: str) -> dict[str, str]:
         if path.is_symlink() or not path.is_file() or path.stat().st_mode & 0o077:
             raise RuntimeError("生命周期配置或 K08 身份材料不完整")
     settings = json.loads(CONFIG.read_text())
-    if set(settings) != set(DEFAULTS) or any(type(value) is not bool for value in settings.values()):
+    legacy = set(DEFAULTS) - {"withdrawalsEnabled", "deletionsEnabled"}
+    if (not legacy.issubset(settings) or set(settings) - set(DEFAULTS)
+            or any(type(value) is not bool for value in settings.values())):
         raise RuntimeError("生命周期开关必须使用已定义的布尔字段")
+    # 已有S10B配置可原样启动；缺失的新命令开关只能默认关闭，不能随升级自动开启。
+    settings = DEFAULTS | settings
     if settings["updatesEnabled"] and not settings["generationEnabled"]:
         raise RuntimeError("更新开关依赖代次协议")
     if settings["backfillEnabled"] and any(settings[key] for key in (
-        "createEnabled", "generationEnabled", "updatesEnabled",
+        "createEnabled", "generationEnabled", "updatesEnabled", "withdrawalsEnabled", "deletionsEnabled",
     )):
         raise RuntimeError("回填必须先关闭写入与代次受理")
     selected = DEFAULTS if mode == "test" else settings

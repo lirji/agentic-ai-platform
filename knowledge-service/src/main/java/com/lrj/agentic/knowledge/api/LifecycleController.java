@@ -1,5 +1,6 @@
 package com.lrj.agentic.knowledge.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.lrj.agentic.contract.knowledge.ExtractionProtocol;
 import com.lrj.agentic.knowledge.application.LifecycleService;
 import com.lrj.agentic.knowledge.application.UploadRules;
@@ -16,7 +17,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-/** K07单独版本化管理端点；S10B不开放撤下、删除或重索引命令。 */
+/** K07单独版本化管理端点；可见性命令只改变权威状态，不删除存储对象。 */
 @RestController
 @RequestMapping("/api/v2/knowledge")
 public class LifecycleController {
@@ -43,6 +44,32 @@ public class LifecycleController {
     @GetMapping("/commands/{key}")
     public CommandReceipt command(@AuthenticationPrincipal Jwt jwt, @PathVariable String key) {
         return service.command(JwtTrust.caller(jwt), key);
+    }
+
+    /** 撤下成功即不可再交付正文，响应丢失通过原命令键恢复。 */
+    @PostMapping(value = "/documents/{id}/withdrawals", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public CommandReceipt withdraw(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
+            @RequestHeader("Idempotency-Key") String key, @RequestBody JsonNode input) {
+        return service.visibility(JwtTrust.caller(jwt), id, key, expectedRevision(input), Operation.WITHDRAW);
+    }
+
+    /** 逻辑删除保留原文件及审计；删除后公共详情404，原owner回执仍可查询。 */
+    @PostMapping(value = "/documents/{id}/deletions", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public CommandReceipt delete(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
+            @RequestHeader("Idempotency-Key") String key, @RequestBody JsonNode input) {
+        return service.visibility(JwtTrust.caller(jwt), id, key, expectedRevision(input), Operation.DELETE);
+    }
+
+    private static long expectedRevision(JsonNode input) {
+        // JSON命令不接受字符串、浮点截断或额外参数，避免恢复指纹与实际意图不一致。
+        if (input == null || !input.isObject() || input.size() != 1 || !input.has("expectedRevision")) {
+            throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+        }
+        JsonNode value = input.get("expectedRevision");
+        if (!value.isIntegralNumber() || !value.canConvertToInt() || value.intValue() < 0) {
+            throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+        }
+        return value.longValue();
     }
     /** 元数据按当前owner授权。 */
     @GetMapping("/documents/{id}")

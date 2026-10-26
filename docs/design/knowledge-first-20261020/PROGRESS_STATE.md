@@ -1,19 +1,19 @@
 # 独立知识平台准备进度
 
-## 当前状态：S10B已交付，下一切片S10C
+## 当前状态：S10C实现与验收PASS，正在两仓Git/CI交付
 
-- 任务：`capability-delivery-20261021`；用户连续要求继续。S8A–F、S9A–D、S10A已交付；S10B实施与必要验收PASS，下一依赖切片S10C仍PLANNED，parallel=no，不使用子Agent。
-- S10B结果：K07更新/版本历史、P05代次准备、发布CAS与失败旧版保留、K08独立身份、Tasks历史正文/事件清单、worker恢复前重验和React交互已完成。撤下/删除/重索引/查重均未提前实施。
-- 验收权威：[TEST_RESULT](../../qa/document-update-20261026/TEST_RESULT.md)、[实现证据](../../qa/document-update-20261026/IMPLEMENTATION_EVIDENCE.md)、[源码及验证摘要](../../qa/document-update-20261026/validation.json)。Java138单元/102真实组件IT、Python394单元/11真实PG恢复、前端77单元/16浏览器及格式/类型/lint/build通过。未运行的51个Python环境测试明确跳过，不能算PASS。
-- 实际验收：v2失败保持v1、v3原子发布；旧K04/K05/K06与三类任务GET/SSE拒绝；Knowledge故障503；Conversation失效上下文409且无新轮次；关闭命令后P05读取/原键恢复正常。首次失败及修正均见证据，不复用旧结果冒充本轮PASS。
-- Git：两仓原目录任务分支`feat/document-update-20261025`，后端实现提交17fc7af、前端6d0bfbd已fast-forward合并并推送origin/main，远端SHA核对一致；两仓分支及main CI全部PASS，见[交付收据](../../qa/document-update-20261026/delivery-result.json)。398/133源文件摘要与验证清单一致；当前仅收据/进度文档收尾，文档提交以Git历史为准，最终CI另按该SHA核验。无新worktree。
-- 本地运行：Knowledge dev/test V10、Tasks dev/test V4；54旧资料/54任务/62块原字段与迁移时账本摘要不变。create/generation/updates=true、backfill=false；STRUCTURE_V3及解析开关已恢复，Java/AI/qa-worker运行。20条历史隔离租户RECEIVED保留，无清理。
-- 模型预算：Embedding60批/0.621784元，chat24次/0.889964元，各1元累计上限不变；本片新增4批Embedding，含身份夹具修正形成的额外资料，原键与数据保留。后续调用前核对账本与在途，不重置或重跑未知付费步骤。
-- 最新额度要求：用户设目标“继续执行后续任务，给我留20%额度就行”。已从当前会话客户端rate_limits记录取得额度窗口，先前“无法读取”判断已纠正，无需用户补充。恢复/各阶段运行`python3 .local/check_session_quota.py`，私有快照`.local/session-quota-latest.json`；以各有效窗口已用比例为准，接近78%开始收尾，80%前保存检查点并停止新工作，记录滞后不声称精确计费余额。此额度与项目模型两本1元账本独立。
-- 授权/边界：正常Git提交合并推送main已持续授权；无生产部署、清理、强推或绕过保护。U01/U02业务语料、U03共享身份、U06规模、U07保留仍未决，不伪造业务质量或生产承诺。
-- 恢复：两仓`.local`固定键/凭据/账本、`.logs`、旧金标/截图、DB/S3/索引/PG与构建制品保留。`.local/s10b-state.json`仅细节补充；当前文件为唯一状态源。正在运行的验证都已结束；交付结果未知时先查Git/CI，不重复push或提交。
-- 规范：session-handoff、continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery/ci-cd-gate；架构专项建模/持久化/契约/并发/容量/发布。原MULTI_CLIENT_DRIFT_BLOCKED未改，沿批准的手工专业pass，无独立Agent审查声明。
-- 下一步：完成收据文档的正常Git交付与最终CI，然后在两仓原目录创建S10C任务分支；复用已冻结生命周期契约，实施撤下/逻辑删除与统一引用失效。S10C仅使用隔离测试数据，无物理清理；沿既有批准DAG与额度约束连续推进，不重做S10B。
+- 任务：`capability-delivery-20261021`；已批准51项计划，parallel=no。S8A–F、S9A–D、S10A/B已交付；S10C本地DONE/验证PASS，当前必须完成提交、分支CI、正常合并推送main及最终CI，然后连续开始S10D。S10D/E仍PLANNED。
+- S10C证据：[验收](../../qa/document-visibility-20261026/TEST_RESULT.md)、[实现](../../qa/document-visibility-20261026/IMPLEMENTATION_EVIDENCE.md)、[源码清单](../../qa/document-visibility-20261026/validation.json)。K07撤下/逻辑删除、在途隔离、owner管理与删除404、全部旧正文授权、原键恢复；适用LC-12–16、21–24。无物理清理/恢复上架，不提前实施S10D/E。
+- 已完成：Java138单元+108集成PASS；React83单元/类型/ESLint/构建、14协议浏览器场景、真实撤下/删除/修复后再次删除PASS，1440/1024/414截图已查看；真实6个PG墓碑恢复模型0调用；评测/历史Tasks/SSE/Conversation/K04/K05/K06/K08、Knowledge停机503、六写开关全关闭兼容PASS。日志两仓`.logs/s10c-*`。
+- 修正：定向真实DB复现并修复同键DELETE首次回执查询后的404竞态；未知提交立即隐藏缓存正文与更新入口，实际丢响应/404后仍仅一个POST并按原键恢复。验收脚本时序/DTO/路径问题已修复，原失败日志保留；无未解决必需FAIL。
+- Allowed Change Set：Knowledge lifecycle/Processing审计/测试、默认关闭双开关、既有白名单；前端K07客户端/详情与确认恢复、对应测试/截图；规范进度、运行说明、验收。无新依赖/基础设施/迁移，V10及旧金标未改。
+- Git：两仓原目录`feat/document-visibility-20261026`，基线backend7ba26c4 / frontend83d24db；本片未提交改动均已归属，无新worktree。按完整逻辑单元提交、正常合并推送origin/main，不强推/绕过保护/生产部署。
+- 本地运行：Knowledge dev/test V10、Tasks dev/test V4；create/generation/updates/withdrawals/deletions=true、backfill=false，解析/PDF/DOCX及STRUCTURE_V3保持。Java/AI/model-proxy/qa-worker已恢复；local-dev在途0。构建前正常停止旧Java，不覆盖活动JAR。
+- 模型预算：Embedding65批/0.671784元（本片3份隔离资料+2次失效查询），chat24次/0.889964元，各1元累计上限不变。新调用前核对账本，不重置或重跑未知付费操作；S10B实际资料保留，S10C仅操作独立样本。
+- 额度要求：用户要求预留20%。恢复/阶段边界运行`python3 .local/check_session_quota.py`，最新客户端约52%已用；接近78%开始收尾，80%前停止新工作并保存检查点。窗口快照有滞后，与项目模型两本账本独立。
+- 恢复入口：先核对Git/CI和`.local/s10c-http-state.json`、`s10c-privacy-state.json`；已完成命令只读查询/重放，不重新造样本或恢复墓碑。保留固定键、密钥、账本、日志、截图、DB/S3/索引/PG；20条历史隔离租户RECEIVED不清理。
+- 规范：backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/契约/并发/容量/发布及个人状态机细则。原MULTI_CLIENT_DRIFT_BLOCKED未改，沿批准手工专业pass；U01/U03/U06/U07不扩大为生产承诺。
+- 下一步：验证源码清单/文档与差异，S10C两仓提交推分支并检查CI，通过后正常合并推main；写交付收据与最终CI，然后开始S10D固定快照重索引。用户连续授权有效，不再要求“继续”。
 
 ## 历史：20 项差距的框架化实施计划
 

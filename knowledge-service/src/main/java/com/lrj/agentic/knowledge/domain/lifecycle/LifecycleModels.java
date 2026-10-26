@@ -27,7 +27,8 @@ public final class LifecycleModels {
 
     /** 审计动作与业务命令分开，发布是系统事件。 */
     public enum Action {
-        CREATE("CREATE"), UPDATE("UPDATE"), PUBLISH("PUBLISH"), BACKFILL("BACKFILL");
+        CREATE("CREATE"), UPDATE("UPDATE"), PUBLISH("PUBLISH"), BACKFILL("BACKFILL"),
+        WITHDRAW("WITHDRAW"), DELETE("DELETE");
         private final String code;
         Action(String code) { this.code = code; }
         public String code() { return code; }
@@ -57,4 +58,21 @@ public final class LifecycleModels {
     public record Update(String commandId, String key, String fingerprint, String documentId,
             long expectedRevision, String jobId, String displayName, SourceReference source,
             ProcessingProfile profile, Instant acceptedAt) { }
+
+    /** 可见性命令没有内容或新代次，禁止用撤下来隐式重建或恢复资料。 */
+    public record VisibilityCommand(String commandId, String key, String fingerprint, String documentId,
+            long expectedRevision, Operation operation, Instant acceptedAt) {
+        public VisibilityCommand {
+            if (operation != Operation.WITHDRAW && operation != Operation.DELETE) {
+                throw new IllegalArgumentException("可见性命令仅支持撤下或逻辑删除");
+            }
+        }
+        /** 目标由已冻结命令决定，不接受调用方直接指定任意生命周期。 */
+        public Lifecycle target() { return operation == Operation.WITHDRAW ? Lifecycle.WITHDRAWN : Lifecycle.DELETED; }
+        /** 删除可接续撤下；此阶段不提供恢复或重复撤下的新命令。 */
+        public boolean accepts(String current) {
+            return Lifecycle.ACTIVE.code().equals(current)
+                    || (operation == Operation.DELETE && Lifecycle.WITHDRAWN.code().equals(current));
+        }
+    }
 }

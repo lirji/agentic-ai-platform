@@ -8,6 +8,7 @@ import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.*;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleRepository;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
+import com.lrj.agentic.knowledge.domain.processing.ProcessingAction;
 import com.lrj.agentic.security.Caller;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +27,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Repository
 public class MySqlLifecycleRepository implements LifecycleRepository {
     private final LifecycleMapper mapper;
+    private final ProcessingMapper processing;
     private final TransactionTemplate transaction;
-    public MySqlLifecycleRepository(LifecycleMapper mapper, PlatformTransactionManager manager,
+    public MySqlLifecycleRepository(LifecycleMapper mapper, ProcessingMapper processing, PlatformTransactionManager manager,
             @Value("${knowledge.transaction-timeout-seconds:5}") int timeout) {
-        this.mapper = mapper; transaction = new TransactionTemplate(manager); transaction.setTimeout(timeout);
+        this.mapper = mapper; this.processing = processing;
+        transaction = new TransactionTemplate(manager); transaction.setTimeout(timeout);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
     }
 
@@ -94,6 +97,48 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
             });
         } catch (DuplicateKeyException conflict) {
             // 回滚后读取数据库裁定的赢家；现有owner-content约束仍生效，S10E前明确冲突。
+            return command(caller, input.key(), input.fingerprint())
+                    .orElseThrow(() -> new KnowledgeFailure(KnowledgeError.STATE_CONFLICT));
+        } catch (DataAccessException | TransactionException unknown) {
+            throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);
+        }
+    }
+
+    /** 撤下/删除与发布竞争同一文档锁，提交后旧执行者的租约和发布资格同时失效。 */
+    @Override public CommandReceipt visibility(Caller caller, VisibilityCommand input) {
+        try {
+            return transaction.execute(status -> {
+                var state = mapper.lockDocument(caller, input.documentId());
+                if (state == null) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
+                var replay = command(caller, input.key(), input.fingerprint());
+                if (replay.isPresent()) { return replay.get(); }
+                if (Lifecycle.DELETED.code().equals(state.lifecycle())) {
+                    throw new KnowledgeFailure(KnowledgeError.NOT_FOUND);
+                }
+                if (!state.lifecycleReady() || !input.accepts(state.lifecycle())
+                        || state.revision() != input.expectedRevision() || state.revision() >= Integer.MAX_VALUE) {
+                    throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT);
+                }
+                if (state.activeJobId() != null) {
+                    var active = mapper.lockJob(caller, state.activeJobId());
+                    if (active == null) { throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT); }
+                    if (IngestionStatus.RECEIVED.code().equals(active.status())
+                            || IngestionStatus.PROCESSING.code().equals(active.status())) {
+                        changed(mapper.isolateJob(caller, active.jobId(), KnowledgeError.STATE_CONFLICT.code()));
+                        changed(processing.event(caller, active.jobId(), UUID.randomUUID().toString(),
+                                "user:" + caller.userId(), ProcessingAction.INVALIDATED.code()));
+                    }
+                }
+                changed(mapper.changeVisibility(caller, input, input.target().code()));
+                changed(mapper.visibilityCommand(caller, input));
+                Action action = input.operation() == Operation.WITHDRAW ? Action.WITHDRAW : Action.DELETE;
+                // 事件关联被隔离的原意图及命令；READY历史和旧发布元组保持原样用于追溯。
+                changed(mapper.event(caller, input.documentId(), UUID.randomUUID().toString(), input.commandId(),
+                        state.activeJobId(), "user:" + caller.userId(), action.code()));
+                return new CommandReceipt(input.commandId(), input.operation().code(), input.documentId(),
+                        input.expectedRevision() + 1, null, null, null, input.acceptedAt());
+            });
+        } catch (DuplicateKeyException conflict) {
             return command(caller, input.key(), input.fingerprint())
                     .orElseThrow(() -> new KnowledgeFailure(KnowledgeError.STATE_CONFLICT));
         } catch (DataAccessException | TransactionException unknown) {

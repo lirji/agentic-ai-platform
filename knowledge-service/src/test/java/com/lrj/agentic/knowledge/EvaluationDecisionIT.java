@@ -10,6 +10,7 @@ import com.lrj.agentic.contract.TaskStatus;
 import com.lrj.agentic.knowledge.application.*;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
+import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels;
 import com.lrj.agentic.knowledge.domain.evaluation.*;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingClaim;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingRepository;
@@ -30,7 +31,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 /** 隔离MySQL上的并发/审计/授权测试；中央端口确定性返回，绝不运行付费模型。 */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {"management.server.port=0", "spring.main.banner-mode=off",
-                "knowledge.processing.worker-enabled=false", "knowledge.evaluation.worker-enabled=false"})
+                "knowledge.processing.worker-enabled=false", "knowledge.evaluation.worker-enabled=false",
+                "knowledge.lifecycle.withdrawals-enabled=true", "knowledge.lifecycle.deletions-enabled=true"})
 class EvaluationDecisionIT {
     @Autowired EvaluationDecisionRepository decisions;
     @Autowired EvaluationRunRepository reports;
@@ -38,6 +40,7 @@ class EvaluationDecisionIT {
     @Autowired EvaluationService definitionsService;
     @Autowired EvaluationJson json;
     @Autowired KnowledgeService knowledge;
+    @Autowired LifecycleService lifecycle;
     @Autowired ProcessingRepository processing;
     @Autowired JdbcTemplate jdbc;
     @Autowired PlatformTransactionManager manager;
@@ -154,6 +157,30 @@ class EvaluationDecisionIT {
         }
         assertThat(decisions.command(h.owner, "c".repeat(64))).isEmpty();
         assertThat(decisions.reviews(h.owner, run.summary().runId(), run.report().manifestDigest())).isEmpty();
+    }
+
+    @Test void realVisibilityCommandsHideDefinitionsReportsReviewsAndBaselinesWithoutRewritingHistory() {
+        for (var operation : List.of(LifecycleModels.Operation.WITHDRAW, LifecycleModels.Operation.DELETE)) {
+            var h = fixture(); var run = finish(h, 1, false); score(h, run);
+            var selected = choose(h, run, "baseline", 0);
+            var original = decisions.baseline(h.owner, selected.baselineId()).orElseThrow().snapshot();
+            assertThat(definitionsService.detail(h.owner, h.dataset.datasetId(), 1L).definition().questions()).hasSize(2);
+            assertThat(h.runs.question(h.owner, run.summary().runId(), h.first(), null)).isNotNull();
+            long revision = lifecycle.document(h.owner, h.document).revision();
+            lifecycle.visibility(h.owner, h.document, UUID.randomUUID().toString(), revision, operation);
+            var definition = definitionsService.detail(h.owner, h.dataset.datasetId(), 1L);
+            assertThat(definition.bindingState()).isEqualTo("UNAVAILABLE");
+            assertThat(definition.definition()).isNull(); assertThat(definition.bindings()).isEmpty();
+            assertThat(h.runs.detail(h.owner, run.summary().runId()).report()).isNull();
+            error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> h.runs.question(h.owner, run.summary().runId(), h.first(), null));
+            assertThat(h.service.reviews(h.owner, run.summary().runId()).questions()).isEmpty();
+            assertThat(h.service.current(h.owner, h.dataset.datasetId(), 1).note()).isNull();
+            assertThat(h.service.baselines(h.owner, h.dataset.datasetId(), 1, 10, null).items()).allMatch(row -> row.note() == null);
+            assertThat(h.service.compare(h.owner, run.summary().runId(), selected.baselineId()).status()).isEqualTo(ComparisonStatus.NOT_COMPARABLE);
+            error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> history(h, run, h.first()));
+            error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> h.service.review(h.owner, run.summary().runId(), h.first(), "after-visibility", review(run, 1, PASS, "迟到评审")));
+            assertThat(decisions.baseline(h.owner, selected.baselineId()).orElseThrow().snapshot()).isEqualTo(original);
+        }
     }
 
     private Harness fixture() {

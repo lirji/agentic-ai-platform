@@ -108,3 +108,7 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 ## S10B 同步（2026-10-26）
 
 基线backend `49d1f47` / frontend `b176130`。Knowledge生命周期/P05/版本投影、Tasks证据与历史读取、Python恢复校验、K08独立身份、Vite v2代理和React更新/版本历史映射到既有生命周期契约、运行说明和[S10B验收](qa/document-update-20261026/TEST_RESULT.md)。不改旧金标/历史报告，新增10个代次金标；源码与验证摘要见[validation.json](qa/document-update-20261026/validation.json)。未部署生产，撤下/删除/重索引与清理维持后续范围。
+
+## S10C 同步（2026-10-27）
+
+基线backend `7ba26c4` / frontend `83d24db`。K07撤下/逻辑删除、文档与作业同事务隔离、默认关闭双开关、本地身份有限路由及React原键恢复映射到既有生命周期契约、运行说明和[S10C验收](qa/document-visibility-20261026/TEST_RESULT.md)。复用S10B的Tasks/K08/QA/工作/Conversation当前授权，新增真实墓碑下的历史/PG/评测验证。无新数据库迁移或基础设施，未物理清理；S10D/E仍按计划实施。源码摘要见[validation.json](qa/document-visibility-20261026/validation.json)。

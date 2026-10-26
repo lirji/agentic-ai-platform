@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -32,7 +33,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {"management.server.port=0", "spring.main.banner-mode=off",
                 "knowledge.processing.worker-enabled=false", "knowledge.lifecycle.generation-enabled=true",
-                "knowledge.lifecycle.updates-enabled=true"})
+                "knowledge.lifecycle.updates-enabled=true", "knowledge.lifecycle.withdrawals-enabled=true",
+                "knowledge.lifecycle.deletions-enabled=true"})
 class KnowledgeLifecycleIT {
     @Autowired KnowledgeService knowledge;
     @Autowired KnowledgeRepository registrations;
@@ -201,10 +203,183 @@ class KnowledgeLifecycleIT {
         assertThat(page.nextCursor()).isNotNull();
         error(KnowledgeError.INPUT_INVALID, () -> lifecycle.revisions(owner, unrelated.documentId(), 1, page.nextCursor()));
         assertThat(lifecycle.revisions(owner, first.documentId(), 1, page.nextCursor()).items().getFirst().contentRevision()).isEqualTo(1);
-        LifecycleService closed = new LifecycleService(commands, sources, new LifecycleProperties(true, false, false, false),
+        LifecycleService closed = new LifecycleService(commands, sources, new LifecycleProperties(true, false, false, false, false, false),
                 new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.BLOCK_V2));
         assertThat(closed.command(owner, key)).isEqualTo(receipt);
         assertThat(closed.document(owner, first.documentId())).isEqualTo(lifecycle.document(owner, first.documentId()));
+    }
+
+    @Test void visibilityTombstonesKeepObjectsAndReceiptsButDenyAllPublishedReads() {
+        Caller owner = owner(); String text = "撤下保留原始资料" + UUID.randomUUID();
+        Ingestion job = create(owner, "可见性资料", text); publish(job, new Model());
+        String chunkId = chunk(job), withdrawalKey = UUID.randomUUID().toString();
+        long revision = lifecycle.document(owner, job.documentId()).revision();
+        AtomicInteger sourceCalls = new AtomicInteger();
+        SourceStore untouchedStorage = new SourceStore() {
+            public SourceReference put(Caller caller, String hash, String type, byte[] bytes) {
+                sourceCalls.incrementAndGet(); throw new AssertionError("可见性命令不得写源对象");
+            }
+            public boolean available() { sourceCalls.incrementAndGet(); throw new AssertionError("可见性命令不依赖远程存储"); }
+        };
+        LifecycleService service = new LifecycleService(commands, untouchedStorage,
+                new LifecycleProperties(true, true, true, false, true, true),
+                new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.BLOCK_V2));
+        var withdrawn = service.visibility(owner, job.documentId(), withdrawalKey, revision, Operation.WITHDRAW);
+        assertThat(withdrawn.contentRevision()).isNull(); assertThat(withdrawn.indexGeneration()).isNull(); assertThat(withdrawn.jobId()).isNull();
+        assertThat(lifecycle.document(owner, job.documentId()).lifecycle()).isEqualTo(Lifecycle.WITHDRAWN.code());
+        assertThat(lifecycle.document(owner, job.documentId()).publishedRevision()).isEqualTo(1);
+        assertThat(lifecycle.revisions(owner, job.documentId(), 20, null).items()).hasSize(1);
+        assertThat(lifecycle.generations(owner, job.documentId(), 20, null).items().getFirst().wasPublished()).isTrue();
+        assertThat(lifecycle.documents(owner, 20, null).items()).hasSize(1);
+        error(KnowledgeError.NOT_FOUND, () -> knowledge.document(owner, job.documentId()));
+        error(KnowledgeError.NOT_FOUND, () -> knowledge.ingestion(owner, job.jobId()));
+        assertThat(processing.citation(owner, job.documentId(), 1, chunkId)).isEmpty();
+        assertThat(processing.metadata(owner, job.documentId(), 1)).isEmpty();
+        assertThat(processing.published(owner, List.of(chunkId))).isEmpty();
+        error(KnowledgeError.STATE_CONFLICT, () -> service.visibility(owner, job.documentId(), UUID.randomUUID().toString(), withdrawn.acceptedRevision(), Operation.WITHDRAW));
+        error(KnowledgeError.IDEMPOTENCY_CONFLICT, () -> service.visibility(owner, job.documentId(), withdrawalKey, revision, Operation.DELETE));
+        for (Caller stranger : List.of(new Caller(owner.tenantId(), "other"), new Caller("other-tenant", owner.userId()))) {
+            error(KnowledgeError.NOT_FOUND, () -> lifecycle.document(stranger, job.documentId()));
+            error(KnowledgeError.NOT_FOUND, () -> lifecycle.command(stranger, withdrawalKey));
+            error(KnowledgeError.NOT_FOUND, () -> service.visibility(stranger, job.documentId(), UUID.randomUUID().toString(), withdrawn.acceptedRevision(), Operation.DELETE));
+        }
+        String deletionKey = UUID.randomUUID().toString();
+        var deleted = service.visibility(owner, job.documentId(), deletionKey, withdrawn.acceptedRevision(), Operation.DELETE);
+        assertThat(lifecycle.documents(owner, 20, null).items()).isEmpty();
+        error(KnowledgeError.NOT_FOUND, () -> lifecycle.document(owner, job.documentId()));
+        error(KnowledgeError.NOT_FOUND, () -> lifecycle.revisions(owner, job.documentId(), 20, null));
+        error(KnowledgeError.NOT_FOUND, () -> lifecycle.generations(owner, job.documentId(), 20, null));
+        error(KnowledgeError.NOT_FOUND, () -> service.visibility(owner, job.documentId(), UUID.randomUUID().toString(), deleted.acceptedRevision(), Operation.DELETE));
+        var closed = new LifecycleService(commands, untouchedStorage, new LifecycleProperties(false, false, false, false, false, false),
+                new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.BLOCK_V2));
+        assertThat(closed.visibility(owner, job.documentId(), withdrawalKey, revision, Operation.WITHDRAW)).isEqualTo(withdrawn);
+        assertThat(closed.visibility(owner, job.documentId(), deletionKey, withdrawn.acceptedRevision(), Operation.DELETE)).isEqualTo(deleted);
+        assertThat(closed.command(owner, deletionKey)).isEqualTo(deleted);
+        error(KnowledgeError.IDEMPOTENCY_CONFLICT, () -> closed.visibility(owner, job.documentId(), deletionKey, revision, Operation.DELETE));
+        assertThat(storage.source(job)).isEqualTo(text.getBytes(StandardCharsets.UTF_8));
+        assertThat(chunk(job)).isEqualTo(chunkId);
+        assertThat(oldMapper.findIngestion(owner.tenantId(), owner.userId(), job.jobId()).status()).isEqualTo(IngestionStatus.READY.code());
+        assertThat(index.search(ProcessingClaim.Sink.VECTOR, owner, text,
+                Collections.nCopies(ProcessingProtocol.DIMENSIONS, 0.125), List.of(job.documentId()))).isNotEmpty();
+        String duplicateKey = UUID.randomUUID().toString();
+        error(KnowledgeError.DUPLICATE_CONTENT, () -> knowledge.submit(owner, duplicateKey, upload(duplicateKey, "重复资料", text)));
+        assertThat(sourceCalls).hasValue(0);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_lifecycle_event WHERE document_id=? AND command_id IN (?,?)",
+                Integer.class, job.documentId(), withdrawn.commandId(), deleted.commandId())).isEqualTo(2);
+        Ingestion another = create(owner, "仍活动", "关闭新命令" + UUID.randomUUID());
+        for (var operation : List.of(Operation.WITHDRAW, Operation.DELETE)) {
+            error(KnowledgeError.PROCESSING_DISABLED, () -> closed.visibility(owner, another.documentId(), UUID.randomUUID().toString(), 0, operation));
+        }
+    }
+
+    @Test void deletionCommittedAfterInitialCommandLookupStillReturnsTheSameReceipt() {
+        Caller owner = owner(); Ingestion job = create(owner, "删除响应竞争", "原键响应窗口" + UUID.randomUUID());
+        String key = UUID.randomUUID().toString(); AtomicInteger reads = new AtomicInteger();
+        // 手写端口只控制两次真实DB操作的先后；首次查询后提交同键删除，重现已删除详情的竞态。
+        LifecycleRepository interleaved = new LifecycleRepository() {
+            public Optional<CommandReceipt> command(Caller caller, String id, String fingerprint) {
+                var previous = commands.command(caller, id, fingerprint);
+                if (reads.getAndIncrement() == 0) { lifecycle.visibility(owner, job.documentId(), key, 0, Operation.DELETE); }
+                return previous;
+            }
+            public Optional<DocumentView> document(Caller caller, String id) { return commands.document(caller, id); }
+            public List<DocumentView> documents(Caller caller, String after, int limit) { return commands.documents(caller, after, limit); }
+            public List<RevisionView> revisions(Caller caller, String id, long before, int limit) { return commands.revisions(caller, id, before, limit); }
+            public List<GenerationView> generations(Caller caller, String id, long before, int limit) { return commands.generations(caller, id, before, limit); }
+            public CommandReceipt update(Caller caller, Update input) { return commands.update(caller, input); }
+            public CommandReceipt visibility(Caller caller, VisibilityCommand input) { return commands.visibility(caller, input); }
+        };
+        var service = new LifecycleService(interleaved, sources, new LifecycleProperties(true, true, true, false, true, true),
+                new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.BLOCK_V2));
+        var replay = service.visibility(owner, job.documentId(), key, 0, Operation.DELETE);
+        assertThat(replay).isEqualTo(lifecycle.command(owner, key));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_lifecycle_event WHERE command_id=?", Integer.class,
+                replay.commandId())).isEqualTo(1);
+        error(KnowledgeError.NOT_FOUND, () -> lifecycle.document(owner, job.documentId()));
+    }
+
+    @Test void withdrawalInvalidatesQueuedAndLeasedJobsAndLateIndexWritesCannotPublish() {
+        for (boolean leased : List.of(false, true)) {
+            Caller owner = owner(); Ingestion job = create(owner, "隔离在途", "迟到写入资料" + UUID.randomUUID());
+            ProcessingClaim claim = leased ? claim(job) : null;
+            GenerationPreparedDocument prepared = leased ? generation(job, storage.source(job)) : null;
+            ProcessingClaim accepted = leased ? processing.prepared(claim, storage.save(job, prepared), prepared, null) : null;
+            var receipt = lifecycle.visibility(owner, job.documentId(), UUID.randomUUID().toString(), 0, Operation.WITHDRAW);
+            assertThat(lifecycle.document(owner, job.documentId()).activeJobId()).isNull();
+            var isolated = oldMapper.findIngestion(owner.tenantId(), owner.userId(), job.jobId());
+            assertThat(isolated.status()).isEqualTo(IngestionStatus.FAILED.code());
+            assertThat(isolated.errorCode()).isEqualTo(KnowledgeError.STATE_CONFLICT.code());
+            assertThat(isolated.retryable()).isFalse();
+            assertThat(processing.claim("after-withdrawal", 60, owner.tenantId())).isEmpty();
+            error(KnowledgeError.STATE_CONFLICT, () -> processing.retry(owner, job.jobId(), isolated.revision()));
+            if (leased) {
+                assertThat(processing.heartbeat(accepted, 60)).isFalse();
+                // 模拟已经离开事务的两路远程IO迟到完成；对象可存在，但确认与发布均不可复活。
+                for (var sink : ProcessingClaim.Sink.values()) {
+                    index.write(sink, prepared);
+                    error(KnowledgeError.STATE_CONFLICT, () -> processing.sinkDone(accepted, sink));
+                }
+                error(KnowledgeError.STATE_CONFLICT, () -> processing.publish(accepted));
+                assertThat(processing.citation(owner, job.documentId(), 1, prepared.chunks().getFirst().chunkId())).isEmpty();
+                assertThat(storage.source(job)).isNotEmpty();
+            }
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_lifecycle_event WHERE command_id=? AND job_id=? AND action='WITHDRAW'",
+                    Integer.class, receipt.commandId(), job.jobId())).isEqualTo(1);
+        }
+    }
+
+    @Test void publicationAndVisibilityRaceHaveOneLegalWinnerWithoutResurrection() throws Exception {
+        for (Operation operation : List.of(Operation.WITHDRAW, Operation.DELETE)) {
+            Caller owner = owner(); Ingestion job = create(owner, "发布竞争", "发布竞争资料" + UUID.randomUUID());
+            var claim = claim(job); var prepared = generation(job, storage.source(job));
+            var accepted = processing.prepared(claim, storage.save(job, prepared), prepared, null);
+            for (var sink : ProcessingClaim.Sink.values()) { index.write(sink, prepared); processing.sinkDone(accepted, sink); }
+            CountDownLatch start = new CountDownLatch(1);
+            try (var pool = Executors.newFixedThreadPool(2)) {
+                Future<KnowledgeError> publish = pool.submit(() -> { start.await(); return outcome(() -> processing.publish(accepted)); });
+                Future<KnowledgeError> visible = pool.submit(() -> { start.await(); return outcome(() -> lifecycle.visibility(owner, job.documentId(), UUID.randomUUID().toString(), 0, operation)); });
+                start.countDown();
+                var publicationResult = publish.get(15, TimeUnit.SECONDS); var visibilityResult = visible.get(15, TimeUnit.SECONDS);
+                assertOneWinner(publicationResult, visibilityResult);
+                if (visibilityResult != null) {
+                    // 发布先提交使管理revision递增，显式读取新revision后才能发起新的撤下/删除意图。
+                    lifecycle.visibility(owner, job.documentId(), UUID.randomUUID().toString(), lifecycle.document(owner, job.documentId()).revision(), operation);
+                }
+            }
+            assertThat(lifecycleMapper.lockDocument(owner, job.documentId()).lifecycle())
+                    .isEqualTo(operation == Operation.WITHDRAW ? Lifecycle.WITHDRAWN.code() : Lifecycle.DELETED.code());
+            assertThat(processing.citation(owner, job.documentId(), 1, prepared.chunks().getFirst().chunkId())).isEmpty();
+            error(KnowledgeError.STATE_CONFLICT, () -> processing.publish(accepted));
+        }
+    }
+
+    @Test void competingUpdateAndWithdrawalDoNotLeaveAProcessingIntentBehind() throws Exception {
+        Caller owner = owner(); Ingestion job = create(owner, "更新撤下竞争", "初始正文" + UUID.randomUUID()); publish(job, new Model());
+        long revision = lifecycle.document(owner, job.documentId()).revision(); String key = UUID.randomUUID().toString();
+        var input = upload(key, "竞争新稿", "更新正文" + UUID.randomUUID()); CountDownLatch start = new CountDownLatch(1);
+        try (var pool = Executors.newFixedThreadPool(2)) {
+            Future<KnowledgeError> update = pool.submit(() -> { start.await(); return outcome(() -> lifecycle.update(owner, job.documentId(), key, revision, input)); });
+            Future<KnowledgeError> withdraw = pool.submit(() -> { start.await(); return outcome(() -> lifecycle.visibility(owner, job.documentId(), UUID.randomUUID().toString(), revision, Operation.WITHDRAW)); });
+            start.countDown();
+            var updateResult = update.get(15, TimeUnit.SECONDS); var withdrawalResult = withdraw.get(15, TimeUnit.SECONDS);
+            assertOneWinner(updateResult, withdrawalResult);
+            if (withdrawalResult != null) {
+                lifecycle.visibility(owner, job.documentId(), UUID.randomUUID().toString(), lifecycle.document(owner, job.documentId()).revision(), Operation.WITHDRAW);
+            }
+        }
+        assertThat(lifecycle.document(owner, job.documentId()).activeJobId()).isNull();
+        assertThat(processing.claim("after-race", 60, owner.tenantId())).isEmpty();
+        assertThat(processing.citation(owner, job.documentId(), 1, chunk(job))).isEmpty();
+    }
+
+    private static KnowledgeError outcome(Runnable operation) {
+        try { operation.run(); return null; }
+        catch (KnowledgeFailure failure) { return failure.error(); }
+    }
+    private static void assertOneWinner(KnowledgeError first, KnowledgeError second) {
+        assertThat((first == null ? 1 : 0) + (second == null ? 1 : 0)).isEqualTo(1);
+        assertThat(first == null || first == KnowledgeError.STATE_CONFLICT).isTrue();
+        assertThat(second == null || second == KnowledgeError.STATE_CONFLICT).isTrue();
     }
 
     private Ingestion create(Caller owner, String name, String text) {

@@ -55,6 +55,25 @@ public class LifecycleService {
         key(key);
         return repository.command(caller, key, null).orElseThrow(() -> new KnowledgeFailure(KnowledgeError.NOT_FOUND));
     }
+
+    /** 先恢复原键再检查写开关，删除后或关闭命令时仍可确认已提交的无正文回执。 */
+    public CommandReceipt visibility(Caller caller, String id, String key, long expectedRevision, Operation operation) {
+        uuid(id); key(key);
+        if (expectedRevision < 0 || expectedRevision > Integer.MAX_VALUE
+                || (operation != Operation.WITHDRAW && operation != Operation.DELETE)) { invalid(); }
+        String fingerprint = ContentDigest.sha256(String.join("\0", operation.code(), id,
+                Long.toString(expectedRevision)).getBytes(StandardCharsets.UTF_8));
+        var replay = repository.command(caller, key, fingerprint);
+        if (replay.isPresent()) { return replay.get(); }
+        boolean enabled = operation == Operation.WITHDRAW ? properties.withdrawalsEnabled() : properties.deletionsEnabled();
+        if (!enabled) {
+            document(caller, id);
+            throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED);
+        }
+        // 开启命令时由事务内的文档锁与原键复查统一裁决，避免同键DELETE先提交后被详情404截断。
+        return repository.visibility(caller, new VisibilityCommand(UUID.randomUUID().toString(), key, fingerprint,
+                id, expectedRevision, operation, Instant.now().truncatedTo(ChronoUnit.MICROS)));
+    }
     /** 详情包括失败新稿与当前发布两个版本事实。 */
     public DocumentView document(Caller caller, String id) {
         uuid(id);

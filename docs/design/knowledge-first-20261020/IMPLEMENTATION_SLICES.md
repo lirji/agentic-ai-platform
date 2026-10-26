@@ -209,7 +209,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S9F | 表格资料按需支持 | S9C, S9D | IMPLEMENT | CONDITIONAL |
 | S10A | 文档/发布/索引版本与删除语义 | S8A, S9A | DESIGN | DONE |
 | S10B | 文档更新与原子发布切换 | S10A, S9D | IMPLEMENT | DONE |
-| S10C | 撤下、逻辑删除与引用失效 | S10B | IMPLEMENT | PLANNED |
+| S10C | 撤下、逻辑删除与引用失效 | S10B | IMPLEMENT | DONE |
 | S10D | 版本化重索引和处理 profile 切换 | S10B, S10C, S9D | IMPLEMENT | PLANNED |
 | S10E | 安全内容查重与重复上传恢复 | S10C | IMPLEMENT | PLANNED |
 | S10F | 处理诊断与有界批量管理 | S10D, S10E | IMPLEMENT | PLANNED |
@@ -399,7 +399,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-LIFECYCLE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 搜索/问答/研究/详情及历史引用统一拒绝；在途任务不得重新发布；并发更新/撤下合法；不隐式物理清空原文或备份；适用LC-12–16、21–24。
 - **Pass / Runtime：** IMPLEMENT；无新组件；只用隔离测试数据验证删除行为。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G04 G18。
+- **状态 / 并行 / 对应缺口：** DONE；[验收](../../qa/document-visibility-20261026/TEST_RESULT.md)；parallel=no；G04 G18。
 
 ### S10D · 版本化重索引和处理 profile 切换
 

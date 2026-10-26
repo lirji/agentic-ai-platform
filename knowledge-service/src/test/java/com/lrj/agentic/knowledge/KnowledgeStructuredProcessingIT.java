@@ -419,7 +419,7 @@ class KnowledgeStructuredProcessingIT {
     private Ingestion structural(Caller owner, DocumentFormat format) throws Exception {
         var selected = new KnowledgeService(registrations, sourceStore,
                 new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.STRUCTURE_V3),
-                new com.lrj.agentic.knowledge.config.LifecycleProperties(true, false, false, false));
+                new com.lrj.agentic.knowledge.config.LifecycleProperties(true, false, false, false, false, false));
         String key = UUID.randomUUID().toString();
         return selected.submit(owner, key, structureUpload(format, key));
     }

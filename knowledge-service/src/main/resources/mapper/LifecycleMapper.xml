@@ -70,6 +70,25 @@
         JOIN knowledge_document d ON d.tenant_id = c.tenant_id AND d.owner_id = c.owner_id AND d.document_id = c.document_id
         WHERE c.tenant_id = #{caller.tenantId} AND c.owner_id = #{caller.userId} AND c.idempotency_key = #{key}
     </select>
+    <update id="changeVisibility">
+        UPDATE knowledge_document SET lifecycle = #{target}, active_job_id = NULL,
+            revision = revision + 1, updated_at = #{input.acceptedAt}
+        WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND document_id = #{input.documentId}
+            AND lifecycle_ready = TRUE AND revision = #{input.expectedRevision} AND revision &lt; 2147483647
+            AND (lifecycle = 'ACTIVE' OR (lifecycle = 'WITHDRAWN' AND #{input.operation.code} = 'DELETE'))
+    </update>
+    <update id="isolateJob">
+        UPDATE knowledge_ingestion SET status = 'FAILED', error_code = #{code}, retryable = FALSE,
+            lease_owner = NULL, lease_until = NULL, revision = revision + 1, updated_at = UTC_TIMESTAMP(6)
+        WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND job_id = #{id}
+            AND status IN ('RECEIVED', 'PROCESSING') AND revision &lt; 2147483647
+    </update>
+    <insert id="visibilityCommand">
+        INSERT INTO knowledge_lifecycle_command (command_id, tenant_id, owner_id, idempotency_key, request_fingerprint,
+            operation, document_id, accepted_revision, content_revision, index_generation, job_id, accepted_at)
+        VALUES (#{input.commandId}, #{caller.tenantId}, #{caller.userId}, #{input.key}, #{input.fingerprint}, #{input.operation.code},
+            #{input.documentId}, #{input.expectedRevision} + 1, NULL, NULL, NULL, #{input.acceptedAt})
+    </insert>
     <sql id="viewFrom">
         SELECT d.document_id, d.revision, d.lifecycle, d.version AS latest_content_revision,
             d.published_version AS published_revision, d.published_generation, d.active_job_id,
