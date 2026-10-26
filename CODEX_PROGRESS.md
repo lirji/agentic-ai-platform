@@ -1,6 +1,6 @@
 # Codex Progress
 
-- 当前任务：`capability-delivery-20261021`；S10D固定快照重索引实现/验收PASS，Git/CI交付中；保留20%额度的窗口检查已建立。
+- 当前任务：`capability-delivery-20261021`；S10D固定快照重索引实现/验收/代码交付PASS，正在落交付收据，下一项S10E；保留20%额度的窗口检查已建立。
 - 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；任务定义：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
 - 两仓原目录任务分支`feat/document-reindex-20261027`；沿已批准计划持续实施/验证/正常Git交付，无生产部署或清理。固定键/账本/历史资料保留，不重跑已成功或未知付费步骤。
 
