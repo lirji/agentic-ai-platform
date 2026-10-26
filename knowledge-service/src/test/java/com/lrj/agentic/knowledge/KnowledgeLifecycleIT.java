@@ -25,6 +25,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,7 +36,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
         properties = {"management.server.port=0", "spring.main.banner-mode=off",
                 "knowledge.processing.worker-enabled=false", "knowledge.lifecycle.generation-enabled=true",
                 "knowledge.lifecycle.updates-enabled=true", "knowledge.lifecycle.withdrawals-enabled=true",
-                "knowledge.lifecycle.deletions-enabled=true"})
+                "knowledge.lifecycle.deletions-enabled=true", "knowledge.lifecycle.reindexes-enabled=true"})
 class KnowledgeLifecycleIT {
     @Autowired KnowledgeService knowledge;
     @Autowired KnowledgeRepository registrations;
@@ -151,13 +153,14 @@ class KnowledgeLifecycleIT {
         Ingestion update = knowledge.ingestion(owner, receipt.jobId());
         AtomicInteger vectors = new AtomicInteger(), keywords = new AtomicInteger();
         SearchIndex failOnce = new SearchIndex() {
+            public void verify(ProcessingClaim.Sink sink, com.lrj.agentic.knowledge.domain.processing.PreparedBatch document) { index.verify(sink, document); }
             public void write(ProcessingClaim.Sink sink, PreparedBatch document) {
                 if (sink == ProcessingClaim.Sink.VECTOR) { vectors.incrementAndGet(); }
                 if (sink == ProcessingClaim.Sink.KEYWORD && keywords.incrementAndGet() == 1) { throw new KnowledgeFailure(KnowledgeError.INDEX_UNAVAILABLE); }
                 index.write(sink, document);
             }
-            public List<Candidate> search(ProcessingClaim.Sink sink, Caller caller, String query, List<Double> vector, List<String> ids) {
-                return index.search(sink, caller, query, vector, ids);
+            public List<Candidate> search(ProcessingClaim.Sink sink, Caller caller, String query, List<Double> vector, List<String> ids, int limit, java.time.Duration remaining) {
+                return index.search(sink, caller, query, vector, ids, limit, remaining);
             }
         };
         var claimed = claim(update);
@@ -203,7 +206,7 @@ class KnowledgeLifecycleIT {
         assertThat(page.nextCursor()).isNotNull();
         error(KnowledgeError.INPUT_INVALID, () -> lifecycle.revisions(owner, unrelated.documentId(), 1, page.nextCursor()));
         assertThat(lifecycle.revisions(owner, first.documentId(), 1, page.nextCursor()).items().getFirst().contentRevision()).isEqualTo(1);
-        LifecycleService closed = new LifecycleService(commands, sources, new LifecycleProperties(true, false, false, false, false, false),
+        LifecycleService closed = new LifecycleService(commands, sources, new LifecycleProperties(true, false, false, false, false, false, false),
                 new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.BLOCK_V2));
         assertThat(closed.command(owner, key)).isEqualTo(receipt);
         assertThat(closed.document(owner, first.documentId())).isEqualTo(lifecycle.document(owner, first.documentId()));
@@ -222,7 +225,7 @@ class KnowledgeLifecycleIT {
             public boolean available() { sourceCalls.incrementAndGet(); throw new AssertionError("可见性命令不依赖远程存储"); }
         };
         LifecycleService service = new LifecycleService(commands, untouchedStorage,
-                new LifecycleProperties(true, true, true, false, true, true),
+                new LifecycleProperties(true, true, true, false, true, true, false),
                 new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.BLOCK_V2));
         var withdrawn = service.visibility(owner, job.documentId(), withdrawalKey, revision, Operation.WITHDRAW);
         assertThat(withdrawn.contentRevision()).isNull(); assertThat(withdrawn.indexGeneration()).isNull(); assertThat(withdrawn.jobId()).isNull();
@@ -250,7 +253,7 @@ class KnowledgeLifecycleIT {
         error(KnowledgeError.NOT_FOUND, () -> lifecycle.revisions(owner, job.documentId(), 20, null));
         error(KnowledgeError.NOT_FOUND, () -> lifecycle.generations(owner, job.documentId(), 20, null));
         error(KnowledgeError.NOT_FOUND, () -> service.visibility(owner, job.documentId(), UUID.randomUUID().toString(), deleted.acceptedRevision(), Operation.DELETE));
-        var closed = new LifecycleService(commands, untouchedStorage, new LifecycleProperties(false, false, false, false, false, false),
+        var closed = new LifecycleService(commands, untouchedStorage, new LifecycleProperties(false, false, false, false, false, false, false),
                 new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.BLOCK_V2));
         assertThat(closed.visibility(owner, job.documentId(), withdrawalKey, revision, Operation.WITHDRAW)).isEqualTo(withdrawn);
         assertThat(closed.visibility(owner, job.documentId(), deletionKey, withdrawn.acceptedRevision(), Operation.DELETE)).isEqualTo(deleted);
@@ -260,7 +263,7 @@ class KnowledgeLifecycleIT {
         assertThat(chunk(job)).isEqualTo(chunkId);
         assertThat(oldMapper.findIngestion(owner.tenantId(), owner.userId(), job.jobId()).status()).isEqualTo(IngestionStatus.READY.code());
         assertThat(index.search(ProcessingClaim.Sink.VECTOR, owner, text,
-                Collections.nCopies(ProcessingProtocol.DIMENSIONS, 0.125), List.of(job.documentId()))).isNotEmpty();
+                Collections.nCopies(ProcessingProtocol.DIMENSIONS, 0.125), List.of(job.documentId()), 100, java.time.Duration.ofSeconds(8))).isNotEmpty();
         String duplicateKey = UUID.randomUUID().toString();
         error(KnowledgeError.DUPLICATE_CONTENT, () -> knowledge.submit(owner, duplicateKey, upload(duplicateKey, "重复资料", text)));
         assertThat(sourceCalls).hasValue(0);
@@ -288,8 +291,10 @@ class KnowledgeLifecycleIT {
             public List<GenerationView> generations(Caller caller, String id, long before, int limit) { return commands.generations(caller, id, before, limit); }
             public CommandReceipt update(Caller caller, Update input) { return commands.update(caller, input); }
             public CommandReceipt visibility(Caller caller, VisibilityCommand input) { return commands.visibility(caller, input); }
+            public Optional<ReindexSource> reindexSource(Caller caller, String id, long generation) { return commands.reindexSource(caller, id, generation); }
+            public CommandReceipt reindex(Caller caller, Reindex input) { return commands.reindex(caller, input); }
         };
-        var service = new LifecycleService(interleaved, sources, new LifecycleProperties(true, true, true, false, true, true),
+        var service = new LifecycleService(interleaved, sources, new LifecycleProperties(true, true, true, false, true, true, false),
                 new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.BLOCK_V2));
         var replay = service.visibility(owner, job.documentId(), key, 0, Operation.DELETE);
         assertThat(replay).isEqualTo(lifecycle.command(owner, key));
@@ -372,6 +377,136 @@ class KnowledgeLifecycleIT {
         assertThat(processing.citation(owner, job.documentId(), 1, chunk(job))).isEmpty();
     }
 
+    @Test void reindexFreezesPublishedSourceAcrossFailedDraftAndReplaysAfterPublicationAndDeletion() {
+        Caller owner = owner(); Model model = new Model();
+        Ingestion first = create(owner, "发布快照", "原发布正文" + UUID.randomUUID()); publish(first, model);
+        String oldChunk = chunk(first);
+        var original = lifecycle.document(owner, first.documentId());
+        String updateKey = UUID.randomUUID().toString();
+        var draftReceipt = lifecycle.update(owner, first.documentId(), updateKey, original.revision(),
+                upload(updateKey, "失败草稿", "不同正文" + UUID.randomUUID()));
+        var draft = knowledge.ingestion(owner, draftReceipt.jobId());
+        processing.fail(claim(draft), KnowledgeError.PREPARATION_INVALID, true);
+        var before = lifecycle.document(owner, first.documentId());
+        String key = UUID.randomUUID().toString();
+        var receipt = lifecycle.reindex(owner, first.documentId(), key, before.revision(), before.publishedGeneration(), ProcessingProfile.TEXT_V1.processor());
+        assertThat(receipt.operation()).isEqualTo("REINDEX");
+        assertThat(receipt.contentRevision()).isEqualTo(1); assertThat(receipt.indexGeneration()).isEqualTo(3);
+        var job = knowledge.ingestion(owner, receipt.jobId());
+        assertThat(job.source()).isEqualTo(first.source());
+        assertThat(job.profile()).isEqualTo(ProcessingProfile.TEXT_V1);
+        assertThat(lifecycleMapper.lockDocument(owner, first.documentId()).ingestionJobId()).isEqualTo(draft.jobId());
+        assertThat(lifecycle.document(owner, first.documentId()).displayName()).isEqualTo("失败草稿");
+        assertThat(processing.citation(owner, first.documentId(), 1, oldChunk)).isPresent();
+        assertThat(lifecycle.reindex(owner, first.documentId(), key, before.revision(), before.publishedGeneration(), ProcessingProfile.TEXT_V1.processor())).isEqualTo(receipt);
+        publish(job, model);
+        assertThat(lifecycle.document(owner, first.documentId()).publishedRevision()).isEqualTo(1);
+        assertThat(lifecycle.document(owner, first.documentId()).publishedGeneration()).isEqualTo(3);
+        assertThat(lifecycle.document(owner, first.documentId()).latestContentRevision()).isEqualTo(2);
+        assertThat(knowledge.document(owner, first.documentId()).status()).isEqualTo(IngestionStatus.FAILED);
+        assertThat(chunk(job)).isNotEqualTo(oldChunk);
+        assertThat(processing.citation(owner, first.documentId(), 1, oldChunk)).isEmpty();
+        assertThat(processing.citation(owner, first.documentId(), 1, chunk(job)).orElseThrow().displayName()).isEqualTo("发布快照");
+        var closed = new LifecycleService(commands, sources, new LifecycleProperties(false, true, false, false, false, false, false),
+                new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.BLOCK_V2));
+        assertThat(closed.reindex(owner, first.documentId(), key, before.revision(), before.publishedGeneration(), ProcessingProfile.TEXT_V1.processor())).isEqualTo(receipt);
+        error(KnowledgeError.IDEMPOTENCY_CONFLICT, () -> lifecycle.reindex(owner, first.documentId(), key, before.revision(), 3, ProcessingProfile.TEXT_V1.processor()));
+        error(KnowledgeError.IDEMPOTENCY_CONFLICT, () -> lifecycle.reindex(owner, first.documentId(), key, before.revision(), before.publishedGeneration(), ProcessingProfile.PDF_V3.processor()));
+        lifecycle.visibility(owner, first.documentId(), UUID.randomUUID().toString(), lifecycle.document(owner, first.documentId()).revision(), Operation.DELETE);
+        assertThat(closed.reindex(owner, first.documentId(), key, before.revision(), before.publishedGeneration(), ProcessingProfile.TEXT_V1.processor())).isEqualTo(receipt);
+        error(KnowledgeError.NOT_FOUND, () -> lifecycle.reindex(owner, first.documentId(), UUID.randomUUID().toString(), before.revision(), 3, ProcessingProfile.TEXT_V1.processor()));
+    }
+
+    @Test void reindexRejectsUnknownProfileWrongFormatUnpublishedWithdrawnAndForeignDocuments() {
+        Caller owner = owner(); Ingestion job = create(owner, "边界", "边界正文" + UUID.randomUUID());
+        error(KnowledgeError.STATE_CONFLICT, () -> lifecycle.reindex(owner, job.documentId(), UUID.randomUUID().toString(), 0, 1, ProcessingProfile.TEXT_V1.processor()));
+        publish(job, new Model()); var current = lifecycle.document(owner, job.documentId());
+        error(KnowledgeError.INPUT_INVALID, () -> lifecycle.reindex(owner, job.documentId(), UUID.randomUUID().toString(), current.revision(), 1, "latest"));
+        error(KnowledgeError.INPUT_INVALID, () -> lifecycle.reindex(owner, job.documentId(), UUID.randomUUID().toString(), current.revision(), 1, ProcessingProfile.PDF_V3.processor()));
+        error(KnowledgeError.NOT_FOUND, () -> lifecycle.reindex(new Caller(owner.tenantId(), "other"), job.documentId(), UUID.randomUUID().toString(), current.revision(), 1, ProcessingProfile.TEXT_V1.processor()));
+        error(KnowledgeError.NOT_FOUND, () -> lifecycle.reindex(owner(), job.documentId(), UUID.randomUUID().toString(), current.revision(), 1, ProcessingProfile.TEXT_V1.processor()));
+        lifecycle.visibility(owner, job.documentId(), UUID.randomUUID().toString(), current.revision(), Operation.WITHDRAW);
+        error(KnowledgeError.STATE_CONFLICT, () -> lifecycle.reindex(owner, job.documentId(), UUID.randomUUID().toString(), current.revision() + 1, 1, ProcessingProfile.TEXT_V1.processor()));
+        assertThat(lifecycle.generations(owner, job.documentId(), 20, null).items()).hasSize(1);
+    }
+
+    @Test void updateAndReindexCompeteForOneIntentWithoutOrphanGenerations() throws Exception {
+        Caller owner = owner(); Ingestion first = create(owner, "竞争", "竞争正文" + UUID.randomUUID()); publish(first, new Model());
+        var current = lifecycle.document(owner, first.documentId()); var start = new CountDownLatch(1);
+        try (var pool = Executors.newFixedThreadPool(2)) {
+            var update = pool.submit(() -> { start.await(); String key = UUID.randomUUID().toString(); return outcome(() -> lifecycle.update(owner, first.documentId(), key, current.revision(), upload(key, "新稿", "新稿正文"))); });
+            var rebuild = pool.submit(() -> { start.await(); return outcome(() -> lifecycle.reindex(owner, first.documentId(), UUID.randomUUID().toString(), current.revision(), 1, ProcessingProfile.TEXT_V1.processor())); });
+            start.countDown(); assertOneWinner(update.get(15, TimeUnit.SECONDS), rebuild.get(15, TimeUnit.SECONDS));
+        }
+        assertThat(lifecycle.generations(owner, first.documentId(), 20, null).items()).hasSize(2);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_lifecycle_command WHERE document_id=?", Integer.class, first.documentId())).isEqualTo(1);
+        var active = lifecycle.document(owner, first.documentId());
+        error(KnowledgeError.STATE_CONFLICT, () -> lifecycle.reindex(owner, first.documentId(), UUID.randomUUID().toString(), active.revision(), 1, ProcessingProfile.TEXT_V1.processor()));
+        publish(knowledge.ingestion(owner, active.activeJobId()), new Model());
+    }
+
+    @Test void recoveredDoneSinksMustPassReadbackBeforePublishingAndNeverRepeatPreparation() {
+        Caller owner = owner(); var model = new Model();
+        var first = create(owner, "核验", "核验正文" + UUID.randomUUID()); publish(first, model); String oldChunk = chunk(first);
+        var current = lifecycle.document(owner, first.documentId());
+        var receipt = lifecycle.reindex(owner, first.documentId(), UUID.randomUUID().toString(), current.revision(), 1, ProcessingProfile.TEXT_V1.processor());
+        var job = knowledge.ingestion(owner, receipt.jobId()); var originalClaim = claim(job);
+        var bytes = storage.source(job); var prepared = model.prepareGeneration(job, bytes, null);
+        var preparedClaim = processing.prepared(originalClaim, storage.save(job, prepared), prepared, null);
+        for (var sink : ProcessingClaim.Sink.values()) { index.write(sink, prepared); index.verify(sink, prepared); processing.sinkDone(preparedClaim, sink); }
+        var corrupt = new PreparedDocument(ProcessingProtocol.SCHEMA, job.profile().processor(), ProcessingProtocol.MODEL, 1024,
+                job.tenantId(), job.ownerId(), job.documentId(), job.jobId(), 1, job.source().hash(),
+                prepared.chunks().stream().map(c -> new PreparedDocument.Chunk(c.ordinal(), c.chunkId(), "篡改后的搜索正文", c.textHash(), c.startByte(), c.endByte(), c.vector(), c.vectorHash())).toList(), prepared.batchDigest());
+        index.write(ProcessingClaim.Sink.KEYWORD, corrupt);
+        jdbc.update("UPDATE knowledge_ingestion SET lease_until=UTC_TIMESTAMP(6)-INTERVAL 1 SECOND WHERE job_id=?", job.jobId());
+        var recovered = claim(job);
+        assertThat(recovered.vectorState()).isEqualTo(ProcessingClaim.SinkState.DONE);
+        assertThat(recovered.keywordState()).isEqualTo(ProcessingClaim.SinkState.DONE);
+        error(KnowledgeError.INDEX_UNAVAILABLE, () -> runner(model, index).run(recovered));
+        processing.fail(recovered, KnowledgeError.INDEX_UNAVAILABLE, true);
+        assertThat(processing.citation(owner, first.documentId(), 1, oldChunk)).isPresent();
+        assertThat(lifecycle.document(owner, first.documentId()).publishedGeneration()).isEqualTo(1);
+        assertThat(model.calls).hasValue(2);
+        // 只恢复本测试故意损坏的投影；任务重试继续验证原准备包，不重算Embedding。
+        index.write(ProcessingClaim.Sink.KEYWORD, prepared);
+        processing.retry(owner, job.jobId(), knowledge.ingestion(owner, job.jobId()).revision());
+        jdbc.update("UPDATE knowledge_ingestion SET next_attempt_at=UTC_TIMESTAMP(6) WHERE job_id=?", job.jobId());
+        runner(model, index).run(claim(job));
+        assertThat(model.calls).hasValue(2);
+        assertThat(lifecycle.document(owner, first.documentId()).publishedGeneration()).isEqualTo(2);
+    }
+
+    @ParameterizedTest @ValueSource(ints = {20, 100})
+    void realIndicesExpandPastStaleCandidatesOrReturnUnavailableAtCap(int staleCount) {
+        Caller owner = owner(); var model = new Model(-0.125);
+        var first = create(owner, "可用资料", "实际发布正文" + UUID.randomUUID()); publish(first, model);
+        String query = "stalephantom" + UUID.randomUUID().toString().replace("-", "");
+        var vector = Collections.nCopies(1024, 0.125);
+        var stale = new PreparedDocument(ProcessingProtocol.SCHEMA, ProcessingProtocol.PROCESSOR, ProcessingProtocol.MODEL, 1024,
+                first.tenantId(), first.ownerId(), first.documentId(), first.jobId(), 1, first.source().hash(),
+                java.util.stream.IntStream.range(0, staleCount).mapToObj(i -> new PreparedDocument.Chunk(i,
+                        ContentDigest.sha256((query + i).getBytes(StandardCharsets.UTF_8)), query, "a".repeat(64), i, i + 1, vector, PreparedDocument.vectorHash(vector))).toList(), "b".repeat(64));
+        for (var sink : ProcessingClaim.Sink.values()) { index.write(sink, stale); index.verify(sink, stale); }
+        var limits = new ArrayList<Integer>();
+        SearchIndex counted = new SearchIndex() {
+            public void write(ProcessingClaim.Sink sink, PreparedBatch batch) { index.write(sink, batch); }
+            public void verify(ProcessingClaim.Sink sink, PreparedBatch batch) { index.verify(sink, batch); }
+            public List<Candidate> search(ProcessingClaim.Sink sink, Caller caller, String text, List<Double> v, List<String> ids, int limit, java.time.Duration remaining) {
+                limits.add(limit); return index.search(sink, caller, text, v, ids, limit, remaining);
+            }
+        };
+        var beans = new org.springframework.beans.factory.support.StaticListableBeanFactory(); beans.addBean("model", model); beans.addBean("index", counted);
+        var search = new KnowledgeSearch(processing, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), 45, 8);
+        if (staleCount == 20) {
+            assertThat(search.search(owner, new KnowledgeSearch.SearchRequest(query, 1, List.of(first.documentId())))).extracting(KnowledgeSearch.Hit::chunkId).containsExactly(chunk(first));
+            assertThat(limits).containsExactly(20, 20, 60, 60);
+        } else {
+            error(KnowledgeError.INDEX_UNAVAILABLE, () -> search.search(owner, new KnowledgeSearch.SearchRequest(query, 1, List.of(first.documentId()))));
+            assertThat(limits).containsExactly(20, 20, 60, 60, 100, 100);
+        }
+        assertThat(model.queries).hasValue(1);
+    }
+
     private static KnowledgeError outcome(Runnable operation) {
         try { operation.run(); return null; }
         catch (KnowledgeFailure failure) { return failure.error(); }
@@ -399,8 +534,10 @@ class KnowledgeLifecycleIT {
         assertThatThrownBy(operation::run).isInstanceOfSatisfying(KnowledgeFailure.class, failure -> assertThat(failure.error()).isEqualTo(code));
     }
     private static GenerationPreparedDocument generation(Ingestion job, byte[] source) {
+        return generation(job, source, Collections.nCopies(ProcessingProtocol.DIMENSIONS, 0.125));
+    }
+    private static GenerationPreparedDocument generation(Ingestion job, byte[] source, List<Double> vector) {
         var request = GenerationPreparedDocument.Request.of(job, source, null);
-        var vector = Collections.nCopies(ProcessingProtocol.DIMENSIONS, 0.125);
         String text = new String(source, StandardCharsets.UTF_8), hash = Extraction.digest(source);
         String sources = GenerationPreparedDocument.textSourceDigest(hash, 0, source.length);
         var chunks = List.of(new GenerationPreparedDocument.Chunk(0, GenerationPreparedDocument.chunkIdentity(request, 0, hash, sources),
@@ -411,8 +548,12 @@ class KnowledgeLifecycleIT {
     }
     private static final class Model implements KnowledgeProcessor {
         final AtomicInteger calls = new AtomicInteger();
+        final AtomicInteger queries = new AtomicInteger();
+        private final double coordinate;
+        Model() { this(0.125); }
+        Model(double coordinate) { this.coordinate = coordinate; }
         public PreparedDocument prepare(Ingestion job, byte[] source) { calls.incrementAndGet(); return ProcessingFixture.document(job, source); }
-        public GenerationPreparedDocument prepareGeneration(Ingestion job, byte[] source, Extraction extraction) { calls.incrementAndGet(); return generation(job, source); }
-        public List<Double> query(Caller caller, String query) { return Collections.nCopies(ProcessingProtocol.DIMENSIONS, 0.125); }
+        public GenerationPreparedDocument prepareGeneration(Ingestion job, byte[] source, Extraction extraction) { calls.incrementAndGet(); return generation(job, source, Collections.nCopies(1024, coordinate)); }
+        public List<Double> query(Caller caller, String query) { queries.incrementAndGet(); return Collections.nCopies(ProcessingProtocol.DIMENSIONS, 0.125); }
     }
 }

@@ -22,7 +22,8 @@ public interface LifecycleMapper {
     /** 原对象核验后的块投影对账，保留原ID、原文和来源，不回写旧行。 */
     List<PreparedChunkRow> migrationChunks(@Param("caller") Caller caller, @Param("id") String id);
     /** 更新时新代次独立命名空间，冻结受理发布基线。 */
-    int generation(@Param("row") IngestionRow job, @Param("state") LifecycleRows.State state);
+    int generation(@Param("row") IngestionRow job, @Param("state") LifecycleRows.State state,
+            @Param("scope") String scope);
     /** 同事务CAS最新受理及当前意图，不提前修改发布元组。 */
     int acceptUpdate(@Param("caller") Caller caller, @Param("input") Update input, @Param("job") IngestionRow job);
     /** 唯一管理命令键由数据库裁定并发赢家。 */
@@ -34,6 +35,12 @@ public interface LifecycleMapper {
     int isolateJob(@Param("caller") Caller caller, @Param("id") String jobId, @Param("code") String code);
     /** 可见性命令没有处理代次，回执的三个处理字段均为空。 */
     int visibilityCommand(@Param("caller") Caller caller, @Param("input") VisibilityCommand input);
+    /** 固定代次映射到不可变源修订；仅内部命令用于指纹恢复。 */
+    ReindexSource reindexSource(@Param("caller") Caller caller, @Param("id") String id, @Param("generation") long generation);
+    /** 最新内容字段与首次受理job不变，仅推进处理意图和独立代次。 */
+    int acceptReindex(@Param("caller") Caller caller, @Param("input") Reindex input, @Param("job") IngestionRow job);
+    /** 原命令键唯一约束与代次受理同事务。 */
+    int reindexCommand(@Param("caller") Caller caller, @Param("input") Reindex input, @Param("job") IngestionRow job);
     /** 现时资源所有者核对后才能返回命令回执。 */
     LifecycleRows.Command findCommand(@Param("caller") Caller caller, @Param("key") String key);
     /** 管理元数据与旧K02隔离，删除详情不返回。 */

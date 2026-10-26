@@ -55,6 +55,7 @@ knowledge:
     updates-enabled: ${KNOWLEDGE_LIFECYCLE_UPDATES_ENABLED:false}
     withdrawals-enabled: ${KNOWLEDGE_LIFECYCLE_WITHDRAWALS_ENABLED:false}
     deletions-enabled: ${KNOWLEDGE_LIFECYCLE_DELETIONS_ENABLED:false}
+    reindexes-enabled: ${KNOWLEDGE_LIFECYCLE_REINDEXES_ENABLED:false}
     backfill-enabled: ${KNOWLEDGE_LIFECYCLE_BACKFILL_ENABLED:false}
   citation-reader:
     enabled: ${KNOWLEDGE_CITATION_READER_ENABLED:false}

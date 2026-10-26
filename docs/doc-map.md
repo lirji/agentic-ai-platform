@@ -112,3 +112,7 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 ## S10C 同步（2026-10-27）
 
 基线backend `7ba26c4` / frontend `83d24db`。K07撤下/逻辑删除、文档与作业同事务隔离、默认关闭双开关、本地身份有限路由及React原键恢复映射到既有生命周期契约、运行说明和[S10C验收](qa/document-visibility-20261026/TEST_RESULT.md)。复用S10B的Tasks/K08/QA/工作/Conversation当前授权，新增真实墓碑下的历史/PG/评测验证。无新数据库迁移或基础设施，未物理清理；S10D/E仍按计划实施。源码摘要见[validation.json](qa/document-visibility-20261026/validation.json)。
+
+## S10D 同步（2026-10-27）
+
+基线backend `f2243d4` / frontend `dbc77b2`。K07重索引/不可变发布源、同内容独立代次、REINDEX恢复、双sink全量ID/摘要回读、20/60/100候选及总期限、React原参数恢复映射到既有生命周期契约和[S10D验收](qa/document-reindex-20261027/TEST_RESULT.md)。Python仅补同文件跨profile样本校验；旧金标和业务守卫不改。无新依赖/迁移，非生产部署，物理清理未开启。

@@ -28,7 +28,7 @@ public final class LifecycleModels {
     /** 审计动作与业务命令分开，发布是系统事件。 */
     public enum Action {
         CREATE("CREATE"), UPDATE("UPDATE"), PUBLISH("PUBLISH"), BACKFILL("BACKFILL"),
-        WITHDRAW("WITHDRAW"), DELETE("DELETE");
+        WITHDRAW("WITHDRAW"), DELETE("DELETE"), REINDEX("REINDEX");
         private final String code;
         Action(String code) { this.code = code; }
         public String code() { return code; }
@@ -58,6 +58,18 @@ public final class LifecycleModels {
     public record Update(String commandId, String key, String fingerprint, String documentId,
             long expectedRevision, String jobId, String displayName, SourceReference source,
             ProcessingProfile profile, Instant acceptedAt) { }
+
+    /** 代次关联的不可变源修订，仅供命令冻结/重放，不能作为公开历史正文入口。 */
+    public record ReindexSource(long contentRevision, String displayName, String sourceBucket,
+            String sourceKey, String sourceHash, String contentType, long sizeBytes) {
+        /** 沿用原文件地址与摘要；重建不复制或改写原始文件。 */
+        public SourceReference source() { return new SourceReference(sourceBucket, sourceKey, sourceHash, contentType, sizeBytes); }
+    }
+
+    /** 重索引绑定已发布输入及目标profile，代次编号仍在文档锁内分配。 */
+    public record Reindex(String commandId, String key, String fingerprint, String documentId,
+            long expectedRevision, long expectedPublishedGeneration, String jobId,
+            ReindexSource snapshot, ProcessingProfile profile, Instant acceptedAt) { }
 
     /** 可见性命令没有内容或新代次，禁止用撤下来隐式重建或恢复资料。 */
     public record VisibilityCommand(String commandId, String key, String fingerprint, String documentId,

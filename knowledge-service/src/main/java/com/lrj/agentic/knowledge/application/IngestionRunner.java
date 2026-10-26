@@ -70,11 +70,17 @@ public class IngestionRunner {
         checkInterrupted();
         if (claim.vectorState() != SinkState.DONE) {
             index.write(Sink.VECTOR, prepared);
+        }
+        index.verify(Sink.VECTOR, prepared);
+        if (claim.vectorState() != SinkState.DONE) {
             repository.sinkDone(claim, Sink.VECTOR);
         }
         checkInterrupted();
         if (claim.keywordState() != SinkState.DONE) {
             index.write(Sink.KEYWORD, prepared);
+        }
+        index.verify(Sink.KEYWORD, prepared);
+        if (claim.keywordState() != SinkState.DONE) {
             repository.sinkDone(claim, Sink.KEYWORD);
         }
         checkInterrupted();

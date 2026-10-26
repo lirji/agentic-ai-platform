@@ -46,18 +46,25 @@ public class BoundedHttp {
     /** 总期限涵盖完整响应；超时结果未知由任务幂等账本恢复。 */
     public byte[] request(String method, URI uri, Map<String, String> headers, byte[] body,
             int seconds, KnowledgeError failure) {
+        return request(method, uri, headers, body, Duration.ofSeconds(seconds), failure);
+    }
+
+    /** 候选扩展沿用外层剩余预算，不能每次HTTP重新获得完整总期限。 */
+    public byte[] request(String method, URI uri, Map<String, String> headers, byte[] body,
+            Duration timeout, KnowledgeError failure) {
+        if (timeout.isNegative() || timeout.isZero()) { throw new KnowledgeFailure(failure); }
         if (!slots.tryAcquire()) { throw new KnowledgeFailure(KnowledgeError.BUSY); }
         var span = tracer.nextSpan().name("knowledge.remote").start();
         CompletableFuture<HttpResponse<byte[]>> pending = null;
         try (var scope = tracer.withSpan(span)) {
             Map<String, String> outgoing = new HashMap<>(headers);
             propagator.inject(span.context(), outgoing, Map::put);
-            var builder = HttpRequest.newBuilder(uri).timeout(Duration.ofSeconds(seconds))
+            var builder = HttpRequest.newBuilder(uri).timeout(timeout)
                     .method(method, body == null ? HttpRequest.BodyPublishers.noBody()
                             : HttpRequest.BodyPublishers.ofByteArray(body));
             outgoing.forEach(builder::header);
             pending = client.sendAsync(builder.build(), ignored -> new LimitedBody());
-            HttpResponse<byte[]> response = pending.get(seconds, TimeUnit.SECONDS);
+            HttpResponse<byte[]> response = pending.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
                 throw new KnowledgeFailure(failure);
             }

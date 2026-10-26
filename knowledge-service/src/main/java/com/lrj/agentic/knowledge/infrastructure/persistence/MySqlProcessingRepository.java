@@ -191,8 +191,11 @@ public class MySqlProcessingRepository implements ProcessingRepository {
                     + ThreadLocalRandom.current().nextInt(2);
             changed(mapper.retry(caller, jobId, revision, delay, ProcessingProtocol.MAX_RETRIES));
             var after = knowledge.findIngestion(caller.tenantId(), caller.userId(), jobId).domain();
-            changed(mapper.documentState(caller, after.documentId(), after.documentVersion(), jobId,
-                    IngestionStatus.RECEIVED.code()));
+            // REINDEX有独立job；不能让其恢复覆盖首次内容任务或较新的失败草稿状态。
+            if (jobId.equals(state.ingestionJobId())) {
+                changed(mapper.documentState(caller, after.documentId(), after.documentVersion(), jobId,
+                        IngestionStatus.RECEIVED.code()));
+            }
             event(caller, jobId, "user:" + caller.userId(), ProcessingAction.RETRY);
             return after;
         }));

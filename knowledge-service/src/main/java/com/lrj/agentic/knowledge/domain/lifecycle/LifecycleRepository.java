@@ -21,4 +21,8 @@ public interface LifecycleRepository {
     CommandReceipt update(Caller caller, Update update);
     /** 可见性、在途任务隔离、幂等回执和审计同事务，不执行物理删除。 */
     CommandReceipt visibility(Caller caller, VisibilityCommand command);
+    /** 历史代次关联的不可变元数据支持删除后原命令重放，不对外返回对象位置。 */
+    Optional<ReindexSource> reindexSource(Caller caller, String id, long generation);
+    /** 固定当前发布输入；只分配处理代次，不创建或覆盖内容修订。 */
+    CommandReceipt reindex(Caller caller, Reindex command);
 }

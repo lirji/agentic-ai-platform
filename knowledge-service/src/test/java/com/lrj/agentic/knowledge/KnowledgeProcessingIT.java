@@ -103,6 +103,7 @@ class KnowledgeProcessingIT {
         var model = new Model();
         AtomicInteger vectors = new AtomicInteger(), keywords = new AtomicInteger();
         SearchIndex fault = new SearchIndex() {
+            public void verify(ProcessingClaim.Sink sink, com.lrj.agentic.knowledge.domain.processing.PreparedBatch document) { searchIndex.verify(sink, document); }
             @Override public void write(Sink sink, com.lrj.agentic.knowledge.domain.processing.PreparedBatch document) {
                 if (sink == Sink.VECTOR) { vectors.incrementAndGet(); }
                 if (sink == Sink.KEYWORD && keywords.incrementAndGet() == 1) {
@@ -111,8 +112,8 @@ class KnowledgeProcessingIT {
                 searchIndex.write(sink, document);
             }
             @Override public List<Candidate> search(Sink sink, Caller caller, String text,
-                    List<Double> vector, List<String> ids) {
-                return searchIndex.search(sink, caller, text, vector, ids);
+                    List<Double> vector, List<String> ids, int limit, java.time.Duration remaining) {
+                return searchIndex.search(sink, caller, text, vector, ids, limit, remaining);
             }
         };
         var runner = new IngestionRunner(repository, storage, model, fault, (source, format) -> { throw new AssertionError("v1不得调用二进制解析器"); });
@@ -158,8 +159,8 @@ class KnowledgeProcessingIT {
         error(KnowledgeError.STATE_CONFLICT, () -> repository.publish(prepared));
         searchIndex.write(Sink.KEYWORD, document);
         repository.sinkDone(prepared, Sink.KEYWORD);
-        assertThat(search(new Model(), searchIndex).search(caller(job),
-                new KnowledgeSearch.SearchRequest("资料发布", 5, null))).isEmpty();
+        error(KnowledgeError.INDEX_UNAVAILABLE, () -> search(new Model(), searchIndex).search(caller(job),
+                new KnowledgeSearch.SearchRequest("资料发布", 5, null)));
         jdbc.update("UPDATE knowledge_document SET version = 2 WHERE document_id = ?", job.documentId());
         error(KnowledgeError.STATE_CONFLICT, () -> repository.publish(prepared));
         assertThat(knowledge.ingestion(caller(job), job.jobId()).status()).isEqualTo(IngestionStatus.PROCESSING);
@@ -234,7 +235,7 @@ class KnowledgeProcessingIT {
     private KnowledgeSearch search(KnowledgeProcessor model, SearchIndex index) {
         var beans = new StaticListableBeanFactory(Map.of("model", model, "index", index));
         return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class),
-                beans.getBeanProvider(SearchIndex.class));
+                beans.getBeanProvider(SearchIndex.class), 45, 8);
     }
     private static void error(KnowledgeError expected, Runnable operation) {
         assertThatThrownBy(operation::run).isInstanceOfSatisfying(KnowledgeFailure.class,

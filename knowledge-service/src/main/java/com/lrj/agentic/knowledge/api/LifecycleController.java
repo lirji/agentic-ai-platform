@@ -1,6 +1,10 @@
 package com.lrj.agentic.knowledge.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.lrj.agentic.contract.knowledge.ExtractionProtocol;
 import com.lrj.agentic.knowledge.application.LifecycleService;
 import com.lrj.agentic.knowledge.application.UploadRules;
@@ -23,6 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class LifecycleController {
     private final LifecycleService service;
     private final ParserProperties parsing;
+    private static final ObjectReader COMMAND_JSON = new ObjectMapper()
+            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).readerFor(JsonNode.class);
     public LifecycleController(LifecycleService service, ParserProperties parsing) { this.service = service; this.parsing = parsing; }
 
     /** 文件边界沿K01，命令只异步受理，不将202冒充已发布。 */
@@ -60,13 +67,33 @@ public class LifecycleController {
         return service.visibility(JwtTrust.caller(jwt), id, key, expectedRevision(input), Operation.DELETE);
     }
 
+    /** 显式冻结当前发布代次与目标处理版本；202只是受理，不代表已切换索引。 */
+    @PostMapping(value = "/documents/{id}/reindexes", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommandReceipt> reindex(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
+            @RequestHeader("Idempotency-Key") String key, @RequestBody byte[] body) {
+        // 重复JSON键不得被树转换器悄悄覆盖，否则原意图与幂等摘要可能产生歧义。
+        JsonNode input;
+        try { input = COMMAND_JSON.readValue(body); }
+        catch (IOException invalid) { throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID); }
+        if (input == null || !input.isObject() || input.size() != 3 || !input.has("expectedRevision")
+                || !input.has("expectedPublishedGeneration") || !input.has("processorVersion")
+                || !input.get("processorVersion").isTextual()) {
+            throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+        }
+        return ResponseEntity.accepted().body(service.reindex(JwtTrust.caller(jwt), id, key,
+                number(input.get("expectedRevision"), 0), number(input.get("expectedPublishedGeneration"), 1),
+                input.get("processorVersion").textValue()));
+    }
+
     private static long expectedRevision(JsonNode input) {
         // JSON命令不接受字符串、浮点截断或额外参数，避免恢复指纹与实际意图不一致。
         if (input == null || !input.isObject() || input.size() != 1 || !input.has("expectedRevision")) {
             throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
         }
-        JsonNode value = input.get("expectedRevision");
-        if (!value.isIntegralNumber() || !value.canConvertToInt() || value.intValue() < 0) {
+        return number(input.get("expectedRevision"), 0);
+    }
+    private static long number(JsonNode value, int minimum) {
+        if (value == null || !value.isIntegralNumber() || !value.canConvertToInt() || value.intValue() < minimum) {
             throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
         }
         return value.longValue();

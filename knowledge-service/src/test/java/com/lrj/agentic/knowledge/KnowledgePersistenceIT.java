@@ -138,7 +138,7 @@ class KnowledgePersistenceIT {
         var failing = new KnowledgeService(repository, store,
                 new com.lrj.agentic.knowledge.config.ProcessingAdmissionProperties(
                         com.lrj.agentic.knowledge.config.ProcessingAdmissionProperties.Mode.BLOCK_V2),
-                new com.lrj.agentic.knowledge.config.LifecycleProperties(true, false, false, false, false, false));
+                new com.lrj.agentic.knowledge.config.LifecycleProperties(true, false, false, false, false, false, false));
         String key = UUID.randomUUID().toString();
         assertError(KnowledgeError.STORAGE_UNAVAILABLE, () -> failing.submit(owner, key, upload(key, "失败原文")));
         assertThat(repository.byIdempotency(owner, key)).isEmpty();

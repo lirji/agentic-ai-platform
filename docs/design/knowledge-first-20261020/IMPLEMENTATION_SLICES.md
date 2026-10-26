@@ -210,7 +210,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S10A | 文档/发布/索引版本与删除语义 | S8A, S9A | DESIGN | DONE |
 | S10B | 文档更新与原子发布切换 | S10A, S9D | IMPLEMENT | DONE |
 | S10C | 撤下、逻辑删除与引用失效 | S10B | IMPLEMENT | DONE |
-| S10D | 版本化重索引和处理 profile 切换 | S10B, S10C, S9D | IMPLEMENT | PLANNED |
+| S10D | 版本化重索引和处理 profile 切换 | S10B, S10C, S9D | IMPLEMENT | DONE |
 | S10E | 安全内容查重与重复上传恢复 | S10C | IMPLEMENT | PLANNED |
 | S10F | 处理诊断与有界批量管理 | S10D, S10E | IMPLEMENT | PLANNED |
 | S11A | 冻结授权候选、融合与重排契约 | S8D, S10A | DESIGN | PLANNED |
@@ -409,7 +409,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-LIFECYCLE、C-PARSE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 固定输入快照；新旧 profile 共存；重试不重算已绑定准备包；源权限/撤下变化复核；切换前质量/数量/摘要核对；清理资格单独列出。
 - **Pass / Runtime：** IMPLEMENT；复用既有存储；新集合仅在实际 schema/model 不兼容时引入。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G04 G13 G18。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G04 G13 G18。
 
 ### S10E · 安全内容查重与重复上传恢复
 

@@ -45,6 +45,7 @@ public class KnowledgeSecurity {
                                 "/api/v2/knowledge/documents/*/updates",
                                 "/api/v2/knowledge/documents/*/withdrawals",
                                 "/api/v2/knowledge/documents/*/deletions",
+                                "/api/v2/knowledge/documents/*/reindexes",
                                 "/api/v1/knowledge/ingestions/*/retry",
                                 "/api/v1/knowledge/evaluations/datasets",
                                 "/api/v1/knowledge/evaluations/datasets/*/revisions",

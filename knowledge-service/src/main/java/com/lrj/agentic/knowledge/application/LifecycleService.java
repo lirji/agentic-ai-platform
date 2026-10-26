@@ -8,6 +8,7 @@ import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.SourceStore;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.*;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleRepository;
+import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
 import com.lrj.agentic.security.Caller;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -73,6 +74,38 @@ public class LifecycleService {
         // 开启命令时由事务内的文档锁与原键复查统一裁决，避免同键DELETE先提交后被详情404截断。
         return repository.visibility(caller, new VisibilityCommand(UUID.randomUUID().toString(), key, fingerprint,
                 id, expectedRevision, operation, Instant.now().truncatedTo(ChronoUnit.MICROS)));
+    }
+
+    /** 用代次关联的不可变源计算指纹；重放不能误取后来发布或失败新稿的名称/hash。 */
+    public CommandReceipt reindex(Caller caller, String id, String key, long expectedRevision,
+            long expectedPublishedGeneration, String processorVersion) {
+        uuid(id); key(key);
+        if (expectedRevision < 0 || expectedRevision > Integer.MAX_VALUE
+                || expectedPublishedGeneration < 1 || expectedPublishedGeneration > Integer.MAX_VALUE) { invalid(); }
+        var profile = ProcessingProfile.requested(processorVersion);
+        var existing = repository.command(caller, key, null);
+        if (existing.isPresent() && (!Operation.REINDEX.code().equals(existing.get().operation())
+                || !id.equals(existing.get().documentId()))) {
+            throw new KnowledgeFailure(KnowledgeError.IDEMPOTENCY_CONFLICT);
+        }
+        long sourceGeneration = existing.isPresent() ? existing.get().indexGeneration() : expectedPublishedGeneration;
+        var snapshot = repository.reindexSource(caller, id, sourceGeneration).orElseGet(() -> {
+            document(caller, id);
+            throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT);
+        });
+        String fingerprint = ContentDigest.sha256(String.join("\0", Operation.REINDEX.code(), id,
+                Long.toString(expectedRevision), Long.toString(expectedPublishedGeneration), profile.processor(),
+                snapshot.sourceHash(), snapshot.contentType(), snapshot.displayName()).getBytes(StandardCharsets.UTF_8));
+        var replay = repository.command(caller, key, fingerprint);
+        if (replay.isPresent()) { return replay.get(); }
+        if (!properties.reindexesEnabled()) {
+            document(caller, id);
+            throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED);
+        }
+        // 事务再次核对当前发布元组及快照；首次查询后同键命令提交也能在锁内重放。
+        return repository.reindex(caller, new Reindex(UUID.randomUUID().toString(), key, fingerprint, id,
+                expectedRevision, expectedPublishedGeneration, UUID.randomUUID().toString(), snapshot, profile,
+                Instant.now().truncatedTo(ChronoUnit.MICROS)));
     }
     /** 详情包括失败新稿与当前发布两个版本事实。 */
     public DocumentView document(Caller caller, String id) {

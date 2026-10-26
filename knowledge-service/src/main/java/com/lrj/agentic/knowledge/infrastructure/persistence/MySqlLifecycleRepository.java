@@ -5,6 +5,7 @@ import com.lrj.agentic.knowledge.domain.IngestionStage;
 import com.lrj.agentic.knowledge.domain.IngestionStatus;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
+import com.lrj.agentic.knowledge.domain.DocumentFormat;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.*;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleRepository;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
@@ -86,7 +87,7 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
                         IngestionStatus.RECEIVED, IngestionStage.ACCEPTED, null, false, 0, 0,
                         input.acceptedAt(), input.acceptedAt(), input.profile(), state.lastGeneration() + 1,
                         ProcessingProtocol.GENERATION_SCHEMA));
-                changed(mapper.generation(job, state));
+                changed(mapper.generation(job, state, Operation.UPDATE.code()));
                 changed(mapper.revision(state, job, input.displayName()));
                 changed(mapper.acceptUpdate(caller, input, job));
                 changed(mapper.command(caller, input, job));
@@ -137,6 +138,59 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
                         state.activeJobId(), "user:" + caller.userId(), action.code()));
                 return new CommandReceipt(input.commandId(), input.operation().code(), input.documentId(),
                         input.expectedRevision() + 1, null, null, null, input.acceptedAt());
+            });
+        } catch (DuplicateKeyException conflict) {
+            return command(caller, input.key(), input.fingerprint())
+                    .orElseThrow(() -> new KnowledgeFailure(KnowledgeError.STATE_CONFLICT));
+        } catch (DataAccessException | TransactionException unknown) {
+            throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);
+        }
+    }
+
+    /** 元数据查询使用全身份，已删除资料仅由应用层原回执路径消费。 */
+    @Override public Optional<ReindexSource> reindexSource(Caller caller, String id, long generation) {
+        return access(() -> Optional.ofNullable(mapper.reindexSource(caller, id, generation)));
+    }
+
+    /** 更新/重建共用文档意图锁；仅允许冻结受理时仍然有效的当前发布输入。 */
+    @Override public CommandReceipt reindex(Caller caller, Reindex input) {
+        try {
+            return transaction.execute(status -> {
+                var state = mapper.lockDocument(caller, input.documentId());
+                if (state == null) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
+                var replay = command(caller, input.key(), input.fingerprint());
+                if (replay.isPresent()) { return replay.get(); }
+                if (Lifecycle.DELETED.code().equals(state.lifecycle())) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
+                if (!state.lifecycleReady() || !Lifecycle.ACTIVE.code().equals(state.lifecycle())
+                        || state.revision() != input.expectedRevision() || state.revision() >= Integer.MAX_VALUE
+                        || state.lastGeneration() >= Integer.MAX_VALUE || state.publishedGeneration() == null
+                        || state.publishedVersion() == null || state.publishedJobId() == null
+                        || state.publishedVersion() != input.snapshot().contentRevision()
+                        || state.publishedGeneration() != input.expectedPublishedGeneration()
+                        || !input.snapshot().equals(mapper.reindexSource(caller, input.documentId(), state.publishedGeneration()))) {
+                    throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT);
+                }
+                if (!input.profile().supports(DocumentFormat.fromContentType(input.snapshot().contentType()))) {
+                    throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+                }
+                if (state.activeJobId() != null) {
+                    var active = mapper.lockJob(caller, state.activeJobId());
+                    if (active == null || IngestionStatus.RECEIVED.code().equals(active.status())
+                            || IngestionStatus.PROCESSING.code().equals(active.status())) {
+                        throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT);
+                    }
+                }
+                var job = IngestionRow.from(new Ingestion(input.jobId(), caller.tenantId(), caller.userId(),
+                        input.documentId(), input.snapshot().contentRevision(), input.key(), input.fingerprint(), input.snapshot().source(),
+                        IngestionStatus.RECEIVED, IngestionStage.ACCEPTED, null, false, 0, 0, input.acceptedAt(), input.acceptedAt(),
+                        input.profile(), state.lastGeneration() + 1, ProcessingProtocol.GENERATION_SCHEMA));
+                changed(mapper.generation(job, state, Operation.REINDEX.code()));
+                changed(mapper.acceptReindex(caller, input, job));
+                changed(mapper.reindexCommand(caller, input, job));
+                changed(mapper.event(caller, input.documentId(), UUID.randomUUID().toString(), input.commandId(),
+                        input.jobId(), "user:" + caller.userId(), Action.REINDEX.code()));
+                return new CommandReceipt(input.commandId(), Operation.REINDEX.code(), input.documentId(),
+                        input.expectedRevision() + 1, job.documentVersion(), job.indexGeneration(), job.jobId(), input.acceptedAt());
             });
         } catch (DuplicateKeyException conflict) {
             return command(caller, input.key(), input.fingerprint())

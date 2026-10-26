@@ -295,3 +295,11 @@ K07新增 `POST /api/v2/knowledge/documents/{id}/withdrawals` 与 `/deletions`�
 本机S10C验收结束时create/generation/updates/withdrawals/deletions=true、backfill=false，解析/PDF/DOCX开关与STRUCTURE_V3保持显式配置；Java、AI、qa-worker已恢复。关闭所有写开关并重启兼容版本仍保留墓碑、当前发布读取与原命令回执，不能以关闭开关恢复已撤下资料。故障演练已验证Knowledge不可用时历史GET/SSE返回503，恢复后继续拒绝失效引用。
 
 隔离验收资料/固定键/PG快照在`.local/s10c-*.json`，分阶段工具位于`docs/qa/document-visibility-20261026/{http_probe,pg_probe}.py`，先查状态再执行，不作为生产工具或清理入口。撤下保留owner管理历史、逻辑删除隐藏详情；S3、ES、Qdrant、数据库历史与备份不做物理删除。没有恢复上架接口；同内容重新上传在S10E前仍受原唯一约束限制。验收与限制见[S10C TEST_RESULT](../docs/qa/document-visibility-20261026/TEST_RESULT.md)。
+
+## S10D 固定快照重索引
+
+新增`KNOWLEDGE_LIFECYCLE_REINDEXES_ENABLED=false`；本地`.local/lifecycle.json`对应`reindexesEnabled`，缺省false，开启必须generation=true。回填与全部写开关互斥；默认不开放新命令。已接受回执在关闭开关后仍可查询/同键重放。复用既有索引与V10，不改变旧profile、不清理旧代次。
+
+重建只使用当前发布修订原文件，失败新稿及原内容任务状态不变。每次发布前两sink全量核对ID/身份/batchDigest（ES另核对正文），DONE恢复也核验；若DONE目标被外部损坏，先恢复投影或另发明确重建，再沿原准备包重试，不重新调用模型掩盖损坏。检索每路20/60/100，共用一次Embedding和aiSeconds+2×indexSeconds原总预算；不足topK且有淘汰候选时503，不伪装无答案。
+
+本机S10D验收完成后create/generation/updates/withdrawals/deletions/reindexes=true，backfill=false；解析/PDF/DOCX/STRUCTURE_V3继续显式配置，Java/AI/model-proxy/qa-worker已恢复。固定资料和命令在`.local/s10d-http-state.json`；[分阶段工具](../docs/qa/document-reindex-20261027/http_probe.py)与[验收](../docs/qa/document-reindex-20261027/TEST_RESULT.md)仅供授权隔离环境恢复。不要重复执行已成功/未知模型请求或重置预算。

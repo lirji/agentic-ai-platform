@@ -46,7 +46,7 @@
             #{row.idempotencyKey}, #{row.requestFingerprint}, #{row.sourceBucket}, #{row.sourceKey}, #{row.contentHash},
             #{row.contentType}, #{row.sizeBytes}, #{row.status}, #{row.stage}, #{row.errorCode}, #{row.retryable},
             #{row.retryCount}, #{row.revision}, #{row.createdAt}, #{row.updatedAt}, #{row.preparationSchema},
-            #{row.processorVersion}, #{row.parserProfile}, #{row.indexGeneration}, 'UPDATE',
+            #{row.processorVersion}, #{row.parserProfile}, #{row.indexGeneration}, #{scope},
             #{state.publishedVersion}, #{state.publishedGeneration}, #{state.publishedJobId})
     </insert>
     <update id="acceptUpdate">
@@ -62,6 +62,31 @@
         INSERT INTO knowledge_lifecycle_command (command_id, tenant_id, owner_id, idempotency_key, request_fingerprint,
             operation, document_id, accepted_revision, content_revision, index_generation, job_id, accepted_at)
         VALUES (#{input.commandId}, #{caller.tenantId}, #{caller.userId}, #{input.key}, #{input.fingerprint}, 'UPDATE',
+            #{input.documentId}, #{input.expectedRevision} + 1, #{job.documentVersion}, #{job.indexGeneration}, #{job.jobId}, #{input.acceptedAt})
+    </insert>
+    <select id="reindexSource" resultType="com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels$ReindexSource">
+        SELECT r.content_revision, r.display_name, r.source_bucket, r.source_key,
+            r.content_hash AS source_hash, r.content_type, r.size_bytes
+        FROM knowledge_document d JOIN knowledge_ingestion j ON j.tenant_id = d.tenant_id
+            AND j.owner_id = d.owner_id AND j.document_id = d.document_id AND j.index_generation = #{generation}
+        JOIN knowledge_document_revision r ON r.tenant_id = j.tenant_id AND r.owner_id = j.owner_id
+            AND r.document_id = j.document_id AND r.content_revision = j.document_version
+            AND r.content_hash = j.content_hash AND r.content_type = j.content_type AND r.size_bytes = j.size_bytes
+        WHERE d.tenant_id = #{caller.tenantId} AND d.owner_id = #{caller.userId} AND d.document_id = #{id}
+            AND d.lifecycle_ready = TRUE
+    </select>
+    <update id="acceptReindex">
+        UPDATE knowledge_document SET last_generation = #{job.indexGeneration}, active_job_id = #{job.jobId},
+            revision = revision + 1, updated_at = #{input.acceptedAt}
+        WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND document_id = #{input.documentId}
+            AND lifecycle_ready = TRUE AND lifecycle = 'ACTIVE' AND revision = #{input.expectedRevision}
+            AND published_generation = #{input.expectedPublishedGeneration}
+            AND revision &lt; 2147483647 AND last_generation &lt; 2147483647
+    </update>
+    <insert id="reindexCommand">
+        INSERT INTO knowledge_lifecycle_command (command_id, tenant_id, owner_id, idempotency_key, request_fingerprint,
+            operation, document_id, accepted_revision, content_revision, index_generation, job_id, accepted_at)
+        VALUES (#{input.commandId}, #{caller.tenantId}, #{caller.userId}, #{input.key}, #{input.fingerprint}, 'REINDEX',
             #{input.documentId}, #{input.expectedRevision} + 1, #{job.documentVersion}, #{job.indexGeneration}, #{job.jobId}, #{input.acceptedAt})
     </insert>
     <select id="findCommand" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleRows$Command">

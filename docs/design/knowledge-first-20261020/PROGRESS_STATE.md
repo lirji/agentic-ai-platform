@@ -1,20 +1,18 @@
 # 独立知识平台准备进度
 
-## 当前状态：S10C实现已交付，收据验证后连续S10D
+## 当前状态：S10D已验证，Git/CI交付中
 
-- 任务：`capability-delivery-20261021`；已批准51项计划，parallel=no。S8A–F、S9A–D、S10A/B已交付；S10C DONE/验证PASS，实现已正常合并推送main且分支/main CI均PASS；正在提交交付收据，当前文档CI通过后连续开始S10D。S10D/E仍PLANNED。
-- S10C证据：[验收](../../qa/document-visibility-20261026/TEST_RESULT.md)、[实现](../../qa/document-visibility-20261026/IMPLEMENTATION_EVIDENCE.md)、[源码清单](../../qa/document-visibility-20261026/validation.json)。K07撤下/逻辑删除、在途隔离、owner管理与删除404、全部旧正文授权、原键恢复；适用LC-12–16、21–24。无物理清理/恢复上架，不提前实施S10D/E。
-- 已完成：Java138单元+108集成PASS；React83单元/类型/ESLint/构建、14协议浏览器场景、真实撤下/删除/修复后再次删除PASS，1440/1024/414截图已查看；真实6个PG墓碑恢复模型0调用；评测/历史Tasks/SSE/Conversation/K04/K05/K06/K08、Knowledge停机503、六写开关全关闭兼容PASS。日志两仓`.logs/s10c-*`。
-- 修正：定向真实DB复现并修复同键DELETE首次回执查询后的404竞态；未知提交立即隐藏缓存正文与更新入口，实际丢响应/404后仍仅一个POST并按原键恢复。验收脚本时序/DTO/路径问题已修复，原失败日志保留；无未解决必需FAIL。
-- Allowed Change Set：Knowledge lifecycle/Processing审计/测试、默认关闭双开关、既有白名单；前端K07客户端/详情与确认恢复、对应测试/截图；规范进度、运行说明、验收。无新依赖/基础设施/迁移，V10及旧金标未改。
-- Git：两仓原目录`feat/document-visibility-20261026`，基线backend7ba26c4 / frontend83d24db；实现26518e5/46c3bab已提交并合并推送main；原分支复用完成收据，无新worktree。按完整逻辑单元提交、正常合并推送origin/main，不强推/绕过保护/生产部署。
-- 本地运行：Knowledge dev/test V10、Tasks dev/test V4；create/generation/updates/withdrawals/deletions=true、backfill=false，解析/PDF/DOCX及STRUCTURE_V3保持。Java/AI/model-proxy/qa-worker已恢复；local-dev在途0。构建前正常停止旧Java，不覆盖活动JAR。
-- 模型预算：Embedding65批/0.671784元（本片3份隔离资料+2次失效查询），chat24次/0.889964元，各1元累计上限不变。新调用前核对账本，不重置或重跑未知付费操作；S10B实际资料保留，S10C仅操作独立样本。
-- 额度要求：用户要求预留20%。恢复/阶段边界运行`python3 .local/check_session_quota.py`，最新客户端约52%已用；接近78%开始收尾，80%前停止新工作并保存检查点。窗口快照有滞后，与项目模型两本账本独立。
-- 恢复入口：先核对Git/CI和`.local/s10c-http-state.json`、`s10c-privacy-state.json`；已完成命令只读查询/重放，不重新造样本或恢复墓碑。保留固定键、密钥、账本、日志、截图、DB/S3/索引/PG；20条历史隔离租户RECEIVED不清理。
-- 规范：backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/契约/并发/容量/发布及个人状态机细则。原MULTI_CLIENT_DRIFT_BLOCKED未改，沿批准手工专业pass；U01/U03/U06/U07不扩大为生产承诺。
-- 交付收据：[delivery-result](../../qa/document-visibility-20261026/delivery-result.json)。实现分支CI40364296696/40364311515、main CI40364713196/40364750615均PASS；最后文档提交的CI需按真实HEAD核对，不递归填写自身hash。
-- 下一步：完成当前收据文档的两仓分支/main交付与CI，然后开始S10D固定快照重索引。用户连续授权有效，不再要求“继续”。
+- 任务：`capability-delivery-20261021`；已批准51项计划，parallel=no。S8A–F、S9A–D、S10A/B/C已交付；S10D实现与验收DONE/PASS，正按既有授权提交/正常合并推main。S10E及后续仍PLANNED，无生产部署/清理。
+- S10D证据：[验收](../../qa/document-reindex-20261027/TEST_RESULT.md)、[实现/反例](../../qa/document-reindex-20261027/IMPLEMENTATION_EVIDENCE.md)、[源码清单](../../qa/document-reindex-20261027/validation.json)。143 Java单元+116 IT、396 Python/51显式跳过、89前端、14协议浏览器、1真实重建响应丢失/原键恢复及2只读重验；HTTP关闭/开启/原键/严格JSON/跨身份、历史3类GET/SSE/上下文、topK=1当前命中及耗尽503均PASS。
+- 已实现：REINDEX固定当前发布源与目标profile，独立代次且保留失败新稿；REINDEX重试不改内容任务；两sink全量ID/身份/摘要核验及ES正文对账，DONE恢复重验；20/60/100原排名/一次Embedding/共用总期限；React非正文原参数恢复、未知/换代引用刷新。PDF/DOCX同文件V2→V3已真实验证，原金标与旧baseline保留，不声明质量提升。
+- Git：两仓原目录`feat/document-reindex-20261027`，基线backend f2243d4 / frontend dbc77b2；本任务未提交实现/测试/Runtime开关/证据及文档，暂无新worktree。下一步生成交付清单，核对暂存、分支CI、正常FF合并/push main，再同步收据。
+- 运行：Java/AI/model-proxy/qa-worker与Vite已恢复；Knowledge dev/test V10、Tasks V4；create/generation/updates/withdrawals/deletions/reindexes=true，backfill=false，解析/PDF/DOCX/STRUCTURE_V3保持。无业务在途后才停Java构建，不覆盖活动JAR。
+- 固定隔离状态：`.local/s10d-http-state.json`；资料aa371638-6816-44ac-a5e4-eb3085495ad5，v2失败PDF草稿、发布v1/g4；原命令/准备/历史任务与旧引用保留。探针分阶段恢复，未知付费先查原键/账本，不能重新跑写操作补截图。
+- 预算：Embedding70批/0.721784元；chat24次/0.889964元，各1元累计上限不变。本片新增1份资料、2次重索引、2次查询；失败PDF未调用Embedding。历史S10B/C样本、存储、PG与资料保留。
+- 额度：`python3 .local/check_session_quota.py`读当前会话窗口，最近约71%已用；接近78%收尾、80%前停止新工作，预留20%。不根据goal token计数猜额度。
+- 规范：backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/接口/并发/ES/中间件/容量/发布已读。原MULTI_CLIENT_DRIFT_BLOCKED未改，沿批准手工专业pass；无子Agent、独立认证或生产质量/SLO/清理承诺。
+- S10C已完整交付：实现26518e5/46c3bab、收据f2243d4/dbc77b2，最终main CI40365748577/40365779517均PASS。详见原[验收](../../qa/document-visibility-20261026/TEST_RESULT.md)及[收据](../../qa/document-visibility-20261026/delivery-result.json)，不重开已完成任务。
+- 恢复入口：先核对两仓Git、当前S10D清单/CI及服务；完成交付后沿原计划进入S10E安全查重。日志`.logs/s10d-*`，两仓.local材料全部保留，不按上下文缺失重新执行副作用。
 
 ## 历史：20 项差距的框架化实施计划
 

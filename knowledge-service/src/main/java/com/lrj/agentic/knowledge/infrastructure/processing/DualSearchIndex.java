@@ -12,6 +12,7 @@ import com.lrj.agentic.knowledge.domain.processing.SearchIndex;
 import com.lrj.agentic.security.Caller;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashSet;
@@ -42,6 +43,39 @@ public class DualSearchIndex implements SearchIndex {
     public void write(Sink sink, PreparedBatch document) {
         if (sink == Sink.VECTOR) { vectors(document); }
         else { keywords(document); }
+    }
+
+    /** 回读整批稳定身份和摘要，禁止凭写入响应或抽样把新代次切为当前发布。 */
+    @Override public void verify(Sink sink, PreparedBatch document) {
+        require(!document.chunks().isEmpty() && document.chunks().size() <= ProcessingProtocol.MAX_CHUNKS);
+        var expected = new java.util.HashMap<String, PreparedBatch.Chunk>();
+        for (var chunk : document.chunks()) {
+            String id = sink == Sink.VECTOR ? pointId(chunk.chunkId(), document.batchDigest())
+                    : chunk.chunkId() + ":" + document.batchDigest();
+            require(expected.put(id, chunk) == null);
+        }
+        boolean vector = sink == Sink.VECTOR;
+        var body = vector ? Map.<String, Object>of("ids", expected.keySet(), "with_payload", true, "with_vector", false)
+                : Map.<String, Object>of("ids", expected.keySet());
+        var response = request(sink, "POST", vector ? "/collections/" + properties.collection() + "/points"
+                : "/" + properties.index() + "/_mget", json.write(body), "application/json");
+        if (vector) { require("ok".equals(response.path("status").asText())); }
+        var items = response.path(vector ? "result" : "docs");
+        require(items.isArray() && items.size() == expected.size());
+        for (var item : items) {
+            var chunk = expected.remove(item.path(vector ? "id" : "_id").asText());
+            require(chunk != null);
+            if (!vector) { require(item.path("found").isBoolean() && item.path("found").asBoolean() && !item.has("error")); }
+            var actual = item.path(vector ? "payload" : "_source");
+            for (var field : payload(document, chunk).entrySet()) {
+                var value = actual.path(field.getKey());
+                require(field.getValue() instanceof Number number
+                        ? value.isIntegralNumber() && value.canConvertToLong() && value.longValue() == number.longValue()
+                        : value.isTextual() && field.getValue().equals(value.textValue()));
+            }
+            if (!vector) { require(actual.path("text").isTextual() && chunk.text().equals(actual.path("text").textValue())); }
+        }
+        require(expected.isEmpty());
     }
 
     /** readiness 只检查当前集合及 mapping，不调用付费模型或宣称检索质量。 */
@@ -96,7 +130,10 @@ public class DualSearchIndex implements SearchIndex {
     /** 过滤条件由可信 Caller 生成，DSL 结构不从用户字符串解析。 */
     @Override
     public List<Candidate> search(Sink sink, Caller caller, String query, List<Double> vector,
-            List<String> documentIds) {
+            List<String> documentIds, int limit, Duration remaining) {
+        require(limit >= 1 && limit <= ProcessingProtocol.CANDIDATES);
+        Duration timeout = remaining.compareTo(Duration.ofSeconds(properties.indexSeconds())) < 0
+                ? remaining : Duration.ofSeconds(properties.indexSeconds());
         List<Object> filters = new ArrayList<>();
         Map<String, Object> identity = Map.of("tenantId", caller.tenantId(), "ownerId", caller.userId());
         if (sink == Sink.VECTOR) {
@@ -108,29 +145,29 @@ public class DualSearchIndex implements SearchIndex {
             JsonNode response = request(sink, "POST",
                     "/collections/" + properties.collection() + "/points/query",
                     json.write(Map.of("query", vector, "filter", Map.of("must", filters),
-                            "limit", ProcessingProtocol.CANDIDATES,
+                            "limit", limit,
                             "with_payload", List.of("chunkId", "batchDigest"), "with_vector", false)),
-                    "application/json");
+                    "application/json", timeout);
             require("ok".equals(response.path("status").asText()));
-            return candidates(response.path("result").path("points"), "payload");
+            return candidates(response.path("result").path("points"), "payload", limit);
         }
         identity.forEach((key, value) -> filters.add(Map.of("term", Map.of(key, value))));
         filters.add(Map.of("terms", Map.of("processorVersion", ProcessingProfile.compatibleVersions())));
         if (!documentIds.isEmpty()) { filters.add(Map.of("terms", Map.of("documentId", documentIds))); }
         JsonNode response = request(sink, "POST", "/" + properties.index() + "/_search",
-                json.write(Map.of("size", ProcessingProtocol.CANDIDATES, "track_total_hits", false,
-                        "timeout", "5s", "_source", List.of("chunkId", "batchDigest"),
+                json.write(Map.of("size", limit, "track_total_hits", false,
+                        "timeout", Math.max(1, Math.min(5000, timeout.toMillis())) + "ms", "_source", List.of("chunkId", "batchDigest"),
                         "sort", List.of(Map.of("_score", "desc"), Map.of("chunkId", "asc")),
                         "query", Map.of("bool", Map.of("filter", filters,
                                 "must", Map.of("match", Map.of("text", Map.of("query", query))))))),
-                "application/json");
+                "application/json", timeout);
         require(response.has("timed_out") && !response.path("timed_out").asBoolean()
                 && response.path("_shards").path("failed").asInt(-1) == 0);
-        return candidates(response.path("hits").path("hits"), "_source");
+        return candidates(response.path("hits").path("hits"), "_source", limit);
     }
 
-    private List<Candidate> candidates(JsonNode items, String payloadField) {
-        require(items.isArray() && items.size() <= ProcessingProtocol.CANDIDATES);
+    private List<Candidate> candidates(JsonNode items, String payloadField, int limit) {
+        require(items.isArray() && items.size() <= limit);
         List<Candidate> candidates = new ArrayList<>();
         var seen = new HashSet<Candidate>();
         for (JsonNode item : items) {
@@ -145,6 +182,10 @@ public class DualSearchIndex implements SearchIndex {
     }
 
     private JsonNode request(Sink sink, String method, String path, byte[] body, String type) {
+        return request(sink, method, path, body, type, Duration.ofSeconds(properties.indexSeconds()));
+    }
+
+    private JsonNode request(Sink sink, String method, String path, byte[] body, String type, Duration timeout) {
         boolean vector = sink == Sink.VECTOR;
         String authorization = "Basic " + Base64.getEncoder().encodeToString(
                 (properties.elasticUser() + ":" + properties.elasticPassword()).getBytes(StandardCharsets.UTF_8));
@@ -152,7 +193,7 @@ public class DualSearchIndex implements SearchIndex {
                 : Map.of("Authorization", authorization, "Content-Type", type);
         byte[] bytes = http.request(method,
                 (vector ? properties.qdrantEndpoint() : properties.elasticEndpoint()).resolve(path),
-                headers, body, properties.indexSeconds(), KnowledgeError.INDEX_UNAVAILABLE);
+                headers, body, timeout, KnowledgeError.INDEX_UNAVAILABLE);
         return json.read(bytes, JsonNode.class, KnowledgeError.INDEX_UNAVAILABLE);
     }
 

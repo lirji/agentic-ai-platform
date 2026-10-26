@@ -91,7 +91,7 @@ class KnowledgeStructuredProcessingIT {
                 assertThat(search.citation(owner, job.documentId(), 1, ids.getFirst()).text()).doesNotContain("章节：", "表头：");
                 String query = job.profile() == ProcessingProfile.PDF_V3 ? "review" : "资料";
                 for (var sink : ProcessingClaim.Sink.values()) {
-                    var candidates = index.search(sink, owner, query, model.query(owner, query), List.of(job.documentId()));
+                    var candidates = index.search(sink, owner, query, model.query(owner, query), List.of(job.documentId()), 100, java.time.Duration.ofSeconds(8));
                     assertThat(candidates).isNotEmpty();
                     assertThat(repository.published(owner, candidates.stream().map(SearchIndex.Candidate::chunkId).toList()))
                             .allSatisfy(row -> assertThat(row.documentId()).isEqualTo(job.documentId()));
@@ -141,7 +141,7 @@ class KnowledgeStructuredProcessingIT {
         assertThat(merged.location()).isEqualTo(new Extraction.TableLocation(4, 1, 2, 1, 2, 2, false));
         assertThat(search.citation(owner, docx.documentId(), 1, chunks.get(5)).text()).isEqualTo("资料审核\n两个工作日");
         for (var sink : ProcessingClaim.Sink.values()) {
-            var ids = index.search(sink, owner, "资料", model.query(owner, "资料"), List.of()).stream()
+            var ids = index.search(sink, owner, "资料", model.query(owner, "资料"), List.of(), 100, java.time.Duration.ofSeconds(8)).stream()
                     .map(SearchIndex.Candidate::chunkId).toList();
             assertThat(repository.published(owner, ids)).extracting(ProcessingRepository.PublishedChunk::documentId)
                     .contains(docx.documentId(), pdf.documentId(), text.documentId());
@@ -209,7 +209,7 @@ class KnowledgeStructuredProcessingIT {
         var hits = search.search(owner, new KnowledgeSearch.SearchRequest("知识资料", 5, null));
         assertThat(hits).extracting(KnowledgeSearch.Hit::documentId).contains(pdf.documentId(), txt.documentId());
         for (var sink : ProcessingClaim.Sink.values()) {
-            var candidateIds = index.search(sink, owner, "知识资料", model.query(owner, "知识资料"), List.of())
+            var candidateIds = index.search(sink, owner, "知识资料", model.query(owner, "知识资料"), List.of(), 100, java.time.Duration.ofSeconds(8))
                     .stream().map(SearchIndex.Candidate::chunkId).toList();
             assertThat(repository.published(owner, candidateIds)).extracting(ProcessingRepository.PublishedChunk::documentId)
                     .contains(pdf.documentId(), txt.documentId());
@@ -273,6 +273,7 @@ class KnowledgeStructuredProcessingIT {
         var model = new Model();
         AtomicInteger parses = new AtomicInteger(), vectors = new AtomicInteger(), keywords = new AtomicInteger();
         SearchIndex fault = new SearchIndex() {
+            public void verify(ProcessingClaim.Sink sink, com.lrj.agentic.knowledge.domain.processing.PreparedBatch document) { index.verify(sink, document); }
             public void write(ProcessingClaim.Sink sink, PreparedBatch document) {
                 if (sink == ProcessingClaim.Sink.VECTOR) { vectors.incrementAndGet(); }
                 if (sink == ProcessingClaim.Sink.KEYWORD && keywords.incrementAndGet() == 1) {
@@ -281,7 +282,7 @@ class KnowledgeStructuredProcessingIT {
                 index.write(sink, document);
             }
             public List<Candidate> search(ProcessingClaim.Sink sink, Caller owner, String query,
-                    List<Double> vector, List<String> ids) { return index.search(sink, owner, query, vector, ids); }
+                    List<Double> vector, List<String> ids, int limit, java.time.Duration remaining) { return index.search(sink, owner, query, vector, ids, limit, remaining); }
         };
         var runner = runner(model, fault, (bytes, format) -> { parses.incrementAndGet(); return parser.extract(bytes, format); });
         var first = claim(job, "first");
@@ -419,7 +420,7 @@ class KnowledgeStructuredProcessingIT {
     private Ingestion structural(Caller owner, DocumentFormat format) throws Exception {
         var selected = new KnowledgeService(registrations, sourceStore,
                 new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.STRUCTURE_V3),
-                new com.lrj.agentic.knowledge.config.LifecycleProperties(true, false, false, false, false, false));
+                new com.lrj.agentic.knowledge.config.LifecycleProperties(true, false, false, false, false, false, false));
         String key = UUID.randomUUID().toString();
         return selected.submit(owner, key, structureUpload(format, key));
     }
@@ -434,7 +435,7 @@ class KnowledgeStructuredProcessingIT {
     }
     private KnowledgeSearch search(KnowledgeProcessor model, SearchIndex target) {
         var beans = new StaticListableBeanFactory(Map.of("model", model, "index", target));
-        return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class));
+        return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), 45, 8);
     }
     private static void error(KnowledgeError expected, Runnable operation) {
         assertThatThrownBy(operation::run).isInstanceOfSatisfying(KnowledgeFailure.class,

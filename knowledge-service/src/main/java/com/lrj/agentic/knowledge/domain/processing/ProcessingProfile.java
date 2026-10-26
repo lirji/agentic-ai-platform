@@ -60,6 +60,12 @@ public enum ProcessingProfile {
         return DocumentFormat.fromContentType(contentType).profile();
     }
 
+    /** 显式重索引只接受已验证的完整处理编码，不受当前默认profile改变影响。 */
+    public static ProcessingProfile requested(String processorVersion) {
+        return Arrays.stream(values()).filter(profile -> profile.processor.equals(processorVersion)).findFirst()
+                .orElseThrow(() -> new KnowledgeFailure(KnowledgeError.INPUT_INVALID));
+    }
+
     /** 未知或部分混合版本不能自动降级为 v1。 */
     public static ProcessingProfile stored(String schema, String processor, String parser) {
         for (ProcessingProfile profile : values()) {

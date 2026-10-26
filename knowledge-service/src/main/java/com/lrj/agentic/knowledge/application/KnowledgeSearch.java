@@ -11,6 +11,7 @@ import com.lrj.agentic.knowledge.domain.processing.SearchIndex;
 import com.lrj.agentic.knowledge.domain.processing.ChunkSources;
 import com.lrj.agentic.security.Caller;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /** 先检索候选再校验发布权威，RRF 只负责排名，不授予资料访问权。 */
@@ -27,14 +29,19 @@ public class KnowledgeSearch {
     private final ProcessingRepository repository;
     private final ObjectProvider<KnowledgeProcessor> processors;
     private final ObjectProvider<SearchIndex> indices;
+    private final long queryBudgetNanos;
+    private static final List<Integer> CANDIDATE_LIMITS = List.of(20, 60, ProcessingProtocol.CANDIDATES);
     private final Semaphore capacity = new Semaphore(ProcessingProtocol.MAX_ACTIVE_QUERIES);
 
     /** 关闭处理时保留已发布引用读取，其余依赖明确返回未启用。 */
     public KnowledgeSearch(ProcessingRepository repository, ObjectProvider<KnowledgeProcessor> processors,
-            ObjectProvider<SearchIndex> indices) {
+            ObjectProvider<SearchIndex> indices,
+            @Value("${knowledge.processing.ai-seconds:45}") int aiSeconds,
+            @Value("${knowledge.processing.index-seconds:8}") int indexSeconds) {
         this.repository = repository;
         this.processors = processors;
         this.indices = indices;
+        this.queryBudgetNanos = Duration.ofSeconds((long) aiSeconds + 2L * indexSeconds).toNanos();
     }
 
     /** 两路依赖失败不返回伪空结果，有限并发避免搜索占满模型和数据库。 */
@@ -45,22 +52,40 @@ public class KnowledgeSearch {
         if (processor == null || index == null) { throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED); }
         if (!capacity.tryAcquire()) { throw new KnowledgeFailure(KnowledgeError.BUSY); }
         try {
+            long deadline = System.nanoTime() + queryBudgetNanos;
             var vector = processor.query(caller, valid.query());
-            Map<SearchIndex.Candidate, Double> scores = new HashMap<>();
-            for (Sink sink : Sink.values()) {
-                var hits = index.search(sink, caller, valid.query(), vector, valid.documentIds());
-                for (int i = 0; i < hits.size(); i++) {
-                    scores.merge(hits.get(i), 1.0 / (ProcessingProtocol.RRF_OFFSET + i + 1), Double::sum);
+            for (int limit : CANDIDATE_LIMITS) {
+                Map<SearchIndex.Candidate, Double> scores = new HashMap<>();
+                for (Sink sink : Sink.values()) {
+                    var hits = index.search(sink, caller, valid.query(), vector, valid.documentIds(), limit, remaining(deadline));
+                    for (int i = 0; i < hits.size(); i++) {
+                        // 先按索引原始一基排名计分，再过滤授权，不能把旧代次剔除后压缩排名。
+                        scores.merge(hits.get(i), 1.0 / (ProcessingProtocol.RRF_OFFSET + i + 1), Double::sum);
+                    }
+                }
+                remaining(deadline);
+                List<String> ids = scores.keySet().stream().map(SearchIndex.Candidate::chunkId).distinct().toList();
+                var authorized = repository.published(caller, ids).stream()
+                        .filter(chunk -> valid.documentIds().isEmpty() || valid.documentIds().contains(chunk.documentId()))
+                        .filter(chunk -> scores.containsKey(new SearchIndex.Candidate(chunk.chunkId(), chunk.batchDigest())))
+                        .toList();
+                remaining(deadline);
+                boolean eliminated = authorized.size() < scores.size();
+                if (authorized.size() >= valid.topK() || !eliminated) {
+                    return authorized.stream()
+                            .map(chunk -> hit(chunk, scores.get(new SearchIndex.Candidate(chunk.chunkId(), chunk.batchDigest()))))
+                            .sorted(Comparator.comparingDouble(Hit::score).reversed().thenComparing(Hit::chunkId))
+                            .limit(valid.topK()).toList();
                 }
             }
-            List<String> ids = scores.keySet().stream().map(SearchIndex.Candidate::chunkId).distinct().toList();
-            return repository.published(caller, ids).stream()
-                    .filter(chunk -> valid.documentIds().isEmpty() || valid.documentIds().contains(chunk.documentId()))
-                    .filter(chunk -> scores.containsKey(new SearchIndex.Candidate(chunk.chunkId(), chunk.batchDigest())))
-                    .map(chunk -> hit(chunk, scores.get(new SearchIndex.Candidate(chunk.chunkId(), chunk.batchDigest()))))
-                    .sorted(Comparator.comparingDouble(Hit::score).reversed().thenComparing(Hit::chunkId))
-                    .limit(valid.topK()).toList();
+            throw new KnowledgeFailure(KnowledgeError.INDEX_UNAVAILABLE);
         } finally { capacity.release(); }
+    }
+
+    private static Duration remaining(long deadline) {
+        long nanos = deadline - System.nanoTime();
+        if (nanos <= 0) { throw new KnowledgeFailure(KnowledgeError.INDEX_UNAVAILABLE); }
+        return Duration.ofNanos(nanos);
     }
 
     /** 已失效或无权引用的块统一 404，不从历史索引旁路授权。 */

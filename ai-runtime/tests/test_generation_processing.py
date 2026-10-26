@@ -24,6 +24,27 @@ from agentic_ai.rag.ports import EmbeddingResult
 FIXTURES = Path(__file__).parents[2] / "knowledge-service/src/test/resources"
 
 
+@pytest.mark.parametrize("kind", ["pdf", "docx"])
+def test_reindex_same_source_old_and_new_profiles_are_reproducible(kind):
+    cases = json.loads((FIXTURES / f"reindex-{kind}-comparison.json").read_text())["profiles"]
+    assert len({case["request"]["sourceHash"] for case in cases}) == 1
+    assert len({case["request"]["documentVersion"] for case in cases}) == 1
+    embedding = TestEmbedding()
+    identities = []
+    for case in cases:
+        command = GenerationRequest.from_wire(json.dumps(case["request"]).encode())
+        embedding.result = EmbeddingResult(
+            ((0.125,) * EMBEDDING_DIMENSIONS,) * len(case["prepared"]["chunks"]),
+            EMBEDDING_MODEL,
+            EMBEDDING_DIMENSIONS,
+        )
+        result = asyncio.run(PreparationPipeline(embedding).prepare_generation(command))
+        assert result.model_dump(mode="json", by_alias=True) == case["prepared"]
+        identities.append({chunk.chunk_id for chunk in result.chunks})
+    assert identities[0].isdisjoint(identities[1])
+    assert len(embedding.inputs) == 2
+
+
 def fixture(name="text"):
     return json.loads((FIXTURES / f"generation-{name}-golden.json").read_text())["generations"]
 
