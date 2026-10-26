@@ -1,19 +1,19 @@
 # 独立知识平台准备进度
 
-## 当前状态：S10B本地验收完成，正在Git/CI交付
+## 当前状态：S10B已交付，下一切片S10C
 
 - 任务：`capability-delivery-20261021`；用户连续要求继续。S8A–F、S9A–D、S10A已交付；S10B实施与必要验收PASS，下一依赖切片S10C仍PLANNED，parallel=no，不使用子Agent。
 - S10B结果：K07更新/版本历史、P05代次准备、发布CAS与失败旧版保留、K08独立身份、Tasks历史正文/事件清单、worker恢复前重验和React交互已完成。撤下/删除/重索引/查重均未提前实施。
 - 验收权威：[TEST_RESULT](../../qa/document-update-20261026/TEST_RESULT.md)、[实现证据](../../qa/document-update-20261026/IMPLEMENTATION_EVIDENCE.md)、[源码及验证摘要](../../qa/document-update-20261026/validation.json)。Java138单元/102真实组件IT、Python394单元/11真实PG恢复、前端77单元/16浏览器及格式/类型/lint/build通过。未运行的51个Python环境测试明确跳过，不能算PASS。
 - 实际验收：v2失败保持v1、v3原子发布；旧K04/K05/K06与三类任务GET/SSE拒绝；Knowledge故障503；Conversation失效上下文409且无新轮次；关闭命令后P05读取/原键恢复正常。首次失败及修正均见证据，不复用旧结果冒充本轮PASS。
-- Git：两仓原目录分支`feat/document-update-20261025`，后端基线49d1f47、前端b176130；本片改动尚未提交，无新worktree。提交范围仅S10B；正在检查范围并按授权提交/正常合并推送main、核对对应CI。
+- Git：两仓原目录任务分支`feat/document-update-20261025`，后端实现提交17fc7af、前端6d0bfbd已fast-forward合并并推送origin/main，远端SHA核对一致；两仓分支及main CI全部PASS，见[交付收据](../../qa/document-update-20261026/delivery-result.json)。398/133源文件摘要与验证清单一致；当前仅收据/进度文档收尾，文档提交以Git历史为准，最终CI另按该SHA核验。无新worktree。
 - 本地运行：Knowledge dev/test V10、Tasks dev/test V4；54旧资料/54任务/62块原字段与迁移时账本摘要不变。create/generation/updates=true、backfill=false；STRUCTURE_V3及解析开关已恢复，Java/AI/qa-worker运行。20条历史隔离租户RECEIVED保留，无清理。
 - 模型预算：Embedding60批/0.621784元，chat24次/0.889964元，各1元累计上限不变；本片新增4批Embedding，含身份夹具修正形成的额外资料，原键与数据保留。后续调用前核对账本与在途，不重置或重跑未知付费步骤。
-- 最新额度要求：用户设目标“继续执行后续任务，给我留20%额度就行”。任务接口只有本任务token用量，没有账户余额或总额度，已异步请求可量化上限。先完整交付当前S10B；开始下一较大切片前核对该约束，不声称已精确保留20%。
+- 最新额度要求：用户设目标“继续执行后续任务，给我留20%额度就行”。已从当前会话客户端rate_limits记录取得额度窗口，先前“无法读取”判断已纠正，无需用户补充。恢复/各阶段运行`python3 .local/check_session_quota.py`，私有快照`.local/session-quota-latest.json`；以各有效窗口已用比例为准，接近78%开始收尾，80%前保存检查点并停止新工作，记录滞后不声称精确计费余额。此额度与项目模型两本1元账本独立。
 - 授权/边界：正常Git提交合并推送main已持续授权；无生产部署、清理、强推或绕过保护。U01/U02业务语料、U03共享身份、U06规模、U07保留仍未决，不伪造业务质量或生产承诺。
 - 恢复：两仓`.local`固定键/凭据/账本、`.logs`、旧金标/截图、DB/S3/索引/PG与构建制品保留。`.local/s10b-state.json`仅细节补充；当前文件为唯一状态源。正在运行的验证都已结束；交付结果未知时先查Git/CI，不重复push或提交。
 - 规范：session-handoff、continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery/ci-cd-gate；架构专项建模/持久化/契约/并发/容量/发布。原MULTI_CLIENT_DRIFT_BLOCKED未改，沿批准的手工专业pass，无独立Agent审查声明。
-- 下一步：完成两仓S10B提交、分支CI、正常main合并推送及交付收据；随后按额度约束决定S10C实施边界，沿既有批准DAG恢复，不重做S10B。
+- 下一步：完成收据文档的正常Git交付与最终CI，然后在两仓原目录创建S10C任务分支；复用已冻结生命周期契约，实施撤下/逻辑删除与统一引用失效。S10C仅使用隔离测试数据，无物理清理；沿既有批准DAG与额度约束连续推进，不重做S10B。
 
 ## 历史：20 项差距的框架化实施计划
 

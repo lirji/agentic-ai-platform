@@ -1,6 +1,6 @@
 # S10B 验收结果
 
-状态：**PASS，本地实现与验收完成，Git/CI 交付另见 delivery-result.json（生成后）**。验证对象为 [validation.json](validation.json) 记录的双仓源文件摘要；本报告不把旧 S9D 的 PASS 当成本片验收。
+状态：**PASS，本地实现与验收完成，两仓实现已合并推送main且分支/main CI均通过**，见[交付收据](delivery-result.json)。验证对象为 [validation.json](validation.json) 记录的双仓源文件摘要；本报告不把旧 S9D 的 PASS 当成本片验收。
 
 | 验收 | 结果 | 本次证据 |
 | --- | --- | --- |
