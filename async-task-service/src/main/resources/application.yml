@@ -44,6 +44,11 @@ mybatis-plus:
   global-config:
     banner: false
 task:
+  knowledge-reader:
+    enabled: ${TASK_KNOWLEDGE_READER_ENABLED:false}
+    endpoint: ${TASK_KNOWLEDGE_READER_ENDPOINT:http://127.0.0.1:28084}
+    public-key: ${TASK_KNOWLEDGE_READER_PUBLIC_KEY:}
+    private-key: ${TASK_KNOWLEDGE_READER_PRIVATE_KEY:}
   identity:
     edge-public-key: ${INTERNAL_PUBLIC_KEY}
     submit-public-key: ${TASK_SUBMIT_PUBLIC_KEY}

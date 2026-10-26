@@ -1,24 +1,19 @@
 # 独立知识平台准备进度
 
-## 当前状态：S9D已交付；用户要求Git收尾后暂停
+## 当前状态：S10B本地验收完成，正在Git/CI交付
 
-- 任务：`capability-delivery-20261021`；用户2026-10-25“继续”，20项差距/51任务计划PAUSED（用户明确要求）；parallel=no，无子Agent。S8A–F、S9A–C、S10A已交付；S9D实施/验收/交付DONE；S10B仍为PLANNED，尚未实现；按最新要求停止后续实施。
-- S10B计划：①独立P05代次DTO/ID与新旧金标；②Knowledge扩展/有界回填、发布元组与document→job锁序；③K07更新、幂等/冲突/失败保留旧版；④K08/Tasks证据清单与历史GET/list/SSE、Conversation/worker消费；⑤前端K07更新与失效恢复；⑥真实并发/故障/旧数据/UI验证；⑦文档/Git/CI。仅完成只读预研，①及后续产品实现均未开始/验证；该计划暂停。更新开关须在历史正文保护验证后才能开启。
-- S10B范围：只按LIFECYCLE_CONTRACTS的S10B、LC-01–11/15–16/20–21/24；K/A/T/Q/G/W及其测试、必要串行迁移/受控配置；不开放S10C撤下删除、S10D重索引、S10E去重或物理清理。
-- S9D计划：契约冻结→结构Node/来源校验→真实共享金标/边界/恢复→同源模型/界面→文档与Git/CI。前四步通过；TEST_RESULT、IMPLEMENTATION_EVIDENCE、runtime-validation等在`docs/qa/structured-chunking-20261025/`，两仓文档/链接/表格、51稳定任务/依赖与注册契约检查PASS；两仓交付完成，收据文档落盘。
-- Git：后端S9D收据86f8944、前端收据02af3c5已正常推送main；实现3a9c938/81e2513的分支和main CI全部PASS。本轮只追加暂停检查点，不包含S10B产品改动。已创建但未写产品的feat/document-update-20261025分支保留，无worktree。
-- 本地验证：Java126单元、45真实test依赖IT；Python371 PASS/49条件IT跳过/19既有警告；Ruff/mypy PASS；前端72单元、build/types/lint/format、2组Playwright PASS。11正式截图与1诊断图已查看，414长段最终2327px，无水平溢出或空白尾部。Java统一格式器/静态分析器未配置，Code Hygiene保留限制。
-- 功能：新增PDF/DOCX结构profile；真实Document→TextNode、章节/同行格/两相邻页分组；两语言独立来源流与总重叠校验；标题/显式前序表头仅Embedding增强，引用原文不变。旧P04 shape/三种profile/golden及TXT/MD保留。
-- 真实对照：6次成功新资料（含2份workbench-user界面资料）、3次新检索。DOCX同hash13→6块、PDF4→2块，目标来源旧/新均rank1；仅机制证据，不宣称业务质量提升。47来源按字节还原、42跨owner/tenant拒绝；原27行快照不变。
-- 账本纠正：新增9批Embedding实际预留0.111784元（7×0.01+2×0.020892），累计56批/0.581784元，上限1元；chat24次/0.889964元/hash未变。此前简算0.56/0.09不准确，已按账本修正。成功/未知付费步骤不得重跑。
-- 运行：最终Knowledge选模块package PASS，已以STRUCTURE_V3+parsing/pdf/docx=true恢复并通过47来源/42拒绝只读复验；dev/test V9 PASS。Gateway/Tasks/Conversations原PID/JAR保留，AI/worker/模型代理/Web运行；local-dev Knowledge/Tasks在途0；其它隔离测试租户遗留状态不处理。
-- 关闭选择证据：BLOCK_V2下旧v3同键返回原job，新坏DOCX固定v2且解析失败、0模型；profile-switch-validation.json已保存。不再次发写探针。
-- 最新要求：用户2026-10-25“提交完git之后就先停止”。仅完成检查点Git提交/推送与CI核对，然后停止；不得继续S10B或自动恢复原完整计划。当前无本地构建、迁移或模型调用任务。
-- 恢复键：后端`.local/s9d-http-state.json`与S9B/C记录、原预算账本、前端`.local/s9c-ui-state.json`全部保留。早期owner误设developer已核实修正；原探针资料和失败日志保留，不删除或重置。
-- 当前授权：仅本轮Git与检查点收尾；后续实施已暂停。原Git正常分支提交合并推送授权仍适用于本轮收尾；不强推、不绕过保护、不生产部署、不清理、不新预算。U01/U02真实业务语料未知；OCR/表格文件条件未触发。
-- 恢复入口：未来用户明确继续时，先核对Git/账本/在途状态，再从S10B正式契约及.local/s10b-readiness.md只读预研恢复；不要重跑S9D付费验证。
-- 规范：已授权Contracts阶段、backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery、ci-cd-gate；architecture-standards建模/持久化/契约/并发安全/容量/发布章节。原MULTI_CLIENT_DRIFT_BLOCKED不变，不冒称全局Runtime Gate或独立Agent审查。
-- 保留目录：两仓.local凭据/恢复/账本、.logs、.idea、venv/构建以及DB/S3/索引/失败夹具；清理需另有授权。
+- 任务：`capability-delivery-20261021`；用户连续要求继续。S8A–F、S9A–D、S10A已交付；S10B实施与必要验收PASS，下一依赖切片S10C仍PLANNED，parallel=no，不使用子Agent。
+- S10B结果：K07更新/版本历史、P05代次准备、发布CAS与失败旧版保留、K08独立身份、Tasks历史正文/事件清单、worker恢复前重验和React交互已完成。撤下/删除/重索引/查重均未提前实施。
+- 验收权威：[TEST_RESULT](../../qa/document-update-20261026/TEST_RESULT.md)、[实现证据](../../qa/document-update-20261026/IMPLEMENTATION_EVIDENCE.md)、[源码及验证摘要](../../qa/document-update-20261026/validation.json)。Java138单元/102真实组件IT、Python394单元/11真实PG恢复、前端77单元/16浏览器及格式/类型/lint/build通过。未运行的51个Python环境测试明确跳过，不能算PASS。
+- 实际验收：v2失败保持v1、v3原子发布；旧K04/K05/K06与三类任务GET/SSE拒绝；Knowledge故障503；Conversation失效上下文409且无新轮次；关闭命令后P05读取/原键恢复正常。首次失败及修正均见证据，不复用旧结果冒充本轮PASS。
+- Git：两仓原目录分支`feat/document-update-20261025`，后端基线49d1f47、前端b176130；本片改动尚未提交，无新worktree。提交范围仅S10B；正在检查范围并按授权提交/正常合并推送main、核对对应CI。
+- 本地运行：Knowledge dev/test V10、Tasks dev/test V4；54旧资料/54任务/62块原字段与迁移时账本摘要不变。create/generation/updates=true、backfill=false；STRUCTURE_V3及解析开关已恢复，Java/AI/qa-worker运行。20条历史隔离租户RECEIVED保留，无清理。
+- 模型预算：Embedding60批/0.621784元，chat24次/0.889964元，各1元累计上限不变；本片新增4批Embedding，含身份夹具修正形成的额外资料，原键与数据保留。后续调用前核对账本与在途，不重置或重跑未知付费步骤。
+- 最新额度要求：用户设目标“继续执行后续任务，给我留20%额度就行”。任务接口只有本任务token用量，没有账户余额或总额度，已异步请求可量化上限。先完整交付当前S10B；开始下一较大切片前核对该约束，不声称已精确保留20%。
+- 授权/边界：正常Git提交合并推送main已持续授权；无生产部署、清理、强推或绕过保护。U01/U02业务语料、U03共享身份、U06规模、U07保留仍未决，不伪造业务质量或生产承诺。
+- 恢复：两仓`.local`固定键/凭据/账本、`.logs`、旧金标/截图、DB/S3/索引/PG与构建制品保留。`.local/s10b-state.json`仅细节补充；当前文件为唯一状态源。正在运行的验证都已结束；交付结果未知时先查Git/CI，不重复push或提交。
+- 规范：session-handoff、continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery/ci-cd-gate；架构专项建模/持久化/契约/并发/容量/发布。原MULTI_CLIENT_DRIFT_BLOCKED未改，沿批准的手工专业pass，无独立Agent审查声明。
+- 下一步：完成两仓S10B提交、分支CI、正常main合并推送及交付收据；随后按额度约束决定S10C实施边界，沿既有批准DAG恢复，不重做S10B。
 
 ## 历史：20 项差距的框架化实施计划
 

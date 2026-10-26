@@ -27,7 +27,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /** 真实 MySQL 的锁、事务与约束验证；每例使用新租户，不清理或覆盖旧数据。 */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {"management.server.port=0", "spring.main.banner-mode=off"})
+@org.springframework.context.annotation.Import(CitationTestConfiguration.class)
 class TaskPersistenceIT {
+    @Autowired CitationTestConfiguration.ControlledCitations citations;
+    @org.junit.jupiter.api.BeforeEach void readableEvidence() { citations.reset(); }
     @Autowired TaskService tasks;
     @Autowired TaskValues values;
     @Autowired ObjectMapper json;
@@ -355,7 +358,12 @@ class TaskPersistenceIT {
 
     private View submit(Caller owner) { return tasks.submit(owner, UUID.randomUUID().toString(), input()); }
     private Lease running(Caller owner) {
-        submit(owner); return tasks.claim(worker(owner, "worker"), claim()).task();
+        submit(owner);
+        var run = tasks.claim(worker(owner, "worker"), claim()).task();
+        tasks.evidence(worker(owner, "worker"), run.task().taskId(), new Evidence(run.epoch(), "evidence",
+                List.of(new com.lrj.agentic.contract.knowledge.CitationProtocol.Reference(
+                        "00000000-0000-4000-8000-000000000001", 1, "a".repeat(64)))));
+        return run;
     }
     private Submit input() {
         return new Submit(UUID.randomUUID().toString(), TaskProtocol.KIND, TaskProtocol.RUNTIME,
@@ -368,7 +376,10 @@ class TaskPersistenceIT {
         return new Append(epoch, key, "TEXT_DELTA", json.createObjectNode().put("text", "合成测试片段"));
     }
     private Complete completion(long epoch, String key) {
-        return new Complete(epoch, key, json.createObjectNode().put("answer", "真实数据库测试结果"));
+        var result = json.createObjectNode().put("schemaVersion", "knowledge-qa-result-v1")
+                .put("answerability", "NO_EVIDENCE")
+                .put("answer", com.lrj.agentic.task.application.KnowledgeResults.NO_EVIDENCE);
+        result.putArray("citations"); return new Complete(epoch, key, result);
     }
     private Checkpoint checkpoint(long epoch, String key) {
         return new Checkpoint(epoch, key, UUID.randomUUID().toString(), "", "a".repeat(64));

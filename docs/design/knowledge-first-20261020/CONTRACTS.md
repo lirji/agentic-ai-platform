@@ -10,7 +10,7 @@
 
 S2 的 Python P01/P02 与 S3 的领取、持久准备、双索引发布及检索约束见 [PROCESSING_CONTRACTS](PROCESSING_CONTRACTS.md)；启用开关关闭时维持原 H01 行为。实现与验收范围以当前进度为准。
 
-S10A在[生命周期契约](LIFECYCLE_CONTRACTS.md)冻结`knowledge-lifecycle-v1`：新K07管理读写位于`/api/v2/knowledge`，K08为受限内部引用检查，P05为绑定索引代次的准备封装；旧K01–K06/P01/P04形状不变。S9D、S10B–D按阶段实现，当前设计不表示端点可调用。
+S10A在[生命周期契约](LIFECYCLE_CONTRACTS.md)冻结`knowledge-lifecycle-v1`：K07管理读写位于`/api/v2/knowledge`，K08为受限内部引用检查，P05为绑定索引代次的准备封装；旧K01–K06/P01/P04形状不变。S10B已实现更新/版本历史、K08、P05及历史正文保护，见[S10B验收](../../qa/document-update-20261026/TEST_RESULT.md)；撤下/删除和重索引仍待S10C/D，不把完整设计范围当作已实现。
 
 ## 1. 通用约定
 

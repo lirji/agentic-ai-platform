@@ -9,7 +9,7 @@ from langsmith import tracing_context
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.schema import Document, MetadataMode, TextNode
 
-from agentic_ai.processing import structured
+from agentic_ai.processing import generation, structured
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.models import (
     CHUNK_OVERLAP,
@@ -79,6 +79,17 @@ class PreparationPipeline:
         result = await self._embedding.embed((text,))
         self._validate_embedding(result, 1)
         return QueryVector(vector=result.vectors[0])
+
+    async def prepare_generation(
+        self, request: generation.GenerationRequest
+    ) -> generation.GenerationDocument:
+        """P05复用固定算法执行一次新向量化；不读取或改写任何旧准备包。"""
+        algorithm = request.algorithm_request()
+        if isinstance(algorithm, PrepareRequest):
+            result = await self.prepare(algorithm)
+            return generation.wrap_fresh_result(request, result)
+        structured_result = await self.prepare_structured(algorithm)
+        return generation.wrap_fresh_result(request, structured_result)
 
     async def prepare_structured(
         self, request: structured.StructuredRequest

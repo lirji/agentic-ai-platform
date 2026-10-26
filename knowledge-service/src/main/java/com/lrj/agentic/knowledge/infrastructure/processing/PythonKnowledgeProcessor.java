@@ -5,6 +5,7 @@ import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.processing.KnowledgeProcessor;
 import com.lrj.agentic.knowledge.domain.processing.PreparedDocument;
+import com.lrj.agentic.knowledge.domain.processing.GenerationPreparedDocument;
 import com.lrj.agentic.knowledge.domain.processing.StructuredPreparedDocument;
 import com.lrj.agentic.contract.knowledge.Extraction;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
@@ -70,6 +71,16 @@ public class PythonKnowledgeProcessor implements KnowledgeProcessor {
         byte[] bytes = call("/internal/v2/knowledge/prepare", new Caller(job.tenantId(), job.ownerId()),
                 ProcessingProtocol.PREPARE_SCOPE, payload);
         return json.read(bytes, StructuredPreparedDocument.class, KnowledgeError.PREPARATION_INVALID)
+                .validated(job, source, extraction);
+    }
+
+    /** P05沿用受控HTTP/签名身份，原文件和代次在模型调用前独立核验。 */
+    @Override
+    public GenerationPreparedDocument prepareGeneration(Ingestion job, byte[] source, Extraction extraction) {
+        var payload = GenerationPreparedDocument.Request.of(job, source, extraction);
+        byte[] bytes = call("/internal/v3/knowledge/prepare", new Caller(job.tenantId(), job.ownerId()),
+                ProcessingProtocol.PREPARE_SCOPE, payload);
+        return json.read(bytes, GenerationPreparedDocument.class, KnowledgeError.PREPARATION_INVALID)
                 .validated(job, source, extraction);
     }
 

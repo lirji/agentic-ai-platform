@@ -104,3 +104,7 @@ S10A基线backend `88dcf6c` / frontend `cdf7e47`：KnowledgeService/ProcessingMa
 5. 不写入真实密钥、访问令牌或账户密码；尚未建立的环境不补造端口、实例或登录方式。
 
 S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-chunking-20261025/IMPLEMENTATION_EVIDENCE.md)对应真实LlamaIndex Document/Node、Java/Python独立来源流校验、两个结构profile、V9与K06闭合消费者；[验收](qa/structured-chunking-20261025/TEST_RESULT.md)绑定旧新金标、真实恢复/权限、同源模型对照和界面截图。引用不含Embedding增强metadata，预算按实际账本，未实现生命周期更新。
+
+## S10B 同步（2026-10-26）
+
+基线backend `49d1f47` / frontend `b176130`。Knowledge生命周期/P05/版本投影、Tasks证据与历史读取、Python恢复校验、K08独立身份、Vite v2代理和React更新/版本历史映射到既有生命周期契约、运行说明和[S10B验收](qa/document-update-20261026/TEST_RESULT.md)。不改旧金标/历史报告，新增10个代次金标；源码与验证摘要见[validation.json](qa/document-update-20261026/validation.json)。未部署生产，撤下/删除/重索引与清理维持后续范围。

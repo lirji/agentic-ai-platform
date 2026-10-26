@@ -15,6 +15,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from pydantic import BaseModel, ValidationError
 
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
+from agentic_ai.tasks.evidence import EvidenceReceipt, EvidenceReference, digest
 from agentic_ai.tasks.models import (
     CheckpointReceipt,
     ClaimReply,
@@ -206,6 +207,28 @@ class CentralTaskClient:
                 "sha256": digest,
             },
         )
+
+    async def knowledge_evidence(
+        self, task_id: str, epoch: int, references: list[EvidenceReference]
+    ) -> EvidenceReceipt:
+        """同清单使用稳定操作键；未知响应可以安全重放，绝不改变原正文绑定。"""
+        self._path(task_id)
+        if len(references) > 10 or len({item.chunk_id for item in references}) != len(references):
+            raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID)
+        expected = digest(references)
+        receipt = await self._request(
+            "POST",
+            f"/internal/v1/tasks/{task_id}/knowledge-evidence",
+            EvidenceReceipt,
+            {
+                "epoch": epoch,
+                "operationKey": f"evidence:{epoch}:{expected}",
+                "references": [item.model_dump(mode="json", by_alias=True) for item in references],
+            },
+        )
+        if (receipt.task_id, receipt.epoch, receipt.evidence_digest) != (task_id, epoch, expected):
+            raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID)
+        return receipt
 
     async def complete(self, task_id: str, epoch: int, result: dict[str, object]) -> TaskView:
         """结果报告同键重放；取消或其他终态不被图覆盖。"""

@@ -25,7 +25,7 @@ spring:
             - id: knowledge
               uri: ${KNOWLEDGE_SERVICE_URL:http://127.0.0.1:28084}
               predicates:
-                - Path=/api/v1/knowledge/**
+                - Path=/api/v1/knowledge/**,/api/v2/knowledge/**
           httpclient:
             connect-timeout: 2000
             response-timeout: 20s

@@ -1,6 +1,8 @@
 package com.lrj.agentic.knowledge.application;
 
 import com.lrj.agentic.knowledge.config.ProcessingAdmissionProperties;
+import com.lrj.agentic.knowledge.config.LifecycleProperties;
+import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
 import com.lrj.agentic.knowledge.domain.Document;
 import com.lrj.agentic.knowledge.domain.Ingestion;
 import com.lrj.agentic.knowledge.domain.IngestionStage;
@@ -26,13 +28,15 @@ public class KnowledgeService {
     private final KnowledgeRepository repository;
     private final SourceStore sourceStore;
     private final ProcessingAdmissionProperties admission;
+    private final LifecycleProperties lifecycle;
 
     /** 依赖领域端口，以便存储失败在数据库事务之外结束。 */
     public KnowledgeService(KnowledgeRepository repository, SourceStore sourceStore,
-            ProcessingAdmissionProperties admission) {
+            ProcessingAdmissionProperties admission, LifecycleProperties lifecycle) {
         this.repository = repository;
         this.sourceStore = sourceStore;
         this.admission = admission;
+        this.lifecycle = lifecycle;
     }
 
     /** 同键重放在原文写入前处理，远程 I/O 完成后再进入短数据库事务。 */
@@ -41,6 +45,7 @@ public class KnowledgeService {
         if (replay.isPresent()) {
             return replay.get().requireFingerprint(upload.fingerprint());
         }
+        if (!lifecycle.createEnabled()) { throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED); }
         var source = sourceStore.put(caller, upload.hash(), upload.contentType(), upload.bytes());
         Instant now = Instant.now().truncatedTo(ChronoUnit.MICROS);
         String documentId = UUID.randomUUID().toString();
@@ -50,7 +55,8 @@ public class KnowledgeService {
                 source.size(), source.hash(), jobId, now, now);
         var job = new Ingestion(jobId, caller.tenantId(), caller.userId(), documentId,
                 INITIAL_DOCUMENT_VERSION, key, upload.fingerprint(), source, IngestionStatus.RECEIVED,
-                IngestionStage.ACCEPTED, null, false, 0, 0, now, now, admission.profile(source.contentType()));
+                IngestionStage.ACCEPTED, null, false, 0, 0, now, now, admission.profile(source.contentType()), 1,
+                lifecycle.generationEnabled() ? ProcessingProtocol.GENERATION_SCHEMA : admission.profile(source.contentType()).schema());
         // 并发输家仍由数据库约束裁决；未知提交结果时不删除可能被赢家引用的原文。
         return repository.register(document, job);
     }

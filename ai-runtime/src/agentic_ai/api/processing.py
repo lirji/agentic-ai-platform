@@ -11,6 +11,7 @@ from pydantic import ValidationError
 from starlette.requests import ClientDisconnect
 
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
+from agentic_ai.processing.generation import GenerationRequest
 from agentic_ai.processing.identity import (
     INTERNAL_HEADER,
     PREPARE_SCOPE,
@@ -94,7 +95,9 @@ def processing_router(
     router = APIRouter()
     admission = Admission(config.max_concurrent)
 
-    async def execute(request: Request, *, prepare: bool, structured: bool = False) -> JSONResponse:
+    async def execute(
+        request: Request, *, prepare: bool, structured: bool = False, generation: bool = False
+    ) -> JSONResponse:
         """认证、容量、读入和计算在明确边界中完成，错误不携带底层上下文。"""
         trace_id = str(uuid4())
         code: str
@@ -106,7 +109,14 @@ def processing_router(
             )
             async with admission.admit(), asyncio.timeout(config.deadline_seconds):
                 body = await limited_body(request)
-                if structured:
+                if generation:
+                    generation_command = GenerationRequest.from_wire(body)
+                    identity.require_owner(generation_command)
+                    generation_result = await until_disconnect(
+                        request, pipeline.prepare_generation(generation_command)
+                    )
+                    content = generation_result.model_dump(mode="json", by_alias=True)
+                elif structured:
                     structured_command = StructuredRequest.from_wire(body)
                     identity.require_owner(structured_command)
                     structured_result = await until_disconnect(
@@ -162,5 +172,10 @@ def processing_router(
     async def prepare_structured(request: Request) -> JSONResponse:
         """与 v1 共用身份、期限和同一个并发计数器，新增端点不增加模型额度。"""
         return await execute(request, prepare=True, structured=True)
+
+    @router.post("/internal/v3/knowledge/prepare")
+    async def prepare_generation(request: Request) -> JSONResponse:
+        """独立代次线格式仍共用原身份、总期限、并发和请求大小约束。"""
+        return await execute(request, prepare=True, generation=True)
 
     return router

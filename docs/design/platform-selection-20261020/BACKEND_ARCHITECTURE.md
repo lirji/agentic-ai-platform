@@ -317,3 +317,7 @@ S9B/C产品已接通上述链路，受控文件、真实存储/索引/权限和�
 审计关联commandId/documentId/jobId/generation、稳定动作与前后revision、traceId；不把正文/密钥放入日志。现有度量扩展发布CAS冲突、失效意图、sink恢复、候选耗尽、历史内容拒绝计数，按有限原因枚举分组，不以documentId/tenant作指标标签。新SLO、RTO/RPO和费用目标仍由U06/U07决定，不编造生产验收。
 
 下游顺序：S9D先多profile分块；S10B实现新修订/原子发布及版本失效读取保护，S10C实现撤下/逻辑删除和全链路历史保护，S10D实现同版多代、对账/候选恢复；S10E处理活跃内容去重，S10F诊断。各片沿原DAG不并行，当前无新增Runtime。Contracts阶段必须承接这些守卫和边界；详细请求属于生命周期契约，不能另建竞争schema。
+
+## S10B 实现状态（2026-10-26）
+
+上述生命周期决策中的更新/原子发布、版本历史与历史正文保护已落地：Knowledge V10拥有内容修订/发布元组/命令审计，Tasks V4拥有事件证据清单；K08采用独立签名角色，公共读取在事务外向Knowledge重验。Python的恢复入口及模型外发/完成前校验与React失效缓存共同接通。没有新增服务、数据库、中间件或模型路由。旧数据回填和本机分阶段启动通过，[实现证据](../../qa/document-update-20261026/IMPLEMENTATION_EVIDENCE.md)与[验收](../../qa/document-update-20261026/TEST_RESULT.md)记录范围；S10C/D目标仍未实现。

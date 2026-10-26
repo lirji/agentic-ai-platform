@@ -42,6 +42,7 @@ public class KnowledgeSecurity {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/ingestions",
+                                "/api/v2/knowledge/documents/*/updates",
                                 "/api/v1/knowledge/ingestions/*/retry",
                                 "/api/v1/knowledge/evaluations/datasets",
                                 "/api/v1/knowledge/evaluations/datasets/*/revisions",
@@ -54,7 +55,7 @@ public class KnowledgeSecurity {
                         .hasAuthority("SCOPE_" + IdentityProtocol.WRITE_SCOPE)
                         .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/search")
                         .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)
-                        .requestMatchers(HttpMethod.GET, "/api/v1/knowledge/**")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/knowledge/**", "/api/v2/knowledge/**")
                         .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)
                         .anyRequest().denyAll())
                 .oauth2ResourceServer(oauth -> oauth

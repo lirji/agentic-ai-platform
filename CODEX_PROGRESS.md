@@ -1,9 +1,8 @@
 # Codex Progress
 
-- 当前任务：`capability-delivery-20261021`，S9C与S10A已交付，S9D已交付，用户要求Git收尾后暂停；S10B未实施。
-- 最新要求：2026-10-25“继续”，用户随后明确“提交完git之后就先停止”；51项计划暂停，仅完成Git收尾。
+- 当前任务：`capability-delivery-20261021`；2026-10-26用户恢复后续任务。S10B实施与本地验收PASS，正在Git/CI交付；最新要求保留20%额度，账户额度不可读取，已请求可量化上限。
 - 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；任务定义：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
-- 最近完成证据：[S9D验收](docs/qa/structured-chunking-20261025/TEST_RESULT.md)与[两仓交付收据](docs/qa/structured-chunking-20261025/delivery-result.json)。本地服务/历史资料/预算/恢复键保留，不重跑已付费步骤、不清理、不生产部署。
+- 两仓原目录任务分支`feat/document-update-20261025`；沿已批准计划持续实施/验证/正常Git交付，无生产部署或清理。固定键/账本/历史资料保留，不重跑已成功或未知付费步骤。
 
 ## 前期可行性任务记录
 

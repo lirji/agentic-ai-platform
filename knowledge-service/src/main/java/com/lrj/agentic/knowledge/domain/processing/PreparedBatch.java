@@ -3,7 +3,7 @@ package com.lrj.agentic.knowledge.domain.processing;
 import java.util.List;
 
 /** 已验证准备包的共同索引投影；各协议保留独立线类型，接口不添加 JSON 字段。 */
-public sealed interface PreparedBatch permits PreparedDocument, StructuredPreparedDocument {
+public sealed interface PreparedBatch permits PreparedDocument, StructuredPreparedDocument, GenerationPreparedDocument {
     /** 恢复必须使用原线格式，不给旧JSON添加字段。 */
     String schemaVersion();
     /** 处理版本参加块身份和兼容过滤。 */
@@ -30,7 +30,7 @@ public sealed interface PreparedBatch permits PreparedDocument, StructuredPrepar
     List<? extends Chunk> chunks();
 
     /** 索引不解释来源坐标；坐标在接受事务中由各自协议独立转换。 */
-    sealed interface Chunk permits PreparedDocument.Chunk, StructuredPreparedDocument.Chunk {
+    sealed interface Chunk permits PreparedDocument.Chunk, StructuredPreparedDocument.Chunk, GenerationPreparedDocument.Chunk {
         /** 顺序参加稳定块身份，不依赖索引返回次序。 */
         int ordinal();
         /** 逻辑身份保证重复写入相同索引点。 */

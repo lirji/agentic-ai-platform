@@ -270,3 +270,17 @@ ai-runtime/.venv/bin/python deploy/work_smoke.py --confirm-paid
 第一次真实验收的协议拒绝任务和探针已保留，不删除状态重试；已成功的五个案例只读重放。浏览器创建/取消验收前需正常 `stop-qa`，完成并确认无排队任务后 `start-qa`。当前累计保守预留：聊天0.510952/1元（14次）、Embedding0.26/1元（26批），非提供方账单；[重启证据](../docs/qa/research-readonly-20261021/restart-replay.json)确认凭据/账本不变、无新增调用。
 
 回退时先停止 worker 及新建工作任务，保留中央任务和PG；V2是兼容扩展无需删除。旧 worker 不会处理工作图，新任务应交兼容版本恢复或由所有者显式取消，不改 task graph、不回滚账本、不用旧项目接管。没有执行生产部署。
+
+## S10B 本地生命周期升级与恢复
+
+K07 更新/版本历史、P05 代次准备、K08 历史引用重验已实现，[验收与已知边界](../docs/qa/document-update-20261026/TEST_RESULT.md)。端口及依赖沿原部署，不新增组件。Knowledge dev/test 最新 V10，Tasks dev/test 最新 V4；生产未迁移。
+
+`python3 deploy/local.py init-lifecycle` 幂等创建 `.local/lifecycle.json` 和独立 `task-knowledge-reader-{private,public}.pem`（0600，不覆盖已有材料）。此步骤不迁移、不发模型请求、不自动开启更新。连接标识 `TASK-KNOWLEDGE-K08`：Tasks仅持独立签名私钥，Knowledge仅收验签公钥，Gateway/AI/Conversations不注入该私钥；配置变量见 [env.example](env.example)。正式环境改用受控 secret 引用。
+
+`.local/lifecycle.json` 的四个布尔字段是本地重启的写开关来源：`createEnabled=true`、`generationEnabled=false`、`updatesEnabled=false`、`backfillEnabled=false` 为初值。测试环境不继承开发写开关。更新依赖 generation；回填要求另外三项均为false，并自动关闭Knowledge worker。缺失/多余字段、错误类型和不安全材料权限拒绝启动。
+
+升级顺序：保存原字段/模型账本摘要与在途状态；停止qa-worker、Knowledge及受影响Java服务/AI；在旧进程停止后构建。将四项设置为false/false/false/true并先启动AI、Knowledge完成扩展和真实对象回填；来源不一致时停止，保留已核对标记，不修改已执行迁移。随后启动Tasks、Conversations、Gateway及新版前端，验证历史读取保护；先启用generation及create，再开放updates。解析开关和 `KNOWLEDGE_STRUCTURED_PROFILE=STRUCTURE_V3` 仍沿上节通过环境显式传入启动命令，不由生命周期配置隐式改选profile。
+
+本机已完成上述顺序：54份旧资料、54任务、62块原字段摘要不变；测试可恢复状态位于 `.local/s10b-*.json`，不要删除或重建固定键/账本。`docs/qa/document-update-20261026/http_probe.py` 是依赖这些隔离夹具的分阶段验收工具，不是生产迁移脚本。
+
+本机当前create/generation/updates=true、backfill=false，Knowledge与qa-worker已恢复；未知提交先查原键。需要关闭新命令时将updates/generation/create设false并受控重启，保留当前兼容新旧schema的代码；已验证关闭后P05读取及原键回执仍正常。不得退回只识别v1的旧writer。停机不删除DB/S3/索引/PG，失败稿/旧代次保留；撤下/逻辑删除、清理不在本片范围。

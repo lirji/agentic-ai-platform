@@ -52,7 +52,7 @@ class EvaluationDecisionIT {
         assertThat(history(h, run, h.first()).items()).hasSize(1);
         assertThat(h.service.receipt(h.owner, "same-review")).isEqualTo(values.getFirst());
         error(KnowledgeError.IDEMPOTENCY_CONFLICT, () -> h.service.review(h.owner, run.summary().runId(), h.first(), "same-review", review(run, 0, PASS, "不同理由")));
-        jdbc.update("UPDATE knowledge_document SET status='FAILED' WHERE document_id=?", h.document);
+        jdbc.update("UPDATE knowledge_document SET published_version=NULL,published_generation=NULL,published_job_id=NULL WHERE document_id=?", h.document);
         assertThat(h.service.review(h.owner, run.summary().runId(), h.first(), "same-review", input)).isEqualTo(values.getFirst());
         error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> h.service.review(h.owner, run.summary().runId(), h.first(), "new-key", input));
     }
@@ -102,7 +102,10 @@ class EvaluationDecisionIT {
             error(KnowledgeError.NOT_FOUND, () -> h.service.compare(other, run.summary().runId(), baseline.baselineId()));
         }
         var selection = selection(h, run, 0);
+        // 新稿失败不会撤销旧发布，评审与基线仍可读取；仅发布元组失效才应拒绝。
         jdbc.update("UPDATE knowledge_document SET status='FAILED' WHERE document_id=?", h.document);
+        assertThat(h.service.reviews(h.owner, run.summary().runId()).questions()).hasSize(2);
+        jdbc.update("UPDATE knowledge_document SET published_version=NULL,published_generation=NULL,published_job_id=NULL WHERE document_id=?", h.document);
         assertThat(h.service.reviews(h.owner, run.summary().runId()).questions()).isEmpty();
         assertThat(h.service.current(h.owner, h.dataset.datasetId(), 1).note()).isNull();
         assertThat(h.service.compare(h.owner, run.summary().runId(), baseline.baselineId()).status()).isEqualTo(ComparisonStatus.NOT_COMPARABLE);
@@ -145,7 +148,7 @@ class EvaluationDecisionIT {
                 holder.set(executor.submit(() -> { started.countDown(); return caught(() -> decisions.review(h.owner, "c".repeat(64), "d".repeat(64),
                         run, frozen, h.definition.questions().getFirst(), fact, review(run, 0, PASS, ""))); }));
                 try { assertThat(started.await(5, TimeUnit.SECONDS)).isTrue(); } catch (InterruptedException ex) { throw new AssertionError(ex); }
-                jdbc.update("UPDATE knowledge_document SET status='FAILED' WHERE document_id=?", h.document);
+                jdbc.update("UPDATE knowledge_document SET published_version=NULL,published_generation=NULL,published_job_id=NULL WHERE document_id=?", h.document);
             });
             assertThat(holder.get().get(20, TimeUnit.SECONDS)).isEqualTo(KnowledgeError.EVALUATION_BINDING_INVALID);
         }

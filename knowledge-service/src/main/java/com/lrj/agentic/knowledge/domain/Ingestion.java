@@ -8,7 +8,17 @@ public record Ingestion(
         String jobId, String tenantId, String ownerId, String documentId, long documentVersion,
         String idempotencyKey, String requestFingerprint, SourceReference source,
         IngestionStatus status, IngestionStage stage, String errorCode, boolean retryable,
-        int retryCount, long revision, Instant createdAt, Instant updatedAt, ProcessingProfile profile) {
+        int retryCount, long revision, Instant createdAt, Instant updatedAt, ProcessingProfile profile,
+        long indexGeneration, String preparationSchema) {
+    /** 旧任务/夹具保留原线格式，升级不得根据当前配置重写其身份。 */
+    public Ingestion(String jobId, String tenantId, String ownerId, String documentId, long documentVersion,
+            String idempotencyKey, String requestFingerprint, SourceReference source,
+            IngestionStatus status, IngestionStage stage, String errorCode, boolean retryable,
+            int retryCount, long revision, Instant createdAt, Instant updatedAt, ProcessingProfile profile) {
+        this(jobId, tenantId, ownerId, documentId, documentVersion, idempotencyKey, requestFingerprint, source,
+                status, stage, errorCode, retryable, retryCount, revision, createdAt, updatedAt, profile,
+                1, profile.schema());
+    }
     /** 新受理固定当前已验证格式版本；旧构造入口不改变原 TXT/MD 语义。 */
     public Ingestion(String jobId, String tenantId, String ownerId, String documentId, long documentVersion,
             String idempotencyKey, String requestFingerprint, SourceReference source,
@@ -22,6 +32,11 @@ public record Ingestion(
     /** 领域快照不能承载媒体类型与固定版本矛盾的任务。 */
     public Ingestion {
         if (profile == null || !profile.supports(DocumentFormat.fromContentType(source.contentType()))) {
+            throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
+        }
+        if (indexGeneration < 1 || indexGeneration > Integer.MAX_VALUE || documentVersion < 1
+                || documentVersion > Integer.MAX_VALUE
+                || ProcessingProfile.stored(preparationSchema, profile.processor(), profile.parser()) != profile) {
             throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
         }
     }

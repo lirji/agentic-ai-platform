@@ -27,7 +27,7 @@ public final class KnowledgeUploadLimit implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         var request = exchange.getRequest();
         if (request.getMethod() != HttpMethod.POST
-                || !KnowledgeUploadProtocol.PATH.equals(request.getPath().value())) {
+                || !KnowledgeUploadProtocol.isUploadPath(request.getPath().value())) {
             return chain.filter(exchange);
         }
         if (request.getHeaders().getContentLength() > KnowledgeUploadProtocol.MAX_REQUEST_BYTES) {

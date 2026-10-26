@@ -25,6 +25,7 @@ from agentic_ai.qa.models import (
 from agentic_ai.qa.retriever import AuthorizedRetriever, KnowledgePort, retrieve_evidence
 from agentic_ai.tasks.client import CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
+from agentic_ai.tasks.evidence import EvidenceRegistration
 from agentic_ai.tasks.models import QaStage, TaskEventType, TaskLease, TaskStatus
 
 STREAM_BATCH_CHARS = 128
@@ -89,6 +90,7 @@ class QaPipeline:
         if evaluation_question is not None and binding.graph_version != "knowledge-evaluation-v1":
             raise QaError(QaCode.INPUT_REJECTED)
         self.operation_scope, self.emit_text = operation_scope, emit_text
+        self.registration = EvidenceRegistration(central, binding, MAX_HITS)
         try:
             self.question = evaluation_question or QaInput.model_validate(binding.input)
         except ValidationError:
@@ -180,6 +182,8 @@ class QaPipeline:
             ):
                 raise QaError(QaCode.EVIDENCE_REJECTED)
             await self._check_citation(citation)
+        if self.operation_scope == "qa":
+            await self.registration.register(result.citations)
         return {"question": previous_input.question, "answer": result.answer}
 
     async def _check_citation(self, citation: Citation) -> None:
@@ -214,6 +218,8 @@ class QaPipeline:
         context = await self._context()
         if not hits:
             return {"draft": NO_EVIDENCE_ANSWER}
+        if self.operation_scope == "qa":
+            await self.registration.register(hits)
         await self._progress(QaStage.GENERATING)
         payload = {
             "question": self.question.question,
@@ -268,6 +274,9 @@ class QaPipeline:
         await self._progress(QaStage.VERIFYING)
         hits = self._evidence(state)
         await self._check_evidence(hits)
+        if hits and self.operation_scope == "qa":
+            await self._context()
+            await self.registration.register(hits)
         try:
             draft = state["draft"]
             used = set(re.findall(r"\[([0-9]+)\]", draft))
@@ -302,6 +311,18 @@ class QaPipeline:
             ):
                 raise QaError(QaCode.EVIDENCE_REJECTED)
             await self._check_citation(citation)
+        if result.citations and self.operation_scope == "qa":
+            await self.registration.register(result.citations)
+
+    async def before_restore(self, value: dict[str, object]) -> None:
+        """恢复已生成正文前重验完整证据与会话上下文，不只验证最终引用子集。"""
+        if "evidence" not in value:
+            return
+        hits = self._evidence(cast(GraphState, value))
+        await self._check_evidence(hits)
+        if hits and self.operation_scope == "qa":
+            await self._context()
+            await self.registration.register(hits)
 
     def build(
         self,

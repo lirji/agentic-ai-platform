@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 
 /** 业务 SQL 全部定义在同名 XML，授权谓词不能依赖控制器过滤。 */
 public interface KnowledgeMapper extends BaseMapper<DocumentRow> {
+    /** K03只暴露ACTIVE元数据，旧被取代的失败任务不能展示可重试。 */
+    IngestionRow findVisibleIngestion(@Param("tenantId") String tenantId, @Param("ownerId") String ownerId, @Param("id") String id);
     /** 持久化资料，事务 Owner 保证随后建立任务。 */
     int createDocument(@Param("row") DocumentRow row);
     /** 与资料建立使用同一个本地事务。 */

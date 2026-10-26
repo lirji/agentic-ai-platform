@@ -271,6 +271,9 @@ def environment(mode: str = "dev") -> dict[str, str]:
     import evaluation_local
 
     env.update(evaluation_local.environment(mode))
+    import lifecycle_local
+
+    env.update(lifecycle_local.environment(mode))
     return env
 
 
@@ -370,6 +373,8 @@ def start(service: str | None = None) -> None:
             if (not key.startswith("CONVERSATION_") or key == "CONVERSATION_SERVICE_URL")
             and (name == "knowledge" or not key.startswith("KNOWLEDGE_EVALUATION_"))
             and (name == "tasks" or not key.startswith("TASK_EVALUATION_"))
+            and (name == "tasks" or not key.startswith("TASK_KNOWLEDGE_READER_"))
+            and (name == "knowledge" or not key.startswith("KNOWLEDGE_CITATION_READER_"))
         }
         if name == "conversations":
             import conversation_local
@@ -432,6 +437,7 @@ def main() -> None:
             "init-conversations",
             "init-qa",
             "init-evaluation",
+            "init-lifecycle",
             "init-chat",
             "start-chat",
             "stop-chat",
@@ -454,6 +460,10 @@ def main() -> None:
                 chat_local.start(service)
             else:
                 chat_local.stop(service)
+    elif args.command == "init-lifecycle":
+        import lifecycle_local
+
+        lifecycle_local.init()
     elif args.command == "init-evaluation":
         import evaluation_local
 

@@ -3,6 +3,7 @@ package com.lrj.agentic.knowledge.domain.processing;
 /** 跨语言及检索投影的固定版本，变更这些值必须建立新投影与迁移。 */
 public final class ProcessingProtocol {
     public static final String SCHEMA = "knowledge-preparation-v1";
+    public static final String GENERATION_SCHEMA = "knowledge-generation-preparation-v1";
     public static final String PROCESSOR = "text-v1-char512-overlap64-embedding-v4-1024";
     public static final String MODEL = "text-embedding-v4";
     public static final int DIMENSIONS = 1024;

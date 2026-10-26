@@ -139,6 +139,9 @@ class EvaluationPersistenceIT {
         String document = definition.questions().getFirst().documentIds().getFirst();
         assertThat(evaluations.detail(owner, receipt.datasetId(), null).bindingState()).isEqualTo("AVAILABLE");
         jdbc.update("UPDATE knowledge_document SET status='FAILED' WHERE document_id=?", document);
+        // 失败新稿不代表旧发布失效；真正清除发布元组后，旧定义正文才必须隐藏。
+        assertThat(evaluations.detail(owner, receipt.datasetId(), 1L).bindingState()).isEqualTo("AVAILABLE");
+        jdbc.update("UPDATE knowledge_document SET published_version=NULL,published_generation=NULL,published_job_id=NULL WHERE document_id=?", document);
         var detail = evaluations.detail(owner, receipt.datasetId(), 1L);
         assertThat(detail.bindingState()).isEqualTo("UNAVAILABLE");
         assertThat(detail.definition()).isNull();

@@ -39,6 +39,7 @@ from agentic_ai.qa.models import Answerability, KnowledgeHit
 from agentic_ai.qa.retriever import AuthorizedRetriever, KnowledgePort, retrieve_evidence
 from agentic_ai.tasks.client import CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
+from agentic_ai.tasks.evidence import EvidenceRegistration
 from agentic_ai.tasks.models import QaStage as WorkStage
 from agentic_ai.tasks.models import TaskEventType, TaskLease, TaskStatus
 
@@ -92,6 +93,7 @@ class WorkPipeline:
         chat: ToolChatPort,
     ) -> None:
         self.binding, self.central, self.knowledge, self.chat = binding, central, knowledge, chat
+        self.registration = EvidenceRegistration(central, binding, MAX_EVIDENCE)
         try:
             self.request = WorkInput.model_validate_json(json.dumps(binding.input))
         except (ValidationError, ValueError, TypeError):
@@ -156,6 +158,8 @@ class WorkPipeline:
             fresh = await self.knowledge.citation(hit)
             if fresh.model_dump(exclude={"score"}) != hit.model_dump(exclude={"score"}):
                 raise QaError(QaCode.EVIDENCE_REJECTED)
+        if hits:
+            await self.registration.register(hits)
 
     def merge(
         self, current: list[KnowledgeHit], incoming: list[KnowledgeHit]
@@ -376,6 +380,13 @@ class WorkPipeline:
                 exclude={"citation_id"}
             ):
                 raise QaError(QaCode.EVIDENCE_REJECTED)
+        if report.citations:
+            await self.registration.register(report.citations)
+
+    async def before_restore(self, value: dict[str, object]) -> None:
+        """完成快照仍携带全部模型依赖，新代次在恢复或交付前重新登记。"""
+        if "evidence" in value:
+            await self.check_evidence(self.evidence(cast(WorkGraphState, value)))
 
     def build(
         self, saver: BaseCheckpointSaver[Any], *, interrupt_before: list[str] | None = None

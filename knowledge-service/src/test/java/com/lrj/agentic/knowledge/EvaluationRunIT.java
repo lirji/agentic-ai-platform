@@ -46,7 +46,7 @@ class EvaluationRunIT {
             RunView first = results.getFirst().get(30, TimeUnit.SECONDS);
             for (var result : results) { assertThat(result.get(30, TimeUnit.SECONDS).summary()).isEqualTo(first.summary()); }
             assertThat(h.service.list(h.owner, h.dataset.datasetId(), 100, null).items()).hasSize(1);
-            jdbc.update("UPDATE knowledge_document SET status='FAILED' WHERE document_id=?", h.document);
+            jdbc.update("UPDATE knowledge_document SET published_version=NULL,published_generation=NULL,published_job_id=NULL WHERE document_id=?", h.document);
             assertThat(h.service.start(h.owner, "same", start).bindingState()).isEqualTo("UNAVAILABLE");
             error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> h.service.start(h.owner, "different", start));
             definitionsService.revise(h.owner, h.dataset.datasetId(), "empty", new Revise(1L,
@@ -102,7 +102,10 @@ class EvaluationRunIT {
         assertThat(repository.observe(h.owner, id, stale, null).task().status()).isEqualTo(TaskStatus.SUCCEEDED);
         error(KnowledgeError.EVALUATION_LEASE_LOST, () -> h.service.candidate(h.owner, "worker", id,
                 first.questionId(), new CandidateCommand(run.taskId(), 1L, answer)));
+        // 保留当前发布时，新稿处理失败不能隐去已确认报告。
         jdbc.update("UPDATE knowledge_document SET status='FAILED' WHERE document_id=?", h.document);
+        assertThat(h.service.detail(h.owner, id).report()).isNotNull();
+        jdbc.update("UPDATE knowledge_document SET published_version=NULL,published_generation=NULL,published_job_id=NULL WHERE document_id=?", h.document);
         assertThat(h.service.detail(h.owner, id).report()).isNull();
         error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> h.service.question(h.owner, id, first.questionId(), null));
     }

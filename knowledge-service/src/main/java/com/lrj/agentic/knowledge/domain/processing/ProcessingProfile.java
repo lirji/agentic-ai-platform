@@ -24,7 +24,7 @@ public enum ProcessingProfile {
     ProcessingProfile(String schema, String processor, String parser) {
         this.schema = schema; this.processor = processor; this.parser = parser;
     }
-    /** 冻结线格式决定恢复时的严格反序列化类型。 */
+    /** profile的旧线格式；实际作业线格式独立保存，P05不改变算法版本。 */
     public String schema() { return schema; }
     /** 完整处理编码同时用于块身份和检索兼容过滤。 */
     public String processor() { return processor; }
@@ -63,7 +63,8 @@ public enum ProcessingProfile {
     /** 未知或部分混合版本不能自动降级为 v1。 */
     public static ProcessingProfile stored(String schema, String processor, String parser) {
         for (ProcessingProfile profile : values()) {
-            if (profile.schema.equals(schema) && profile.processor.equals(processor) && Objects.equals(profile.parser, parser)) {
+            if ((profile.schema.equals(schema) || ProcessingProtocol.GENERATION_SCHEMA.equals(schema))
+                    && profile.processor.equals(processor) && Objects.equals(profile.parser, parser)) {
                 return profile;
             }
         }

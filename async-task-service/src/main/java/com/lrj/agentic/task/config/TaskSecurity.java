@@ -36,7 +36,7 @@ public class TaskSecurity {
     @Bean @Order(1)
     SecurityFilterChain worker(HttpSecurity http, ObjectMapper json,
             @Value("${task.identity.worker-public-key}") Resource key) throws Exception {
-        http.securityMatcher("/internal/v1/task-worker/**")
+        http.securityMatcher("/internal/v1/task-worker/**", "/internal/v1/tasks/*/knowledge-evidence")
                 .authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority("SCOPE_" + TaskProtocol.WORKER));
         return base(http, json, decoder(key, TaskProtocol.WORKER_ISSUER, TaskProtocol.WORKER_PARTY)).build();
     }

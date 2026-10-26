@@ -135,7 +135,8 @@ async def qa_task(tmp_path, model_server):
             yield task
 
 
-async def events(task):
+async def stored_events(task):
+    """合成Knowledge命中不存在于权威库，公共正文必须拒绝；原始进度只在测试库中核对。"""
     async with httpx.AsyncClient(trust_env=False, timeout=5) as http:
         response = await http.get(
             f"http://127.0.0.1:28080/api/v1/tasks/{task.task_id}/events",
@@ -144,8 +145,17 @@ async def events(task):
                 + task.local.token(task.tenant, task.owner, "task:read task:write")
             },
         )
-        assert response.status_code == 200
-        return response.json()
+        assert response.status_code == 404
+        assert "未完成" not in response.text
+    rows = await asyncio.to_thread(
+        task.local.mysql,
+        "SELECT type,HEX(payload_json) FROM agentic_tasks.ai_task_event "
+        f"WHERE task_id='{task.task_id}' ORDER BY sequence;",
+    )
+    return [
+        {"type": kind, "payload": json.loads(bytes.fromhex(body))}
+        for kind, body in (line.split("\t") for line in rows.splitlines())
+    ]
 
 
 @pytest.mark.parametrize("stage", ["generate", "verify"])
@@ -178,11 +188,9 @@ def test_real_graph_recovers_at_each_boundary_without_repeating_paid_steps(
             assert set(result.result) == {"schemaVersion", "answerability", "answer", "citations"}
             assert task.knowledge.searches == 1 and model_server.calls == 1
             assert len(read_ledger(task.chat_config)["calls"]) == 1
-            page = await events(task)
-            assert page["terminal"]
-            progress = [
-                row["payload"]["stage"] for row in page["events"] if row["type"] == "PROGRESS"
-            ]
+            page = await stored_events(task)
+            assert page[-1]["payload"]["status"] == "SUCCEEDED"
+            progress = [row["payload"]["stage"] for row in page if row["type"] == "PROGRESS"]
             assert progress.count("RETRIEVING") == 1
             assert progress.count("GENERATING") == 1
             assert progress.count("VERIFYING") == 1
@@ -213,6 +221,31 @@ def test_real_graph_recovers_at_each_boundary_without_repeating_paid_steps(
     asyncio.run(scenario())
 
 
+def test_restored_retrieval_is_revalidated_before_first_model_call(tmp_path, model_server):
+    """旧PG快照含命中时，失效检查必须发生在恢复generate及模型外发之前。"""
+
+    async def scenario():
+        async with qa_task(tmp_path, model_server) as task:
+            first = await task.client()
+            lease = await first.claim()
+            saver = FencedPostgresSaver(lease, first, await task.storage())
+            await (
+                QaPipeline(lease, first, task.knowledge, task.chat)
+                .build(saver, interrupt_before=["generate"])
+                .ainvoke(lease.input, saver.config, durability="sync")
+            )
+            assert task.knowledge.searches == 1 and model_server.calls == 0
+            await task.expire()
+            second = await task.client()
+            resumed = await second.claim()
+            task.knowledge.revoked = True
+            result = await execute_qa_task(resumed, second, task.config, task.knowledge, task.chat)
+            assert result.status == TaskStatus.FAILED and result.error_code == "INPUT_REJECTED"
+            assert model_server.calls == 0 and len(read_ledger(task.chat_config)["calls"]) == 0
+
+    asyncio.run(scenario())
+
+
 def test_real_complete_snapshot_still_revalidates_permission_before_central_success(
     tmp_path, model_server
 ):
@@ -236,7 +269,7 @@ def test_real_complete_snapshot_still_revalidates_permission_before_central_succ
             assert failed.error_code == "INPUT_REJECTED" and not failed.retryable
             assert failed.result is None and model_server.calls == 1
             assert task.knowledge.searches == 1
-            assert (await events(task))["terminal"]
+            assert (await stored_events(task))[-1]["payload"]["status"] == "FAILED"
 
     asyncio.run(scenario())
 
@@ -268,10 +301,9 @@ def test_real_cancel_during_stream_stops_heartbeat_and_preserves_unknown_cost(
                     assert cancelled.status_code == 200
                 result = await asyncio.wait_for(work, 5)
                 assert result.status == TaskStatus.CANCELLED and result.result is None
-                page = await events(task)
-                assert page["terminal"] and all(
-                    row["type"] != "TEXT_DELTA" for row in page["events"]
-                )
+                page = await stored_events(task)
+                assert page[-1]["payload"]["status"] == "CANCELLED"
+                assert all(row["type"] != "TEXT_DELTA" for row in page)
                 assert len(read_ledger(task.chat_config)["calls"]) == 1
                 assert model_server.calls == 1
             finally:

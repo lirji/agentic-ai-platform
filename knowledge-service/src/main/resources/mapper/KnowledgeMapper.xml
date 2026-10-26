@@ -9,7 +9,7 @@
         job_id, tenant_id, owner_id, document_id, document_version, idempotency_key,
         request_fingerprint, source_bucket, source_key, content_hash, content_type, size_bytes,
         status, stage, error_code, retryable, retry_count, revision, created_at, updated_at,
-        preparation_schema, processor_version, parser_profile
+        preparation_schema, processor_version, parser_profile, index_generation
     </sql>
     <insert id="createDocument">
         INSERT INTO knowledge_document (<include refid="documentColumns"/>)
@@ -24,16 +24,17 @@
                 #{row.sourceBucket}, #{row.sourceKey}, #{row.contentHash}, #{row.contentType},
                 #{row.sizeBytes}, #{row.status}, #{row.stage}, #{row.errorCode}, #{row.retryable},
                 #{row.retryCount}, #{row.revision}, #{row.createdAt}, #{row.updatedAt},
-                #{row.preparationSchema}, #{row.processorVersion}, #{row.parserProfile})
+                #{row.preparationSchema}, #{row.processorVersion}, #{row.parserProfile}, #{row.indexGeneration})
     </insert>
     <!-- 每条查询携带服务端验证身份，ID/游标/内容摘要均不能代替授权。 -->
     <select id="findIdempotency" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.IngestionRow">
         SELECT <include refid="ingestionColumns"/> FROM knowledge_ingestion
-        WHERE tenant_id = #{tenantId} AND owner_id = #{ownerId} AND idempotency_key = #{key}
+        WHERE tenant_id = #{tenantId} AND owner_id = #{ownerId} AND idempotency_key = #{key} AND command_scope = 'CREATE'
     </select>
     <select id="findDocument" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.DocumentRow">
         SELECT <include refid="documentColumns"/> FROM knowledge_document
         WHERE tenant_id = #{tenantId} AND owner_id = #{ownerId} AND document_id = #{id}
+            AND lifecycle = 'ACTIVE'
     </select>
     <select id="findContent" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.DocumentRow">
         SELECT <include refid="documentColumns"/> FROM knowledge_document
@@ -46,6 +47,17 @@
     <select id="pageDocuments" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.DocumentRow">
         SELECT <include refid="documentColumns"/> FROM knowledge_document
         WHERE tenant_id = #{tenantId} AND owner_id = #{ownerId} AND document_id &gt; #{afterId}
+            AND lifecycle = 'ACTIVE'
         ORDER BY document_id ASC LIMIT #{limit}
+    </select>
+    <select id="findVisibleIngestion" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.IngestionRow">
+        SELECT j.job_id,j.tenant_id,j.owner_id,j.document_id,j.document_version,j.idempotency_key,
+            j.request_fingerprint,j.source_bucket,j.source_key,j.content_hash,j.content_type,j.size_bytes,
+            j.status,j.stage,j.error_code,(j.retryable AND d.active_job_id=j.job_id) AS retryable,
+            j.retry_count,j.revision,j.created_at,j.updated_at,j.preparation_schema,j.processor_version,
+            j.parser_profile,j.index_generation
+        FROM knowledge_ingestion j JOIN knowledge_document d
+            ON d.tenant_id=j.tenant_id AND d.owner_id=j.owner_id AND d.document_id=j.document_id
+        WHERE j.tenant_id=#{tenantId} AND j.owner_id=#{ownerId} AND j.job_id=#{id} AND d.lifecycle='ACTIVE'
     </select>
 </mapper>

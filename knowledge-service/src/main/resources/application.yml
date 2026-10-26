@@ -49,6 +49,14 @@ mybatis-plus:
   global-config:
     banner: false
 knowledge:
+  lifecycle:
+    create-enabled: ${KNOWLEDGE_LIFECYCLE_CREATE_ENABLED:true}
+    generation-enabled: ${KNOWLEDGE_LIFECYCLE_GENERATION_ENABLED:false}
+    updates-enabled: ${KNOWLEDGE_LIFECYCLE_UPDATES_ENABLED:false}
+    backfill-enabled: ${KNOWLEDGE_LIFECYCLE_BACKFILL_ENABLED:false}
+  citation-reader:
+    enabled: ${KNOWLEDGE_CITATION_READER_ENABLED:false}
+    public-key: ${KNOWLEDGE_CITATION_READER_PUBLIC_KEY:}
   admission:
     structured-profile: ${KNOWLEDGE_STRUCTURED_PROFILE:BLOCK_V2}
   parsing:

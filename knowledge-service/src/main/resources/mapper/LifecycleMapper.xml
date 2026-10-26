@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleMapper">
+    <select id="migrationChunks" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.PreparedChunkRow">
+        SELECT chunk_id,ordinal,text,text_hash,start_byte,end_byte,preparation_schema,source_locator,
+            source_json,source_digest,extraction_digest FROM knowledge_chunk
+        WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId} AND job_id=#{id}
+        ORDER BY ordinal LIMIT 101
+    </select>
+    <sql id="stateColumns">document_id, tenant_id, owner_id, lifecycle, revision, version, last_generation,
+        published_version, published_generation, published_job_id, active_job_id, lifecycle_ready, ingestion_job_id,
+        display_name, content_type, size_bytes, content_hash, status, created_at, updated_at</sql>
+    <select id="lockDocument" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleRows$State">
+        SELECT <include refid="stateColumns"/> FROM knowledge_document
+        WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND document_id = #{id} FOR UPDATE
+    </select>
+    <select id="lockJob" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.IngestionRow">
+        SELECT <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.KnowledgeMapper.ingestionColumns"/>
+        FROM knowledge_ingestion WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND job_id = #{id} FOR UPDATE
+    </select>
+    <select id="tryLockDocument" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleRows$State">
+        SELECT <include refid="stateColumns"/> FROM knowledge_document
+        WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND document_id = #{id} FOR UPDATE SKIP LOCKED
+    </select>
+    <select id="pendingBackfill" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleRows$State">
+        SELECT <include refid="stateColumns"/> FROM knowledge_document WHERE lifecycle_ready = FALSE AND document_id &gt; #{after}
+        ORDER BY document_id LIMIT #{limit}
+    </select>
+    <insert id="revision">
+        INSERT INTO knowledge_document_revision (tenant_id, owner_id, document_id, content_revision, display_name,
+            content_type, size_bytes, content_hash, source_bucket, source_key, first_job_id, created_at)
+        VALUES (#{job.tenantId}, #{job.ownerId}, #{job.documentId}, #{job.documentVersion}, #{name},
+            #{job.contentType}, #{job.sizeBytes}, #{job.contentHash}, #{job.sourceBucket}, #{job.sourceKey}, #{job.jobId}, #{job.createdAt})
+    </insert>
+    <update id="initialize">
+        UPDATE knowledge_document SET lifecycle_ready = TRUE, active_job_id = #{state.ingestionJobId},
+            published_generation = <choose><when test="published">1</when><otherwise>NULL</otherwise></choose>,
+            published_job_id = <choose><when test="published">#{state.ingestionJobId}</when><otherwise>NULL</otherwise></choose>
+        WHERE tenant_id = #{state.tenantId} AND owner_id = #{state.ownerId} AND document_id = #{state.documentId}
+            AND lifecycle_ready = FALSE AND version = 1 AND last_generation = 1
+    </update>
+    <insert id="generation">
+        INSERT INTO knowledge_ingestion (<include refid="com.lrj.agentic.knowledge.infrastructure.persistence.KnowledgeMapper.ingestionColumns"/>,
+            command_scope, base_published_version, base_published_generation, base_published_job_id)
+        VALUES (#{row.jobId}, #{row.tenantId}, #{row.ownerId}, #{row.documentId}, #{row.documentVersion},
+            #{row.idempotencyKey}, #{row.requestFingerprint}, #{row.sourceBucket}, #{row.sourceKey}, #{row.contentHash},
+            #{row.contentType}, #{row.sizeBytes}, #{row.status}, #{row.stage}, #{row.errorCode}, #{row.retryable},
+            #{row.retryCount}, #{row.revision}, #{row.createdAt}, #{row.updatedAt}, #{row.preparationSchema},
+            #{row.processorVersion}, #{row.parserProfile}, #{row.indexGeneration}, 'UPDATE',
+            #{state.publishedVersion}, #{state.publishedGeneration}, #{state.publishedJobId})
+    </insert>
+    <update id="acceptUpdate">
+        UPDATE knowledge_document SET version = #{job.documentVersion}, last_generation = #{job.indexGeneration},
+            display_name = #{input.displayName}, content_type = #{job.contentType}, content_hash = #{job.contentHash},
+            size_bytes = #{job.sizeBytes}, ingestion_job_id = #{job.jobId}, active_job_id = #{job.jobId}, status = 'RECEIVED',
+            revision = revision + 1, updated_at = #{input.acceptedAt}
+        WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND document_id = #{input.documentId}
+            AND lifecycle_ready = TRUE AND lifecycle = 'ACTIVE' AND revision = #{input.expectedRevision}
+            AND revision &lt; 2147483647 AND version &lt; 2147483647 AND last_generation &lt; 2147483647
+    </update>
+    <insert id="command">
+        INSERT INTO knowledge_lifecycle_command (command_id, tenant_id, owner_id, idempotency_key, request_fingerprint,
+            operation, document_id, accepted_revision, content_revision, index_generation, job_id, accepted_at)
+        VALUES (#{input.commandId}, #{caller.tenantId}, #{caller.userId}, #{input.key}, #{input.fingerprint}, 'UPDATE',
+            #{input.documentId}, #{input.expectedRevision} + 1, #{job.documentVersion}, #{job.indexGeneration}, #{job.jobId}, #{input.acceptedAt})
+    </insert>
+    <select id="findCommand" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleRows$Command">
+        SELECT c.command_id, c.operation, c.document_id, c.accepted_revision, c.content_revision, c.index_generation,
+            c.job_id, c.accepted_at, c.request_fingerprint FROM knowledge_lifecycle_command c
+        JOIN knowledge_document d ON d.tenant_id = c.tenant_id AND d.owner_id = c.owner_id AND d.document_id = c.document_id
+        WHERE c.tenant_id = #{caller.tenantId} AND c.owner_id = #{caller.userId} AND c.idempotency_key = #{key}
+    </select>
+    <sql id="viewFrom">
+        SELECT d.document_id, d.revision, d.lifecycle, d.version AS latest_content_revision,
+            d.published_version AS published_revision, d.published_generation, d.active_job_id,
+            r.display_name, r.content_type, r.size_bytes, r.content_hash, d.created_at, d.updated_at
+        FROM knowledge_document d JOIN knowledge_document_revision r
+            ON r.tenant_id = d.tenant_id AND r.owner_id = d.owner_id AND r.document_id = d.document_id AND r.content_revision = d.version
+        WHERE d.tenant_id = #{caller.tenantId} AND d.owner_id = #{caller.userId}
+            AND d.lifecycle_ready = TRUE AND d.lifecycle &lt;&gt; 'DELETED'
+    </sql>
+    <select id="document" resultType="com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels$DocumentView">
+        <include refid="viewFrom"/> AND d.document_id = #{id}
+    </select>
+    <select id="documents" resultType="com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels$DocumentView">
+        <include refid="viewFrom"/> AND d.document_id &gt; #{after} ORDER BY d.document_id LIMIT #{limit}
+    </select>
+    <select id="revisions" resultType="com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels$RevisionView">
+        SELECT r.content_revision, r.display_name, r.content_type, r.size_bytes, r.content_hash, r.created_at
+        FROM knowledge_document_revision r JOIN knowledge_document d
+            ON d.tenant_id = r.tenant_id AND d.owner_id = r.owner_id AND d.document_id = r.document_id
+        WHERE r.tenant_id = #{caller.tenantId} AND r.owner_id = #{caller.userId} AND r.document_id = #{id}
+            AND d.lifecycle &lt;&gt; 'DELETED' AND d.lifecycle_ready = TRUE AND r.content_revision &lt; #{before}
+        ORDER BY r.content_revision DESC LIMIT #{limit}
+    </select>
+    <select id="generations" resultType="com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels$GenerationView">
+        SELECT j.index_generation, j.document_version AS content_revision, j.job_id, j.processor_version, j.status,
+            (d.published_job_id = j.job_id AND d.published_generation = j.index_generation AND d.published_version = j.document_version) IS TRUE AS is_current_publication,
+            j.status = 'READY' AS was_published, j.error_code,
+            (j.retryable = TRUE AND d.lifecycle = 'ACTIVE' AND d.active_job_id = j.job_id) IS TRUE AS retryable
+        FROM knowledge_ingestion j JOIN knowledge_document d
+            ON d.tenant_id = j.tenant_id AND d.owner_id = j.owner_id AND d.document_id = j.document_id
+        WHERE j.tenant_id = #{caller.tenantId} AND j.owner_id = #{caller.userId} AND j.document_id = #{id}
+            AND d.lifecycle &lt;&gt; 'DELETED' AND d.lifecycle_ready = TRUE AND j.index_generation &lt; #{before}
+        ORDER BY j.index_generation DESC LIMIT #{limit}
+    </select>
+    <insert id="event">
+        INSERT INTO knowledge_lifecycle_event (event_id, tenant_id, owner_id, document_id, command_id,
+            job_id, actor, action, revision, lifecycle, created_at)
+        SELECT #{eventId}, tenant_id, owner_id, document_id, #{commandId}, #{jobId}, #{actor}, #{action}, revision, lifecycle, UTC_TIMESTAMP(6)
+        FROM knowledge_document WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND document_id = #{id}
+    </insert>
+</mapper>

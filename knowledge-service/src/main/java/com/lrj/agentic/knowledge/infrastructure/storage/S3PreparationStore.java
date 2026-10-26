@@ -5,6 +5,7 @@ import com.lrj.agentic.knowledge.domain.Ingestion;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.processing.PreparedDocument;
+import com.lrj.agentic.knowledge.domain.processing.GenerationPreparedDocument;
 import com.lrj.agentic.knowledge.domain.processing.PreparedBatch;
 import com.lrj.agentic.knowledge.domain.processing.StructuredPreparedDocument;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
@@ -68,7 +69,9 @@ public class S3PreparationStore implements PreparationStore {
     public PreparedBatch load(ProcessingClaim claim, byte[] source, Extraction extraction) {
         var ref = claim.prepared();
         byte[] bytes = read(ref.key(), ref.sizeBytes(), ref.hash(), ProcessingProtocol.MAX_RESPONSE_BYTES, KnowledgeError.PREPARATION_INVALID);
-        PreparedBatch document = claim.job().profile() == ProcessingProfile.TEXT_V1
+        PreparedBatch document = ProcessingProtocol.GENERATION_SCHEMA.equals(claim.job().preparationSchema())
+                ? json.read(bytes, GenerationPreparedDocument.class, KnowledgeError.PREPARATION_INVALID).validated(claim.job(), source, extraction)
+                : claim.job().profile() == ProcessingProfile.TEXT_V1
                 ? json.read(bytes, PreparedDocument.class, KnowledgeError.PREPARATION_INVALID).validated(claim.job(), source)
                 : json.read(bytes, StructuredPreparedDocument.class, KnowledgeError.PREPARATION_INVALID).validated(claim.job(), source, extraction);
         if (!document.batchDigest().equals(ref.batchDigest())) {

@@ -20,6 +20,9 @@ public final class TaskDtos {
     public record Revision(@NotNull @Min(0) Long expectedRevision) { }
     public record Claim(@NotNull String runtimeVersion, @NotNull String graphVersion) { }
     public record Epoch(@NotNull @Min(1) Long epoch) { }
+    public record Evidence(@NotNull @Min(1) Long epoch, @NotNull String operationKey,
+            @NotNull List<com.lrj.agentic.contract.knowledge.CitationProtocol.Reference> references) { }
+    public record EvidenceReceipt(String taskId, long epoch, String evidenceDigest) { }
     public record Append(@NotNull @Min(1) Long epoch, @NotNull String operationKey,
             @NotNull String type, @NotNull JsonNode payload) { }
     public record Checkpoint(@NotNull @Min(1) Long epoch, @NotNull String operationKey,

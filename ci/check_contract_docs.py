@@ -11,6 +11,7 @@ REGISTERED_CONTRACTS = {
     "EVALUATION_RUN_CONTRACTS.md": "evaluation-run-v1",
     "PROCESSING_CONTRACTS.md": "knowledge-preparation-v1",
     "STRUCTURED_PROCESSING_CONTRACTS.md": "knowledge-preparation-v2",
+    "LIFECYCLE_CONTRACTS.md": "knowledge-lifecycle-v1",
 }
 FIXTURES = ROOT / "knowledge-service/src/test/resources"
 
@@ -40,7 +41,14 @@ def main() -> None:
             == REGISTERED_CONTRACTS["STRUCTURED_PROCESSING_CONTRACTS.md"]
         )
         assert (ROOT / structured["sourceFixture"]).is_file()
-    print("5 registered contracts and 5 shared wire fixtures: PASS")
+    for name in ("text", "pdf-v2", "docx-v2", "pdf-v3", "docx-v3"):
+        fixture = json.loads((FIXTURES / f"generation-{name}-golden.json").read_text())
+        assert len(fixture["generations"]) == 2
+        for generation in fixture["generations"]:
+            assert generation["prepared"]["schemaVersion"] == "knowledge-generation-preparation-v1"
+        if fixture["sourceFixture"] is not None:
+            assert (ROOT / fixture["sourceFixture"]).is_file()
+    print("6 registered contracts and 10 shared wire fixture files: PASS")
 
 
 if __name__ == "__main__":

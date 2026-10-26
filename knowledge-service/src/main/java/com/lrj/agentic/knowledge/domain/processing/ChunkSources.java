@@ -36,7 +36,12 @@ public final class ChunkSources {
 
     /** 规范结构来源只从已验证块定位，不接受模型提供的页号。 */
     public static List<Detail> details(StructuredPreparedDocument.Chunk chunk, Extraction extraction) {
-        return chunk.segments().stream().map(segment -> {
+        return details(chunk.segments(), extraction);
+    }
+
+    /** P04/P05共用真实提取块来源；代次身份不改变页段坐标的权威来源。 */
+    public static List<Detail> details(List<StructuredPreparedDocument.Segment> segments, Extraction extraction) {
+        return segments.stream().map(segment -> {
             var block = extraction.blocks().stream().filter(value -> value.blockId().equals(segment.blockId()))
                     .findFirst().orElseThrow(() -> new KnowledgeFailure(KnowledgeError.PREPARATION_INVALID));
             Kind kind = switch (block.kind()) {

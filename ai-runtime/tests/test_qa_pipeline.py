@@ -84,6 +84,13 @@ class Central:
         self.previous = None
         self.cancelled = False
         self.beats = 0
+        self.manifests = []
+
+    async def knowledge_evidence(self, task_id, epoch, references):
+        assert task_id == self.binding.task.task_id and epoch == self.binding.epoch
+        current = {(item.document_id, item.version, item.chunk_id) for item in references}
+        assert not self.manifests or current.issuperset(self.manifests[-1])
+        self.manifests.append(current)
 
     async def heartbeat(self, task_id, epoch):
         assert task_id == self.binding.task.task_id and epoch == self.binding.epoch
@@ -276,7 +283,7 @@ def test_context_requires_matching_central_fact_and_revalidates_old_citations():
         original, central, knowledge, chat = setup()
         pipeline = context_for(original, central)
         await invoke(pipeline)
-        assert knowledge.reads == 3
+        assert knowledge.reads == 4
         assert json.loads(chat.messages[1].content)["context"] == {
             "question": central.previous.input["question"],
             "answer": "旧回答只读。[1]",

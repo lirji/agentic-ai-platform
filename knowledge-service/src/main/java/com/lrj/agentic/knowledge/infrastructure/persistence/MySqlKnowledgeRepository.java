@@ -22,14 +22,16 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class MySqlKnowledgeRepository implements KnowledgeRepository {
     private final KnowledgeMapper mapper;
     private final TransactionTemplate transaction;
+    private final LifecycleInitialization lifecycle;
 
     /** 短事务期限配置化，拒绝无界等待。 */
     public MySqlKnowledgeRepository(KnowledgeMapper mapper, PlatformTransactionManager manager,
-            @Value("${knowledge.transaction-timeout-seconds:5}") int timeoutSeconds) {
+            @Value("${knowledge.transaction-timeout-seconds:5}") int timeoutSeconds, LifecycleInitialization lifecycle) {
         if (timeoutSeconds < 1 || timeoutSeconds > 10) {
             throw new IllegalArgumentException("知识事务期限必须为 1–10 秒");
         }
         this.mapper = mapper;
+        this.lifecycle = lifecycle;
         this.transaction = new TransactionTemplate(manager);
         transaction.setTimeout(timeoutSeconds);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
@@ -51,6 +53,8 @@ public class MySqlKnowledgeRepository implements KnowledgeRepository {
                         || mapper.createIngestion(IngestionRow.from(ingestion)) != 1) {
                     throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);
                 }
+                lifecycle.initialize(new Caller(document.tenantId(), document.ownerId()), document.documentId(),
+                        com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.Action.CREATE);
             });
             return ingestion;
         } catch (DuplicateKeyException conflict) {
@@ -79,7 +83,7 @@ public class MySqlKnowledgeRepository implements KnowledgeRepository {
     /** XML 的身份谓词保护任务状态。 */
     @Override
     public Optional<Ingestion> ingestion(Caller caller, String id) {
-        return access(() -> Optional.ofNullable(mapper.findIngestion(caller.tenantId(), caller.userId(), id))
+        return access(() -> Optional.ofNullable(mapper.findVisibleIngestion(caller.tenantId(), caller.userId(), id))
                 .map(IngestionRow::domain));
     }
 

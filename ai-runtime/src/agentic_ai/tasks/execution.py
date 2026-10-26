@@ -39,6 +39,7 @@ async def run_claimed_graph(
     build_graph: GraphFactory,
     *,
     before_complete: ResultValidator | None = None,
+    before_restore: ResultValidator | None = None,
     execution_seconds: int = MAX_EXECUTION_SECONDS,
     result_key: str | None = None,
     graph_steps: int = MAX_GRAPH_STEPS,
@@ -65,6 +66,9 @@ async def run_claimed_graph(
             # 同步 durability 保证上一完整检查点提交后才开始下一步；本片无外部追踪。
             with tracing_context(enabled=False):
                 async with asyncio.timeout(execution_seconds):
+                    if current.checkpoint is not None and before_restore is not None:
+                        restored = await graph.aget_state(config)
+                        await before_restore(restored.values)
                     value = await graph.ainvoke(
                         current.input if current.checkpoint is None else None,
                         config,

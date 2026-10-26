@@ -10,8 +10,8 @@ import org.apache.ibatis.annotations.Param;
 
 /** 手写 SQL 全部归同名 XML，系统领取与所有者读取分别明确权限边界。 */
 public interface ProcessingMapper {
-    /** 仅系统执行器使用的加锁候选查询。 */
-    ProcessingRow lockNext(@Param("tenant") String tenant);
+    /** 先无锁读取有限候选，再由repository按document→job加锁重验。 */
+    List<ProcessingRow> nextCandidates(@Param("tenant") String tenant);
     /** 已锁定记录领取，数据库时间统一裁定租约。 */
     int claim(@Param("row") ProcessingRow row, @Param("worker") String worker, @Param("lease") int lease);
     /** 全身份查询领取元数据。 */
@@ -32,6 +32,8 @@ public interface ProcessingMapper {
     int sink(@Param("claim") ProcessingClaim claim, @Param("sink") String sink);
     /** 所有推进都由有效领取令牌限制。 */
     int publish(@Param("claim") ProcessingClaim claim);
+    /** 发布三元组同时CAS；受理基线变化或意图失效时拒绝整个发布事务。 */
+    int publishDocument(@Param("claim") ProcessingClaim claim);
     /** 失败不能覆盖 READY 或新 owner。 */
     int fail(@Param("claim") ProcessingClaim claim, @Param("code") String code,
             @Param("retryable") boolean retryable);

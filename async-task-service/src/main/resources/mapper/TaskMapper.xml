@@ -55,10 +55,10 @@
         VALUES(#{row.taskId},#{row.sequence},#{row.operationKey},#{row.payloadSha256},#{row.type},#{row.payloadJson})
     </insert>
     <select id="eventByKey" resultType="com.lrj.agentic.task.infrastructure.EventRow">
-        SELECT * FROM ai_task_event WHERE task_id=#{id} AND operation_key=#{key}
+        SELECT task_id,sequence,operation_key,payload_sha256,type,payload_json,created_at FROM ai_task_event WHERE task_id=#{id} AND operation_key=#{key}
     </select>
     <select id="events" resultType="com.lrj.agentic.task.infrastructure.EventRow">
-        SELECT * FROM ai_task_event WHERE task_id=#{id} AND sequence&gt;#{after} ORDER BY sequence LIMIT #{limit}
+        SELECT task_id,sequence,operation_key,payload_sha256,type,payload_json,created_at FROM ai_task_event WHERE task_id=#{id} AND sequence&gt;#{after} ORDER BY sequence LIMIT #{limit}
     </select>
     <update id="terminal">
         UPDATE ai_task SET status=#{status},result_json=#{result},result_sha256=#{sha},completion_key=#{key},

@@ -4,15 +4,12 @@ import com.lrj.agentic.knowledge.domain.Ingestion;
 import com.lrj.agentic.knowledge.domain.IngestionStatus;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
-import com.lrj.agentic.knowledge.domain.processing.PreparedDocument;
+import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels;
 import com.lrj.agentic.knowledge.domain.processing.PreparedBatch;
-import com.lrj.agentic.knowledge.domain.processing.StructuredPreparedDocument;
-import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
-import com.lrj.agentic.knowledge.domain.processing.ChunkSources;
 import com.lrj.agentic.contract.knowledge.Extraction;
 import com.lrj.agentic.knowledge.infrastructure.processing.ProcessingJson;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.nio.charset.StandardCharsets;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingAction;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingClaim;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
@@ -38,36 +35,50 @@ public class MySqlProcessingRepository implements ProcessingRepository {
     private final KnowledgeMapper knowledge;
     private final TransactionTemplate transaction;
     private final ProcessingJson json;
+    private final LifecycleMapper lifecycle;
 
     /** 与受理使用同一事务管理器，但不共享线程或连接上的事务资源。 */
     public MySqlProcessingRepository(ProcessingMapper mapper, KnowledgeMapper knowledge,
             PlatformTransactionManager manager, @Value("${knowledge.transaction-timeout-seconds:5}") int seconds,
-            ProcessingJson json) {
+            ProcessingJson json, LifecycleMapper lifecycle) {
         this.mapper = mapper;
         this.knowledge = knowledge;
         this.json = json;
+        this.lifecycle = lifecycle;
         this.transaction = new TransactionTemplate(manager);
         transaction.setTimeout(seconds);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
     }
 
-    /** 跳过已锁任务，持久 epoch 可保护多进程同时恢复的竞争。 */
+    /** 先无锁选有限候选，再按document→job领取；管理操作永远不会与worker形成反序锁。 */
     @Override
     public Optional<ProcessingClaim> claim(String worker, int leaseSeconds, String tenantScope) {
-        return access(() -> transaction.execute(status -> {
-            ProcessingRow row = mapper.lockNext(tenantScope);
-            if (row == null) { return Optional.empty(); }
-            changed(mapper.claim(row, worker, leaseSeconds));
-            Caller caller = new Caller(row.tenantId(), row.ownerId());
-            ProcessingClaim claim = snapshot(caller, row.jobId());
-            document(claim, IngestionStatus.PROCESSING);
-            event(caller, row.jobId(), worker, ProcessingAction.CLAIM);
-            if (claim.attempt() > ProcessingProtocol.MAX_ATTEMPTS) {
-                failure(claim, KnowledgeError.PROCESSING_EXHAUSTED, true);
-                return Optional.empty();
+        return access(() -> {
+            for (ProcessingRow candidate : mapper.nextCandidates(tenantScope)) {
+                Optional<ProcessingClaim> claimed = transaction.execute(status -> {
+                    Caller caller = new Caller(candidate.tenantId(), candidate.ownerId());
+                    var job = knowledge.findIngestion(caller.tenantId(), caller.userId(), candidate.jobId());
+                    if (job == null) { return Optional.empty(); }
+                    var state = lifecycle.tryLockDocument(caller, job.documentId());
+                    if (state == null || !state.lifecycleReady()) { return Optional.empty(); }
+                    if (mapper.claim(candidate, worker, leaseSeconds) != 1) { return Optional.empty(); }
+                    ProcessingClaim claim = snapshot(caller, candidate.jobId());
+                    if (!legalIntent(state, claim)) {
+                        failure(claim, KnowledgeError.STATE_CONFLICT, false);
+                        return Optional.empty();
+                    }
+                    document(claim, IngestionStatus.PROCESSING);
+                    event(caller, job.jobId(), worker, ProcessingAction.CLAIM);
+                    if (claim.attempt() > ProcessingProtocol.MAX_ATTEMPTS) {
+                        failure(claim, KnowledgeError.PROCESSING_EXHAUSTED, true);
+                        return Optional.empty();
+                    }
+                    return Optional.of(claim);
+                });
+                if (claimed != null && claimed.isPresent()) { return claimed; }
             }
-            return Optional.of(claim);
-        }));
+            return Optional.empty();
+        });
     }
 
     /** 心跳使用数据库时间，过期 owner 即使尚未被接管也无法复活。 */
@@ -86,13 +97,14 @@ public class MySqlProcessingRepository implements ProcessingRepository {
                 || !Objects.equals(document.documentId(), claim.job().documentId())
                 || document.documentVersion() != claim.job().documentVersion()
                 || !Objects.equals(document.sourceHash(), claim.job().source().hash())
-                || !Objects.equals(document.schemaVersion(), claim.job().profile().schema())
+                || !Objects.equals(document.schemaVersion(), claim.job().preparationSchema())
                 || !Objects.equals(document.processorVersion(), claim.job().profile().processor())
                 || !Objects.equals(document.batchDigest(), reference.batchDigest())) {
             throw new KnowledgeFailure(KnowledgeError.PREPARATION_INVALID);
         }
-        List<PreparedChunkRow> chunks = rows(claim, document, extraction);
+        List<PreparedChunkRow> chunks = PreparedChunkRows.rows(claim, document, extraction, json);
         return access(() -> transaction.execute(status -> {
+            requireIntent(claim);
             changed(mapper.prepare(claim, reference));
             if (mapper.chunks(claim, document, chunks) != document.chunks().size()) {
                 throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);
@@ -114,6 +126,7 @@ public class MySqlProcessingRepository implements ProcessingRepository {
         String warnings = new String(json.write(extraction.warnings()), StandardCharsets.UTF_8);
         try {
             return transaction.execute(status -> {
+                requireIntent(claim);
                 changed(mapper.extract(claim, reference, warnings));
                 event(claim.caller(), claim.job().jobId(), claim.worker(), ProcessingAction.EXTRACTED);
                 return snapshot(claim.caller(), claim.job().jobId());
@@ -132,32 +145,11 @@ public class MySqlProcessingRepository implements ProcessingRepository {
         }
     }
 
-    private List<PreparedChunkRow> rows(ProcessingClaim claim, PreparedBatch document, Extraction extraction) {
-        if (document instanceof PreparedDocument text) {
-            if (claim.job().profile() != ProcessingProfile.TEXT_V1 || extraction != null) {
-                throw new KnowledgeFailure(KnowledgeError.PREPARATION_INVALID);
-            }
-            return text.chunks().stream().map(chunk -> new PreparedChunkRow(chunk.chunkId(), chunk.ordinal(),
-                    chunk.text(), chunk.textHash(), chunk.startByte(), chunk.endByte(), text.schemaVersion(),
-                    null, null, null, null)).toList();
-        }
-        if (!(document instanceof StructuredPreparedDocument structured) || extraction == null
-                || claim.extraction() == null || !claim.extraction().extractionDigest().equals(extraction.extractionDigest())) {
-            throw new KnowledgeFailure(KnowledgeError.PREPARATION_INVALID);
-        }
-        structured.validated(StructuredPreparedDocument.Request.of(claim.job(), extraction));
-        return structured.chunks().stream().map(chunk -> {
-            var sources = ChunkSources.details(chunk, extraction);
-            return new PreparedChunkRow(chunk.chunkId(), chunk.ordinal(), chunk.text(), chunk.textHash(), null, null,
-                    structured.schemaVersion(), ChunkSources.structuredLocator(sources),
-                    new String(json.write(sources), StandardCharsets.UTF_8), chunk.sourceDigest(), extraction.extractionDigest());
-        }).toList();
-    }
-
     /** 不使用进程内布尔值推断持久副作用完成。 */
     @Override
     public void sinkDone(ProcessingClaim claim, ProcessingClaim.Sink sink) {
         inTransaction(() -> {
+            requireIntent(claim);
             changed(mapper.sink(claim, sink.code()));
             ProcessingAction action = switch (sink) {
                 case VECTOR -> ProcessingAction.VECTOR_DONE;
@@ -167,13 +159,16 @@ public class MySqlProcessingRepository implements ProcessingRepository {
         });
     }
 
-    /** 任务先条件锁定再更新资料，两者以相同事务提交。 */
+    /** 先锁文档再按发布基线CAS元组，两sink与租约仍合法才可原子标记READY。 */
     @Override
     public void publish(ProcessingClaim claim) {
         inTransaction(() -> {
+            requireIntent(claim);
+            changed(mapper.publishDocument(claim));
             changed(mapper.publish(claim));
-            document(claim, IngestionStatus.READY);
             event(claim.caller(), claim.job().jobId(), claim.worker(), ProcessingAction.PUBLISHED);
+            changed(lifecycle.event(claim.caller(), claim.job().documentId(), UUID.randomUUID().toString(), null,
+                    claim.job().jobId(), claim.worker(), LifecycleModels.Action.PUBLISH.code()));
         });
     }
 
@@ -189,6 +184,9 @@ public class MySqlProcessingRepository implements ProcessingRepository {
         return access(() -> transaction.execute(status -> {
             var before = knowledge.findIngestion(caller.tenantId(), caller.userId(), jobId);
             if (before == null) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
+            var state = lifecycle.lockDocument(caller, before.documentId());
+            if (state == null || !state.lifecycleReady() || !LifecycleModels.Lifecycle.ACTIVE.code().equals(state.lifecycle())
+                    || !jobId.equals(state.activeJobId())) { throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT); }
             int delay = (1 << Math.min(before.retryCount() + 1, ProcessingProtocol.MAX_RETRIES))
                     + ThreadLocalRandom.current().nextInt(2);
             changed(mapper.retry(caller, jobId, revision, delay, ProcessingProtocol.MAX_RETRIES));
@@ -232,14 +230,29 @@ public class MySqlProcessingRepository implements ProcessingRepository {
     }
 
     private void failure(ProcessingClaim claim, KnowledgeError error, boolean retryable) {
-        changed(mapper.fail(claim, error.code(), retryable));
-        document(claim, IngestionStatus.FAILED);
+        var state = lifecycle.lockDocument(claim.caller(), claim.job().documentId());
+        boolean current = legalIntent(state, claim);
+        changed(mapper.fail(claim, current ? error.code() : KnowledgeError.STATE_CONFLICT.code(), current && retryable));
+        if (current) { document(claim, IngestionStatus.FAILED); }
         event(claim.caller(), claim.job().jobId(), claim.worker(), ProcessingAction.FAILED);
     }
 
     private void document(ProcessingClaim claim, IngestionStatus status) {
+        // 重建旧发布修订时不覆盖最新失败稿的旧K02状态；S10B的更新仍满足此条件。
+        var state = lifecycle.lockDocument(claim.caller(), claim.job().documentId());
+        if (!claim.job().jobId().equals(state.ingestionJobId())) { return; }
         changed(mapper.documentState(claim.caller(), claim.job().documentId(),
                 claim.job().documentVersion(), claim.job().jobId(), status.code()));
+    }
+
+    private void requireIntent(ProcessingClaim claim) {
+        if (!legalIntent(lifecycle.lockDocument(claim.caller(), claim.job().documentId()), claim)) {
+            throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT);
+        }
+    }
+    private static boolean legalIntent(LifecycleRows.State state, ProcessingClaim claim) {
+        return state != null && state.lifecycleReady() && LifecycleModels.Lifecycle.ACTIVE.code().equals(state.lifecycle())
+                && claim.job().jobId().equals(state.activeJobId());
     }
 
     private void event(Caller caller, String job, String actor, ProcessingAction action) {

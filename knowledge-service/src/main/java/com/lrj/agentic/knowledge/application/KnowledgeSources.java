@@ -53,6 +53,11 @@ public class KnowledgeSources {
         List<ChunkSources.Detail> details;
         if (row.extractionDigest() == null) {
             ChunkSources.locator(row.startByte(), row.endByte(), row.sourceLocator());
+            if (row.sourceDigest() != null && !row.sourceDigest().equals(
+                    com.lrj.agentic.knowledge.domain.processing.GenerationPreparedDocument.textSourceDigest(
+                            row.sourceHash(), row.startByte(), row.endByte()))) {
+                throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
+            }
             details = List.of(new ChunkSources.Detail(null, row.startByte(), row.endByte(),
                     ChunkSources.Kind.UTF8_BYTES, null, null));
         } else {

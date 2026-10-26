@@ -67,6 +67,7 @@ class KnowledgeStructuredProcessingIT {
     @Autowired EvaluationMapper evaluations;
     @Autowired PlatformTransactionManager transactions;
     @Autowired JdbcTemplate jdbc;
+    @Autowired com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleMapper lifecycleMapper;
 
     @Test void structuralAndLegacyProfilesCoexistWithRealSourcesAndIndependentAdmissionSwitch() throws Exception {
         Caller owner = owner();
@@ -320,7 +321,7 @@ class KnowledgeStructuredProcessingIT {
         var extraction = parser.extract(storage.source(job), job.profile().format());
         var reference = storage.saveExtraction(job, extraction);
         var claim = claim(job, "unknown-receipt");
-        var uncertain = new MySqlProcessingRepository(mapper, jobs, loseReceipt(() -> { }), 5, json);
+        var uncertain = new MySqlProcessingRepository(mapper, jobs, loseReceipt(() -> { }), 5, json, lifecycleMapper);
         var resolved = uncertain.extracted(claim, reference, extraction);
         assertThat(resolved.extraction()).isEqualTo(reference);
         assertThat(events(job, "EXTRACTED")).isEqualTo(1);
@@ -334,7 +335,7 @@ class KnowledgeStructuredProcessingIT {
         var extraction = parser.extract(storage.source(job), job.profile().format());
         var reference = storage.saveExtraction(job, extraction);
         var claim = claim(job, "expired-receipt");
-        var uncertain = new MySqlProcessingRepository(mapper, jobs, loseReceipt(() -> expire(job)), 5, json);
+        var uncertain = new MySqlProcessingRepository(mapper, jobs, loseReceipt(() -> expire(job)), 5, json, lifecycleMapper);
         error(KnowledgeError.DATABASE_UNAVAILABLE, () -> uncertain.extracted(claim, reference, extraction));
         assertThat(events(job, "EXTRACTED")).isEqualTo(1);
         assertThat(chunkCount(job)).isZero();
@@ -417,7 +418,8 @@ class KnowledgeStructuredProcessingIT {
     }
     private Ingestion structural(Caller owner, DocumentFormat format) throws Exception {
         var selected = new KnowledgeService(registrations, sourceStore,
-                new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.STRUCTURE_V3));
+                new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.STRUCTURE_V3),
+                new com.lrj.agentic.knowledge.config.LifecycleProperties(true, false, false, false));
         String key = UUID.randomUUID().toString();
         return selected.submit(owner, key, structureUpload(format, key));
     }

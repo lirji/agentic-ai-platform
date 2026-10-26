@@ -103,6 +103,9 @@ async def _run_with_heartbeat(
             checkpoints,
             pipeline.build,
             before_complete=pipeline.before_complete,
+            before_restore=pipeline.before_restore
+            if isinstance(pipeline, (QaPipeline, WorkPipeline))
+            else None,
             execution_seconds=(
                 EXECUTION_SECONDS
                 if isinstance(pipeline, EvaluationPipeline)

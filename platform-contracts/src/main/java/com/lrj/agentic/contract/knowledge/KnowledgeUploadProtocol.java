@@ -9,6 +9,11 @@ public final class KnowledgeUploadProtocol {
 
     private KnowledgeUploadProtocol() { }
 
+    /** 新旧上传入口共用实际字节上限，不能从K07绕过网关流量约束。 */
+    public static boolean isUploadPath(String path) {
+        return PATH.equals(path) || path != null && path.matches("/api/v2/knowledge/documents/[^/]+/updates");
+    }
+
     /** 网关和领域共用相同错误定义，避免代理拒绝时改变已发布错误契约。 */
     public enum Failure implements ErrorCode {
         FILE_TOO_LARGE("KNOWLEDGE_FILE_TOO_LARGE", "资料大小超过当前允许范围。", 413);

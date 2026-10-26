@@ -99,6 +99,31 @@ def test_real_takeover_recovers_only_root_and_reuses_completed_stages(stage):
     asyncio.run(scenario())
 
 
+def test_restored_evidence_is_revalidated_before_analysis_model():
+    """恢复研究入口先验证整个证据集合；旧引用失效不得继续分析或工具调用。"""
+
+    async def scenario():
+        async with work_task() as task:
+            first = await task.client()
+            lease = await first.claim(WORK_GRAPH)
+            saver = FencedPostgresSaver(lease, first, await task.storage())
+            await (
+                WorkPipeline(lease, first, task.knowledge, task.chat)
+                .build(saver, interrupt_before=["analyze"])
+                .ainvoke(lease.input, saver.config, durability="sync")
+            )
+            assert task.chat.calls == 0 and task.knowledge.searches == 1
+            await task.expire()
+            second = await task.client()
+            resumed = await second.claim(WORK_GRAPH)
+            task.knowledge.revoked = True
+            result = await execute(task, second, resumed)
+            assert result.status == TaskStatus.FAILED and result.error_code == "INPUT_REJECTED"
+            assert task.chat.calls == 0 and task.knowledge.searches == 1
+
+    asyncio.run(scenario())
+
+
 def test_final_snapshot_rechecks_revoked_sources():
     async def scenario():
         async with work_task() as task:

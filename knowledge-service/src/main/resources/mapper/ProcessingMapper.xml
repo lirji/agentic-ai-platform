@@ -7,14 +7,15 @@
     <sql id="owned">tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND job_id = #{id}</sql>
     <sql id="fence">tenant_id = #{claim.job.tenantId} AND owner_id = #{claim.job.ownerId}
         AND job_id = #{claim.job.jobId} AND document_version = #{claim.job.documentVersion}
+        AND index_generation = #{claim.job.indexGeneration}
         AND lease_owner = #{claim.worker} AND lease_epoch = #{claim.epoch}
         AND status = 'PROCESSING' AND lease_until &gt; UTC_TIMESTAMP(6)</sql>
-    <select id="lockNext" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingRow">
+    <select id="nextCandidates" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingRow">
         SELECT <include refid="processingColumns"/> FROM knowledge_ingestion
         WHERE next_attempt_at &lt;= UTC_TIMESTAMP(6)
         AND (status = 'RECEIVED' OR (status = 'PROCESSING' AND lease_until &lt;= UTC_TIMESTAMP(6)))
         <if test="tenant != null and tenant != ''">AND tenant_id = #{tenant}</if>
-        ORDER BY next_attempt_at, created_at, job_id LIMIT 1 FOR UPDATE SKIP LOCKED
+        ORDER BY next_attempt_at, created_at, job_id LIMIT 20
     </select>
     <select id="find" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingRow">
         SELECT <include refid="processingColumns"/> FROM knowledge_ingestion WHERE <include refid="owned"/>
@@ -31,6 +32,7 @@
             retryable = FALSE, updated_at = UTC_TIMESTAMP(6)
         WHERE job_id = #{row.jobId} AND tenant_id = #{row.tenantId} AND owner_id = #{row.ownerId}
             AND lease_epoch = #{row.leaseEpoch}
+            AND next_attempt_at &lt;= UTC_TIMESTAMP(6)
             AND (status = 'RECEIVED' OR (status = 'PROCESSING' AND lease_until &lt;= UTC_TIMESTAMP(6)))
     </update>
     <update id="heartbeat">
@@ -48,7 +50,7 @@
             extraction_bytes = #{ref.sizeBytes}, extraction_digest = #{ref.extractionDigest},
             extraction_warnings = CAST(#{warnings} AS JSON), revision = revision + 1, updated_at = UTC_TIMESTAMP(6)
         WHERE <include refid="fence"/> AND extraction_key IS NULL AND prepared_key IS NULL
-            AND preparation_schema = #{claim.job.profile.schema} AND processor_version = #{claim.job.profile.processor}
+            AND preparation_schema = #{claim.job.preparationSchema} AND processor_version = #{claim.job.profile.processor}
             AND parser_profile = #{claim.job.profile.parser}
     </update>
     <insert id="chunks">
@@ -86,10 +88,27 @@
     </update>
     <update id="documentState">
         UPDATE knowledge_document SET status = #{state},
-            <if test="state == 'READY'">published_version = version,</if>
             updated_at = UTC_TIMESTAMP(6)
         WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND document_id = #{id}
-            AND version = #{version} AND ingestion_job_id = #{jobId} AND status &lt;&gt; 'READY'
+            AND version = #{version} AND ingestion_job_id = #{jobId} AND active_job_id = #{jobId}
+            AND lifecycle = 'ACTIVE' AND lifecycle_ready = TRUE
+    </update>
+    <update id="publishDocument">
+        UPDATE knowledge_document d JOIN knowledge_ingestion j ON j.tenant_id = d.tenant_id
+            AND j.owner_id = d.owner_id AND j.document_id = d.document_id AND j.job_id = #{claim.job.jobId}
+        SET d.published_version = j.document_version, d.published_generation = j.index_generation,
+            d.published_job_id = j.job_id, d.revision = d.revision + 1, d.updated_at = UTC_TIMESTAMP(6),
+            d.status = CASE WHEN d.ingestion_job_id = j.job_id THEN 'READY' ELSE d.status END
+        WHERE d.tenant_id = #{claim.job.tenantId} AND d.owner_id = #{claim.job.ownerId} AND d.document_id = #{claim.job.documentId}
+            AND d.lifecycle_ready = TRUE AND d.lifecycle = 'ACTIVE' AND d.active_job_id = j.job_id AND d.revision &lt; 2147483647
+            AND d.published_version &lt;=&gt; j.base_published_version
+            AND d.published_generation &lt;=&gt; j.base_published_generation
+            AND d.published_job_id &lt;=&gt; j.base_published_job_id
+            AND j.status = 'PROCESSING' AND j.lease_owner = #{claim.worker} AND j.lease_epoch = #{claim.epoch}
+            AND j.lease_until &gt; UTC_TIMESTAMP(6) AND j.vector_state = 'DONE' AND j.keyword_state = 'DONE'
+            AND j.document_version = #{claim.job.documentVersion} AND j.index_generation = #{claim.job.indexGeneration}
+            AND (j.command_scope = 'REINDEX' OR (d.version = j.document_version AND d.ingestion_job_id = j.job_id))
+            AND j.batch_digest = #{claim.prepared.batchDigest}
     </update>
     <update id="retry">
         UPDATE knowledge_ingestion SET status = 'RECEIVED', retry_count = retry_count + 1,
@@ -113,9 +132,12 @@
             AND d.tenant_id = c.tenant_id AND d.owner_id = c.owner_id
         JOIN knowledge_ingestion j ON j.job_id = c.job_id
             AND j.tenant_id = c.tenant_id AND j.owner_id = c.owner_id
+        JOIN knowledge_document_revision r ON r.tenant_id = c.tenant_id AND r.owner_id = c.owner_id
+            AND r.document_id = c.document_id AND r.content_revision = c.document_version
         WHERE c.tenant_id = #{caller.tenantId} AND c.owner_id = #{caller.userId}
-            AND d.status = 'READY' AND d.published_version = c.document_version
-            AND d.version = c.document_version AND d.ingestion_job_id = j.job_id
+            AND d.lifecycle = 'ACTIVE' AND d.lifecycle_ready = TRUE AND d.published_version = c.document_version
+            AND d.published_job_id = j.job_id AND d.published_generation = j.index_generation
+            AND j.document_id = c.document_id AND j.document_version = c.document_version AND j.content_hash = r.content_hash
             AND j.status = 'READY' AND j.batch_digest = c.batch_digest
             AND c.preparation_schema = j.preparation_schema
             AND c.extraction_digest &lt;=&gt; j.extraction_digest
@@ -124,7 +146,7 @@
     </sql>
     <sql id="publishedFrom">
         SELECT c.document_id, c.document_version AS version, c.chunk_id, c.batch_digest, c.text,
-            c.start_byte, c.end_byte, d.display_name, j.content_hash AS source_hash,
+            c.start_byte, c.end_byte, r.display_name, j.content_hash AS source_hash,
             c.source_locator, c.source_json, c.source_digest, j.extraction_digest
         <include refid="publishedScope"/>
     </sql>

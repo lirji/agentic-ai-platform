@@ -20,20 +20,25 @@ public class TaskService {
     private final TaskValues values;
     private final TransactionTemplate tx;
     private final int leaseSeconds;
+    private final TaskKnowledgeEvidence evidence;
+    private final TaskKnowledgeVisibility visibility;
 
     /** 单独限制事务时长；显式传递身份，避免复用线程泄漏主体。 */
     public TaskService(TaskMapper mapper, TaskValues values, PlatformTransactionManager manager,
-            @Value("${task.lease-seconds:60}") int leaseSeconds) {
+            @Value("${task.lease-seconds:60}") int leaseSeconds, TaskKnowledgeEvidence evidence,
+            TaskKnowledgeVisibility visibility) {
         if (leaseSeconds < 5 || leaseSeconds > 60) { throw new IllegalArgumentException("任务租约配置无效"); }
         this.mapper = mapper; this.values = values; this.leaseSeconds = leaseSeconds;
         this.tx = new TransactionTemplate(manager);
         this.tx.setTimeout(5);
+        this.evidence = evidence; this.visibility = visibility;
     }
 
     /** 唯一约束争用必须先回滚败方事务，再读取已经提交的同键结果。 */
     public View submit(Caller owner, String key, Submit command) {
         require(!TaskProtocol.EVALUATION_KIND.equals(command.kind()), TaskError.INPUT_INVALID);
-        return accept(owner, key, command);
+        var accepted = accept(owner, key, command);
+        return get(owner, accepted.taskId());
     }
 
     /** 只有专用 Knowledge 路由可调用；通用会话/工作入口不能创建评测任务。 */
@@ -78,10 +83,14 @@ public class TaskService {
     }
 
     /** 输入只对原所有者开放，问答内部输入不通过本入口暴露。 */
-    public WorkInput request(Caller owner, String id) { return workInput(owned(owner, id)); }
+    public WorkInput request(Caller owner, String id) {
+        long deadline = TaskKnowledgeVisibility.deadline();
+        var row = owned(owner, id); visibility.verify(owner, row, deadline); return workInput(row);
+    }
 
     /** 使用同类型已授权游标与稳定排序，新增记录不会使下一页重复。 */
     public WorkPage listWork(Caller owner, String kind, String cursor, int limit) {
+        long deadline = TaskKnowledgeVisibility.deadline();
         WorkKind.parse(kind);
         require(limit >= 1 && limit <= TaskProtocol.MAX_PAGE, TaskError.INPUT_INVALID);
         TaskRow boundary = cursor == null ? null : owned(owner, cursor);
@@ -90,7 +99,12 @@ public class TaskService {
                 boundary == null ? null : boundary.createdAt(), cursor, limit + 1);
         boolean more = rows.size() > limit;
         var selected = rows.stream().limit(limit).toList();
-        return new WorkPage(selected.stream().map(row -> new WorkItem(view(row), workInput(row))).toList(),
+        var visible = new java.util.ArrayList<WorkItem>();
+        for (var row : selected) {
+            try { visibility.verify(owner, row, deadline); visible.add(new WorkItem(view(row), workInput(row))); }
+            catch (TaskFailure denied) { if (denied.error() != TaskError.NOT_FOUND) { throw denied; } }
+        }
+        return new WorkPage(visible,
                 more ? selected.getLast().taskId() : null);
     }
 
@@ -100,7 +114,10 @@ public class TaskService {
     }
 
     /** 公共查询在 SQL 中联合过滤所有者和租户，不返回执行内部材料。 */
-    public View get(Caller owner, String id) { return view(owned(owner, id)); }
+    public View get(Caller owner, String id) {
+        long deadline = TaskKnowledgeVisibility.deadline();
+        var row = owned(owner, id); visibility.verify(owner, row, deadline); return view(row);
+    }
 
     /** Knowledge 只能观察其受委托 owner 的评测租约；不获得其他运行输入。 */
     public Lease inspectEvaluation(Caller owner, String id) {
@@ -155,8 +172,16 @@ public class TaskService {
         TaskValues.key(command.operationKey());
         return tx.execute(ignored -> {
             var row = active(worker, id, command.epoch());
-            return event(append(row, "w:" + command.operationKey(), command.type(), payload, false));
+            var before = mapper.eventByKey(row.taskId(), "w:" + command.operationKey());
+            var appended = append(row, "w:" + command.operationKey(), command.type(), payload, false);
+            if (before == null && "TEXT_DELTA".equals(command.type())) { evidence.bind(row, appended); }
+            return event(appended);
         });
+    }
+
+    /** 新正文之前登记依赖；任务行锁与原租约栅栏同一次事务裁决。 */
+    public EvidenceReceipt evidence(Caller worker, String id, Evidence command) {
+        return tx.execute(ignored -> evidence.register(active(worker, id, command.epoch()), command));
     }
 
     /** 只提交租约仍有效的 PG 准备凭据，未知响应重放不能把新指针倒退到旧快照。 */
@@ -195,6 +220,7 @@ public class TaskService {
                 return view(row);
             }
             assertActive(row, worker, command.epoch());
+            if (!TaskProtocol.EVALUATION_KIND.equals(row.kind())) { evidence.validateResult(row, command.result()); }
             terminal(row, TaskStatus.SUCCEEDED, result, digest, command.operationKey(), null, false);
             var updated = mapper.read(row.tenantId(), row.taskId());
             append(updated, "w:" + command.operationKey(), TaskProtocol.STATUS_EVENT,
@@ -284,13 +310,20 @@ public class TaskService {
     /** 一致快照读取事件和终态，避免读到终态却遗漏最后一条事件。 */
     public Events events(Caller owner, String id, long after, int limit) {
         require(after >= 0 && limit >= 1 && limit <= 100, TaskError.INPUT_INVALID);
-        return tx.execute(ignored -> {
+        long deadline = TaskKnowledgeVisibility.deadline();
+        record Snapshot(TaskRow task, java.util.List<EventRow> events) { }
+        var snapshot = tx.execute(ignored -> {
             var row = owned(owner, id);
             require(after <= row.eventSequence(), TaskError.INPUT_INVALID);
-            var items = mapper.events(row.taskId(), after, limit).stream().map(this::event).toList();
-            long cursor = items.isEmpty() ? after : items.getLast().sequence();
-            return new Events(items, cursor, row.status().terminal() && cursor == row.eventSequence());
+            return new Snapshot(row, mapper.events(row.taskId(), after, limit));
         });
+        // 释放事务后才请求Knowledge，事件不可变，清单绑定随事件原子提交。
+        visibility.verify(owner, snapshot.task(), deadline);
+        var checked = new java.util.HashSet<String>();
+        var items = snapshot.events().stream().filter(row -> visibility.visibleEvent(owner,
+                snapshot.task(), row, deadline, checked)).map(this::event).toList();
+        long cursor = snapshot.events().isEmpty() ? after : snapshot.events().getLast().sequence();
+        return new Events(items, cursor, snapshot.task().status().terminal() && cursor == snapshot.task().eventSequence());
     }
 
     private TaskRow owned(Caller caller, String id) {

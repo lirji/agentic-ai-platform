@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.task.infrastructure.KnowledgeEvidenceMapper">
+    <sql id="columns">task_id, lease_epoch, manifest_revision, operation_key, evidence_digest, references_json</sql>
+    <select id="latest" resultType="com.lrj.agentic.task.infrastructure.KnowledgeEvidenceRow">
+        SELECT <include refid="columns"/> FROM ai_task_knowledge_evidence
+        WHERE task_id=#{id} AND lease_epoch=#{epoch} ORDER BY manifest_revision DESC LIMIT 1
+    </select>
+    <select id="byKey" resultType="com.lrj.agentic.task.infrastructure.KnowledgeEvidenceRow">
+        SELECT <include refid="columns"/> FROM ai_task_knowledge_evidence WHERE task_id=#{id} AND lease_epoch=#{epoch} AND operation_key=#{key}
+    </select>
+    <insert id="append">
+        INSERT INTO ai_task_knowledge_evidence(task_id,lease_epoch,manifest_revision,operation_key,evidence_digest,references_json)
+        VALUES(#{row.taskId},#{row.leaseEpoch},#{row.manifestRevision},#{row.operationKey},#{row.evidenceDigest},CAST(#{row.referencesJson} AS JSON))
+    </insert>
+    <update id="bindEvent">
+        UPDATE ai_task_event SET evidence_epoch=#{epoch},evidence_revision=#{revision}
+        WHERE task_id=#{id} AND sequence=#{sequence} AND type='TEXT_DELTA' AND evidence_epoch IS NULL
+    </update>
+    <select id="eventEvidence" resultType="com.lrj.agentic.task.infrastructure.KnowledgeEvidenceRow">
+        SELECT m.task_id,m.lease_epoch,m.manifest_revision,m.operation_key,m.evidence_digest,m.references_json
+        FROM ai_task_event e JOIN ai_task_knowledge_evidence m
+            ON m.task_id=e.task_id AND m.lease_epoch=e.evidence_epoch AND m.manifest_revision=e.evidence_revision
+        WHERE e.task_id=#{id} AND e.sequence=#{sequence}
+    </select>
+</mapper>

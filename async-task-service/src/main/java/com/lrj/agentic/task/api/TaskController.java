@@ -69,7 +69,8 @@ public class TaskController {
             body.append("id: ").append(event.sequence()).append("\nevent: ").append(event.type())
                     .append("\ndata: ").append(values.write(event)).append("\n\n");
         }
-        body.append(": heartbeat\n\n");
+        // SSE允许无data的id帧；过滤旧正文后仍推进扫描游标，避免客户端无限重扫。
+        body.append("id: ").append(page.nextCursor()).append("\n: heartbeat\n\n");
         // 明确响应媒体类型，避免安全链/内容协商的 JSON 默认值误标 SSE 正文。
         return ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM).cacheControl(CacheControl.noStore())
                 .header("X-Task-Terminal", Boolean.toString(page.terminal())).body(body.toString());
@@ -101,6 +102,10 @@ public class TaskController {
     @PostMapping("/internal/v1/task-worker/{id}/events")
     public Event append(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
             @Valid @RequestBody Append command) { return tasks.append(JwtTrust.caller(jwt), id, command); }
+    /** 中央凭据决定哪些 PG 快照允许恢复。 */
+    @PostMapping("/internal/v1/tasks/{id}/knowledge-evidence")
+    public EvidenceReceipt evidence(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
+            @Valid @RequestBody Evidence command) { return tasks.evidence(JwtTrust.caller(jwt), id, command); }
     /** 中央凭据决定哪些 PG 快照允许恢复。 */
     @PostMapping("/internal/v1/task-worker/{id}/checkpoint")
     public Receipt checkpoint(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,

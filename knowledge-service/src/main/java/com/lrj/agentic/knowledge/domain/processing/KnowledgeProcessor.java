@@ -15,6 +15,10 @@ public interface KnowledgeProcessor {
     default StructuredPreparedDocument prepareStructured(Ingestion job, byte[] source, Extraction extraction) {
         throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED);
     }
+    /** 代次准备必须由适配器执行新调用，不能把旧向量包改身份冒充。 */
+    default GenerationPreparedDocument prepareGeneration(Ingestion job, byte[] source, Extraction extraction) {
+        throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED);
+    }
     /** 查询使用同一模型和维度，不降级为 hash 或空向量。 */
     List<Double> query(Caller caller, String query);
 }

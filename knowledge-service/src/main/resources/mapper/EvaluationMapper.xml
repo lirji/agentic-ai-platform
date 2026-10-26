@@ -65,7 +65,7 @@
         ORDER BY document_id FOR SHARE
     </select>
     <select id="bindings" resultType="com.lrj.agentic.knowledge.domain.evaluation.EvaluationModels$DocumentBinding">
-        SELECT DISTINCT c.document_id, c.document_version AS version, d.content_hash AS source_hash,
+        SELECT DISTINCT c.document_id, c.document_version AS version, r.content_hash AS source_hash,
             c.batch_digest, j.processor_version
         <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingMapper.publishedScope"/>
         AND c.document_id IN
@@ -74,7 +74,7 @@
     </select>
     <sql id="evidenceFrom">
         SELECT c.document_id, c.document_version AS version, c.chunk_id, c.text, c.text_hash,
-            d.display_name, c.start_byte, c.end_byte, c.source_locator
+            r.display_name, c.start_byte, c.end_byte, c.source_locator
         <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingMapper.publishedScope"/>
     </sql>
     <select id="gold" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRow$EvidenceRow">
