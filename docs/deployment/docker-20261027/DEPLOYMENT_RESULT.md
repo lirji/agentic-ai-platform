@@ -7,4 +7,4 @@
 - 运行验收：10 项只读页面/列表检查、五个工作台页面的真实浏览器渲染均通过，没有浏览器异常或失败的 API 请求。新增查重接口返回空匹配形状、非法 hash 400、未认证 401、无范围 403、本地身份桥跨站 403 均通过。Knowledge readiness 在最终搜索转发镜像重建后再次为 `UP`。
 - 首轮启动发现并修复 tmpfs YAML 分隔格式，以及 Knowledge 搜索 HTTP 只接受 loopback 的运行约束。修复均在部署配置/固定目标转发内完成，未改业务校验、重放任务或逆向迁移。原失败日志与最终日志保留在 `.logs/docker-deployment-20261027/`。
 - 使用边界：仅本机开发身份/明文依赖。V11 迁移后旧版 Knowledge JAR 不兼容，失败时保留数据并修复/重启同版镜像；没有自动数据库回滚。完整启停与恢复见 [运行手册](../../../deploy/docker/README.md)。
-- Git / CI：待完成任务分支提交、正常合并推送 `main` 与提交 SHA 对应的远程 CI 检查；私密部署收据会同步记录实际结果。
+- Git / CI：仅部署配置、运行手册、验证结果共 17 个文件在任务分支提交 `c43ea907d69f3f38c0240eafe2db585efb7ba88b`，快进合并并正常推送 `origin/main`；[该提交的 Backend CI](https://github.com/lirji/agentic-ai-platform/actions/runs/40430353230) 中 `java`、`python`、`documents` 三项均 PASS。S10E 未提交业务文件没有进入此提交，运行镜像仍准确对应上面的私密源码快照。
