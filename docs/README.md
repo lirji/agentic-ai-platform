@@ -1,5 +1,7 @@
 # 项目文档
 
+本机 Docker 应用：[运行手册](../deploy/docker/README.md)、[本次部署进度](deployment/docker-20261027/PROGRESS_STATE.md)。部署状态与下述业务实施进度分别记录。
+
 当前任务：在[20 项差距](../.engineering/exploration/CAPABILITY_GAPS.md)基础上交付[完整任务拆分和实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)，共 11 批、51 项任务。方案已交付，用户随后要求开始实施，目前从 S8 质量闭环推进；当前状态见唯一 [PROGRESS_STATE](design/knowledge-first-20261020/PROGRESS_STATE.md)。
 
 当前阶段：资料与独立 React 工作台、中央任务/PG 恢复、原问题和可靠交接已交付。S5D 问答图、累计预算及 worker 已通过受控恢复与真实 deepseek-flash 问答、追问、无资料和引用验证；S5E 问答 UI 通过28项单元/组件和10组真实/受控浏览器验收。S6/S7 研究分析、资料解释、核对清单和草稿建议已接通真实 Deep Agents、任务恢复、界面与引用；本轮结果见 S6/S7 验收。最终 Git 交付以当前进度为准。记录日期：2026-10-21。

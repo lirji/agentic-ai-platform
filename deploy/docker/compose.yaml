@@ -1,0 +1,194 @@
+name: agentic-ai-app
+
+x-common: &common
+  restart: unless-stopped
+  init: true
+  user: "${LOCAL_UID:?required}:${LOCAL_GID:?required}"
+  read_only: true
+  tmpfs: ['/tmp:rw,nosuid,size=128m,mode=1777']
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  stop_grace_period: 40s
+  logging:
+    driver: json-file
+    options: {max-size: 10m, max-file: '3'}
+
+x-java: &java
+  <<: *common
+  mem_limit: 768m
+  cpus: 2
+  healthcheck: &java-health
+    interval: 10s
+    timeout: 5s
+    retries: 18
+    start_period: 40s
+
+services:
+  gateway:
+    <<: *java
+    image: agentic-ai/edge-gateway:${RELEASE_ID:?required}
+    build:
+      context: ${BUILD_CONTEXT:?required}
+      dockerfile: ${DOCKER_FILES:?required}/Java.Dockerfile
+      args: {MODULE: edge-gateway, SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}'}
+    env_file: [{path: '${RUNTIME_DIR}/gateway/service.env', format: raw}]
+    volumes: ['${RUNTIME_DIR}/gateway:/run/agentic:ro']
+    networks: [infra]
+    # 所有应用共享此本地网络命名空间，保留内部 loopback HTTP 校验。
+    ports: ['127.0.0.1:28080:28080', '127.0.0.1:28086:28086']
+    healthcheck:
+      <<: *java-health
+      test: [CMD, curl, -fsS, --max-time, '3', 'http://127.0.0.1:29080/actuator/health/readiness']
+
+  ai:
+    <<: *common
+    image: agentic-ai/ai-runtime:${RELEASE_ID}
+    build:
+      context: ${BUILD_CONTEXT}
+      dockerfile: ${DOCKER_FILES}/Python.Dockerfile
+      args: {SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}'}
+    mem_limit: 768m
+    cpus: 2
+    network_mode: service:gateway
+    depends_on: {gateway: {condition: service_healthy}}
+    env_file: [{path: '${RUNTIME_DIR}/ai/service.env', format: raw}]
+    volumes:
+      - '${RUNTIME_DIR}/ai:/run/agentic:ro'
+      - '${EMBEDDING_LEDGER:?required}:/run/budgets/embedding.json'
+    command: [serve, --host, 127.0.0.1, --port, '28085']
+    healthcheck:
+      test: [CMD, python, -c, 'import urllib.request; urllib.request.urlopen("http://127.0.0.1:28085/health/live", timeout=3)']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  search-bridge:
+    <<: *common
+    image: agentic-ai/ai-runtime:${RELEASE_ID}
+    mem_limit: 96m
+    cpus: 0.5
+    network_mode: service:gateway
+    depends_on: {gateway: {condition: service_healthy}}
+    entrypoint: [python, /app/search_bridge.py]
+    healthcheck:
+      test: [CMD, python, -c, 'import socket; [socket.create_connection(("127.0.0.1", p), 2).close() for p in (26333,29200)]']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  knowledge:
+    <<: *java
+    image: agentic-ai/knowledge-service:${RELEASE_ID}
+    build:
+      context: ${BUILD_CONTEXT}
+      dockerfile: ${DOCKER_FILES}/Java.Dockerfile
+      args: {MODULE: knowledge-service, SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}'}
+    mem_limit: 1024m
+    network_mode: service:gateway
+    depends_on:
+      ai: {condition: service_healthy}
+      search-bridge: {condition: service_healthy}
+    env_file: [{path: '${RUNTIME_DIR}/knowledge/service.env', format: raw}]
+    volumes: ['${RUNTIME_DIR}/knowledge:/run/agentic:ro']
+    healthcheck:
+      <<: *java-health
+      test: [CMD, curl, -fsS, --max-time, '3', 'http://127.0.0.1:29084/actuator/health/readiness']
+
+  tasks:
+    <<: *java
+    image: agentic-ai/async-task-service:${RELEASE_ID}
+    build:
+      context: ${BUILD_CONTEXT}
+      dockerfile: ${DOCKER_FILES}/Java.Dockerfile
+      args: {MODULE: async-task-service, SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}'}
+    network_mode: service:gateway
+    depends_on: {knowledge: {condition: service_healthy}}
+    env_file: [{path: '${RUNTIME_DIR}/tasks/service.env', format: raw}]
+    volumes: ['${RUNTIME_DIR}/tasks:/run/agentic:ro']
+    healthcheck:
+      <<: *java-health
+      test: [CMD, curl, -fsS, --max-time, '3', 'http://127.0.0.1:29087/actuator/health/readiness']
+
+  conversations:
+    <<: *java
+    image: agentic-ai/conversation-service:${RELEASE_ID}
+    build:
+      context: ${BUILD_CONTEXT}
+      dockerfile: ${DOCKER_FILES}/Java.Dockerfile
+      args: {MODULE: conversation-service, SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}'}
+    network_mode: service:gateway
+    depends_on: {tasks: {condition: service_healthy}}
+    env_file: [{path: '${RUNTIME_DIR}/conversations/service.env', format: raw}]
+    volumes: ['${RUNTIME_DIR}/conversations:/run/agentic:ro']
+    healthcheck:
+      <<: *java-health
+      test: [CMD, curl, -fsS, --max-time, '3', 'http://127.0.0.1:29088/actuator/health/readiness']
+
+  model-proxy:
+    <<: *common
+    image: agentic-ai/model-proxy:${RELEASE_ID}
+    build:
+      context: ${BUILD_CONTEXT}
+      dockerfile: ${DOCKER_FILES}/Proxy.Dockerfile
+      args: {SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}'}
+    mem_limit: 1024m
+    cpus: 2
+    network_mode: service:gateway
+    depends_on: {gateway: {condition: service_healthy}}
+    env_file: [{path: '${RUNTIME_DIR}/model-proxy/service.env', format: raw}]
+    healthcheck:
+      test: [CMD, python, -c, 'import os,urllib.request; r=urllib.request.Request("http://127.0.0.1:28089/v1/models", headers={"Authorization":"Bearer "+os.environ["LITELLM_MASTER_KEY"]}); urllib.request.urlopen(r, timeout=3)']
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 45s
+
+  qa-worker:
+    <<: *common
+    image: agentic-ai/ai-runtime:${RELEASE_ID}
+    mem_limit: 1024m
+    cpus: 2
+    network_mode: service:gateway
+    depends_on:
+      tasks: {condition: service_healthy}
+      model-proxy: {condition: service_healthy}
+    environment:
+      LANGSMITH_TRACING: 'false'
+      LANGCHAIN_TRACING_V2: 'false'
+      OTEL_SDK_DISABLED: 'true'
+      DO_NOT_TRACK: '1'
+    volumes:
+      - '${RUNTIME_DIR}/qa-worker:/run/agentic:ro'
+      - '${CHAT_LEDGER:?required}:/run/budgets/chat.json'
+    command: [qa-worker, --config, /run/agentic/qa-worker.json]
+    healthcheck:
+      test: [CMD, python, -m, agentic_ai.cli, check-qa-worker, --config, /run/agentic/qa-worker.json]
+      interval: 60s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+
+  web:
+    <<: *common
+    image: agentic-ai/web:${RELEASE_ID}
+    build:
+      context: ${BUILD_CONTEXT}
+      dockerfile: ${DOCKER_FILES}/Web.Dockerfile
+      args: {SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}', NODE_IMAGE: '${NODE_IMAGE}'}
+    mem_limit: 512m
+    cpus: 1
+    network_mode: service:gateway
+    depends_on: {conversations: {condition: service_healthy}}
+    volumes: ['${RUNTIME_DIR}/web:/run/agentic:ro']
+    healthcheck:
+      test: [CMD, node, -e, 'fetch("http://127.0.0.1:28086/api/local-session", {headers:{"X-Workbench-Request":"1"}}).then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+networks:
+  infra:
+    external: true
+    name: dev-infra

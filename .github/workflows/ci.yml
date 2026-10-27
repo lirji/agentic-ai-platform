@@ -67,4 +67,5 @@ jobs:
       - name: Check registered contract evidence
         run: |
           python3 ci/check_contract_docs.py
+          python3 -m py_compile deploy/docker/runtime.py deploy/docker/search_bridge.py
           git show --format= --check HEAD

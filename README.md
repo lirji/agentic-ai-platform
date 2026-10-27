@@ -1,5 +1,7 @@
 # Agentic AI Platform
 
+本机完整应用 Docker 入口：[构建、启动与验证](deploy/docker/README.md)。
+
 独立建设的知识与 Agent 平台，优先实现**知识入库、知识问答、研究分析和业务助手**。架构与组件已确认：**全新 React 前端 + LangGraph、Deep Agents、LlamaIndex AI 核心 + 按需迁入的 Java 领域能力**。
 
 **已实现独立资料受理、持久处理、双索引发布与可引用检索，以及 Python 的鉴权知识准备接口。** Java 服务与 AI 启动入口见 [本地运行](deploy/README.md)，三框架及真实 Embedding 说明见 [AI 运行时](ai-runtime/README.md)。Python 准备结果已用真实百炼验证，Java 双索引处理与恢复已通过真实组件集成测试，S3 完整真实链路、重启恢复和搜索补丁升级验收通过。[独立 React 工作台](https://github.com/lirji/agentic-ai-platform-web)已接通资料、状态、检索、会话、任务与引用，本机入口 http://127.0.0.1:28086；中央任务与 PG 检查点联合恢复、原问题与可靠交接已通过 S5A–S5C 验收。S5D 已接通独立 LiteLLM → deepseek-flash，真实回答、追问、无资料拒答、引用和重启保持预算验收通过；S5E 界面已交付，本机单在途问答 worker 运行。S6/S7 已实现研究报告与资料解释、核对清单、草稿建议：真实 Deep Agents 只读工具、根图恢复、分节结果、工具记录和引用均可用。验收与交付状态见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。

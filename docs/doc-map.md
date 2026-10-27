@@ -1,5 +1,7 @@
 # 文档来源映射
 
+2026-10-27 本机 Docker 增量：`deploy/docker/` 对应 [运行手册](../deploy/docker/README.md) 与 [部署记录](deployment/docker-20261027/PROGRESS_STATE.md)。源码来源为用户明确指定的双仓当前工作树快照，包含未提交 S10E 后端；仅部署文件进入本次 Git 交付，业务实施进度不因此完成。
+
 同步日期：2026-10-21。
 
 本项目已有 Python AI 运行时与独立 Java Gateway/Knowledge/Tasks/Conversations 服务。知识资料和中央任务按参考规则独立实现，旧数据和旧部署未迁入；以下原项目映射仍是固定取证证据。
