@@ -56,7 +56,7 @@ Python使用锁定core0.14.25的BaseRetriever、QueryBundle、TextNode、NodeWit
 
 一次用例：校验策略/身份/预算→生成一次查询向量→候选原语→按原始sourceRank融合→策略选择→现时批量解析→可选一次重排→最终选取topK→再次解析→输出。RRF路径省略重排前那次外发核对，只在最终输出前解析；没有模型时不虚构rerankScore。候选为空时不调用重排，明确EMPTY；原问答NO_EVIDENCE等消费者语义继续沿各自契约。
 
-RRF保持双精度运算的固定VECTOR、LEXICAL累加顺序、分母60+一基rank，排序`(-rrfScore,chunkId)`，不得把过滤后的列表重新enumerate计分。TextNode.id_由稳定身份确定，正文相同不合并；元数据保存JSON原语，LangGraph检查点不保存框架节点/模型/HTTP客户端。NodeWithScore当前分数与rrfScore、rerankScore分别保存，不以精排值覆盖原融合证据。
+RRF保持双精度运算的固定VECTOR、KEYWORD（对应lexicalCandidates）累加顺序、分母60+一基rank，排序`(-rrfScore,chunkId)`，不得把过滤后的列表重新enumerate计分。TextNode.id_由稳定身份确定，正文相同不合并；元数据保存JSON原语，LangGraph检查点不保存框架节点/模型/HTTP客户端。NodeWithScore当前分数与rrfScore、rerankScore分别保存，不以精排值覆盖原融合证据。
 
 Reranker Port输入为query和冻结顺序的至多50个权威正文，UTF-8 JSON最多256KiB；每条仍是原512码点块，禁止静默截断。原始id/tenant/owner/存储地址无需外发；候选序号与身份映射仅在本地保存。请求返回全部候选分数以稳定处理同分，再按`(-rerankScore,-rrfScore,chunkId)`取topK；提供方返回原文不作为权威。索引须为不重复、范围合法的整数，结果应覆盖提交列表，分数必须有限，其他范围由已核验模型协议约束。缺项、重复/越界、非法数、错误模型/响应形状均为协议失败，不作部分成功。
 

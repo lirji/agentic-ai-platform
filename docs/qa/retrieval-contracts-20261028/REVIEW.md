@@ -15,6 +15,6 @@
 | 模型计费未知后回退并重试，或把RRF降级算真实精排 | 保守预留保持、无自动重试；默认FAIL；另一个冻结策略才允许RRF_ONLY且显式标记；授权故障永不降级 |
 | 全局策略默认改动导致旧PG任务恢复成新算法 | legacy缺字段固定旧策略；新策略进入不可变配置/请求指纹，S11E验证历史恢复和公共边界 |
 
-初稿中的不存在SERVICE_UNAVAILABLE枚举已按实际KnowledgeError纠正为DATABASE_UNAVAILABLE；LlamaIndex默认异步后处理会桥接to_thread，新增明确原生异步覆盖要求。没有新增数据库/服务/框架/价格假设。
+初稿中的不存在SERVICE_UNAVAILABLE枚举已按实际KnowledgeError纠正为DATABASE_UNAVAILABLE；LlamaIndex默认异步后处理会桥接to_thread，新增明确原生异步覆盖要求。另明确索引现有枚举为KEYWORD，wire的lexicalCandidates不意味着更名原枚举。没有新增数据库/服务/框架/价格假设。
 
 U04依然是S11D真实调用条件，不能由设计审查自评为模型已开通或质量提高；U01/U03/U06保留。S11E公共响应和任务接入字段按本契约约束增量冻结，不提前改写已发布API。
