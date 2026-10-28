@@ -1,5 +1,7 @@
 # 本地运行
 
+完整应用的本机 Docker 入口见 [Docker 应用运行](docker/README.md)。该模式复用下述初始化资源与累计预算；使用 Docker 时不再同时启动同一套宿主应用进程。
+
 该入口用于开发验证。使用独立 Gateway/Knowledge 进程与项目独占数据库、账号、原文桶；共享 `dev-infra` 的 MySQL 8.4 和 MinIO 实例。不会修改、停止旧业务服务，不执行生产部署。
 
 ## S2 Python 知识准备服务

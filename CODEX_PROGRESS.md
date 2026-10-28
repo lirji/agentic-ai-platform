@@ -2,7 +2,7 @@
 
 - 当前任务`capability-delivery-20261021`：S10E实现/本地验收PASS，正在双仓Git/CI交付，随后继续S10F。两仓原目录分支`feat/document-dedup-20261027`。
 - 唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。完整验收、未完成步骤、运行状态与预算均以该文档为准，保留20%当前会话额度。
-- 独立任务`docker-deployment-20261027`已交付main38a3440；其历史状态入口在既有Docker工作树`docs/deployment/docker-20261027/PROGRESS_STATE.md`，本轮不覆盖原收据。本次运行更新由S10E验收记录承接。
+- 独立任务`docker-deployment-20261027`已交付main38a3440；其历史状态入口为[部署进度](docs/deployment/docker-20261027/PROGRESS_STATE.md)，本轮不覆盖原收据。本次运行更新由S10E验收记录承接。
 
 ## 前期可行性任务记录
 

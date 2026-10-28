@@ -7,8 +7,8 @@
 - 权威验收：[S10E TEST_RESULT](../../qa/document-dedup-20261027/TEST_RESULT.md)、[源码指纹](../../qa/document-dedup-20261027/validation.json)、[审查](../../qa/document-dedup-20261027/REVIEW.md)。Java143+123、前端99、协议浏览器4、真实浏览器1、真实HTTP均PASS。
 - 本地Docker快照`52c4cd0088b45e33`已成功切换，9容器健康、10项smoke；启动session84592与真实浏览器session20337均结束PASS。产品文件与快照hash一致。test/dev库V11，Tasks V4；禁止旧writer回退。独立preview session1476待正常停止。
 - 61条dev资料与两本预算hash前后相同；local-dev知识/中央在途均0，其他tenant历史测试任务保留。Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限；S10E新付费调用0。
-- Git：两仓原目录`feat/document-dedup-20261027`，本片改动待提交。backend基于0eeea79，origin/main已有Docker任务38a3440，需正常合并到本片并保留其文档。backend main在既有Docker工作树，无新工作树。frontend基于56b3f3b。
-- 下一步：显式stage本片→提交；正常整合backend main的Docker配置与进度→精确SHA远程CI→正常FF合并推两仓main→交付收据与最终CI；然后继续S10F设计/实施。不重复已有有效验收。
+- Git：两仓原目录`feat/document-dedup-20261027`，本片改动待提交。backend实现45c9a05，已整合origin/main的Docker任务38a3440；仅CODEX_PROGRESS冲突，保留当前状态与历史部署入口，产品无冲突。backend main在既有Docker工作树，无新工作树。frontend实现ca086ed。
+- 下一步：完成整合提交→精确SHA远程CI→正常FF合并推两仓main→交付收据与最终CI；然后继续S10F设计/实施。不重复已有有效验收。
 - 旧S10D交付收据见`docs/qa/document-reindex-20261027/delivery-result.json`，最终收据CI均PASS；独立Docker部署初版记录见`docs/deployment/docker-20261027`（目前在main工作树）。本次新快照验收归S10E，不覆盖旧部署历史证据。
 - 当前运行开关create/generation/updates/withdrawals/deletions/reindexes=true，backfill=false，PDF/DOCX/STRUCTURE_V3继续保持；沿现有Docker运行入口，不另启writer。
 - 保留.local凭据/固定键/账本/快照、.logs及旧数据；不清理、不生产部署。当前仅人工专业pass，原全局MULTI_CLIENT_DRIFT_BLOCKED不改，无子Agent。
