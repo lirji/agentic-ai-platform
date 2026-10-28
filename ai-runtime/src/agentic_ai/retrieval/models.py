@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from enum import StrEnum
 from typing import Literal, Self
 
 from pydantic import Field, field_validator, model_validator
@@ -11,7 +12,6 @@ from agentic_ai.retrieval.errors import RetrievalCode
 from agentic_ai.tasks.models import CanonicalId, Sha256, WireModel
 
 SCHEMA = "knowledge-retrieval-v1"
-STRATEGY = "LLAMA_RRF_V1"
 MAX_REQUEST = 128 * 1024
 MAX_RESPONSE = 1024 * 1024
 MAX_CANDIDATES = 100
@@ -24,6 +24,18 @@ EMBEDDING_SECONDS = 10
 CANDIDATE_SECONDS = 12
 RESOLVE_SECONDS = 5
 QUERY_CAPACITY = 2
+RERANK_SECONDS = 5
+RERANK_TARGET = 50
+
+
+class RetrievalStrategy(StrEnum):
+    """策略固定为请求证据；当前没有允许静默降级的策略版本。"""
+
+    RRF = "LLAMA_RRF_V1"
+    RERANK = "LLAMA_RERANK_V1"
+
+
+STRATEGY = RetrievalStrategy.RRF.value
 
 
 class RetrievalWire(WireModel):
@@ -51,6 +63,12 @@ class RetrievalInput(WireModel):
     query: str = Field(min_length=1, max_length=2000, repr=False)
     document_ids: tuple[CanonicalId, ...] | None = Field(min_length=1, max_length=MAX_DOCUMENTS)
     top_k: int = Field(ge=1, le=MAX_TOP_K)
+    strategy: RetrievalStrategy = RetrievalStrategy.RRF
+
+    @property
+    def candidate_target(self) -> int:
+        """精排先召回50项；不能用最终K提前截断模型可比较的候选。"""
+        return RERANK_TARGET if self.strategy == RetrievalStrategy.RERANK else self.top_k
 
     @field_validator("query")
     @classmethod

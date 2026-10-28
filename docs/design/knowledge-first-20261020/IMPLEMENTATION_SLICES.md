@@ -216,7 +216,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S11A | 冻结授权候选、融合与重排契约 | S8D, S10A | DESIGN | DONE |
 | S11B | Java 授权候选及最终引用原语 | S11A, S10D | IMPLEMENT | DONE |
 | S11C | LlamaIndex 接管两路编排与融合 | S11B, S8E | IMPLEMENT | DONE |
-| S11D | 独立模型 Reranker 与预算/失败策略 | S11C, S8D | IMPLEMENT | PLANNED |
+| S11D | 独立模型 Reranker 与预算/失败策略 | S11C, S8D | IMPLEMENT | DONE（协议；U04真实条件待满足） |
 | S11E | 搜索、问答和研究共用检索策略 | S11D, S10F | IMPLEMENT | PLANNED |
 | S12A | 追问指代与受控上下文 | S11E | IMPLEMENT | PLANNED |
 | S12B | 答案支撑、覆盖与拒答评测 | S12A, S8D | IMPLEMENT | PLANNED |
@@ -469,7 +469,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-RERANK、C-RETRIEVAL；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 逐题消融；候选不先裁成最终 K；重复/越界索引及非法分数拒绝；超时/额度不足结果明确；未知计费不盲重试；费用/延迟可追溯。
 - **Pass / Runtime：** IMPLEMENT；优先验证百炼 qwen3-rerank；U04 未满足时只验证协议，真实调用待条件满足。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G07 G15。
+- **状态 / 并行 / 对应缺口：** DONE（协议/预算/失败机制；U04真实模型与消融UNVERIFIED）；parallel=no；G07 G15；[验收](../../qa/rerank-budget-20261028/TEST_RESULT.md)。
 
 ### S11E · 搜索、问答和研究共用检索策略
 

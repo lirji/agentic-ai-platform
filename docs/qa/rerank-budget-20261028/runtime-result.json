@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "snapshot": "01a95560586ee526",
+  "containers": [
+    {
+      "service": "ai",
+      "image": "agentic-ai/ai-runtime:01a95560586ee526",
+      "health": "healthy"
+    },
+    {
+      "service": "conversations",
+      "image": "agentic-ai/conversation-service:01a95560586ee526",
+      "health": "healthy"
+    },
+    {
+      "service": "gateway",
+      "image": "agentic-ai/edge-gateway:01a95560586ee526",
+      "health": "healthy"
+    },
+    {
+      "service": "knowledge",
+      "image": "agentic-ai/knowledge-service:01a95560586ee526",
+      "health": "healthy"
+    },
+    {
+      "service": "model-proxy",
+      "image": "agentic-ai/model-proxy:01a95560586ee526",
+      "health": "healthy"
+    },
+    {
+      "service": "qa-worker",
+      "image": "agentic-ai/ai-runtime:01a95560586ee526",
+      "health": "healthy"
+    },
+    {
+      "service": "search-bridge",
+      "image": "agentic-ai/ai-runtime:01a95560586ee526",
+      "health": "healthy"
+    },
+    {
+      "service": "tasks",
+      "image": "agentic-ai/async-task-service:01a95560586ee526",
+      "health": "healthy"
+    },
+    {
+      "service": "web",
+      "image": "agentic-ai/web:01a95560586ee526",
+      "health": "healthy"
+    }
+  ],
+  "readOnlySmoke": {
+    "/": "PASS",
+    "/knowledge": "PASS",
+    "/quality": "PASS",
+    "/api/local-session": "PASS",
+    "/api/v1/knowledge/documents?limit=1": "PASS",
+    "/api/v2/knowledge/documents?limit=1": "PASS",
+    "/api/v1/conversations?limit=1": "PASS",
+    "/api/v1/tasks?kind=RESEARCH&limit=1": "PASS",
+    "/api/v1/tasks?kind=READONLY_ASSISTANT&limit=1": "PASS",
+    "/api/v1/knowledge/evaluations/datasets?limit=1": "PASS"
+  }
+}

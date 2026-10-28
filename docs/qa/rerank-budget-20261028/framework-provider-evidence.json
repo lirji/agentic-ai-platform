@@ -1,0 +1,16 @@
+{
+  "providerReferences": [
+    "https://help.aliyun.com/zh/model-studio/rerank",
+    "https://help.aliyun.com/zh/model-studio/text-rerank-api"
+  ],
+  "accessedAt": "2026-10-28",
+  "providerProtocol": "DashScope HTTP text-rerank for qwen3-rerank; exact output/results/index/relevance_score and usage.total_tokens",
+  "frameworkFile": "ai-runtime/.venv/lib/python3.12/site-packages/llama_index/core/postprocessor/types.py",
+  "sha256": "601ce5068496ada110cf4626d69f86f44937fcb087bf23dc8aadd95c1e8780fc",
+  "decisions": [
+    "BaseNodePostprocessor requires explicit callback isolation",
+    "Override native async _apostprocess_nodes; default uses asyncio.to_thread",
+    "No real model enablement, price, account or independent allowance inferred from documentation",
+    "Default failure strategy FAIL only; no separately approved degraded strategy exists"
+  ]
+}

@@ -352,3 +352,9 @@ Java提供两个独立runtime身份保护的只读内部POST：传入既有1024�
 ## S11C 原生一次融合用例实现（2026-10-28）
 
 Python retrieval包提供独立于现有消费者的RrfRetrievalPipeline：一次Embedding→严格授权候选→原生BaseRetriever/TextNode按原排名融合→最终权威解析。节点ID绑定完整身份，原score/贡献与RRF分别保留；JSON结果不含框架实例。总期限最多30秒并截取上游期限，共享容量2且无排队；S11E必须按应用单例注入容量。通过显式回调构造守卫、清空公开handler列表、隔离本应用dispatcher及受控异步入口，阻止锁定框架默认Settings/global_handler和全局正文事件。三组共享金标、取消/严格协议和真实只读链路均通过，[验收](../../qa/llama-retrieval-20261028/TEST_RESULT.md)保留装配、模型质量和生产SLO未验证边界。
+
+## S11D 独立精排协议实现（2026-10-28）
+
+LLAMA_RERANK_V1在同一容量/根期限内执行50候选目标、一次融合、外发前完整解析、一次原生异步后处理、选K与最终解析。RerankClient只有已核验的qwen3-rerank DashScope HTTP适配，不通过聊天代理猜测协议。配置默认关闭，私密文件需明确业务空间/地域/价格日期/独立额度；独立账本绑定配置指纹并先行fsync，单线程专用预算执行器仅1在途，取消不取消已开始的持久预留。未知计费结果不退款或重试。当前只支持FAIL，未冻结可降级策略。
+
+配置与客户端生命周期尚未装配到公开消费者，归S11E。真实账号、费用和质量U04仍未满足；[协议验收](../../qa/rerank-budget-20261028/TEST_RESULT.md)用明确HTTP替身和真实知识服务证明机制，没有宣称真实精排质量或生产计费就绪。官方原生协议与业务空间路径依据[接口参考](https://help.aliyun.com/zh/model-studio/text-rerank-api)，使用前仍需核验授权环境。

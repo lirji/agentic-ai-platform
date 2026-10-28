@@ -1,16 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前状态：S11C 已交付，下一片 S11D
+## 当前状态：S11D 协议验收通过，交付中
 
-- 任务capability-delivery-20261021，51项已批准、parallel=no；S8A–F/S9A–D/S10A–F/S11A/B已交付；S11C实现、必需本地验收与主分支CI PASS，下一片S11D；全平台未完成。
-- 后端原目录feat/llama-retrieval-20261028，基线44915aebe55f4f6e8cecd5011ee6bbc5131522e8，S11C实现1c67d4239323022e750adf4019300877843e7efb已正常FF推main，分支CI40682978986/mainCI40683250413 PASS；最终收据提交/CI随后单独核对。S11B最终44915ae已FF推main，分支CI40678281666/mainCI40679469991 PASS（.local/s11b-final-ci.json）。main仍在既有Docker工作树；前端只读4a9a280且干净。
-- S11C实现：严格候选/解析客户端、完整稳定身份、原生LlamaIndex一次RRF、单次Embedding、单调根期限与共享容量2。S11E负责消费者/应用单例接入与策略落盘；无新DDL/依赖/付费调用。框架回调/Settings/全局正文事件已显式隔离并测证。
-- 验证：Python445通过/52默认跳过，49项本片离线行为；显式真实只读集成另跑1通过；Ruff/mypy56/compileall通过。Java154单元通过，Java/Python实际执行共享三组金标；241项Java产品/SQL/构建输入与S11B相同，沿用133真实集成证据。前端容器114/格式/类型/lint/生产构建PASS。代码卫生无阻断，Java formatter工具限制保留。QA docs/qa/llama-retrieval-20261028/。
-- 当前运行680ec91cfe82c3a9，439项后端输入（含共享金标）与隔离构建一致，前端484项hash一致；9健康容器/10项smoke/实际原生检索链路通过。内部Knowledge沿现有容器网络，未新增宿主端口。Knowledge V11/Tasks V4；构建/启动/验证会话均结束，日志.logs/s11c-*。
-- 预算/data：dev资料61，local-dev知识/中央在途0；Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限，hash与.local/s11c-runtime-before.json一致，新增付费调用0。U04真实Reranker账号/地域/端点/型号/价格/独立预算未满足，S11D只可先做协议与预算/失败机制，不挪用旧账本。
-- 下一步：S11C最后收据分支/主分支CI与精确SHA核对；按S11D继续独立重排协议/先行累计预算/原生后处理与失败矩阵，U04未满足不调用真实模型。不得重复模型/业务写入补证据，不清理旧数据、日志、凭据或工作树。
-- 用户要求保留25%额度；本会话.local/check_session_quota.py于11:46Z为59%已用，73%开始收尾、75%前停止新增并保存。不能沿用旧会话数据或将额度停止写作平台完成。
-- 沿用backend-implementation/validation/runtime/doc/progress/Git/CI技能和已读建模/持久化/接口/并发/ES/中间件/容量/发布规范；无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。正常合并推送已授权；无生产部署或清理授权。
+- 任务capability-delivery-20261021，51项已批准、parallel=no；S8A–F/S9A–D/S10A–F/S11A–C已交付；S11D协议/预算/失败机制及必需本地验收PASS，真实模型U04条件保留。下一片S11E，整个平台未完成。
+- 后端原目录feat/rerank-budget-20261028，基线c3e5125f148ea09775f925157b7b14718823ce00，S11D当前未提交。S11C实现1c67d42分支CI40682978986/mainCI40683250413 PASS；最终c3e5125分支CI40683550955/mainCI40684005520 PASS并已FF推main，.local/s11c-final-ci.json。main在既有Docker工作树；前端只读4a9a280且干净。
+- S11D：固定50候选→一次融合→模型外发前核权→原生异步后处理→选K→最终核权；独立私密配置/累计预算、先行fsync与取消保留、严格评分协议、默认FAIL。原RRF兼容；消费者/应用装配/策略落盘归S11E，无DDL/新依赖/付费调用。
+- 验证：Python497通过/53默认跳过，52项本片离线行为；显式真实知识服务联调2项通过（模型仅HTTP替身）；Ruff/mypy62/compileall通过。307项全部Java模块/构建输入与S11C一致，复用154单元及S11B 133真实集成证据。前端容器114/格式/类型/lint/生产构建PASS。代码卫生无阻断，6条数值建议分类为协议/命名边界；Java formatter工具限制保留。QA docs/qa/rerank-budget-20261028/。
+- 当前运行01a95560586ee526，447项后端输入（含共享金标）与隔离构建一致、前端484项hash一致；9健康容器/10项smoke，RRF与精排原生链路通过。内部Knowledge仍沿现有容器网络；Knowledge V11/Tasks V4。构建/启动/验证进程已结束，日志.logs/s11d-*。
+- 预算/data：dev资料61，local-dev知识/中央在途0；Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限，hash与.local/s11d-runtime-before.json一致，新增付费调用0。U04真实Reranker账号/地域/端点/型号/价格/独立预算未满足；临时账本只服务协议替身，不挪用旧账本，不声明真实质量消融完成。
+- 下一步：文档/源码hash核验→显式路径提交S11D→精确分支CI→既有main工作树正常FF/push→精确main CI→收据；随后S11E先冻结公共响应/任务策略/历史兼容及完整证据恢复契约，再统一搜索/QA/研究/评测消费者。不能简单丢弃完整代次身份后复用旧引用DTO。
+- 用户要求保留25%额度；本会话.local/check_session_quota.py于12:14Z为68%已用，73%开始收尾、75%前停止新增并保存。不能沿用旧会话数据或把额度停止写作平台完成。
+- 沿用backend-implementation/validation/runtime/doc/progress/Git/CI技能和已读建模/接口/并发/容量/发布规范；无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。正常合并推送已授权；无生产部署或清理授权，保留.local/日志/数据/原工作树。
 
 ## 历史：20 项差距的框架化实施计划
 

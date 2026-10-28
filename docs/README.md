@@ -77,3 +77,5 @@ S11A授权检索与重排设计：[契约](design/knowledge-first-20261020/RETRI
 S11B授权候选/解析原语：[验收](qa/authorized-retrieval-20261028/TEST_RESULT.md)、[审查与边界](qa/authorized-retrieval-20261028/REVIEW.md)。内部只读POST使用独立runtime身份；融合与重排仍按后续切片推进。
 
 S11C原生LlamaIndex一次融合：[验收](qa/llama-retrieval-20261028/TEST_RESULT.md)、[框架取证](qa/llama-retrieval-20261028/framework-evidence.json)。共享金标、严格身份、根期限、容量与实际只读原语验证通过；消费者切换和精排仍属后续切片。
+
+S11D独立精排与预算：[验收](qa/rerank-budget-20261028/TEST_RESULT.md)、[审查](qa/rerank-budget-20261028/REVIEW.md)。协议/失败/持久预算及实际知识服务链路通过，提供方为明确HTTP替身；U04真实模型条件保留，未新增真实模型费用。

@@ -81,7 +81,7 @@ class RetrievalClient(KnowledgeClient):
                 "embeddingModel": EMBEDDING_MODEL,
                 "embeddingDimensions": EMBEDDING_DIMENSIONS,
                 "vector": vector,
-                "candidateTarget": request.top_k,
+                "candidateTarget": request.candidate_target,
                 "timeoutMs": timeout_ms,
             },
             timeout_ms,

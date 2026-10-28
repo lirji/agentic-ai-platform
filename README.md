@@ -42,3 +42,5 @@
 文档更新与版本历史现已接通：新版处理失败保留旧发布，成功发布后旧引用和依赖旧资料的历史正文重新判权；详见[S10B验收](docs/qa/document-update-20261026/TEST_RESULT.md)。撤下与逻辑删除也已接通，含旧引用/历史正文失效与原键恢复，见[S10C验收](docs/qa/document-visibility-20261026/TEST_RESULT.md)；同内容新代重索引与全量索引核验见[S10D验收](docs/qa/document-reindex-20261027/TEST_RESULT.md)。
 
 新授权检索管线已通过Java/Python共享金标和实际容器验证：Java提供当前发布候选与最终核权，LlamaIndex以完整身份执行一次RRF融合，具备总期限与共享容量限制。[S11C验收](docs/qa/llama-retrieval-20261028/TEST_RESULT.md)记录适用范围；现有消费者接入和独立模型精排继续按S11D/E推进。
+
+独立精排的50项候选、原生异步后处理、两次核权、累计预算与失败机制已通过[S11D协议验收](docs/qa/rerank-budget-20261028/TEST_RESULT.md)。真实模型仍关闭，实际质量消融待账号及独立额度条件满足；消费者统一接入属于S11E。

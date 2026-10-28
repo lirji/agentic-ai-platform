@@ -18,6 +18,7 @@ from agentic_ai.retrieval.models import (
     RESOLVE_SECONDS,
     FusedHit,
     RetrievalInput,
+    RetrievalStrategy,
 )
 from agentic_ai.retrieval.retriever import AuthorizedFusionRetriever, CandidatePort
 
@@ -72,6 +73,8 @@ class RrfRetrievalPipeline:
         root_deadline: float | None = None,
     ) -> tuple[FusedHit, ...]:
         """所有阶段夹紧到根剩余时间；任何失败或取消停止后续，不重试或降级。"""
+        if request.strategy != RetrievalStrategy.RRF:
+            raise RetrievalError(RetrievalCode.CONFIG_INVALID)
         deadline = RetrievalDeadline.start(root_deadline)
         timed_out = False
         async with self._capacity.enter():
