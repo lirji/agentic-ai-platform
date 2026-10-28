@@ -12,6 +12,8 @@
     "docs/design/knowledge-first-20261020/PROGRESS_STATE.md",
     "docs/design/knowledge-first-20261020/RETRIEVAL_CONSUMER_READINESS.md",
     "docs/doc-map.md",
+    "docs/qa/retrieval-consumers-20261028/delivery-result.json",
+    "docs/qa/retrieval-consumers-20261028/documentation-check.json",
     "docs/qa/retrieval-consumers-20261028/preflight-evidence.json"
   ]
 }
