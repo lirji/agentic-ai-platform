@@ -3,17 +3,21 @@ package com.lrj.agentic.knowledge.application;
 import com.lrj.agentic.knowledge.config.LifecycleProperties;
 import com.lrj.agentic.knowledge.config.ProcessingAdmissionProperties;
 import com.lrj.agentic.knowledge.domain.ContentDigest;
+import com.lrj.agentic.knowledge.domain.IngestionStatus;
+import com.lrj.agentic.knowledge.domain.IngestionStage;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.SourceStore;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.*;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleRepository;
+import com.lrj.agentic.knowledge.domain.lifecycle.ProcessingDiagnostics;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
 import com.lrj.agentic.security.Caller;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -118,6 +122,26 @@ public class LifecycleService {
         String after = decode(caller, "documents", "-", cursor, "");
         if (!after.isEmpty()) { uuid(after); }
         return page(repository.documents(caller, after, limit + 1), limit, caller, "documents", "-", DocumentView::documentId);
+    }
+    /** 筛选先验证，分页位置绑定全部筛选；不在客户端过滤一个不完整的页面。 */
+    public Page<ProcessingDiagnostics.Task> processingTasks(Caller caller, int limit, String cursor,
+            String status, String stage, Boolean retryable) {
+        if (limit < 1 || limit > ProcessingDiagnostics.MAX_LIMIT
+                || (status != null && Arrays.stream(IngestionStatus.values()).noneMatch(value -> value.code().equals(status)))
+                || (stage != null && Arrays.stream(IngestionStage.values()).noneMatch(value -> value.code().equals(stage)))) {
+            invalid();
+        }
+        var filter = new ProcessingDiagnostics.Filter(status, stage, retryable);
+        String after = decode(caller, "processing-tasks", filter.cursorScope(), cursor, "");
+        if (!after.isEmpty()) { uuid(after); }
+        return page(repository.processingTasks(caller, filter, after, limit + 1), limit, caller,
+                "processing-tasks", filter.cursorScope(), ProcessingDiagnostics.Task::documentId);
+    }
+    /** 固定任务与原CAS版本足以定位唯一RETRY事件，撤下后仍只返回无正文回执。 */
+    public ProcessingDiagnostics.RetryAcceptance retryAcceptance(Caller caller, String jobId, long expectedRevision) {
+        uuid(jobId);
+        if (expectedRevision < 0 || expectedRevision > ProcessingDiagnostics.MAX_EXPECTED_REVISION) { invalid(); }
+        return repository.retryAcceptance(caller, jobId, expectedRevision).orElse(null);
     }
     /** 历史只提供元数据，原文继续遵守当前发布版本读取政策。 */
     public Page<RevisionView> revisions(Caller caller, String id, int limit, String cursor) {

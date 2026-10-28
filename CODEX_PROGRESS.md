@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务`capability-delivery-20261021`：S10E已合并推两仓main且CI通过；本次收据提交后核对其CI，继续S10F。两仓原目录分支`feat/document-dedup-20261027`。
-- 唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。完整验收、未完成步骤、运行状态与预算均以该文档为准，保留20%当前会话额度。
-- 独立任务`docker-deployment-20261027`已交付main38a3440；其历史状态入口为[部署进度](docs/deployment/docker-20261027/PROGRESS_STATE.md)，本轮不覆盖原收据。本次运行更新由S10E验收记录承接。
+- 当前任务`capability-delivery-20261021`：S10E已交付；S10F已实现且本地验收通过，待Git/CI交付，再继续S11A。两仓原目录分支`feat/processing-diagnostics-20261028`。
+- 唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。完整验收、未完成步骤、运行状态与预算以该文档为准。用户最新要求保留25%额度。
+- 独立任务`docker-deployment-20261027`历史入口为[部署进度](docs/deployment/docker-20261027/PROGRESS_STATE.md)，本轮运行证据归S10F，不覆盖原收据。
 
 ## 前期可行性任务记录
 

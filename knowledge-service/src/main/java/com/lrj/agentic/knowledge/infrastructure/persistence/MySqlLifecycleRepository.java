@@ -8,6 +8,7 @@ import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.DocumentFormat;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.*;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleRepository;
+import com.lrj.agentic.knowledge.domain.lifecycle.ProcessingDiagnostics;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingAction;
 import com.lrj.agentic.security.Caller;
@@ -53,6 +54,16 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
     }
     @Override public List<DocumentView> documents(Caller caller, String after, int limit) {
         return access(() -> mapper.documents(caller, after, limit));
+    }
+    /** 读取异常不能伪装为空列表，当前任务与历史审计保持同一授权范围。 */
+    @Override public List<ProcessingDiagnostics.Task> processingTasks(Caller caller, ProcessingDiagnostics.Filter filter,
+            String after, int limit) {
+        return access(() -> mapper.processingTasks(caller, filter, after, limit));
+    }
+    /** 这里只读原受理事实，不尝试重新提交或恢复任务。 */
+    @Override public Optional<ProcessingDiagnostics.RetryAcceptance> retryAcceptance(Caller caller,
+            String jobId, long expectedRevision) {
+        return access(() -> Optional.ofNullable(mapper.retryAcceptance(caller, jobId, expectedRevision)));
     }
     @Override public List<RevisionView> revisions(Caller caller, String id, long before, int limit) {
         return access(() -> mapper.revisions(caller, id, before, limit));

@@ -173,3 +173,35 @@ K01新键遇同一owner活跃最新hash仍409 `KNOWLEDGE_DUPLICATE_CONTENT`；�
 同键重放优先于内容查重：即使资料已更新/撤下/删除，原键同完整输入只返回原受理任务，绝不创建或复活资料；原键异参仍409。新建独立资料须明确的新意图/新键。客户端保存未知请求原指纹和原键；已确认202或确定未受理的重复409可释放对应意图，未知、5xx、断线不能清理或自动换键。达到有界意图容量时拒绝新增，不逐出未确认记录；兼容原上传意图格式，不保存文件正文、名称或凭据。
 
 迁移前停止Knowledge旧受理/worker并确认在途；新查询适配与V11同版本交付，旧版findContent未过滤生命周期，不能与新唯一策略混跑。先在独立test库验证历史保留/竞争/回放，再进行获授权的本地dev迁移；不修改V1–V10，不执行物理清理。回退至少保留识别新唯一策略与生命周期的代码；新语义产生后不能恢复旧全状态唯一索引来假装回滚业务。
+
+## 9. 处理诊断与有界恢复（S10F）
+
+沿已批准S10F增量冻结，不改变服务边界、K02/K03/K04及原K07响应，不新增批处理引擎、写端点或数据表。事务内RETRY事件已经与任务CAS一起提交，可证明固定`jobId + expectedRevision`是否被接受；不得用任务当前状态变化猜测本次受理。
+
+### 9.1 当前处理任务
+
+`GET /api/v2/knowledge/processing-tasks`，knowledge:read；仅可信tenant/owner的ACTIVE、lifecycle_ready文档当前active_job_id。可选`status=RECEIVED|PROCESSING|READY|FAILED`、`stage=ACCEPTED|PREPARING|PUBLISHING|COMPLETE`、`retryable=true|false`；空值、未知值、重复/额外查询参数400。`limit`规范整数1–50、默认20；`cursor`沿K07有界游标，绑定tenant/owner及全部筛选，按documentId升序、limit+1；不返回总数或跨owner计数。变更筛选后清游标，不宣称跨请求快照一致性。
+
+返回`{items:[{documentId,displayName,contentRevision,indexGeneration,jobId,status,stage,errorCode,retryable,retryCount,revision,updatedAt}],nextCursor}`。12字段固定；errorCode可null，其余非null。revision是K04任务CAS版本；contentRevision与名称来自该任务的不可变内容修订，REINDEX不得混用最新失败新稿名称。retryable是有效可恢复资格：FAILED、原retryable=true、retryCount<3、ACTIVE且当前任务。撤下/删除/旧代不在此工作列表。持久阶段表示失败停留位置，PREPARING涵盖解析/分块/准备，不虚构模型内部子阶段。来源告警继续由当前发布的processing-metadata读取；失败新稿无可读提取物时不显示旧版告警冒充新稿。
+
+### 9.2 原重试受理核对
+
+`GET /api/v2/knowledge/ingestions/{jobId}/retry-result?expectedRevision=N`，knowledge:read。jobId规范UUID；expectedRevision规范整数0–2147483646，必须且只出现一次，无额外参数。返回`{acceptance:null|{jobId,documentId,expectedRevision,acceptedRevision,acceptedAt}}`；acceptedRevision=expectedRevision+1，acceptedAt为RETRY事件的数据库UTC时间。
+
+数据源是现有knowledge_ingestion_event的action=RETRY、revision=N+1，并通过knowledge_ingestion关联可信tenant/owner。CAS保证固定任务版本只接受一次；相同任务/版本的不同页面操作属于同一恢复意图。查询不依赖当前FAILED/ACTIVE，允许原owner在后续任务推进、撤下/删除后核对无正文受理元数据，沿K07历史命令回执规则。异owner/tenant与未找到事件均null；存储失败503，不能伪装null。使用现有idx_event_job(job_id,revision)，不新增DDL或清理审计记录。受理事实不表示处理已成功。
+
+### 9.3 工作台批量恢复
+
+知识资料页内提供处理任务视图和状态/阶段/可恢复筛选；真实分页、当前来源详情、历史安全错误和失败动作建议。非瞬态源文件错误指导更新修正稿；不可恢复/无写权限不提供提交动作。历史READY仍区别于当前发布；当前来源告警沿C-PARSE，不提供旧稿正文旁路。
+
+只对选中的可恢复当前任务执行K04，最多10项，串行，逐项独立结果，不构成全有或全无事务。发送前冻结每项jobId/documentId/expectedRevision到当前scope的sessionStorage并持久化UNKNOWN；不保存正文、名称或凭据。任何存储失败阻止后续发送；已有未核对批次不被新批次覆盖。刷新/重开视图只恢复记录，不自动POST。当前标签页丢失后仍可凭任务与版本通过新GET核对，不把重新上传当恢复。
+
+确认202或原RETRY事件后记ACCEPTED并展示“已受理，最终处理结果查看任务”；明确400/401/403/404/409且无受理证明记REJECTED，错误安全展示。网络/5xx/协议或核对失败保留UNKNOWN并停止后续写入，未发项保持NOT_SENT。401/403也停止后续提交。恢复按钮先GET核对，null仅表示暂未找到受理，不等于确定未执行；用户显式选择继续时仍使用原expectedRevision，无自动换版本重试。409也先核对原事件，避免把其他页面接受的同一CAS意图误报失败。
+
+结果区分别显示已受理、明确拒绝、待核对和未提交；按项可查询或按原版本再次尝试。只读身份可查询已有受理结果，不可写；文档详情仍重新鉴权。确认无UNKNOWN后可结束本批，未提交项明确放弃，不隐式提交。来源/错误/恢复入口在1440/1024/414均应可读可操作。
+
+### 9.4 验收与变更范围
+
+K/W Owner；后端仅Lifecycle读模型/服务/Mapper XML/GET控制器与测试，前端复用资料页、详情/历史、Ant Design、现有身份桥及测试。不新增框架、中间件、付费模型或批量上传/撤下/删除/重建。实际错误状态/记录从数据库读取。
+
+验收：筛选与游标跨身份/跨条件拒绝、REINDEX原修订名称、分页；RETRY竞争仅一次，原事件在后续推进/墓碑后可查、跨owner不泄露、未知/503不假null；10项上限/串行/逐项部分结果、读权限不写、存储失败不写、断线刷新只GET、原版本复用；来源错误与历史记录三视口。真实test库使用关闭worker的受控失败任务；dev只核对既有数据，不新增付费调用。

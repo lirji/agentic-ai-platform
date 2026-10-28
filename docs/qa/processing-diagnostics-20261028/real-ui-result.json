@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "taskCountInFirstPage": 2,
+  "viewports": [
+    1440,
+    1024,
+    414
+  ],
+  "requestsWritten": 0,
+  "positiveRetryProof": "covered by real MySQL HTTP IT; no existing dev retry event"
+}

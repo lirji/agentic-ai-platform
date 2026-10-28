@@ -1,6 +1,6 @@
 # 生命周期验收矩阵
 
-依据：[生命周期契约](LIFECYCLE_CONTRACTS.md)，S10A，2026-10-25。`DESIGN_CHECKED`只表示设计中已明确该行为；以下产品验收尚未运行，必须在Owner实施片给出真实证据，不能以本文件存在判PASS。
+依据：[生命周期契约](LIFECYCLE_CONTRACTS.md)，S10A，2026-10-25。`DESIGN_CHECKED`只表示设计中已明确该行为；各行产品结果以Owner实施片的真实证据为准，不能以本文件存在判PASS。
 
 | ID | 场景与可观察断言 | Owner/必要方法 | 当前 |
 | --- | --- | --- | --- |
@@ -28,6 +28,10 @@
 | LC-22 | 逻辑删除不调用S3/ES/Qdrant/备份物理删除；孤立对象不自动清理；没有业务保留天数时清理关闭 | S10C调用计数与隔离数据；U07另决定 | S10C PASS；[证据](../../qa/document-visibility-20261026/TEST_RESULT.md)，后续S10D扩展另验 |
 | LC-23 | 现有owner-content唯一约束在S10E前明确冲突；S10E迁移后已删除/旧修订不误挡新上传，且不跨owner泄露 | S10E真实MySQL竞争/HTTP/浏览器 | S10E PASS；test/dev V11，竞争/隔离/原键恢复/三视口与真实运行通过；[证据](../../qa/document-dedup-20261027/TEST_RESULT.md) |
 | LC-24 | 更新UI同时显示受理/发布，失败旧版仍可用；409保留草稿，未知响应沿原键；失效清空正文，窄屏/焦点可操作 | S10B–D浏览器1440/1024/414及截图 | S10D PASS；[证据](../../qa/document-reindex-20261027/TEST_RESULT.md)，原S10B/C结果保留于其验收记录 |
+| LC-25 | 当前ACTIVE任务按状态/阶段/有效恢复资格分页；游标绑定身份/条件，重索引名称取原修订 | S10F真实MySQL/HTTP | S10F PASS；[证据](../../qa/processing-diagnostics-20261028/TEST_RESULT.md) |
+| LC-26 | 原RETRY事务CAS受理事实在后续推进/墓碑后仍可核对，跨owner隔离，读失败503 | S10F真实DB竞争/HTTP/故障 | S10F PASS；[证据](../../qa/processing-diagnostics-20261028/TEST_RESULT.md) |
+| LC-27 | 最多10项串行、逐项结果；UNKNOWN先持久化且停止后续，刷新只读，原版本恢复，存储失败不写 | S10F单元/组件/协议浏览器 | S10F PASS；[证据](../../qa/processing-diagnostics-20261028/TEST_RESULT.md) |
+| LC-28 | 失败阶段/建议、当前发布来源及历史错误在1440/1024/414可读；只读身份无写操作 | S10F协议与真实只读UI/截图 | S10F PASS；[证据](../../qa/processing-diagnostics-20261028/TEST_RESULT.md) |
 
 S10A本片验证为：固定基线源码摘要、INV/决策/接口/矩阵/依赖完整性，表格与本地链接/围栏，受影响文档映射，同Agent第二轮反例审查。Mermaid语法可用现有渲染器时实际验证；没有渲染器则明确仅结构检查。不得新建应用测试来证明文字已被写入，不运行付费模型。
 

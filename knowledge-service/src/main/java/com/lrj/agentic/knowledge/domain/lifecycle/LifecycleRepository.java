@@ -13,6 +13,11 @@ public interface LifecycleRepository {
     Optional<DocumentView> document(Caller caller, String id);
     /** 数据库按身份和排序边界过滤，最多读取limit行。 */
     List<DocumentView> documents(Caller caller, String after, int limit);
+    /** 有界读取当前任务，筛选和授权在数据库中完成。 */
+    List<ProcessingDiagnostics.Task> processingTasks(Caller caller, ProcessingDiagnostics.Filter filter,
+            String after, int limit);
+    /** 原重试审计与业务CAS同事务，查不到才为空，存储失败必须向上传播。 */
+    Optional<ProcessingDiagnostics.RetryAcceptance> retryAcceptance(Caller caller, String jobId, long expectedRevision);
     /** 修订倒序读取，不包含存储键或原文。 */
     List<RevisionView> revisions(Caller caller, String id, long before, int limit);
     /** 按代次倒序，当前与历史发布分别计算。 */

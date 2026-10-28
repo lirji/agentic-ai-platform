@@ -118,3 +118,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 ## S10D 同步（2026-10-27）
 
 基线backend `f2243d4` / frontend `dbc77b2`。K07重索引/不可变发布源、同内容独立代次、REINDEX恢复、双sink全量ID/摘要回读、20/60/100候选及总期限、React原参数恢复映射到既有生命周期契约和[S10D验收](qa/document-reindex-20261027/TEST_RESULT.md)。Python仅补同文件跨profile样本校验；旧金标和业务守卫不改。无新依赖/迁移，非生产部署，物理清理未开启。
+
+2026-10-28 S10F：Knowledge Lifecycle诊断读模型/Mapper/GET和前端ProcessingTasks/原CAS批次恢复对应[LIFECYCLE第9节](design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md#9-处理诊断与有界恢复s10f)与[验收](qa/processing-diagnostics-20261028/TEST_RESULT.md)；不增加DDL/写端点/批处理引擎。

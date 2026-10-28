@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "release": "22dff8dd5e6ac896",
+  "sourceFingerprint": "22dff8dd5e6ac8960ffc695f7239c2c885f350c955418ec31d6de58392a39ab1",
+  "containers": [
+    {
+      "service": "ai",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "conversations",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "gateway",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "knowledge",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "model-proxy",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "qa-worker",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "search-bridge",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "tasks",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "web",
+      "state": "running",
+      "health": "healthy"
+    }
+  ],
+  "smoke": {
+    "/": "PASS",
+    "/knowledge": "PASS",
+    "/quality": "PASS",
+    "/api/local-session": "PASS",
+    "/api/v1/knowledge/documents?limit=1": "PASS",
+    "/api/v2/knowledge/documents?limit=1": "PASS",
+    "/api/v1/conversations?limit=1": "PASS",
+    "/api/v1/tasks?kind=RESEARCH&limit=1": "PASS",
+    "/api/v1/tasks?kind=READONLY_ASSISTANT&limit=1": "PASS",
+    "/api/v1/knowledge/evaluations/datasets?limit=1": "PASS"
+  }
+}

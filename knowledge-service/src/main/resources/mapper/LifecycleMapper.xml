@@ -129,6 +129,35 @@
     <select id="documents" resultType="com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels$DocumentView">
         <include refid="viewFrom"/> AND d.document_id &gt; #{after} ORDER BY d.document_id LIMIT #{limit}
     </select>
+    <sql id="effectiveRetryable">
+        j.status = 'FAILED' AND j.retryable = TRUE AND j.retry_count &lt; #{maximumRetries}
+    </sql>
+    <select id="processingTasks" resultType="com.lrj.agentic.knowledge.domain.lifecycle.ProcessingDiagnostics$Task">
+        <bind name="maximumRetries" value="@com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol@MAX_RETRIES"/>
+        SELECT d.document_id, r.display_name, j.document_version AS content_revision, j.index_generation,
+            j.job_id, j.status, j.stage, j.error_code, (<include refid="effectiveRetryable"/>) IS TRUE AS retryable,
+            j.retry_count, j.revision, j.updated_at
+        FROM knowledge_document d JOIN knowledge_ingestion j
+            ON j.tenant_id = d.tenant_id AND j.owner_id = d.owner_id AND j.document_id = d.document_id
+            AND j.job_id = d.active_job_id
+        JOIN knowledge_document_revision r ON r.tenant_id = j.tenant_id AND r.owner_id = j.owner_id
+            AND r.document_id = j.document_id AND r.content_revision = j.document_version
+        WHERE d.tenant_id = #{caller.tenantId} AND d.owner_id = #{caller.userId}
+            AND d.lifecycle = 'ACTIVE' AND d.lifecycle_ready = TRUE AND d.document_id &gt; #{after}
+        <if test="filter.status != null">AND j.status = #{filter.status}</if>
+        <if test="filter.stage != null">AND j.stage = #{filter.stage}</if>
+        <if test="filter.retryable != null">AND (<include refid="effectiveRetryable"/>) = #{filter.retryable}</if>
+        ORDER BY d.document_id LIMIT #{limit}
+    </select>
+    <!-- CAS与审计同事务，原owner可在任务推进或墓碑后核对，不暴露原文/执行者/存储地址。 -->
+    <select id="retryAcceptance" resultType="com.lrj.agentic.knowledge.domain.lifecycle.ProcessingDiagnostics$RetryAcceptance">
+        SELECT j.job_id, j.document_id, #{expectedRevision} AS expected_revision,
+            e.revision AS accepted_revision, e.created_at AS accepted_at
+        FROM knowledge_ingestion j JOIN knowledge_ingestion_event e ON e.job_id = j.job_id
+        WHERE j.tenant_id = #{caller.tenantId} AND j.owner_id = #{caller.userId} AND j.job_id = #{jobId}
+            AND e.action = 'RETRY' AND e.revision = #{expectedRevision} + 1
+        LIMIT 1
+    </select>
     <select id="revisions" resultType="com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels$RevisionView">
         SELECT r.content_revision, r.display_name, r.content_type, r.size_bytes, r.content_hash, r.created_at
         FROM knowledge_document_revision r JOIN knowledge_document d

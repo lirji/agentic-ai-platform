@@ -1,6 +1,7 @@
 package com.lrj.agentic.knowledge.infrastructure.persistence;
 
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.*;
+import com.lrj.agentic.knowledge.domain.lifecycle.ProcessingDiagnostics;
 import com.lrj.agentic.security.Caller;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
@@ -47,6 +48,12 @@ public interface LifecycleMapper {
     DocumentView document(@Param("caller") Caller caller, @Param("id") String id);
     /** 稳定分页只扫描本所有者limit行。 */
     List<DocumentView> documents(@Param("caller") Caller caller, @Param("after") String after, @Param("limit") int limit);
+    /** 当前任务列表从不可变修订取名称，不能用最新文档名称误标重建任务。 */
+    List<ProcessingDiagnostics.Task> processingTasks(@Param("caller") Caller caller,
+            @Param("filter") ProcessingDiagnostics.Filter filter, @Param("after") String after, @Param("limit") int limit);
+    /** 所有者谓词通过任务关联保护审计记录，不向客户端返回事件执行者。 */
+    ProcessingDiagnostics.RetryAcceptance retryAcceptance(@Param("caller") Caller caller,
+            @Param("jobId") String jobId, @Param("expectedRevision") long expectedRevision);
     /** 不返回历史正文。 */
     List<RevisionView> revisions(@Param("caller") Caller caller, @Param("id") String id,
             @Param("before") long before, @Param("limit") int limit);

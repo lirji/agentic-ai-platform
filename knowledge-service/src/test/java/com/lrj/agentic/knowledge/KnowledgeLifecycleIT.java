@@ -10,6 +10,7 @@ import com.lrj.agentic.knowledge.config.ProcessingAdmissionProperties;
 import com.lrj.agentic.knowledge.domain.*;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.*;
 import com.lrj.agentic.knowledge.domain.lifecycle.LifecycleRepository;
+import com.lrj.agentic.knowledge.domain.lifecycle.ProcessingDiagnostics;
 import com.lrj.agentic.knowledge.domain.processing.*;
 import com.lrj.agentic.knowledge.infrastructure.persistence.*;
 import com.lrj.agentic.security.Caller;
@@ -294,6 +295,10 @@ class KnowledgeLifecycleIT {
             }
             public Optional<DocumentView> document(Caller caller, String id) { return commands.document(caller, id); }
             public List<DocumentView> documents(Caller caller, String after, int limit) { return commands.documents(caller, after, limit); }
+            public List<ProcessingDiagnostics.Task> processingTasks(Caller caller, ProcessingDiagnostics.Filter filter,
+                    String after, int limit) { return commands.processingTasks(caller, filter, after, limit); }
+            public Optional<ProcessingDiagnostics.RetryAcceptance> retryAcceptance(Caller caller, String id,
+                    long revision) { return commands.retryAcceptance(caller, id, revision); }
             public List<RevisionView> revisions(Caller caller, String id, long before, int limit) { return commands.revisions(caller, id, before, limit); }
             public List<GenerationView> generations(Caller caller, String id, long before, int limit) { return commands.generations(caller, id, before, limit); }
             public CommandReceipt update(Caller caller, Update input) { return commands.update(caller, input); }
@@ -404,6 +409,12 @@ class KnowledgeLifecycleIT {
         assertThat(job.profile()).isEqualTo(ProcessingProfile.TEXT_V1);
         assertThat(lifecycleMapper.lockDocument(owner, first.documentId()).ingestionJobId()).isEqualTo(draft.jobId());
         assertThat(lifecycle.document(owner, first.documentId()).displayName()).isEqualTo("失败草稿");
+        assertThat(lifecycle.processingTasks(owner, 20, null, null, null, null).items()).singleElement()
+                .satisfies(task -> {
+                    assertThat(task.jobId()).isEqualTo(receipt.jobId());
+                    assertThat(task.displayName()).isEqualTo("发布快照");
+                    assertThat(task.contentRevision()).isEqualTo(1); assertThat(task.indexGeneration()).isEqualTo(3);
+                });
         assertThat(processing.citation(owner, first.documentId(), 1, oldChunk)).isPresent();
         assertThat(lifecycle.reindex(owner, first.documentId(), key, before.revision(), before.publishedGeneration(), ProcessingProfile.TEXT_V1.processor())).isEqualTo(receipt);
         publish(job, model);
