@@ -1,0 +1,29 @@
+{
+  "status": "READ_ONLY_PREFLIGHT",
+  "baseline": "5779cf08c240e28ee7803738b7e4e294709cfb3b",
+  "frontend": "4a9a2800846076cc28886d78c1dca8675924c51f",
+  "files": {
+    "ai-runtime/src/agentic_ai/api/app.py": "13b055afa39fcbc29acb4fab8aadd9473f4311f27c3c73ac6f7123366b8ec301",
+    "ai-runtime/src/agentic_ai/processing/identity.py": "2e4c858396e6151c59a4c27a8db5a0a48fac7c081b6fce48b8918302182dcb71",
+    "ai-runtime/src/agentic_ai/qa/models.py": "34a4bd31fb31ad01bb4e40c4851daefa7ff41890c0b499b1273c57476d311193",
+    "ai-runtime/src/agentic_ai/qa/retriever.py": "3786e0176b0e52022f9a4165e4d4f6cc6f9246346e693629e7d9a2af9d6bd633",
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "e6c526f68a6dcae4ec117975c6d47f9c663c07282570c5a474a4393cb394aab5",
+    "ai-runtime/src/agentic_ai/qa/worker.py": "7c3556d3f71ea02e3fca56340cbfae3377efdddb4e345959c5f68f166f83faa1",
+    "ai-runtime/src/agentic_ai/agents/models.py": "9c07db665ba3314a3bbb3b2712ca0b0a25bf06fc000355fc7874f1ea4515b96a",
+    "ai-runtime/src/agentic_ai/evaluation/models.py": "a6b6a6ab99d86dc1a304689a1d5d28653d5abc10e1c9e3a0f2919f152f74fe82",
+    "ai-runtime/src/agentic_ai/tasks/evidence.py": "b8c9fd8d0a8a26de15c3dcdb320ae23b2370430fbdca1155dce2641bd3aee026",
+    "ai-runtime/src/agentic_ai/tasks/checkpointer.py": "9d5c9392241eef24020ca561ed36e0ceaffb0f253f066d8335a2f67bfbf52cb5",
+    "platform-contracts/src/main/java/com/lrj/agentic/contract/knowledge/CitationProtocol.java": "f6f0880174decbcd284d09ee44f0bb48a6a8c841da142356dce896c87c1f0396",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskKnowledgeEvidence.java": "93eb6c925825877c23c7c4378f4fead51b042acc368f1b3d27e40174e77a8fe6",
+    "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskProtocol.java": "4407deda3ccd683bba7c56c69db97d640700256984ba98ad1dec15e51c9d788e",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/api/ConversationDtos.java": "7568ac2b84ca4124bf98cd698bb51da181bb2c299743a788ef67b15ef4262829",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/TurnRow.java": "5690956ecf5ef899fb57ca6ee295fdeafdc77defacb954bea3f7f1e2c74dba2e",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationService.java": "22c662675d3ad4dfe6ee3bbbd216b286787c804f75272ff11c41b056e4586f2e",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunRules.java": "95a9d319912452e6d298fc31ab8e0b2b852bcb611cf705de47ecd531e17636b1",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationRunRow.java": "97737317f962c373cfcb19ea30e9c0c4bd420f345bbd38a823d0d07d72fe6704",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/CitationCheckController.java": "d846bce9fe11ef17dad75264585829e2aa05b532cf4b4275bd9bf330560056b1",
+    "async-task-service/src/main/resources/db/migration/V4__knowledge_evidence.sql": "c13a8499fae29385eee0ec7af5e35d73bee59d57f62bf899af705577c115436a"
+  },
+  "productChanges": false,
+  "newModelCalls": 0
+}

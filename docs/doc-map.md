@@ -128,3 +128,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 2026-10-28 S11C：ai-runtime/retrieval的严格模型、客户端、期限/容量、原生Retriever与pipeline对应[检索契约](design/knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)第3–6节；RetrievalFusionGoldenTest与test_retrieval共同执行retrieval-golden-v1.json。49项离线行为、1项实际只读链路、固定源码容器与未切换消费者边界见[验收](qa/llama-retrieval-20261028/TEST_RESULT.md)。
 
 2026-10-28 S11D：retrieval/rerank_*的私密配置、独立账本、DashScope适配、原生后处理与精排管线对应[检索契约](design/knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)第5–6节；test_rerank与test_rerank_integration对应RT-10–13。52项离线行为、2项实际知识链路和U04条件边界见[验收](qa/rerank-budget-20261028/TEST_RESULT.md)。
+
+2026-10-28 S11E接入核对：QaInput/WorkInput/EvaluationInput、TaskProtocol、TurnRow、EvaluationRunRow、CitationProtocol与Tasks V4约束对应[接入前核对](design/knowledge-first-20261020/RETRIEVAL_CONSUMER_READINESS.md)；20项源码摘要见[取证](qa/retrieval-consumers-20261028/preflight-evidence.json)。本阶段只读，不代表公共契约或消费者实现完成。

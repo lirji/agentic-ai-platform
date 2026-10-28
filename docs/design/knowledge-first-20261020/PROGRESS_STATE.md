@@ -1,15 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前状态：S11D 协议已交付，下一片 S11E
+## 当前状态：S11E 接入分析已保存，产品待实施
 
-- 任务capability-delivery-20261021，51项已批准、parallel=no；S8A–F/S9A–D/S10A–F/S11A–C已交付；S11D协议/预算/失败机制及必需本地验收PASS，真实模型U04条件保留。下一片S11E，整个平台未完成。
-- 后端原目录feat/rerank-budget-20261028，基线c3e5125f148ea09775f925157b7b14718823ce00，S11D实现b357b385773ebf47f47982bf96883c782cc44a1c已正常FF推main，分支CI40686683218/mainCI40687038468 PASS；最终收据提交/CI随后核对。S11C实现1c67d42分支CI40682978986/mainCI40683250413 PASS；最终c3e5125分支CI40683550955/mainCI40684005520 PASS并已FF推main，.local/s11c-final-ci.json。main在既有Docker工作树；前端只读4a9a280且干净。
+- 任务capability-delivery-20261021，51项已批准、parallel=no；S8A–F/S9A–D/S10A–F/S11A–C已交付；S11D协议/预算/失败机制及必需本地验收PASS，真实模型U04条件保留。S11E已开始只读接入分析，公共/任务契约与产品实施尚未完成；整个平台未完成。
+- 后端原目录feat/retrieval-consumers-20261028，基线5779cf08c240e28ee7803738b7e4e294709cfb3b，S11D实现b357b385773ebf47f47982bf96883c782cc44a1c已正常FF推main，分支CI40686683218/mainCI40687038468 PASS；最终收据5779cf0分支CI40687419254 PASS，正在既有main工作树FF/push并核对main CI。S11C实现1c67d42分支CI40682978986/mainCI40683250413 PASS；最终c3e5125分支CI40683550955/mainCI40684005520 PASS并已FF推main，.local/s11c-final-ci.json。main在既有Docker工作树；前端只读4a9a280且干净。
 - S11D：固定50候选→一次融合→模型外发前核权→原生异步后处理→选K→最终核权；独立私密配置/累计预算、先行fsync与取消保留、严格评分协议、默认FAIL。原RRF兼容；消费者/应用装配/策略落盘归S11E，无DDL/新依赖/付费调用。
 - 验证：Python497通过/53默认跳过，52项本片离线行为；显式真实知识服务联调2项通过（模型仅HTTP替身）；Ruff/mypy62/compileall通过。307项全部Java模块/构建输入与S11C一致，复用154单元及S11B 133真实集成证据。前端容器114/格式/类型/lint/生产构建PASS。代码卫生无阻断，6条数值建议分类为协议/命名边界；Java formatter工具限制保留。QA docs/qa/rerank-budget-20261028/。
 - 当前运行01a95560586ee526，447项后端输入（含共享金标）与隔离构建一致、前端484项hash一致；9健康容器/10项smoke，RRF与精排原生链路通过。内部Knowledge仍沿现有容器网络；Knowledge V11/Tasks V4。构建/启动/验证进程已结束，日志.logs/s11d-*。
 - 预算/data：dev资料61，local-dev知识/中央在途0；Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限，hash与.local/s11d-runtime-before.json一致，新增付费调用0。U04真实Reranker账号/地域/端点/型号/价格/独立预算未满足；临时账本只服务协议替身，不挪用旧账本，不声明真实质量消融完成。
-- 下一步：完成S11D最后收据/精确CI；随后S11E先冻结公共响应/任务策略/历史兼容及完整证据恢复契约，再统一搜索/QA/研究/评测消费者。不能简单丢弃完整代次身份后复用旧引用DTO。
-- 用户要求保留25%额度；本会话.local/check_session_quota.py于12:14Z为68%已用，73%开始收尾、75%前停止新增并保存。不能沿用旧会话数据或把额度停止写作平台完成。
+- S11E分析产物：[RETRIEVAL_CONSUMER_READINESS](RETRIEVAL_CONSUMER_READINESS.md)，20项源码摘要在docs/qa/retrieval-consumers-20261028/preflight-evidence.json。已定位v1图/input的固定路由、Conversation策略持久化缺口、Evaluation旧画像约束、Tasks V4数组CHECK、三元组与完整8分量证据差异、跨进程总容量及前端请求/实际策略区分；只是事实与待冻结清单，未修改产品或宣布新API生效。
+- 下一步：核对最后文档Git/CI；从S11E恢复入口完成公共/任务策略/完整证据与旧任务兼容契约和共享夹具，再实施。优先核对HTTP与worker的容量总量和完整身份恢复，不能直接把新检索结果投影为旧DTO而丢弃代次。S11E需要跨Java/Python/前端与持久化修改，不在本轮额度收尾时开启大范围代码变更。
+- 用户要求保留25%额度；本会话.local/check_session_quota.py于12:25Z为71%已用，73%开始收尾、75%前停止新增并保存。不能沿用旧会话数据或把额度停止写作平台完成。
 - 沿用backend-implementation/validation/runtime/doc/progress/Git/CI技能和已读建模/接口/并发/容量/发布规范；无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。正常合并推送已授权；无生产部署或清理授权，保留.local/日志/数据/原工作树。
 
 ## 历史：20 项差距的框架化实施计划

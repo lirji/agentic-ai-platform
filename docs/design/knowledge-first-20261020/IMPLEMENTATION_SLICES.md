@@ -217,7 +217,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S11B | Java 授权候选及最终引用原语 | S11A, S10D | IMPLEMENT | DONE |
 | S11C | LlamaIndex 接管两路编排与融合 | S11B, S8E | IMPLEMENT | DONE |
 | S11D | 独立模型 Reranker 与预算/失败策略 | S11C, S8D | IMPLEMENT | DONE（协议；U04真实条件待满足） |
-| S11E | 搜索、问答和研究共用检索策略 | S11D, S10F | IMPLEMENT | PLANNED |
+| S11E | 搜索、问答和研究共用检索策略 | S11D, S10F | IMPLEMENT | IN_PROGRESS |
 | S12A | 追问指代与受控上下文 | S11E | IMPLEMENT | PLANNED |
 | S12B | 答案支撑、覆盖与拒答评测 | S12A, S8D | IMPLEMENT | PLANNED |
 | S12C | 研究计划、证据覆盖和缺口结果 | S12B | IMPLEMENT | PLANNED |
@@ -479,7 +479,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-RETRIEVAL 及现行 Q/work 协议的兼容适配；本项不提前改变答案或研究 schema，新增语义留到后续任务。迁移仍归相应服务 Owner。
 - **可观察验收：** 三入口对照与引用重验；旧任务绑定旧策略可恢复；禁双重融合/重复模型；切换失败可回原版本；前端显示实际策略/降级，不暴露无权候选。
 - **Pass / Runtime：** IMPLEMENT；复用现有 AI 运行时；无新独立检索服务。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G07 G08 G12 G18。
+- **状态 / 并行 / 对应缺口：** IN_PROGRESS（只读影响分析，公共/任务契约待冻结）；parallel=no；G07 G08 G12 G18。
 
 ### S12A · 追问指代与受控上下文
 

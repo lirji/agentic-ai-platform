@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "markdown": 6,
+  "localLinks": 207,
+  "backendInputsUnchanged": 447,
+  "frontendInputsUnchanged": 484,
+  "ledgerHashes": "UNCHANGED",
+  "changedPaths": [
+    "CODEX_PROGRESS.md",
+    "docs/README.md",
+    "docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md",
+    "docs/design/knowledge-first-20261020/PROGRESS_STATE.md",
+    "docs/design/knowledge-first-20261020/RETRIEVAL_CONSUMER_READINESS.md",
+    "docs/doc-map.md",
+    "docs/qa/retrieval-consumers-20261028/preflight-evidence.json"
+  ]
+}

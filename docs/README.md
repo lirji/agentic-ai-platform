@@ -79,3 +79,5 @@ S11B授权候选/解析原语：[验收](qa/authorized-retrieval-20261028/TEST_R
 S11C原生LlamaIndex一次融合：[验收](qa/llama-retrieval-20261028/TEST_RESULT.md)、[框架取证](qa/llama-retrieval-20261028/framework-evidence.json)。共享金标、严格身份、根期限、容量与实际只读原语验证通过；消费者切换和精排仍属后续切片。
 
 S11D独立精排与预算：[验收](qa/rerank-budget-20261028/TEST_RESULT.md)、[审查](qa/rerank-budget-20261028/REVIEW.md)。协议/失败/持久预算及实际知识服务链路通过，提供方为明确HTTP替身；U04真实模型条件保留，未新增真实模型费用。
+
+S11E统一消费者处于接入前核对：[影响与恢复入口](design/knowledge-first-20261020/RETRIEVAL_CONSUMER_READINESS.md)。已定位旧任务、证据清单、跨进程容量与UI兼容约束；公共/任务契约待冻结，产品尚未切换。
