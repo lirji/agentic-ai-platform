@@ -124,3 +124,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 2026-10-28 S11A：KnowledgeSearch/DualSearchIndex/发布SQL与Python KnowledgeClient/AuthorizedRetriever、锁定框架源码映射到[检索契约](design/knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)；边界决策D-RT01–05追加到既有架构/选型，16项RT验收对应S11B–E，无产品/数据库/运行变化。
 
 2026-10-28 S11B：RuntimeRetrievalController/AuthorizedRetrieval/RankedSearchIndex/RetrievalMapper对应[检索契约](design/knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)第2–4/6节与[验收](qa/authorized-retrieval-20261028/TEST_RESULT.md)。发布SQL与查询容量共享，旧接口保持；全Java与固定源码容器证据同QA目录。
+
+2026-10-28 S11C：ai-runtime/retrieval的严格模型、客户端、期限/容量、原生Retriever与pipeline对应[检索契约](design/knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)第3–6节；RetrievalFusionGoldenTest与test_retrieval共同执行retrieval-golden-v1.json。49项离线行为、1项实际只读链路、固定源码容器与未切换消费者边界见[验收](qa/llama-retrieval-20261028/TEST_RESULT.md)。

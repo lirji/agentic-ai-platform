@@ -1,0 +1,18 @@
+{
+  "core": "0.14.25",
+  "installedFiles": {
+    "llama_index/core/base/base_retriever.py": "6bd60c18f31bdffb372e23cb1777d128b38832c2d1aa9661639dc17ee217f343",
+    "llama_index/core/callbacks/base.py": "c7edd0fecfdfb9bc137008ac4a63c8d9965d9e76ec756bcd4849f17a874a8df3",
+    "llama_index_instrumentation/__init__.py": "d100f7627701cc5cc27d1865ec5aee67eacb65a47263b6dcc92eef48869d5377",
+    "llama_index_instrumentation/dispatcher.py": "fd5642c2b0202db54558133ba8a03b9aa378ed80d02ba94dc8a7314654c3e0cf"
+  },
+  "decisions": [
+    "CallbackManager([]) can read Settings._callback_manager and append global_handler; initialize with guard then public set_handlers([])",
+    "BaseRetriever public aretrieve emits raw content globally; override native async entry and isolate only application module dispatcher",
+    "Node identity uses complete tuple; VECTOR then KEYWORD one-based RRF60; no default query expansion or LLM"
+  ],
+  "golden": {
+    "path": "docs/design/knowledge-first-20261020/retrieval-golden-v1.json",
+    "sha256": "55f8c81e3178bd61da65e2c4b40ae922d02c607d28e7ff654615bd8bd931d158"
+  }
+}

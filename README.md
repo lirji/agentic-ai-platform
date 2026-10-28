@@ -40,3 +40,5 @@
 质量评测已接入 Knowledge 与独立 React `/quality`：定义/证据按修订保存，可持久运行、取消和恢复，查看逐题回答、召回指标、引用与已知耗时/费用；未知提交核对原任务，失效绑定隐藏正文。执行采用现行问答链路与 LangGraph 检查点，[S8C 验收](docs/qa/quality-runs-20261021/TEST_RESULT.md)记录真实恢复与界面证据。人工评分、不可变基线选择和逐题比较已实现，[S8D验收](docs/qa/quality-baselines-20261021/TEST_RESULT.md)记录并发、恢复和界面证据；[S8E真实机制基线](docs/qa/quality-mechanism-20261024/TEST_RESULT.md)已完成8题，保留1项非关键支撑失败；仅为项目文档机制集，不代表业务质量达标。
 
 文档更新与版本历史现已接通：新版处理失败保留旧发布，成功发布后旧引用和依赖旧资料的历史正文重新判权；详见[S10B验收](docs/qa/document-update-20261026/TEST_RESULT.md)。撤下与逻辑删除也已接通，含旧引用/历史正文失效与原键恢复，见[S10C验收](docs/qa/document-visibility-20261026/TEST_RESULT.md)；同内容新代重索引与全量索引核验见[S10D验收](docs/qa/document-reindex-20261027/TEST_RESULT.md)。
+
+新授权检索管线已通过Java/Python共享金标和实际容器验证：Java提供当前发布候选与最终核权，LlamaIndex以完整身份执行一次RRF融合，具备总期限与共享容量限制。[S11C验收](docs/qa/llama-retrieval-20261028/TEST_RESULT.md)记录适用范围；现有消费者接入和独立模型精排继续按S11D/E推进。

@@ -215,7 +215,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S10F | 处理诊断与有界批量管理 | S10D, S10E | IMPLEMENT | DONE |
 | S11A | 冻结授权候选、融合与重排契约 | S8D, S10A | DESIGN | DONE |
 | S11B | Java 授权候选及最终引用原语 | S11A, S10D | IMPLEMENT | DONE |
-| S11C | LlamaIndex 接管两路编排与融合 | S11B, S8E | IMPLEMENT | PLANNED |
+| S11C | LlamaIndex 接管两路编排与融合 | S11B, S8E | IMPLEMENT | DONE |
 | S11D | 独立模型 Reranker 与预算/失败策略 | S11C, S8D | IMPLEMENT | PLANNED |
 | S11E | 搜索、问答和研究共用检索策略 | S11D, S10F | IMPLEMENT | PLANNED |
 | S12A | 追问指代与受控上下文 | S11E | IMPLEMENT | PLANNED |
@@ -459,7 +459,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-RETRIEVAL；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 固定候选 golden 对照，含无效候选造成的名次空位；同文不同 doc/版本不误并；RRF 一基排名；没有隐藏模型或全局 Settings；超时/单路失败明确；同一请求只融合一次。
 - **Pass / Runtime：** IMPLEMENT；已有 HTTP/Embedding 适配；不新增召回源。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G07 G13。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G07 G13；[验收](../../qa/llama-retrieval-20261028/TEST_RESULT.md)。
 
 ### S11D · 独立模型 Reranker 与预算/失败策略
 

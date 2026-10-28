@@ -348,3 +348,7 @@ S9B/C产品已接通上述链路，受控文件、真实存储/索引/权限和�
 ## S11B 授权检索原语实现（2026-10-28）
 
 Java提供两个独立runtime身份保护的只读内部POST：传入既有1024维向量取得两路合法候选；按8分量完整身份批量核验当前发布正文。DualSearchIndex在原过滤/请求上增加原score投影；RetrievalMapper引用原publishedScope，来源与代次只取当前发布权威。候选保留索引一基排名空位，不融合、不调模型。原KnowledgeSearch与新原语共享最多2个在途，未来公共RAG门面不得持有此容量等待回调。无新DDL/依赖/运行组件，Python接管属于S11C，消费者接入属于S11E。可观察验证与I/O取消边界见[S11B验收](../../qa/authorized-retrieval-20261028/TEST_RESULT.md)。
+
+## S11C 原生一次融合用例实现（2026-10-28）
+
+Python retrieval包提供独立于现有消费者的RrfRetrievalPipeline：一次Embedding→严格授权候选→原生BaseRetriever/TextNode按原排名融合→最终权威解析。节点ID绑定完整身份，原score/贡献与RRF分别保留；JSON结果不含框架实例。总期限最多30秒并截取上游期限，共享容量2且无排队；S11E必须按应用单例注入容量。通过显式回调构造守卫、清空公开handler列表、隔离本应用dispatcher及受控异步入口，阻止锁定框架默认Settings/global_handler和全局正文事件。三组共享金标、取消/严格协议和真实只读链路均通过，[验收](../../qa/llama-retrieval-20261028/TEST_RESULT.md)保留装配、模型质量和生产SLO未验证边界。

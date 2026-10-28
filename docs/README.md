@@ -75,3 +75,5 @@ S10F处理诊断与有界恢复：[正式契约](design/knowledge-first-20261020
 S11A授权检索与重排设计：[契约](design/knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)、[产品验收矩阵](design/knowledge-first-20261020/RETRIEVAL_ACCEPTANCE.md)、[设计取证](qa/retrieval-contracts-20261028/source-evidence.json)。产品/真实模型实施状态见切片，不以设计代替实现。
 
 S11B授权候选/解析原语：[验收](qa/authorized-retrieval-20261028/TEST_RESULT.md)、[审查与边界](qa/authorized-retrieval-20261028/REVIEW.md)。内部只读POST使用独立runtime身份；融合与重排仍按后续切片推进。
+
+S11C原生LlamaIndex一次融合：[验收](qa/llama-retrieval-20261028/TEST_RESULT.md)、[框架取证](qa/llama-retrieval-20261028/framework-evidence.json)。共享金标、严格身份、根期限、容量与实际只读原语验证通过；消费者切换和精排仍属后续切片。

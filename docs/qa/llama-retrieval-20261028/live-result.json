@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "strategy": "LLAMA_RRF_V1",
+  "hitCount": 1,
+  "embeddingMode": "fixed protocol vector; no model request",
+  "embeddingCalls": 1,
+  "candidateRequests": 1,
+  "finalResolveRequests": 1,
+  "staleIdentity": "REJECTED",
+  "otherOwner": "REJECTED",
+  "jsonRoundTrip": "PASS",
+  "documentsUnchanged": 61,
+  "ledgerHashesUnchanged": {
+    "embedding": "5a79298d829e2f68e84e414f2cb2b4bd6298ddc16a44e4e75f6b0584a6c946f3",
+    "chat": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+  },
+  "paidCallsAdded": 0
+}

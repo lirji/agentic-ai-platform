@@ -1,7 +1,7 @@
 # Codex Progress
 
-- 当前任务capability-delivery-20261021：S11A已交付；S11B实现/容器/主分支CI均PASS，最终收据收尾后进入S11C。
-- 后端原目录分支feat/authorized-retrieval-20261028，前端只读。唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，包含精确CI/运行/预算、实施范围与下一步。用户要求保留25%额度。
+- 当前任务capability-delivery-20261021：S11A已交付；S11B实现/容器/主分支CI均PASS；S11C实现/必需验收PASS、正在交付，下一片S11D。
+- 后端原目录分支feat/llama-retrieval-20261028，前端只读。唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，包含精确CI/运行/预算、实施范围与下一步。用户要求保留25%额度。
 - Docker独立任务历史见[原部署进度](docs/deployment/docker-20261027/PROGRESS_STATE.md)，本次运行证据归各实施片，不覆盖旧收据。
 
 ## 前期可行性任务记录

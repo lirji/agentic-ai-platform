@@ -1,0 +1,23 @@
+"""检索用例的稳定内部失败码，不把查询、正文或底层异常写入检查点。"""
+
+from enum import StrEnum
+
+
+class RetrievalCode(StrEnum):
+    """公开HTTP映射属于消费者接入，本模块保持独立且闭合的错误语义。"""
+
+    INPUT_INVALID = "RETRIEVAL_INPUT_INVALID"
+    CONFIG_INVALID = "RETRIEVAL_CONFIG_INVALID"
+    CAPACITY_EXCEEDED = "RETRIEVAL_CAPACITY_EXCEEDED"
+    DEADLINE_EXCEEDED = "RETRIEVAL_DEADLINE_EXCEEDED"
+    AUTH_REJECTED = "RETRIEVAL_AUTH_REJECTED"
+    KNOWLEDGE_UNAVAILABLE = "RETRIEVAL_KNOWLEDGE_UNAVAILABLE"
+    EVIDENCE_REJECTED = "RETRIEVAL_EVIDENCE_REJECTED"
+
+
+class RetrievalError(RuntimeError):
+    """只持有稳定编码，不保存HTTP响应、身份或输入异常。"""
+
+    def __init__(self, code: RetrievalCode) -> None:
+        self.code = code
+        super().__init__(code.value)
