@@ -27,6 +27,8 @@
     "docs/qa/llama-retrieval-20261028/REVIEW.md",
     "docs/qa/llama-retrieval-20261028/TEST_RESULT.md",
     "docs/qa/llama-retrieval-20261028/code-hygiene.json",
+    "docs/qa/llama-retrieval-20261028/delivery-result.json",
+    "docs/qa/llama-retrieval-20261028/documentation-check.json",
     "docs/qa/llama-retrieval-20261028/framework-evidence.json",
     "docs/qa/llama-retrieval-20261028/live-result.json",
     "docs/qa/llama-retrieval-20261028/runtime-result.json",
