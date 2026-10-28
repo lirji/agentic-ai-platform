@@ -463,7 +463,7 @@
       "src/features/knowledge/DocxSource.test.tsx": "eb8a935c590663165ec10dc7502932a346a4c6d81921fad3714d4bac86bea4b5",
       "src/features/knowledge/Knowledge.module.css": "c40b51f9b4c160d7308e5bad09d933c4644630669b847d8b278325a0ca4ddaac",
       "src/features/knowledge/ProcessingNotes.tsx": "faea279af3d5426f2a15e2c5a89f9df14babe38308d84ca6edee254297fc622d",
-      "src/features/knowledge/ProcessingTasks.test.tsx": "001a9d1ed940f04fa1ef89c1d5ec1bbc7952cc57d1151ba1af787071b99ba0c7",
+      "src/features/knowledge/ProcessingTasks.test.tsx": "3a55ad456c747d1176c0e2ae0f9d8a6ae1f48239bbc3cbe1f0b4e5af63deb5a7",
       "src/features/knowledge/ProcessingTasks.tsx": "247110657c5986c8eb8e104d50c8022afa99912df85f29f32163cae8df725ad7",
       "src/features/knowledge/ReindexActions.test.tsx": "40fdde837323996a5e3360e6bd6eb234019d403d51e9f814d88d48876e2c6bf8",
       "src/features/knowledge/ReindexActions.tsx": "eaee9a520230cf212b81a3a9b26e67e782232841f83e3d27a236b87e58e74b56",
@@ -595,5 +595,16 @@
     "No new paid model calls or production deployment",
     "Java formatter/static analyzer not configured",
     "Positive retry proof verified using real test DB HTTP; no historical dev RETRY event"
+  ],
+  "postSnapshotVerifiedChanges": [
+    {
+      "repo": "frontend",
+      "path": "src/features/knowledge/ProcessingTasks.test.tsx",
+      "before": "001a9d1ed940f04fa1ef89c1d5ec1bbc7952cc57d1151ba1af787071b99ba0c7",
+      "after": "3a55ad456c747d1176c0e2ae0f9d8a6ae1f48239bbc3cbe1f0b4e5af63deb5a7",
+      "reason": "Wait for final rendered UNKNOWN and idle UI before asserting no fourth submission",
+      "validation": "frontend .logs/s10f-ci-fix-{format,typecheck,lint,unit}.log; 114 tests PASS",
+      "runtimeProductChanged": false
+    }
   ]
 }

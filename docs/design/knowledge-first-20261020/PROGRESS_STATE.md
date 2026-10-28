@@ -1,15 +1,15 @@
 # 独立知识平台准备进度
 
-## 当前状态：S10F 验收通过，Git/CI交付中
+## 当前状态：S10F 已交付，继续 S11A
 
-- 任务：`capability-delivery-20261021`；已批准51项、parallel=no；S8A–F/S9A–D/S10A–E已交付。S10F DONE/本地Validation PASS，完整平台尚未完成；交付后继续S11A。
+- 任务：`capability-delivery-20261021`；已批准51项、parallel=no；S8A–F/S9A–D/S10A–E已交付。S10F DONE/Validation与主分支CI PASS，完整平台尚未完成；交付后继续S11A。
 - S10E最终main为backend c90d979 / frontend 888c9bc，精确CI40654869674/40654878635 PASS，收据见[delivery-result](../../qa/document-dedup-20261027/delivery-result.json)。
 - S10F正式契约LIFECYCLE_CONTRACTS第9节，验收LC-25–28。两个只读GET、当前任务筛选、原RETRY事务核对、最多10项串行原CAS恢复已通过；无新写接口/引擎/DDL。早期.local设计草案失效。
 - [S10F验收](../../qa/processing-diagnostics-20261028/TEST_RESULT.md)：Java144单元+127集成、前端114、协议浏览器10、真实浏览器1、只读HTTP16均PASS。后端416/前端152个产品输入与构建逐文件hash一致；[源码指纹](../../qa/processing-diagnostics-20261028/validation.json)、[审查](../../qa/processing-diagnostics-20261028/REVIEW.md)。失败/修复/复验日志由实施证据引用，保留历史现场。
-- Git：两仓原目录分支`feat/processing-diagnostics-20261028`，HEAD仍为S10E收据；S10F待提交、分支CI、正常FF推main和精确SHA CI。backend main位于既有`~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027`，保持干净，无新worktree。
+- Git：S10F backend 2fb11a3 / frontend ba3e431已正常FF推main；主分支CI40664544350/40665533426 PASS，前端修复分支CI40665214942 PASS。初次main CI40664569514失败及测试同步修正均保留。[交付收据](../../qa/processing-diagnostics-20261028/delivery-result.json)。当前原目录仍为S10F分支，收据文档待单独提交/CI；之后创建原目录S11A契约分支。backend main仍在既有Docker工作树，无新worktree。
 - 运行：Docker最终快照`22dff8dd5e6ac896`，9容器健康/10项smoke；Knowledge V11、Tasks V4。旧2d06075快照仅构建未启动。所有验收进程已结束，Vite协议preview28096已正常停止；运行证据归S10F，不覆盖Docker任务历史收据。
 - 数据/预算：dev资料61，local-dev知识/中央在途均0；Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限；两个账本hash保持，本片新付费调用0。dev无历史RETRY，正例由真实testDB HTTP覆盖，未制造付费重试。
-- 用户最新额度要求：保留25%；`.local/check_session_quota.py`实读当前会话，09:20Z已用32%，73%开始收尾，75%前停止新增并保存。不沿用旧会话额度。
+- 用户最新额度要求：保留25%；`.local/check_session_quota.py`实读当前会话，09:39Z已用36%，73%开始收尾，75%前停止新增并保存。不沿用旧会话额度。
 - 授权：原计划持续推进及正常分支提交/合并/推送main、本地Docker验证；无生产部署、新模型预算或清理。开关create/generation/updates/withdrawals/deletions/reindexes=true，backfill=false，PDF/DOCX/STRUCTURE_V3保持。禁止旧writer混跑。
 - 原全局MULTI_CLIENT_DRIFT_BLOCKED不改，手工专业pass、无子Agent。已采用恢复/持续交付、backend/frontend-implementation、engineering-workflows、runtime-and-deploy、implementation-validation、文档/进度、task-git-delivery/ci-cd-gate；规范建模/持久化/接口/并发/容量/发布。
 

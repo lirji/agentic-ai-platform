@@ -1,0 +1,38 @@
+{
+  "slice": "S10F",
+  "status": "PASS",
+  "branch": "feat/processing-diagnostics-20261028",
+  "backend": {
+    "implementation": "2fb11a3f159ffc096bd8100bf37bf34dcfcfa70a",
+    "main": "2fb11a3f159ffc096bd8100bf37bf34dcfcfa70a",
+    "ci": {
+      "conclusion": "success",
+      "databaseId": 40664544350,
+      "headSha": "2fb11a3f159ffc096bd8100bf37bf34dcfcfa70a",
+      "status": "completed",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40664544350"
+    }
+  },
+  "frontend": {
+    "implementation": "4422dd0f281fea38cc6ff734c2d95c888893b3c0",
+    "testSynchronizationFix": "ba3e4311e7b11fc311e77b9fb9688e91c40ed6fa",
+    "main": "ba3e4311e7b11fc311e77b9fb9688e91c40ed6fa",
+    "ci": {
+      "conclusion": "success",
+      "databaseId": 40665533426,
+      "headSha": "ba3e4311e7b11fc311e77b9fb9688e91c40ed6fa",
+      "status": "completed",
+      "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/40665533426"
+    }
+  },
+  "failedCi": {
+    "run": 40664569514,
+    "cause": "Component test asserted before React state render; wait for visible UNKNOWN and idle completion",
+    "fixed": true
+  },
+  "localRuntime": "22dff8dd5e6ac896",
+  "receiptCommitCi": "tracked by Git and final .local/s10f-final-ci.json after this record is committed",
+  "productionDeploy": false,
+  "paidCallsAdded": 0,
+  "cleanupPerformed": false
+}

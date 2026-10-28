@@ -16,3 +16,5 @@
 首个容器快照2d06075e0297afba仅构建、未运行，已由最终22dff8dd5e6ac896取代。通过既有Docker runtime prepare、匹配已验证后端JAR、compose build --print/bake精确目录读取构建，顺序stop/up/smoke；没有第二套writer。完整日志`.logs/s10f-docker-final-build.log`、`.logs/s10f-docker-up.log`。
 
 最终全部验收及明确限制见[TEST_RESULT](TEST_RESULT.md)；产品源摘要见[validation](validation.json)。本片没有新增付费调用或清理。
+
+交付期CI补证：分支CI通过而frontend main40664569514的ProcessingTasks组件测试偶发提前断言。修正测试等待第三项可见UNKNOWN和处理结束，再检查第四项未发；全部114项及格式/类型/lint通过。产品源码没有改变，容器/真实UI证据继续有效；测试hash变化已单列记录，远程修复CI另记。

@@ -15,8 +15,10 @@
 
 Java144单元+127真实组件集成（`.logs/s10f-full-java.log`）；前端114项、格式/ESLint/类型/生产构建在最终容器中全部通过（后端`.logs/s10f-docker-final-build.log`）。10项协议浏览器通过（前端`.logs/s10f-browser-recheck-all.log`），最后异常分支修正后相关8单元/3协议重新通过（`.logs/s10f-{unit,browser}-recovery.log`）；其他7项覆盖的代码未改变。真实浏览器1项通过（`.logs/s10f-real-browser.log`），仅GET/HEAD/OPTIONS，写请求0。
 
-固定构建输入与当前后端416/前端152个产品、配置和测试文件SHA256逐一相符。后端Java复用已验证的相同输入JAR；前端完整重建验证。Python产品源码未改变，本地不重复无关/付费探针，远程CI单独核对。test/dev Knowledge V11、Tasks V4，无新DDL。
+构建时快照与后端416/前端152个产品、配置和测试文件SHA256逐一相符；随后仅有下文记录的测试同步修正，运行产品hash未变。后端Java复用已验证的相同输入JAR；前端完整重建验证。Python产品源码未改变，本地不重复无关/付费探针，远程CI单独核对。test/dev Knowledge V11、Tasks V4，无新DDL。
 
 [审查](REVIEW.md)和验证由同一执行者分阶段进行，不冒称独立Agent认证。前端代码卫生PASS；后端未配置formatter/独立静态分析，保留工具限制。失败与修正见[实施证据](IMPLEMENTATION_EVIDENCE.md)。
 
 边界：批次保存在当前标签页sessionStorage，服务端按原任务/版本核对；不是持久批处理引擎。dev没有既有RETRY事件，正例在关闭worker的真实test库HTTP验证，不为补证据创建付费重试。没有新增付费调用、数据/对象清理或生产部署。下一切片S11A尚待实施。
+
+主分支前端CI40664569514发现新增组件测试过早读取React状态：当第三项请求已发出时界面仍可能处于上一帧。改为等待可见UNKNOWN和aria-busy=false后断言只有3次发送；114项及格式/类型/lint复验PASS。仅测试与证据变化，运行产品不变；validation记录此快照后差异与验证，原失败日志保留于后端.logs/s10f-main-ci-failure.log。后续CI以交付收据为准。
