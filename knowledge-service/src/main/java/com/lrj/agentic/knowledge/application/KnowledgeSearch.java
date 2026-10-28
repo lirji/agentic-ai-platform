@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Semaphore;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,16 +30,18 @@ public class KnowledgeSearch {
     private final ObjectProvider<SearchIndex> indices;
     private final long queryBudgetNanos;
     private static final List<Integer> CANDIDATE_LIMITS = List.of(20, 60, ProcessingProtocol.CANDIDATES);
-    private final Semaphore capacity = new Semaphore(ProcessingProtocol.MAX_ACTIVE_QUERIES);
+    private final KnowledgeQueryCapacity capacity;
 
     /** 关闭处理时保留已发布引用读取，其余依赖明确返回未启用。 */
     public KnowledgeSearch(ProcessingRepository repository, ObjectProvider<KnowledgeProcessor> processors,
             ObjectProvider<SearchIndex> indices,
             @Value("${knowledge.processing.ai-seconds:45}") int aiSeconds,
-            @Value("${knowledge.processing.index-seconds:8}") int indexSeconds) {
+            @Value("${knowledge.processing.index-seconds:8}") int indexSeconds,
+            KnowledgeQueryCapacity capacity) {
         this.repository = repository;
         this.processors = processors;
         this.indices = indices;
+        this.capacity = capacity;
         this.queryBudgetNanos = Duration.ofSeconds((long) aiSeconds + 2L * indexSeconds).toNanos();
     }
 
@@ -50,7 +51,7 @@ public class KnowledgeSearch {
         KnowledgeProcessor processor = processors.getIfAvailable();
         SearchIndex index = indices.getIfAvailable();
         if (processor == null || index == null) { throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED); }
-        if (!capacity.tryAcquire()) { throw new KnowledgeFailure(KnowledgeError.BUSY); }
+        capacity.acquireOrReject();
         try {
             long deadline = System.nanoTime() + queryBudgetNanos;
             var vector = processor.query(caller, valid.query());
@@ -118,17 +119,11 @@ public class KnowledgeSearch {
     public record SearchRequest(String query, Integer topK, List<String> documentIds) {
         /** 归一化只处理缺省字段，不悄悄截断用户输入。 */
         public SearchRequest validated() {
-            if (query == null || ProcessingProtocol.blankText(query) || query.indexOf('\0') >= 0
-                    || query.codePointCount(0, query.length()) > 2000
-                    || !StandardCharsets.UTF_8.newEncoder().canEncode(query)
-                    || (topK != null && (topK < 1 || topK > 20))
-                    || (documentIds != null && (documentIds.isEmpty() || documentIds.size() > 20))) {
+            validateQuery(query);
+            if (topK != null && (topK < 1 || topK > 20)) {
                 throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
             }
-            List<String> ids = documentIds == null ? List.of() : documentIds;
-            ids.forEach(KnowledgeSearch::uuid);
-            if (new HashSet<>(ids).size() != ids.size()) { throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID); }
-            return new SearchRequest(query, topK == null ? 5 : topK, List.copyOf(ids));
+            return new SearchRequest(query, topK == null ? 5 : topK, documentScope(documentIds));
         }
     }
 
@@ -136,6 +131,28 @@ public class KnowledgeSearch {
     public record Hit(String documentId, long version, String chunkId, String text, double score, Source source) { }
     /** 定位来自已核验原文字节位置，展示名来自权威文档。 */
     public record Source(String displayName, String locator) { }
+
+    /** 查询文本规则在新旧入口保持一致，不通过截断或替换非法Unicode制造不同查询。 */
+    public static void validateQuery(String query) {
+        if (query == null || ProcessingProtocol.blankText(query) || query.indexOf('\0') >= 0
+                || query.codePointCount(0, query.length()) > 2000
+                || !StandardCharsets.UTF_8.newEncoder().canEncode(query)) {
+            throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+        }
+    }
+
+    /** 旧检索与新候选/解析共用范围规则；null代表全部，显式空数组不能悄悄扩大范围。 */
+    public static List<String> documentScope(List<String> documentIds) {
+        if (documentIds == null) { return List.of(); }
+        if (documentIds.isEmpty() || documentIds.size() > ProcessingProtocol.MAX_SEARCH_DOCUMENTS) {
+            throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+        }
+        documentIds.forEach(KnowledgeSearch::uuid);
+        if (new HashSet<>(documentIds).size() != documentIds.size()) {
+            throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+        }
+        return List.copyOf(documentIds);
+    }
 
     private static void uuid(String id) {
         try {

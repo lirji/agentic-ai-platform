@@ -38,6 +38,8 @@ class KnowledgeReindexIT {
     @Autowired SearchIndex index;
     @Autowired ProcessingJson json;
     @Autowired JdbcTemplate jdbc;
+    @Autowired com.lrj.agentic.knowledge.domain.retrieval.RetrievalRepository retrievalRepository;
+    @Autowired AuthorizedRetrieval retrieval;
 
     @ParameterizedTest @ValueSource(strings = {"pdf", "docx"})
     void oldAndNewProfileShareSourceButNewGenerationUsesNewPreparationAndResumesOnlyMissingSink(String kind) throws Exception {
@@ -102,6 +104,18 @@ class KnowledgeReindexIT {
         assertThat(lifecycle.document(owner, first.documentId()).latestContentRevision()).isEqualTo(1);
         assertThat(repository.citation(owner, first.documentId(), 1, oldChunk)).isEmpty();
         assertThat(repository.metadata(owner, first.documentId(), 1).orElseThrow().processorVersion()).isEqualTo(target);
+        // 新解析原语也读取真实PDF/DOCX发布位置；不把提取块字节误当原始文件字节。
+        var ids = jdbc.queryForList("SELECT chunk_id FROM knowledge_chunk WHERE job_id=? ORDER BY ordinal LIMIT 50", String.class, next.jobId());
+        var identities = retrievalRepository.published(owner, ids).stream().map(row ->
+                new com.lrj.agentic.knowledge.domain.retrieval.RetrievalModels.Identity(row.documentId(), row.version(),
+                        row.indexGeneration(), row.jobId(), row.processorVersion(), row.chunkId(), row.batchDigest(), row.textHash())).toList();
+        var resolved = retrieval.resolve(owner, new com.lrj.agentic.knowledge.domain.retrieval.RetrievalModels.ResolveRequest(
+                com.lrj.agentic.knowledge.domain.retrieval.RetrievalProtocol.SCHEMA, List.of(first.documentId()), identities, 5000L));
+        assertThat(resolved.hits()).hasSize(ids.size()).allSatisfy(hit -> {
+            var legacy = repository.citation(owner, first.documentId(), 1, hit.chunkId()).orElseThrow();
+            assertThat(hit.source().locator()).isEqualTo(legacy.sourceLocator());
+            assertThat(hit.processorVersion()).isEqualTo(target); assertThat(hit.indexGeneration()).isEqualTo(2);
+        });
     }
     private ProcessingClaim claim(Ingestion job) { return repository.claim("reindex-it", 60, job.tenantId()).orElseThrow(); }
 }

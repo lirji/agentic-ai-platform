@@ -122,3 +122,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 2026-10-28 S10F：Knowledge Lifecycle诊断读模型/Mapper/GET和前端ProcessingTasks/原CAS批次恢复对应[LIFECYCLE第9节](design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md#9-处理诊断与有界恢复s10f)与[验收](qa/processing-diagnostics-20261028/TEST_RESULT.md)；不增加DDL/写端点/批处理引擎。
 
 2026-10-28 S11A：KnowledgeSearch/DualSearchIndex/发布SQL与Python KnowledgeClient/AuthorizedRetriever、锁定框架源码映射到[检索契约](design/knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)；边界决策D-RT01–05追加到既有架构/选型，16项RT验收对应S11B–E，无产品/数据库/运行变化。
+
+2026-10-28 S11B：RuntimeRetrievalController/AuthorizedRetrieval/RankedSearchIndex/RetrievalMapper对应[检索契约](design/knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)第2–4/6节与[验收](qa/authorized-retrieval-20261028/TEST_RESULT.md)。发布SQL与查询容量共享，旧接口保持；全Java与固定源码容器证据同QA目录。

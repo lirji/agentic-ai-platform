@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "checks": {
+    "authorized-candidates": 200,
+    "authorized-resolve": 200,
+    "candidates-unsigned": 401,
+    "candidates-edge-key": 401,
+    "candidates-scope": 403,
+    "candidates-duplicate-identity": 401,
+    "candidates-owner-parameter": 400,
+    "resolve-unsigned": 401,
+    "resolve-edge-key": 401,
+    "resolve-scope": 403,
+    "resolve-duplicate-identity": 401,
+    "resolve-owner-parameter": 400,
+    "other-owner": 404,
+    "other-tenant": 404,
+    "stale-generation": 404,
+    "duplicate-candidate": 400,
+    "invalid-vector": 400,
+    "invalid-embeddingModel": 400,
+    "invalid-embeddingDimensions": 400,
+    "invalid-candidateTarget": 400,
+    "invalid-timeoutMs": 400,
+    "invalid-tenantId": 400,
+    "missing-nullable-field": 400,
+    "oversize-candidate": 413,
+    "oversize-resolve": 413,
+    "wrong-method": 403,
+    "unknown-route": 403,
+    "gateway-internal-route-denied": 403,
+    "legacy-readonly-citation": 200
+  },
+  "paidCallsAdded": 0,
+  "unchangedState": {
+    "documents": 61,
+    "knowledgeLocalDev": 0,
+    "centralLocalDev": 0,
+    "embedding": "5a79298d829e2f68e84e414f2cb2b4bd6298ddc16a44e4e75f6b0584a6c946f3",
+    "chat": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942"
+  },
+  "vector": "explicit fixed protocol input; not semantic quality validation"
+}

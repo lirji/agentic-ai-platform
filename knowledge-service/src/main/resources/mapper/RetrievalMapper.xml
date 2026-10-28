@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.RetrievalMapper">
+    <!-- 与既有搜索/引用共享ACTIVE、owner、发布指针及批次校验，避免形成第二套授权。 -->
+    <select id="published" resultType="com.lrj.agentic.knowledge.domain.retrieval.RetrievalRepository$PublishedChunk">
+        SELECT c.document_id, c.document_version AS version, j.index_generation, j.job_id,
+            j.processor_version, c.chunk_id, c.batch_digest, c.text, c.text_hash,
+            c.start_byte, c.end_byte, r.display_name, c.source_locator
+        <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingMapper.publishedScope"/>
+        AND c.chunk_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+    </select>
+</mapper>

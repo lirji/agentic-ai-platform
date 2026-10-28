@@ -18,6 +18,7 @@ public final class ProcessingProtocol {
     public static final int MAX_REMOTE_CALLS = MAX_ACTIVE_INGESTIONS + MAX_ACTIVE_QUERIES;
     public static final int CANDIDATES = 100;
     public static final int RRF_OFFSET = 60;
+    public static final int MAX_SEARCH_DOCUMENTS = 20;
     public static final String AI_ISSUER = "urn:agentic-ai:knowledge";
     public static final String AI_AUDIENCE = "agentic-ai-runtime";
     public static final String AI_CALLER = "knowledge-service";

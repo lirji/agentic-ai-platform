@@ -344,3 +344,7 @@ S9B/C产品已接通上述链路，受控文件、真实存储/索引/权限和�
 复杂度选择：保留Java全量编排最省改动但不达已批准LlamaIndex职责；Python直连索引/数据库会复制授权并产生第二权威，否决；选择两个有界Java读原语加现有LlamaIndex扩展，用显式适配换取兼容性和可测边界。不引入默认QueryFusion、多查询生成或另一个Agent/调度器。新增复杂度仅限跨边界DTO、一次检索用例和可选模型适配。
 
 实施顺序S11B→S11C→S11D→S11E，责任、上限、超时、预算、错误和回退以正式契约为准。[验收矩阵](../knowledge-first-20261020/RETRIEVAL_ACCEPTANCE.md)将每个不变量映射到真实索引/DB、固定输入、模型替身及消费者验证。本节仅设计，产品/真实模型尚未验收。
+
+## S11B 授权检索原语实现（2026-10-28）
+
+Java提供两个独立runtime身份保护的只读内部POST：传入既有1024维向量取得两路合法候选；按8分量完整身份批量核验当前发布正文。DualSearchIndex在原过滤/请求上增加原score投影；RetrievalMapper引用原publishedScope，来源与代次只取当前发布权威。候选保留索引一基排名空位，不融合、不调模型。原KnowledgeSearch与新原语共享最多2个在途，未来公共RAG门面不得持有此容量等待回调。无新DDL/依赖/运行组件，Python接管属于S11C，消费者接入属于S11E。可观察验证与I/O取消边界见[S11B验收](../../qa/authorized-retrieval-20261028/TEST_RESULT.md)。

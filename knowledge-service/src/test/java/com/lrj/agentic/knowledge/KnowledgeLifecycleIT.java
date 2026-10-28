@@ -514,7 +514,7 @@ class KnowledgeLifecycleIT {
             }
         };
         var beans = new org.springframework.beans.factory.support.StaticListableBeanFactory(); beans.addBean("model", model); beans.addBean("index", counted);
-        var search = new KnowledgeSearch(processing, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), 45, 8);
+        var search = new KnowledgeSearch(processing, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), 45, 8, new KnowledgeQueryCapacity());
         if (staleCount == 20) {
             assertThat(search.search(owner, new KnowledgeSearch.SearchRequest(query, 1, List.of(first.documentId())))).extracting(KnowledgeSearch.Hit::chunkId).containsExactly(chunk(first));
             assertThat(limits).containsExactly(20, 20, 60, 60);

@@ -4,15 +4,15 @@
 
 | ID | 场景与可观察断言 | Owner / 必要方法 | 当前 |
 | --- | --- | --- | --- |
-| RT-01 | 新内部两个POST只接受独立runtime签名；普通/edge签名、错误issuer/audience/azp/scope、过期/重复头拒绝 | S11B真实HTTP身份矩阵 | DESIGN_CHECKED；产品待验 |
-| RT-02 | 未知/重复字段、非法UUID、空范围、模型/维度错配、非有限/零向量、越界限额、超大输入拒绝 | S11B严格DTO/HTTP | DESIGN_CHECKED；产品待验 |
-| RT-03 | 伪造索引元数据、失效batch、撤下/删除、失败新稿及其他owner/tenant均不泄露正文；来源名称取发布修订 | S11B真实MySQL/索引污染 | DESIGN_CHECKED；产品待验 |
-| RT-04 | 原始一基排名空位保留；同源重复/非法score拒绝；跨源相同身份不误计为剔除，不用正文hash合并 | S11B/C共享金标/真实索引 | DESIGN_CHECKED；产品待验 |
-| RT-05 | 20/60/100有界扩展，同一向量复用；够目标/无剔除且耗尽/100仍受污染不足明确区分 | S11B受控索引与调用计数 | DESIGN_CHECKED；产品待验 |
-| RT-06 | 批量解析完整身份/范围/textHash，任一失效整体404，不返回半列表；数据库失败503 | S11B真实SQL/HTTP/依赖故障 | DESIGN_CHECKED；产品待验 |
+| RT-01 | 新内部两个POST只接受独立runtime签名；普通/edge签名、错误issuer/audience/azp/scope、过期/重复头拒绝 | S11B真实HTTP身份矩阵 | S11B PASS；见[验收](../../qa/authorized-retrieval-20261028/TEST_RESULT.md) |
+| RT-02 | 未知/重复字段、非法UUID、空范围、模型/维度错配、非有限/零向量、越界限额、超大输入拒绝 | S11B严格DTO/HTTP | S11B PASS；见[验收](../../qa/authorized-retrieval-20261028/TEST_RESULT.md) |
+| RT-03 | 伪造索引元数据、失效batch、撤下/删除、失败新稿及其他owner/tenant均不泄露正文；来源名称取发布修订 | S11B真实MySQL/索引污染 | S11B PASS；见[验收](../../qa/authorized-retrieval-20261028/TEST_RESULT.md) |
+| RT-04 | 原始一基排名空位保留；同源重复/非法score拒绝；跨源相同身份不误计为剔除，不用正文hash合并 | S11B/C共享金标/真实索引 | S11B Java部分PASS；S11C部分待验 |
+| RT-05 | 20/60/100有界扩展，同一向量复用；够目标/无剔除且耗尽/100仍受污染不足明确区分 | S11B受控索引与调用计数 | S11B PASS；见[验收](../../qa/authorized-retrieval-20261028/TEST_RESULT.md) |
+| RT-06 | 批量解析完整身份/范围/textHash，任一失效整体404，不返回半列表；数据库失败503 | S11B真实SQL/HTTP/依赖故障 | S11B PASS；见[验收](../../qa/authorized-retrieval-20261028/TEST_RESULT.md) |
 | RT-07 | 固定候选下Python RRF与Java一基RRF60、同分chunkId、身份一致，含原排名空位和同文异资料 | S11C共享固定输入金标 | DESIGN_CHECKED；产品待验 |
-| RT-08 | 明确BaseRetriever/Node扩展，默认LLM/Settings/查询扩展不被调用；只融合一次，不反调RAG | S11B/C调用追踪/框架行为测试 | DESIGN_CHECKED；产品待验 |
-| RT-09 | 一个总deadline不被每轮/阶段续期；并发2/无无界队列，满载立即拒绝，取消停止后续，无自动HTTP重试 | S11B/C隔离慢依赖/容量/取消 | DESIGN_CHECKED；产品待验 |
+| RT-08 | 明确BaseRetriever/Node扩展，默认LLM/Settings/查询扩展不被调用；只融合一次，不反调RAG | S11B/C调用追踪/框架行为测试 | S11B Java部分PASS；S11C部分待验 |
+| RT-09 | 一个总deadline不被每轮/阶段续期；并发2/无无界队列，满载立即拒绝，取消停止后续，无自动HTTP重试 | S11B/C隔离慢依赖/容量/取消 | S11B Java部分PASS；S11C部分待验 |
 | RT-10 | 重排前候选最多50且未先裁最终K；原文外发前再次核权，提供方只收到查询/正文/必要参数 | S11D模型替身与撤权竞态 | DESIGN_CHECKED；产品待验 |
 | RT-11 | 重排重复/漏项/越界/非有限分数/错误形状失败；同分按RRF与chunkId稳定排序，原score独立保留 | S11D协议替身 | DESIGN_CHECKED；产品待验 |
 | RT-12 | 默认FAIL；显式可降级策略才标RRF_ONLY/degraded，授权/知识失败/取消/总超时不可降级 | S11D故障/预算矩阵 | DESIGN_CHECKED；产品待验 |

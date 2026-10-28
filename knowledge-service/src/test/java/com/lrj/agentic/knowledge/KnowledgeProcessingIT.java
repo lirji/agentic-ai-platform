@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.lrj.agentic.knowledge.application.IngestionRunner;
 import com.lrj.agentic.knowledge.application.KnowledgeSearch;
+import com.lrj.agentic.knowledge.application.KnowledgeQueryCapacity;
 import com.lrj.agentic.knowledge.application.KnowledgeService;
 import com.lrj.agentic.knowledge.application.UploadRules;
 import com.lrj.agentic.knowledge.domain.Ingestion;
@@ -235,7 +236,7 @@ class KnowledgeProcessingIT {
     private KnowledgeSearch search(KnowledgeProcessor model, SearchIndex index) {
         var beans = new StaticListableBeanFactory(Map.of("model", model, "index", index));
         return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class),
-                beans.getBeanProvider(SearchIndex.class), 45, 8);
+                beans.getBeanProvider(SearchIndex.class), 45, 8, new KnowledgeQueryCapacity());
     }
     private static void error(KnowledgeError expected, Runnable operation) {
         assertThatThrownBy(operation::run).isInstanceOfSatisfying(KnowledgeFailure.class,

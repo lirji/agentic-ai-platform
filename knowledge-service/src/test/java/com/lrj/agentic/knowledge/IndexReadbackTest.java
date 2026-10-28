@@ -53,6 +53,33 @@ class IndexReadbackTest {
             }
         }
     }
+    @Test void rankedSearchPreservesRawScoreAndRejectsMalformedScoresWithoutChangingLegacyShape() {
+        try (Wire wire = new Wire()) {
+            var index = new DualSearchIndex(properties(), json, wire);
+            var caller = new com.lrj.agentic.security.Caller("tenant", "owner");
+            for (Sink sink : Sink.values()) {
+                var root = mapper.createObjectNode().put("status", "ok").put("timed_out", false);
+                root.putObject("_shards").put("failed", 0);
+                var items = sink == Sink.VECTOR ? root.putObject("result").putArray("points") : root.putObject("hits").putArray("hits");
+                var item = items.addObject(); String score = sink == Sink.VECTOR ? "score" : "_score";
+                item.put(score, -0.25).putObject(sink == Sink.VECTOR ? "payload" : "_source")
+                        .put("chunkId", "a".repeat(64)).put("batchDigest", "b".repeat(64));
+                wire.reply = root;
+                assertThat(index.rankedSearch(sink, caller, "资料", List.of(0.125), List.of(), 20, Duration.ofSeconds(1)))
+                        .singleElement().satisfies(value -> assertThat(value.sourceScore()).isEqualTo(-0.25));
+                item.remove(score);
+                assertThat(index.search(sink, caller, "资料", List.of(0.125), List.of(), 20, Duration.ofSeconds(1))).hasSize(1);
+                unavailable(() -> index.rankedSearch(sink, caller, "资料", List.of(0.125), List.of(), 20, Duration.ofSeconds(1)));
+                for (JsonNode invalid : List.of(mapper.getNodeFactory().textNode("1"), mapper.getNodeFactory().booleanNode(true), mapper.nullNode())) {
+                    item.set(score, invalid);
+                    unavailable(() -> index.rankedSearch(sink, caller, "资料", List.of(0.125), List.of(), 20, Duration.ofSeconds(1)));
+                }
+                item.put(score, 1.0); items.add(item.deepCopy());
+                unavailable(() -> index.rankedSearch(sink, caller, "资料", List.of(0.125), List.of(), 20, Duration.ofSeconds(1)));
+            }
+        }
+    }
+
     private ObjectNode response(Sink sink) {
         var result = mapper.createObjectNode(); result.put("status", "ok");
         var items = result.putArray(sink == Sink.VECTOR ? "result" : "docs");

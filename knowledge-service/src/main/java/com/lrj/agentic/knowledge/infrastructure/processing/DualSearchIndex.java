@@ -9,6 +9,7 @@ import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingClaim.Sink;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
 import com.lrj.agentic.knowledge.domain.processing.SearchIndex;
+import com.lrj.agentic.knowledge.domain.retrieval.RankedSearchIndex;
 import com.lrj.agentic.security.Caller;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Component;
 /** 索引只是可重建投影；所有写入绑定已接受的不可变批次，搜索只返回候选 ID。 */
 @Component
 @ConditionalOnProperty(name = "knowledge.processing.enabled", havingValue = "true")
-public class DualSearchIndex implements SearchIndex {
+public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
     private final ProcessingProperties properties;
     private final ProcessingJson json;
     private final BoundedHttp http;
@@ -131,6 +132,29 @@ public class DualSearchIndex implements SearchIndex {
     @Override
     public List<Candidate> search(Sink sink, Caller caller, String query, List<Double> vector,
             List<String> documentIds, int limit, Duration remaining) {
+        return candidates(searchResults(sink, caller, query, vector, documentIds, limit, remaining),
+                sink == Sink.VECTOR ? "payload" : "_source", limit);
+    }
+
+    /** 新原语读取真实索引分数，旧search依然只返回原候选DTO，不改变旧调用者契约。 */
+    @Override
+    public List<RankedCandidate> rankedSearch(Sink sink, Caller caller, String query, List<Double> vector,
+            List<String> documentIds, int limit, Duration remaining) {
+        JsonNode items = searchResults(sink, caller, query, vector, documentIds, limit, remaining);
+        var identities = candidates(items, sink == Sink.VECTOR ? "payload" : "_source", limit);
+        List<RankedCandidate> result = new ArrayList<>();
+        for (int position = 0; position < identities.size(); position++) {
+            JsonNode score = items.get(position).get(sink == Sink.VECTOR ? "score" : "_score");
+            require(score != null && score.isNumber() && Double.isFinite(score.doubleValue()));
+            var identity = identities.get(position);
+            result.add(new RankedCandidate(identity.chunkId(), identity.batchDigest(), score.doubleValue()));
+        }
+        return List.copyOf(result);
+    }
+
+    /** 共用原始请求和过滤条件，避免新旧入口逐渐形成两套索引授权过滤。 */
+    private JsonNode searchResults(Sink sink, Caller caller, String query, List<Double> vector,
+            List<String> documentIds, int limit, Duration remaining) {
         require(limit >= 1 && limit <= ProcessingProtocol.CANDIDATES);
         Duration timeout = remaining.compareTo(Duration.ofSeconds(properties.indexSeconds())) < 0
                 ? remaining : Duration.ofSeconds(properties.indexSeconds());
@@ -149,7 +173,7 @@ public class DualSearchIndex implements SearchIndex {
                             "with_payload", List.of("chunkId", "batchDigest"), "with_vector", false)),
                     "application/json", timeout);
             require("ok".equals(response.path("status").asText()));
-            return candidates(response.path("result").path("points"), "payload", limit);
+            return response.path("result").path("points");
         }
         identity.forEach((key, value) -> filters.add(Map.of("term", Map.of(key, value))));
         filters.add(Map.of("terms", Map.of("processorVersion", ProcessingProfile.compatibleVersions())));
@@ -163,7 +187,7 @@ public class DualSearchIndex implements SearchIndex {
                 "application/json", timeout);
         require(response.has("timed_out") && !response.path("timed_out").asBoolean()
                 && response.path("_shards").path("failed").asInt(-1) == 0);
-        return candidates(response.path("hits").path("hits"), "_source", limit);
+        return response.path("hits").path("hits");
     }
 
     private List<Candidate> candidates(JsonNode items, String payloadField, int limit) {

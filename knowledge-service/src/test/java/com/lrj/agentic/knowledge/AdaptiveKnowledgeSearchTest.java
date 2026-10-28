@@ -3,6 +3,7 @@ package com.lrj.agentic.knowledge;
 import static org.assertj.core.api.Assertions.*;
 
 import com.lrj.agentic.knowledge.application.KnowledgeSearch;
+import com.lrj.agentic.knowledge.application.KnowledgeQueryCapacity;
 import com.lrj.agentic.knowledge.domain.Ingestion;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
@@ -82,7 +83,7 @@ class AdaptiveKnowledgeSearchTest {
 
     private KnowledgeSearch search(int ai, int perIndex) {
         var beans = new StaticListableBeanFactory(); beans.addBean("processor", processor); beans.addBean("index", index);
-        return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), ai, perIndex);
+        return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), ai, perIndex, new KnowledgeQueryCapacity());
     }
     private List<SearchIndex.Candidate> candidates(int count) {
         return IntStream.range(0, count).mapToObj(i -> new SearchIndex.Candidate(String.format("%064x", i + 1), "a".repeat(64))).toList();

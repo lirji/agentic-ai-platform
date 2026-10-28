@@ -5,6 +5,7 @@ import com.lrj.agentic.contract.ApiError;
 import com.lrj.agentic.contract.PlatformError;
 import com.lrj.agentic.knowledge.api.RequestCorrelation;
 import com.lrj.agentic.knowledge.domain.processing.RuntimeKnowledgeProtocol;
+import com.lrj.agentic.knowledge.domain.retrieval.RetrievalProtocol;
 import com.lrj.agentic.security.IdentityProtocol;
 import com.lrj.agentic.security.JwtTrust;
 import java.time.Duration;
@@ -45,10 +46,14 @@ public class RuntimeKnowledgeSecurity {
         decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtTrust.validator(
                 RuntimeKnowledgeProtocol.ISSUER, IdentityProtocol.KNOWLEDGE_AUDIENCE, IdentityProtocol.TENANT_CLAIM),
                 new JwtTimestampValidator(Duration.ZERO), bounds));
-        return http.securityMatcher("/internal/v1/knowledge/**")
+        return http.securityMatcher("/internal/v1/knowledge/**", RetrievalProtocol.INTERNAL_BASE + "/**")
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST,
+                                RetrievalProtocol.INTERNAL_BASE + RetrievalProtocol.CANDIDATES_ROUTE,
+                                RetrievalProtocol.INTERNAL_BASE + RetrievalProtocol.RESOLVE_ROUTE)
+                        .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)
                         .requestMatchers(HttpMethod.POST, "/internal/v1/knowledge/search")
                         .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)
                         .requestMatchers(HttpMethod.GET, "/internal/v1/knowledge/documents/*/versions/*/chunks/*")
