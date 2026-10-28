@@ -38,7 +38,19 @@
     </select>
     <select id="findContent" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.DocumentRow">
         SELECT <include refid="documentColumns"/> FROM knowledge_document
-        WHERE tenant_id = #{tenantId} AND owner_id = #{ownerId} AND content_hash = #{hash}
+        WHERE tenant_id = #{tenantId} AND owner_id = #{ownerId} AND active_content_hash = #{hash}
+            AND lifecycle = 'ACTIVE' LIMIT 1
+    </select>
+    <!-- 只读单个当前owner活跃最新内容；旧修订/墓碑不占查重槽，任务不能跨内容关联。 -->
+    <select id="findDuplicate" resultType="com.lrj.agentic.knowledge.domain.ContentMatch">
+        SELECT d.document_id, d.version AS content_revision, j.job_id, j.status,
+            (d.published_version = d.version AND d.published_generation IS NOT NULL
+                AND d.published_job_id IS NOT NULL) IS TRUE AS is_published
+        FROM knowledge_document d JOIN knowledge_ingestion j
+            ON j.tenant_id = d.tenant_id AND j.owner_id = d.owner_id AND j.document_id = d.document_id
+            AND j.job_id = d.ingestion_job_id AND j.document_version = d.version AND j.content_hash = d.content_hash
+        WHERE d.tenant_id = #{tenantId} AND d.owner_id = #{ownerId} AND d.active_content_hash = #{hash}
+            AND d.lifecycle = 'ACTIVE' LIMIT 1
     </select>
     <select id="findIngestion" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.IngestionRow">
         SELECT <include refid="ingestionColumns"/> FROM knowledge_ingestion

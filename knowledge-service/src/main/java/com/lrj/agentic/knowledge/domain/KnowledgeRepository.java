@@ -6,6 +6,8 @@ import java.util.Optional;
 
 /** 领域持久化端口；所有读取显式携带可信身份，不能进行无范围查询。 */
 public interface KnowledgeRepository {
+    /** 仅匹配本人ACTIVE资料的最新内容，不检索历史修订或他人摘要。 */
+    Optional<ContentMatch> duplicate(Caller caller, String contentHash);
     /** 同一所有者的提交编号查找，用于副作用发生前的幂等重放。 */
     Optional<Ingestion> byIdempotency(Caller caller, String key);
     /** 原子建立资料与任务，并处理数据库唯一约束争用。 */

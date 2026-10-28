@@ -61,6 +61,14 @@ public class KnowledgeService {
         return repository.register(document, job);
     }
 
+    /** 摘要只是精确查询条件，可信身份始终进入数据库授权谓词。 */
+    public com.lrj.agentic.knowledge.domain.ContentMatch duplicate(Caller caller, String contentHash) {
+        if (contentHash == null || !contentHash.matches("[0-9a-f]{64}")) {
+            throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
+        }
+        return repository.duplicate(caller, contentHash).orElse(null);
+    }
+
     /** 详情查询在持久层同时约束租户与所有者。 */
     public Document document(Caller caller, String id) {
         requireUuid(id);

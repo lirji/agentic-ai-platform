@@ -88,6 +88,7 @@ class KnowledgeLifecycleIT {
         Caller owner = owner();
         Ingestion first = create(owner, "首版发布名称", "旧内容" + UUID.randomUUID());
         Model model = new Model(); publish(first, model);
+        assertThat(knowledge.duplicate(owner, first.source().hash()).isPublished()).isTrue();
         String firstChunk = chunk(first);
         DocumentView before = lifecycle.document(owner, first.documentId());
         String key = UUID.randomUUID().toString();
@@ -101,6 +102,9 @@ class KnowledgeLifecycleIT {
         processing.fail(secondClaim, KnowledgeError.PREPARATION_INVALID, true);
         assertThat(knowledge.document(owner, first.documentId()).version()).isEqualTo(2);
         assertThat(knowledge.document(owner, first.documentId()).status()).isEqualTo(IngestionStatus.FAILED);
+        assertThat(knowledge.duplicate(owner, first.source().hash())).isNull();
+        assertThat(knowledge.duplicate(owner, upload.hash())).isEqualTo(
+                new ContentMatch(first.documentId(), 2, second.jobId(), IngestionStatus.FAILED, false));
         assertThat(lifecycle.document(owner, first.documentId()).publishedRevision()).isEqualTo(1);
         assertThat(processing.citation(owner, first.documentId(), 1, firstChunk).orElseThrow().displayName()).isEqualTo("首版发布名称");
         String nextKey = UUID.randomUUID().toString();
@@ -265,7 +269,10 @@ class KnowledgeLifecycleIT {
         assertThat(index.search(ProcessingClaim.Sink.VECTOR, owner, text,
                 Collections.nCopies(ProcessingProtocol.DIMENSIONS, 0.125), List.of(job.documentId()), 100, java.time.Duration.ofSeconds(8))).isNotEmpty();
         String duplicateKey = UUID.randomUUID().toString();
-        error(KnowledgeError.DUPLICATE_CONTENT, () -> knowledge.submit(owner, duplicateKey, upload(duplicateKey, "重复资料", text)));
+        // S10E只释放墓碑的内容槽；独立新上传不复活原资料，也不改变其旧索引和审计。
+        Ingestion fresh = knowledge.submit(owner, duplicateKey, upload(duplicateKey, "重复资料", text));
+        assertThat(fresh.documentId()).isNotEqualTo(job.documentId());
+        assertThat(lifecycleMapper.lockDocument(owner, job.documentId()).lifecycle()).isEqualTo(Lifecycle.DELETED.code());
         assertThat(sourceCalls).hasValue(0);
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_lifecycle_event WHERE document_id=? AND command_id IN (?,?)",
                 Integer.class, job.documentId(), withdrawn.commandId(), deleted.commandId())).isEqualTo(2);

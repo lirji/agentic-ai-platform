@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Param;
 
 /** 业务 SQL 全部定义在同名 XML，授权谓词不能依赖控制器过滤。 */
 public interface KnowledgeMapper extends BaseMapper<DocumentRow> {
+    /** 唯一活跃hash索引限定一行，任务关联还须匹配同一最新内容身份。 */
+    com.lrj.agentic.knowledge.domain.ContentMatch findDuplicate(@Param("tenantId") String tenant,
+            @Param("ownerId") String owner, @Param("hash") String hash);
     /** K03只暴露ACTIVE元数据，旧被取代的失败任务不能展示可重试。 */
     IngestionRow findVisibleIngestion(@Param("tenantId") String tenantId, @Param("ownerId") String ownerId, @Param("id") String id);
     /** 持久化资料，事务 Owner 保证随后建立任务。 */

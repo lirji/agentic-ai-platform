@@ -1,0 +1,62 @@
+{
+  "slice": "S10E",
+  "status": "IN_PROGRESS",
+  "validation": "BOUNDED_BACKEND_PASS_FULL_SLICE_UNVERIFIED",
+  "backendBase": "0eeea79fda32e005b700ff33e380fd4274a5eb83",
+  "frontendBase": "56b3f3b8eb1ec6a098257cba4b6cae4d3997c04d",
+  "branch": "feat/document-dedup-20261027",
+  "sourceSha256": {
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeService.java": "06af683b557dead660dd5a4e0d552ff38a8ace006c7042cce7f75416b5579cde",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeRepository.java": "5e4d2ea09eb69ab9e8efb0ba2918f8ce204fba1ac8ac4fe45e118d38085e11ba",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/KnowledgeMapper.java": "fcf373a92bdfd742a1326c5185f004792c92894aa72a24bf31990324d3ca4558",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlKnowledgeRepository.java": "2985d777fdf565180f550ed52fd9751a43f9c921b9867f7c20ae64c1c9c393b6",
+    "knowledge-service/src/main/resources/mapper/KnowledgeMapper.xml": "2600c17d277eb09b749270e5001003c985fdec3cfd7eeb160ea164d979b6c189",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/KnowledgeLifecycleIT.java": "381c322fb40a679d1b21a706dd5484d893e24b8896646fe28126dd592fd87e8e",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/ContentDuplicateController.java": "803488bbfee2c99380eb20e9a12f1fc20cf6df9855f2aa53e085fb661fe92016",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/ContentMatch.java": "2f95e9143095ad7f9de4b891f2f20a45fb40c622cde5319a59c56d044c5a5583",
+    "knowledge-service/src/main/resources/db/migration/V11__active_content_deduplication.sql": "c4b31e10c6a629f7601f9c983452bbedd9b7d6f94ec10cb064d2f3b37159c391",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/KnowledgeDedupIT.java": "c4873587bdab00155f37c71720620ed0eab5206ddc34f81678012043343d6f5b"
+  },
+  "checks": {
+    "compile": "PASS",
+    "newDedupIT": 6,
+    "existingPersistenceIT": 7,
+    "lifecycleIT": "16 first pass plus 1 corrected assertion recheck PASS",
+    "http": "new endpoint 200/null/strict five-field shape/401/403/400 PASS",
+    "existingDocumentRowsUnchanged": 1151,
+    "contractDocs": "PASS",
+    "devSchema": 10,
+    "testSchema": 11
+  },
+  "logs": {
+    ".logs/s10e-backend-it.log": "b2ab8a998106defb254d63659ba00a53a4bbaee8428b7ebf8b6649c10d93d99f",
+    ".logs/s10e-backend-recheck.log": "c9e16948d05eba844acea27e19ba34ca772185bdb016cbb478cb1662081f58d6"
+  },
+  "unverified": [
+    "frontend duplicate navigation and bounded unknown intent handling",
+    "published current vs failed draft UI and endpoint true case",
+    "full affected regression and actual gateway/browser",
+    "dev migration/startup and consumer compatibility",
+    "S10E Git delivery"
+  ],
+  "git": "S10E changes uncommitted; main retains fully delivered S10D",
+  "modelCallsAdded": 0,
+  "s10dFinalMainCI": {
+    "backend": {
+      "repo": "agentic-ai-platform",
+      "id": 40374473701,
+      "sha": "0eeea79fda32e005b700ff33e380fd4274a5eb83",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40374473701"
+    },
+    "frontend": {
+      "repo": "agentic-ai-platform-web",
+      "id": 40374493738,
+      "sha": "56b3f3b8eb1ec6a098257cba4b6cae4d3997c04d",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/40374493738"
+    }
+  }
+}

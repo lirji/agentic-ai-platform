@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务：`capability-delivery-20261021`；S10D固定快照重索引实现/验收/代码交付PASS，正在落交付收据，下一项S10E；保留20%额度的窗口检查已建立。
-- 唯一状态/恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；任务定义：[IMPLEMENTATION_SLICES](docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)。
-- 两仓原目录任务分支`feat/document-reindex-20261027`；沿已批准计划持续实施/验证/正常Git交付，无生产部署或清理。固定键/账本/历史资料保留，不重跑已成功或未知付费步骤。
+- 当前任务`capability-delivery-20261021`：S10E实现/本地验收PASS，正在双仓Git/CI交付，随后继续S10F。两仓原目录分支`feat/document-dedup-20261027`。
+- 唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。完整验收、未完成步骤、运行状态与预算均以该文档为准，保留20%当前会话额度。
+- 独立任务`docker-deployment-20261027`已交付main38a3440；其历史状态入口在既有Docker工作树`docs/deployment/docker-20261027/PROGRESS_STATE.md`，本轮不覆盖原收据。本次运行更新由S10E验收记录承接。
 
 ## 前期可行性任务记录
 

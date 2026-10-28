@@ -1,18 +1,18 @@
 # 独立知识平台准备进度
 
-## 当前状态：S10D已交付，准备S10E
+## 当前状态：S10E实现与验收通过，正在Git交付
 
-- 任务：`capability-delivery-20261021`；已批准51项计划，parallel=no。S8A–F、S9A–D、S10A/B/C已交付；S10D实现、验收与代码交付DONE/PASS，两仓main CI均成功。S10E及后续仍PLANNED，无生产部署/清理。
-- S10D证据：[验收](../../qa/document-reindex-20261027/TEST_RESULT.md)、[实现/反例](../../qa/document-reindex-20261027/IMPLEMENTATION_EVIDENCE.md)、[源码清单](../../qa/document-reindex-20261027/validation.json)。143 Java单元+116 IT、396 Python/51显式跳过、89前端、14协议浏览器、1真实重建响应丢失/原键恢复及2只读重验；HTTP关闭/开启/原键/严格JSON/跨身份、历史3类GET/SSE/上下文、topK=1当前命中及耗尽503均PASS。
-- 已实现：REINDEX固定当前发布源与目标profile，独立代次且保留失败新稿；REINDEX重试不改内容任务；两sink全量ID/身份/摘要核验及ES正文对账，DONE恢复重验；20/60/100原排名/一次Embedding/共用总期限；React非正文原参数恢复、未知/换代引用刷新。PDF/DOCX同文件V2→V3已真实验证，原金标与旧baseline保留，不声明质量提升。
-- Git：两仓原目录`feat/document-reindex-20261027`；实现backend b6e3e1d / frontend b09ba74已正常FF合并/push main；分支CI40373125871/40373150818、main CI40373615641/40373622623均PASS。[双仓交付收据](../../qa/document-reindex-20261027/delivery-result.json)随后提交，最终收据CI核对后进入S10E，无新worktree。
-- 运行：Java/AI/model-proxy/qa-worker与Vite已恢复；Knowledge dev/test V10、Tasks V4；create/generation/updates/withdrawals/deletions/reindexes=true，backfill=false，解析/PDF/DOCX/STRUCTURE_V3保持。无业务在途后才停Java构建，不覆盖活动JAR。
-- 固定隔离状态：`.local/s10d-http-state.json`；资料aa371638-6816-44ac-a5e4-eb3085495ad5，v2失败PDF草稿、发布v1/g4；原命令/准备/历史任务与旧引用保留。探针分阶段恢复，未知付费先查原键/账本，不能重新跑写操作补截图。
-- 预算：Embedding70批/0.721784元；chat24次/0.889964元，各1元累计上限不变。本片新增1份资料、2次重索引、2次查询；失败PDF未调用Embedding。历史S10B/C样本、存储、PG与资料保留。
-- 额度：`python3 .local/check_session_quota.py`读当前会话窗口，最近约74%已用；接近78%收尾、80%前停止新工作，预留20%。不根据goal token计数猜额度。
-- 规范：backend/frontend-implementation、runtime-and-deploy、implementation-validation、project-documentation、update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/接口/并发/ES/中间件/容量/发布已读。原MULTI_CLIENT_DRIFT_BLOCKED未改，沿批准手工专业pass；无子Agent、独立认证或生产质量/SLO/清理承诺。
-- S10C已完整交付：实现26518e5/46c3bab、收据f2243d4/dbc77b2，最终main CI40365748577/40365779517均PASS。详见原[验收](../../qa/document-visibility-20261026/TEST_RESULT.md)及[收据](../../qa/document-visibility-20261026/delivery-result.json)，不重开已完成任务。
-- 恢复入口：先核对两仓Git、S10D收据最终CI及服务；随后沿原计划进入S10E安全查重。已定位K01通用409、全owner-content唯一约束与上传原键记录；先在C-LIFECYCLE补齐可见性范围/有界查询/恢复契约，再做迁移、API与UI。日志`.logs/s10d-*`，两仓.local材料全部保留，不按上下文缺失重新执行副作用。
+- 任务：`capability-delivery-20261021`；已批准51项、parallel=no；S8A–F/S9A–D/S10A–D已交付。S10E实现DONE、验收PASS，Git/CI待完成；后续仍PLANNED/CONDITIONAL。
+- 2026-10-28恢复沿原计划继续，保留20%额度；当前会话读`.local/check_session_quota.py`，不沿用旧会话78%记录。不重置业务模型账本。
+- 权威验收：[S10E TEST_RESULT](../../qa/document-dedup-20261027/TEST_RESULT.md)、[源码指纹](../../qa/document-dedup-20261027/validation.json)、[审查](../../qa/document-dedup-20261027/REVIEW.md)。Java143+123、前端99、协议浏览器4、真实浏览器1、真实HTTP均PASS。
+- 本地Docker快照`52c4cd0088b45e33`已成功切换，9容器健康、10项smoke；启动session84592与真实浏览器session20337均结束PASS。产品文件与快照hash一致。test/dev库V11，Tasks V4；禁止旧writer回退。独立preview session1476待正常停止。
+- 61条dev资料与两本预算hash前后相同；local-dev知识/中央在途均0，其他tenant历史测试任务保留。Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限；S10E新付费调用0。
+- Git：两仓原目录`feat/document-dedup-20261027`，本片改动待提交。backend基于0eeea79，origin/main已有Docker任务38a3440，需正常合并到本片并保留其文档。backend main在既有Docker工作树，无新工作树。frontend基于56b3f3b。
+- 下一步：显式stage本片→提交；正常整合backend main的Docker配置与进度→精确SHA远程CI→正常FF合并推两仓main→交付收据与最终CI；然后继续S10F设计/实施。不重复已有有效验收。
+- 旧S10D交付收据见`docs/qa/document-reindex-20261027/delivery-result.json`，最终收据CI均PASS；独立Docker部署初版记录见`docs/deployment/docker-20261027`（目前在main工作树）。本次新快照验收归S10E，不覆盖旧部署历史证据。
+- 当前运行开关create/generation/updates/withdrawals/deletions/reindexes=true，backfill=false，PDF/DOCX/STRUCTURE_V3继续保持；沿现有Docker运行入口，不另启writer。
+- 保留.local凭据/固定键/账本/快照、.logs及旧数据；不清理、不生产部署。当前仅人工专业pass，原全局MULTI_CLIENT_DRIFT_BLOCKED不改，无子Agent。
+- 规范：session-handoff/continue-approved-delivery、backend/frontend-implementation、engineering-workflows、runtime-and-deploy、implementation-validation、project-documentation/update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/接口/并发/容量/发布。
 
 ## 历史：20 项差距的框架化实施计划
 

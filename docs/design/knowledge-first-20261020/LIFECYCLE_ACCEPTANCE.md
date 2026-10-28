@@ -26,7 +26,7 @@
 | LC-20 | 旧18条local-dev资料及新建隔离数据回填不改变原hash/ID/预算；未知源不补造成功；升级前后兼容读取 | S10B迁移前后摘要与实际来源；不清理用户数据 | S10B PASS；[证据](../../qa/document-update-20261026/TEST_RESULT.md)，S10C/D扩展另验 |
 | LC-21 | 关闭新命令仍能读取已发布新schema与识别墓碑；旧writer不能混跑；回滚不复活已撤下资料 | S10B/C/D隔离升级/回退实验 | S10D PASS；[证据](../../qa/document-reindex-20261027/TEST_RESULT.md)，原S10B/C结果保留于其验收记录 |
 | LC-22 | 逻辑删除不调用S3/ES/Qdrant/备份物理删除；孤立对象不自动清理；没有业务保留天数时清理关闭 | S10C调用计数与隔离数据；U07另决定 | S10C PASS；[证据](../../qa/document-visibility-20261026/TEST_RESULT.md)，后续S10D扩展另验 |
-| LC-23 | 现有owner-content唯一约束在S10E前明确冲突；S10E迁移后已删除/旧修订不误挡新上传，且不跨owner泄露 | S10E真实MySQL竞争/HTTP | S10C现有唯一约束冲突PASS；[证据](../../qa/document-visibility-20261026/TEST_RESULT.md)，S10E迁移仍待实施 |
+| LC-23 | 现有owner-content唯一约束在S10E前明确冲突；S10E迁移后已删除/旧修订不误挡新上传，且不跨owner泄露 | S10E真实MySQL竞争/HTTP/浏览器 | S10E PASS；test/dev V11，竞争/隔离/原键恢复/三视口与真实运行通过；[证据](../../qa/document-dedup-20261027/TEST_RESULT.md) |
 | LC-24 | 更新UI同时显示受理/发布，失败旧版仍可用；409保留草稿，未知响应沿原键；失效清空正文，窄屏/焦点可操作 | S10B–D浏览器1440/1024/414及截图 | S10D PASS；[证据](../../qa/document-reindex-20261027/TEST_RESULT.md)，原S10B/C结果保留于其验收记录 |
 
 S10A本片验证为：固定基线源码摘要、INV/决策/接口/矩阵/依赖完整性，表格与本地链接/围栏，受影响文档映射，同Agent第二轮反例审查。Mermaid语法可用现有渲染器时实际验证；没有渲染器则明确仅结构检查。不得新建应用测试来证明文字已被写入，不运行付费模型。

@@ -157,3 +157,19 @@ REINDEX只冻结当前发布内容修订、原sourceHash、目标profile、当�
 未来清理候选必须同时证明：不为当前发布/当前任务依赖；无有效lease/在途未知写；无内容寻址共享引用；不被需保留的评测/结果/checkpoint/审计依赖；保留期满足且无保留例外；目标namespace与manifest明确；有独立批准和可验证回执。仅“旧generation”“FAILED”“DELETED”任何单一条件都不够。先标记、再次核对引用/权限和代次、逐目标有界执行、记录可恢复检查点；无权对备份做删除承诺。此段不授权本Agent实际清理。
 
 SKILL_HANDOFF: public-engineering-workflow/Contracts阶段，slice=S10A；消费架构决策D-LC01–08；本契约交S9D与S10B–F，实施前以[LIFECYCLE_ACCEPTANCE](LIFECYCLE_ACCEPTANCE.md)逐项证明，不能把设计表当产品PASS。
+
+## 8. 安全内容查重与上传恢复（S10E增量）
+
+沿S10E已批准结果补齐读契约；不改变K01旧响应JSON、202/409或原键语义。本节定义不代表实现/验收完成。
+
+`GET /api/v2/knowledge/duplicates?contentHash=<sha256>`，要求`knowledge:read`。contentHash必需且为64位小写十六进制；无效400。200返回`{match:null|ContentMatch}`；`ContentMatch={documentId,contentRevision,jobId,status,isPublished}`，UUID/版本/状态沿K02/K03，isPublished为boolean。只返回当前可信tenant/owner的ACTIVE资料最新内容摘要的精确匹配；只查带索引条件的一行，不查其他owner、不查历史修订、不返回计数、名称、正文、对象路径或原提交键。无匹配与无权均`{match:null}`，存储失败503，不能伪装空匹配。
+
+jobId/status取该最新内容的首次受理任务，必须与documentId/contentRevision/hash/tenant/owner同一行关系匹配。isPublished仅在匹配内容等于当前publishedRevision且发布指针完整时为true；失败新稿即使旧版仍可检索也为false。显式重索引不覆盖该内容的首次受理任务，当前处理意图仍由K07详情展示。匹配只提供导航，进入详情/任务/正文时再次按现时状态授权，不能把一次查重当永久读许可。
+
+K01新键遇同一owner活跃最新hash仍409 `KNOWLEDGE_DUPLICATE_CONTENT`；客户端收到这个稳定code后可请求上面的精确查询，显示“查看已有资料 / 处理任务”。不把它改写成新受理成功，不更改已有资料名、不隐式重试失败任务。并发修改/撤下导致查重为空时保留输入和原键，显式重试仍由数据库裁决。查重不是提交前锁，也不是内容相似度/模型判断。
+
+迁移只约束`(tenant_id,owner_id,ACTIVE最新content_hash)`：追加可空生成列`active_content_hash`（ACTIVE取content_hash，否则NULL），唯一索引替换原全状态owner-content约束。原行、历史修订、原键、对象和索引保留；更新释放旧hash，WITHDRAWN/DELETED释放当前hash，重新上传创建独立新documentId；其他仍ACTIVE且最新hash相同的资料仍阻挡。不同owner/tenant可独立上传同内容。并发新建/更新与撤下删除通过同库唯一约束和事务判定，不采用先查后写替代约束。
+
+同键重放优先于内容查重：即使资料已更新/撤下/删除，原键同完整输入只返回原受理任务，绝不创建或复活资料；原键异参仍409。新建独立资料须明确的新意图/新键。客户端保存未知请求原指纹和原键；已确认202或确定未受理的重复409可释放对应意图，未知、5xx、断线不能清理或自动换键。达到有界意图容量时拒绝新增，不逐出未确认记录；兼容原上传意图格式，不保存文件正文、名称或凭据。
+
+迁移前停止Knowledge旧受理/worker并确认在途；新查询适配与V11同版本交付，旧版findContent未过滤生命周期，不能与新唯一策略混跑。先在独立test库验证历史保留/竞争/回放，再进行获授权的本地dev迁移；不修改V1–V10，不执行物理清理。回退至少保留识别新唯一策略与生命周期的代码；新语义产生后不能恢复旧全状态唯一索引来假装回滚业务。

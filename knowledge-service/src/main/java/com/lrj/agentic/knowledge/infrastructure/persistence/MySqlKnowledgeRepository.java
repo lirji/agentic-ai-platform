@@ -44,6 +44,12 @@ public class MySqlKnowledgeRepository implements KnowledgeRepository {
                 .map(IngestionRow::domain));
     }
 
+    /** 失败不伪装无匹配，其他所有者的同摘要不会进入结果。 */
+    @Override
+    public Optional<com.lrj.agentic.knowledge.domain.ContentMatch> duplicate(Caller caller, String contentHash) {
+        return access(() -> Optional.ofNullable(mapper.findDuplicate(caller.tenantId(), caller.userId(), contentHash)));
+    }
+
     /** 原文已持久化后才调用本方法，数据库事务不包含远程 I/O。 */
     @Override
     public Ingestion register(Document document, Ingestion ingestion) {
