@@ -1,16 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前状态：S11B 本地验收PASS，Git/CI交付中
+## 当前状态：S11B 已交付，下一步S11C
 
-- 任务capability-delivery-20261021，51项已批准、parallel=no；S8A–F/S9A–D/S10A–F/S11A已交付；S11B实现/必需本地验收完成，下一片S11C，不宣称整个平台完成。
-- 后端原目录feat/authorized-retrieval-20261028，基线25d9e409f41f022c50c7037b826ffaf6535df7f6；待提交只含S11B产品/测试/证据及当前进度。main仍在既有Docker工作树；正常FF/push，无新worktree、无生产部署或清理。前端只读4a9a280且干净。
+- 任务capability-delivery-20261021，51项已批准、parallel=no；S8A–F/S9A–D/S10A–F/S11A已交付；S11B实现/必需本地验收/交付完成，下一片S11C，不宣称整个平台完成。
+- 后端原目录feat/authorized-retrieval-20261028，基线25d9e409f41f022c50c7037b826ffaf6535df7f6；实现a86f3ba71aee155d9869bd069266212418946014已FF推main，分支CI40677542553/mainCI40677914787 PASS；当前仅交付收据/进度待提交。main仍在既有Docker工作树；正常FF/push，无新worktree、无生产部署或清理。前端只读4a9a280且干净。
 - S11A最终25d9e40分支CI40672005681/mainCI40674290357 PASS，已FF推main；证据.local/s11a-final-ci.json。S10F最终backend f455a64/front4a9a280，main CI40669227771/40669255748 PASS。
 - S11B：两个严格内部只读POST、独立runtime身份、20/60/100原排名/score候选、完整身份批量解析、共享发布SQL与2查询容量；无新DDL/依赖/模型或前端变化。旧接口/DTO/RRF保留，未来公共RAG门面不能持有原语容量等待回调。
 - 验证153单元+133真实集成PASS（.logs/s11b-full-java.log），包含SQL/双索引污染、代次切换、失败新稿、TXT/PDF/DOCX来源、身份与严格JSON、并发/期限/取消。前端容器114/格式/类型/lint/构建PASS；代码卫生无阻断，Java formatter/独立静态分析工具限制保留。
 - 固定运行快照69248f47394fb22b，9健康容器/10项smoke/29项只读HTTP通过。Knowledge V11/Tasks V4；不再使用S10F快照作为当前运行。内部Knowledge不暴露宿主端口，通过现有AI共享网络核验，没有开放新端口。构建/启动/验收进程已结束，日志.logs/s11b-*，QA docs/qa/authorized-retrieval-20261028/，精确源码hash在validation.json。
 - 预算/data：dev资料61，local-dev知识/中央在途0；Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限，hash与.local/s11b-runtime-before.json一致；没有新增付费调用。U04真实Reranker条件未满足，不挪用旧账本。
-- 下一步：验证文档/当前输入hash→S11B显式暂存提交→分支CI通过→既有main工作树FF推送→核对main CI与交付收据；再进入S11C。不能重复模型/业务写入补证据。测试夹具的早期编译、P05重载与外键失败均已修正，日志保留。
-- 用户要求保留25%额度；本会话.local/check_session_quota.py于11:03Z为50%已用，73%开始收尾、75%前停止新增并保存。不能沿用旧会话数据或将额度停止写作平台完成。
+- 下一步：提交并核对S11B最终收据；随后原目录独立分支实施S11C：严格候选/解析客户端→原生LlamaIndex一次融合与稳定身份→单次Embedding/根期限/共享容量→金标/框架隔离/真实只读原语验证→文档/Git/CI。不能重复模型/业务写入补证据。测试夹具的早期编译、P05重载与外键失败均已修正，日志保留。
+- 用户要求保留25%额度；本会话.local/check_session_quota.py于11:10Z为52%已用，73%开始收尾、75%前停止新增并保存。不能沿用旧会话数据或将额度停止写作平台完成。
 - 沿用backend-implementation/validation/runtime/doc/progress/Git/CI技能和已读建模/持久化/接口/并发/ES/中间件/容量/发布规范；无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。全部.local/日志/测试数据与既有工作树保留。
 
 ## 历史：20 项差距的框架化实施计划
