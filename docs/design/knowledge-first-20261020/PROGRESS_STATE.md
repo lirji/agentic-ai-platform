@@ -1,14 +1,14 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前状态：S11D 协议验收通过，交付中
+## 当前状态：S11D 协议已交付，下一片 S11E
 
 - 任务capability-delivery-20261021，51项已批准、parallel=no；S8A–F/S9A–D/S10A–F/S11A–C已交付；S11D协议/预算/失败机制及必需本地验收PASS，真实模型U04条件保留。下一片S11E，整个平台未完成。
-- 后端原目录feat/rerank-budget-20261028，基线c3e5125f148ea09775f925157b7b14718823ce00，S11D当前未提交。S11C实现1c67d42分支CI40682978986/mainCI40683250413 PASS；最终c3e5125分支CI40683550955/mainCI40684005520 PASS并已FF推main，.local/s11c-final-ci.json。main在既有Docker工作树；前端只读4a9a280且干净。
+- 后端原目录feat/rerank-budget-20261028，基线c3e5125f148ea09775f925157b7b14718823ce00，S11D实现b357b385773ebf47f47982bf96883c782cc44a1c已正常FF推main，分支CI40686683218/mainCI40687038468 PASS；最终收据提交/CI随后核对。S11C实现1c67d42分支CI40682978986/mainCI40683250413 PASS；最终c3e5125分支CI40683550955/mainCI40684005520 PASS并已FF推main，.local/s11c-final-ci.json。main在既有Docker工作树；前端只读4a9a280且干净。
 - S11D：固定50候选→一次融合→模型外发前核权→原生异步后处理→选K→最终核权；独立私密配置/累计预算、先行fsync与取消保留、严格评分协议、默认FAIL。原RRF兼容；消费者/应用装配/策略落盘归S11E，无DDL/新依赖/付费调用。
 - 验证：Python497通过/53默认跳过，52项本片离线行为；显式真实知识服务联调2项通过（模型仅HTTP替身）；Ruff/mypy62/compileall通过。307项全部Java模块/构建输入与S11C一致，复用154单元及S11B 133真实集成证据。前端容器114/格式/类型/lint/生产构建PASS。代码卫生无阻断，6条数值建议分类为协议/命名边界；Java formatter工具限制保留。QA docs/qa/rerank-budget-20261028/。
 - 当前运行01a95560586ee526，447项后端输入（含共享金标）与隔离构建一致、前端484项hash一致；9健康容器/10项smoke，RRF与精排原生链路通过。内部Knowledge仍沿现有容器网络；Knowledge V11/Tasks V4。构建/启动/验证进程已结束，日志.logs/s11d-*。
 - 预算/data：dev资料61，local-dev知识/中央在途0；Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限，hash与.local/s11d-runtime-before.json一致，新增付费调用0。U04真实Reranker账号/地域/端点/型号/价格/独立预算未满足；临时账本只服务协议替身，不挪用旧账本，不声明真实质量消融完成。
-- 下一步：文档/源码hash核验→显式路径提交S11D→精确分支CI→既有main工作树正常FF/push→精确main CI→收据；随后S11E先冻结公共响应/任务策略/历史兼容及完整证据恢复契约，再统一搜索/QA/研究/评测消费者。不能简单丢弃完整代次身份后复用旧引用DTO。
+- 下一步：完成S11D最后收据/精确CI；随后S11E先冻结公共响应/任务策略/历史兼容及完整证据恢复契约，再统一搜索/QA/研究/评测消费者。不能简单丢弃完整代次身份后复用旧引用DTO。
 - 用户要求保留25%额度；本会话.local/check_session_quota.py于12:14Z为68%已用，73%开始收尾、75%前停止新增并保存。不能沿用旧会话数据或把额度停止写作平台完成。
 - 沿用backend-implementation/validation/runtime/doc/progress/Git/CI技能和已读建模/接口/并发/容量/发布规范；无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。正常合并推送已授权；无生产部署或清理授权，保留.local/日志/数据/原工作树。
 

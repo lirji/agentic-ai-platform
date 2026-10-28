@@ -1,0 +1,27 @@
+{
+  "status": "DELIVERED_PROTOCOL_SCOPE",
+  "implementationCommit": "b357b385773ebf47f47982bf96883c782cc44a1c",
+  "branch": "feat/rerank-budget-20261028",
+  "branchCi": {
+    "conclusion": "success",
+    "headSha": "b357b385773ebf47f47982bf96883c782cc44a1c",
+    "status": "completed",
+    "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40686683218"
+  },
+  "mainCi": {
+    "conclusion": "success",
+    "headSha": "b357b385773ebf47f47982bf96883c782cc44a1c",
+    "status": "completed",
+    "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40687038468"
+  },
+  "mainPush": "PASS",
+  "localRuntime": "01a95560586ee526",
+  "frontend": "UNCHANGED 4a9a280",
+  "unverified": [
+    "U04 real model, quality ablation, billed costs and real latency"
+  ],
+  "paidCallsAdded": 0,
+  "productionDeployment": false,
+  "cleanup": "NONE; retain local data, credentials, logs and existing main worktree",
+  "nextSlice": "S11E"
+}

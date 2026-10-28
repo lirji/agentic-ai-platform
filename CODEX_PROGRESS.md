@@ -1,6 +1,6 @@
 # Codex Progress
 
-- 当前任务capability-delivery-20261021：S11A已交付；S11B实现/容器/主分支CI均PASS；S11C实现/必需验收/main CI PASS，S11D协议/必需验收PASS、正在交付，U04真实模型仍未启用。
+- 当前任务capability-delivery-20261021：S11A已交付；S11B实现/容器/主分支CI均PASS；S11C实现/必需验收/main CI PASS，S11D协议/必需验收/main CI PASS，下一片S11E；U04真实模型仍未启用。
 - 后端原目录分支feat/rerank-budget-20261028，前端只读。唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，包含精确CI/运行/预算、实施范围与下一步。用户要求保留25%额度。
 - Docker独立任务历史见[原部署进度](docs/deployment/docker-20261027/PROGRESS_STATE.md)，本次运行证据归各实施片，不覆盖旧收据。
 
