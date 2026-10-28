@@ -1,0 +1,19 @@
+{
+  "slice": "S11A",
+  "status": "DESIGN_PASS",
+  "productValidation": "NOT_RUN_DESIGN_ONLY",
+  "markdown": 13,
+  "localLinks": 270,
+  "sourceFilesUnchanged": 16,
+  "installedFrameworkFiles": 2,
+  "invariants": 6,
+  "acceptanceCases": 16,
+  "algorithmExamples": 3,
+  "taskDag": {
+    "tasks": 51,
+    "acyclic": true
+  },
+  "frontend": "UNCHANGED",
+  "ledgerHashes": "UNCHANGED",
+  "newPaidCalls": 0
+}

@@ -1,0 +1,107 @@
+{
+  "protocol": "knowledge-retrieval-v1",
+  "scope": "S11A algorithm contract examples, not an executed application response",
+  "offset": 60,
+  "identityAliases": {
+    "a": {
+      "documentId": "00000000-0000-4000-8000-000000000001",
+      "version": 1,
+      "indexGeneration": 1,
+      "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "batchDigest": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "b": {
+      "documentId": "00000000-0000-4000-8000-000000000002",
+      "version": 1,
+      "indexGeneration": 1,
+      "chunkId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "batchDigest": "2222222222222222222222222222222222222222222222222222222222222222"
+    }
+  },
+  "cases": [
+    {
+      "id": "source-rank-gaps-and-tie",
+      "vector": [
+        {
+          "id": "a",
+          "rank": 1
+        },
+        {
+          "id": "b",
+          "rank": 3
+        }
+      ],
+      "lexical": [
+        {
+          "id": "b",
+          "rank": 1
+        },
+        {
+          "id": "a",
+          "rank": 3
+        }
+      ],
+      "expectedOrder": [
+        "a",
+        "b"
+      ],
+      "expectedScore": {
+        "a": 0.032266458495966696,
+        "b": 0.032266458495966696
+      }
+    },
+    {
+      "id": "same-text-distinct-documents",
+      "sameText": [
+        "a",
+        "b"
+      ],
+      "vector": [
+        {
+          "id": "a",
+          "rank": 1
+        },
+        {
+          "id": "b",
+          "rank": 2
+        }
+      ],
+      "lexical": [],
+      "expectedOrder": [
+        "a",
+        "b"
+      ],
+      "expectedScore": {
+        "a": 0.01639344262295082,
+        "b": 0.016129032258064516
+      }
+    },
+    {
+      "id": "single-route-low-ranked-can-win",
+      "vector": [
+        {
+          "id": "a",
+          "rank": 1
+        },
+        {
+          "id": "b",
+          "rank": 10
+        }
+      ],
+      "lexical": [
+        {
+          "id": "b",
+          "rank": 10
+        }
+      ],
+      "expectedOrder": [
+        "b",
+        "a"
+      ],
+      "expectedScore": {
+        "a": 0.01639344262295082,
+        "b": 0.02857142857142857
+      }
+    }
+  ]
+}

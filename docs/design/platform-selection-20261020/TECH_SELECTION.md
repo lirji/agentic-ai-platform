@@ -258,3 +258,16 @@ S9C传递依赖补丁：Boot3.5.16默认Commons Lang3.17.0覆盖了Compress所�
 ## T34 结构分块profile（S9D，2026-10-25）
 
 复用锁定LlamaIndex core0.14.25的Document/TextNode、SentenceSplitter及MetadataMode；LangGraph和Embedding适配器不换栈。具体算法/有界context/来源验证见[结构契约第9节](../knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md#9-s9d结构profile2026-10-25冻结实现验收另记)。新typed env `KNOWLEDGE_STRUCTURED_PROFILE=BLOCK_V2|STRUCTURE_V3`默认前者；V9追加已注册三元组，不修改历史迁移/数据。仅原有应用配置与本地启动入口补此项，无新服务/端口/资源/模型预算；开启前须通过新旧共存与两端真实准备/来源验收。
+
+## S11A 检索移交选型增量（2026-10-28）
+
+复用锁定Java/MyBatis/MySQL、Qdrant/Elasticsearch、Python与LlamaIndex core0.14.25；不升级依赖，不引入新服务或独立Agent框架。选择BaseRetriever/TextNode/NodeWithScore与BaseNodePostprocessor的显式扩展，保留一基排名与稳定身份；不使用默认QueryFusionRetriever的多查询、全局LLM、零基RRF或内容hash去重。证据为[固定源码/框架摘要](../../qa/retrieval-contracts-20261028/source-evidence.json)，正式边界见[检索契约](../knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)。
+
+| 能力 | 决策 | 替代与取舍 | 阶段 |
+| --- | --- | --- | --- |
+| 发布/授权与候选 | REUSE_EXISTING Java权威；BUILD有界只读原语 | Python直连库/索引复制权限，否决；保留旧Java查询兼容入口 | S11B |
+| 融合/检索编排 | INTEGRATE已有LlamaIndex扩展点 | 默认QueryFusion不兼容；保留Java全部编排不能达已批准目标 | S11C |
+| 独立精排 | 首选待验证qwen3-rerank受控HTTP；INTEGRATE后处理，不借聊天代理猜测协议 | 本地CrossEncoder增加模型制品/内存/部署成本，只有数据或部署边界触发再评估；不同时接多个提供方 | S11D，U04满足后真实调用 |
+| 策略/用量 | REUSE_EXISTING不可变任务与独立累计账本机制，BUILD有界策略目录 | 不新增持久批引擎或另一个全局预算系统；后续S15统一语义另验 | S11D/E |
+
+2026-10-28核对[百炼重排官方页面](https://help.aliyun.com/zh/model-studio/rerank)：示例仍给出qwen3-rerank及独立重排协议，当前示例端点包含业务空间与地域。只记录候选，不能沿用旧模型名/端点/价格假定账号可用；S11D须核对真实账号配置、价格日期与独立累计额度。S11A不扩大现有Embedding或聊天预算，不宣称真实重排有效或已启用。

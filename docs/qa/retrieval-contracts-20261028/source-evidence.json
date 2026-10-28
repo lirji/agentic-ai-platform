@@ -1,0 +1,93 @@
+{
+  "slice": "S11A",
+  "status": "READ_ONLY_SOURCE_EVIDENCE",
+  "baseline": "f455a64d0ee5505eeb5515420b8932d240810c8f",
+  "versions": {
+    "llama-index-core": "0.14.25",
+    "langgraph": "1.2.16",
+    "deepagents": "0.7.28"
+  },
+  "files": [
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/KnowledgeSearch.java",
+      "sha256": "1b35ddf1e7491d068d34d1053787923a975db16d7e0613c1709fd8420da4d1e3"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/DualSearchIndex.java",
+      "sha256": "74fb9e15fbeb09454adaf529ee30171c5324e0c3166bf64c70d03dad228082bb"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/SearchIndex.java",
+      "sha256": "da4b1134ba99080727828d2d9f862b4d690d10b484af31e498b7c336a082068b"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingRepository.java",
+      "sha256": "6e932cabec8d031c1568c6795a47aac5b441d754b48b01174eac6759c6154d25"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/processing/ProcessingProtocol.java",
+      "sha256": "1abb5a228863b0a30633209f86d8f5330486bd76c5985d49dda6108d5bf47b71"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/RuntimeKnowledgeController.java",
+      "sha256": "f31afe9397dc680fc52f8e684f16d70a72878faa5190bc40ee4d88dcd7a5cc6a"
+    },
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/RuntimeKnowledgeSecurity.java",
+      "sha256": "b743874f9f04f227095fcf730f7dd8d136cf65526af8a7afd8798e1dfa1da6eb"
+    },
+    {
+      "path": "knowledge-service/src/main/resources/mapper/ProcessingMapper.xml",
+      "sha256": "aa2b3ec43babfdcdb493d0064e43e2bbf1da21574ec0a268456410006408d4b0"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/qa/knowledge.py",
+      "sha256": "e3ded9477dc702017e03aad80125c5728c3135094811bd5c3f79866c84ce677d"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/qa/retriever.py",
+      "sha256": "3786e0176b0e52022f9a4165e4d4f6cc6f9246346e693629e7d9a2af9d6bd633"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/qa/models.py",
+      "sha256": "34a4bd31fb31ad01bb4e40c4851daefa7ff41890c0b499b1273c57476d311193"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/agents/pipeline.py",
+      "sha256": "3795a2b1cf15e9abd32d8944ec56f86954e834bae9a288e2dcbf39f43e4c7d16"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/evaluation/pipeline.py",
+      "sha256": "0da2fb22036221ee1895033b1ddcb47a388ea1a2b6c3a3dcec1731b280057a09"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/runtime/embedding_budget.py",
+      "sha256": "a691ddce31111dcf402c1ec2e72a41246feb5cb753380c8df3ef5a70c86d9527"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/api/app.py",
+      "sha256": "13b055afa39fcbc29acb4fab8aadd9473f4311f27c3c73ac6f7123366b8ec301"
+    },
+    {
+      "path": "ai-runtime/uv.lock",
+      "sha256": "e9751dfe7d66d46ec98963a6910c74ee43fc1ac28def0687be0e2a8b0ad230cb"
+    }
+  ],
+  "framework": [
+    {
+      "installedPath": "/Users/liruijun/personal/LLM/agentic-ai-platform/ai-runtime/.venv/lib/python3.12/site-packages/llama_index/core/retrievers/fusion_retriever.py",
+      "sha256": "e125fb8666943f40c56cb9b4102fb3ca3a81db485304464b8cd196dc8cf516f9"
+    },
+    {
+      "installedPath": "/Users/liruijun/personal/LLM/agentic-ai-platform/ai-runtime/.venv/lib/python3.12/site-packages/llama_index/core/postprocessor/types.py",
+      "sha256": "601ce5068496ada110cf4626d69f86f44937fcb087bf23dc8aadd95c1e8780fc"
+    }
+  ],
+  "officialReferences": [
+    {
+      "url": "https://help.aliyun.com/zh/model-studio/rerank",
+      "checkedOn": "2026-10-28",
+      "scope": "Public protocol examples only; account/model/price/budget not verified"
+    }
+  ]
+}

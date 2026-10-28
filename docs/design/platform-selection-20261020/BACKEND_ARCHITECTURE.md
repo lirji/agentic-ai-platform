@@ -321,3 +321,26 @@ S9B/C产品已接通上述链路，受控文件、真实存储/索引/权限和�
 ## S10B 实现状态（2026-10-26）
 
 上述生命周期决策中的更新/原子发布、版本历史与历史正文保护已落地：Knowledge V10拥有内容修订/发布元组/命令审计，Tasks V4拥有事件证据清单；K08采用独立签名角色，公共读取在事务外向Knowledge重验。Python的恢复入口及模型外发/完成前校验与React失效缓存共同接通。没有新增服务、数据库、中间件或模型路由。旧数据回填和本机分阶段启动通过，[实现证据](../../qa/document-update-20261026/IMPLEMENTATION_EVIDENCE.md)与[验收](../../qa/document-update-20261026/TEST_RESULT.md)记录范围；S10C/D目标仍未实现。
+
+## S11A 授权检索与重排增量（2026-10-28，设计）
+
+目标是把检索编排交给已选LlamaIndex，同时保持Java授权/发布/来源权威；Brownfield沿既有部署边界，不新增服务、数据写权威、索引或顶层工作流。正式接口与失败语义只在[RETRIEVAL_CONTRACTS](../knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)维护。
+
+| 类型/ID | 已核对事实或决策 | 证据/影响 |
+| --- | --- | --- |
+| F-RT01 | KnowledgeSearch当前一次Embedding、20/60/100两路、先原始排名计分后授权、一基RRF60和chunkId同分排序；Python仅把旧结果转TextNode | [源码取证](../../qa/retrieval-contracts-20261028/source-evidence.json) |
+| F-RT02 | PublishedChunk现有投影缺generation/job/profile/textHash，SearchIndex.Candidate只含chunk/batch；新协议不能假装现有返回已经足够 | S11B新增专用读投影/带原分数候选，复用已发布SQL权限，不改旧DTO |
+| F-RT03 | 锁定QueryFusionRetriever默认多查询/全局LLM，零基RRF和node.hash与本项目不兼容 | 同上框架源码；显式扩展，不能默认构造 |
+| D-RT01 | Java增加候选/批量现时解析原语；Python单一检索用例负责一次Embedding、融合、受控重排；Java原语不能反调Python | K/A边界保持，无循环调用；新公共门面不持有回调所需资源 |
+| D-RT02 | 冻结稳定完整身份和原始sourceRank；原始索引分数、RRF、Reranker分数分别保存；同文不同资料不合并 | 固定输入含过滤空位/同分/同文案例，先证明LLAMA_RRF_V1等价 |
+| D-RT03 | 外发与最终返回前分阶段复核当前发布；任一解析失效整体拒绝；重排默认FAIL，允许降级须新冻结策略明确标记 | 现时校验不是授权租约；不能收回已发内容，不掩盖后续撤权 |
+| D-RT04 | 旧入口/任务/基线映射JAVA_RRF_LEGACY；新策略进入不可变请求/任务配置与幂等指纹 | S11E统一搜索/QA/work/评测，不能由全局默认改变旧任务恢复 |
+| D-RT05 | 读侧沿MySQL现有发布记录与Mapper XML；不写跨服务库，不新增DDL/缓存/MQ；外部调用不放DB事务内 | S11B/C可隔离实现；退回旧策略不复活资料或重算历史 |
+| A-RT01 | 本地本人空间、现有双索引/Embedding1024足够验证机制；真实业务质量与规模尚未确认 | U01/U03/U06独立保留，不承诺生产SLO |
+| R-RT01 | 新Reranker的账号/端点/型号/费用仍依赖U04；官方示例不等于账号开通或效果提升 | S11D协议替身可推进，真实调用保持关闭直到条件满足 |
+
+模块：Knowledge候选/解析应用服务→SearchIndex与ProcessingRepository读端口→既有Qdrant/ES/MySQL；Python rag用例→Embedding/Knowledge/Rerank端口及HTTP适配；QA/work/evaluation通过KnowledgePort接入同一策略。前端仅消费已授权的最终结果与脱敏诊断，不能直接调用内部候选接口。外层LangGraph/中央任务检查点保持，框架对象不进入JSON检查点。
+
+复杂度选择：保留Java全量编排最省改动但不达已批准LlamaIndex职责；Python直连索引/数据库会复制授权并产生第二权威，否决；选择两个有界Java读原语加现有LlamaIndex扩展，用显式适配换取兼容性和可测边界。不引入默认QueryFusion、多查询生成或另一个Agent/调度器。新增复杂度仅限跨边界DTO、一次检索用例和可选模型适配。
+
+实施顺序S11B→S11C→S11D→S11E，责任、上限、超时、预算、错误和回退以正式契约为准。[验收矩阵](../knowledge-first-20261020/RETRIEVAL_ACCEPTANCE.md)将每个不变量映射到真实索引/DB、固定输入、模型替身及消费者验证。本节仅设计，产品/真实模型尚未验收。

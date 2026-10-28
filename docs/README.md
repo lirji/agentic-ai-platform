@@ -71,3 +71,5 @@
 当前需求以用户最新范围、首期约定及能力实施方案为准，技术基线以架构与选型正文为准；可行性分析保留前期背景。已有准备图、Java 知识/任务/会话服务、React 工作台、真实检索及 PG 恢复；问答、研究和只读助手均有有限业务验收。新增任务按切片逐项实施，未执行生产部署。
 
 S10F处理诊断与有界恢复：[正式契约](design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md#9-处理诊断与有界恢复s10f)、[验收及限制](qa/processing-diagnostics-20261028/TEST_RESULT.md)。当前交付状态见唯一进度。
+
+S11A授权检索与重排设计：[契约](design/knowledge-first-20261020/RETRIEVAL_CONTRACTS.md)、[产品验收矩阵](design/knowledge-first-20261020/RETRIEVAL_ACCEPTANCE.md)、[设计取证](qa/retrieval-contracts-20261028/source-evidence.json)。产品/真实模型实施状态见切片，不以设计代替实现。
