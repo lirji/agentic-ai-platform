@@ -1,13 +1,13 @@
 # 独立知识平台准备进度
 
-## 当前状态：S11A 设计验收通过，Git/CI交付中
+## 当前状态：S11A 设计已交付，准备 S11B
 
 - 任务：`capability-delivery-20261021`；已批准51项、parallel=no；S8A–F/S9A–D/S10A–E已交付。S10F DONE/Validation与主分支CI PASS，完整平台尚未完成；交付后继续S11A。
 - S10E最终main为backend c90d979 / frontend 888c9bc，精确CI40654869674/40654878635 PASS，收据见[delivery-result](../../qa/document-dedup-20261027/delivery-result.json)。
 - S10F正式契约LIFECYCLE_CONTRACTS第9节，验收LC-25–28。两个只读GET、当前任务筛选、原RETRY事务核对、最多10项串行原CAS恢复已通过；无新写接口/引擎/DDL。早期.local设计草案失效。
 - [S10F验收](../../qa/processing-diagnostics-20261028/TEST_RESULT.md)：Java144单元+127集成、前端114、协议浏览器10、真实浏览器1、只读HTTP16均PASS。后端416/前端152个产品输入与构建逐文件hash一致；[源码指纹](../../qa/processing-diagnostics-20261028/validation.json)、[审查](../../qa/processing-diagnostics-20261028/REVIEW.md)。失败/修复/复验日志由实施证据引用，保留历史现场。
 - Git：S10F backend 2fb11a3 / frontend ba3e431已正常FF推main；主分支CI40664544350/40665533426 PASS，前端修复分支CI40665214942 PASS。初次main CI40664569514失败及测试同步修正均保留。[交付收据](../../qa/processing-diagnostics-20261028/delivery-result.json)。S10F收据f455a64/4a9a280已正常FF推main，最终CI40669227771/40669255748 PASS；后端原目录从f455a64创建S11A分支feat/retrieval-contracts-20261028，前端只读。backend main仍在既有Docker工作树，无新worktree。
-- S11A已开始：核对KnowledgeSearch/DualSearchIndex/RuntimeKnowledge及Python KnowledgeClient/AuthorizedRetriever、锁定LlamaIndex0.14.25源码。架构D-RT01–05/选型、RETRIEVAL_CONTRACTS、16项RT验收、3个算法金标、16文件/2框架源码取证与反例审查已写；设计完整性/链接/源码不变验证已通过，见docs/qa/retrieval-contracts-20261028/TEST_RESULT.md；当前待正常Git/精确SHA CI，然后继续S11B；不改产品/运行配置，不新增费用。原始sourceRank与chunk/batch身份必须保留，默认QueryFusionRetriever不兼容，旧入口保留。
+- S11A已开始：核对KnowledgeSearch/DualSearchIndex/RuntimeKnowledge及Python KnowledgeClient/AuthorizedRetriever、锁定LlamaIndex0.14.25源码。架构D-RT01–05/选型、RETRIEVAL_CONTRACTS、16项RT验收、3个算法金标、16文件/2框架源码取证与反例审查已写；设计完整性/链接/源码不变验证已通过，见docs/qa/retrieval-contracts-20261028/TEST_RESULT.md；0462d06已FF推main，分支CI40671246992/main CI40671517494 PASS，见本片delivery-result.json；本次收据待提交/CI，随后继续S11B；不改产品/运行配置，不新增费用。原始sourceRank与chunk/batch身份必须保留，默认QueryFusionRetriever不兼容，旧入口保留。
 - 运行：Docker最终快照`22dff8dd5e6ac896`，9容器健康/10项smoke；Knowledge V11、Tasks V4。旧2d06075快照仅构建未启动。所有验收进程已结束，Vite协议preview28096已正常停止；运行证据归S10F，不覆盖Docker任务历史收据。
 - 数据/预算：dev资料61，local-dev知识/中央在途均0；Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限；两个账本hash保持，本片新付费调用0。dev无历史RETRY，正例由真实testDB HTTP覆盖，未制造付费重试。
 - 用户最新额度要求：保留25%；`.local/check_session_quota.py`实读当前会话，09:39Z已用36%，73%开始收尾，75%前停止新增并保存。不沿用旧会话额度。

@@ -1,0 +1,25 @@
+{
+  "slice": "S11A",
+  "status": "DESIGN_DELIVERED",
+  "branch": "feat/retrieval-contracts-20261028",
+  "implementationCommit": "0462d0685197f2695cdd5b27ed2dcdd78b351b9c",
+  "branchCi": {
+    "conclusion": "success",
+    "databaseId": 40671246992,
+    "headSha": "0462d0685197f2695cdd5b27ed2dcdd78b351b9c",
+    "status": "completed",
+    "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40671246992"
+  },
+  "mainCi": {
+    "conclusion": "success",
+    "databaseId": 40671517494,
+    "headSha": "0462d0685197f2695cdd5b27ed2dcdd78b351b9c",
+    "status": "completed",
+    "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40671517494"
+  },
+  "frontend": "unchanged at 4a9a2800846076cc28886d78c1dca8675924c51f",
+  "productValidation": "NOT_RUN_DESIGN_ONLY",
+  "paidCallsAdded": 0,
+  "deploymentPerformed": false,
+  "receiptNote": "final receipt commit/CI tracked in Git and .local/s11a-final-ci.json; KEYWORD terminology clarified without changing wire fields"
+}
