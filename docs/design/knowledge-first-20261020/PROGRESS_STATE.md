@@ -1,18 +1,16 @@
 # 独立知识平台准备进度
 
-## 当前状态：S10E实现与验收通过，正在Git交付
+## 当前状态：S10E已交付，收据CI与S10F准备
 
-- 任务：`capability-delivery-20261021`；已批准51项、parallel=no；S8A–F/S9A–D/S10A–D已交付。S10E实现DONE、验收PASS，Git/CI待完成；后续仍PLANNED/CONDITIONAL。
-- 2026-10-28恢复沿原计划继续，保留20%额度；当前会话读`.local/check_session_quota.py`，不沿用旧会话78%记录。不重置业务模型账本。
-- 权威验收：[S10E TEST_RESULT](../../qa/document-dedup-20261027/TEST_RESULT.md)、[源码指纹](../../qa/document-dedup-20261027/validation.json)、[审查](../../qa/document-dedup-20261027/REVIEW.md)。Java143+123、前端99、协议浏览器4、真实浏览器1、真实HTTP均PASS。
-- 本地Docker快照`52c4cd0088b45e33`已成功切换，9容器健康、10项smoke；启动session84592与真实浏览器session20337均结束PASS。产品文件与快照hash一致。test/dev库V11，Tasks V4；禁止旧writer回退。独立preview session1476待正常停止。
-- 61条dev资料与两本预算hash前后相同；local-dev知识/中央在途均0，其他tenant历史测试任务保留。Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限；S10E新付费调用0。
-- Git：两仓原目录`feat/document-dedup-20261027`，本片改动待提交。backend实现45c9a05，已整合origin/main的Docker任务38a3440；仅CODEX_PROGRESS冲突，保留当前状态与历史部署入口，产品无冲突。backend main在既有Docker工作树，无新工作树。frontend实现ca086ed。
-- 下一步：完成整合提交→精确SHA远程CI→正常FF合并推两仓main→交付收据与最终CI；然后继续S10F设计/实施。不重复已有有效验收。
-- 旧S10D交付收据见`docs/qa/document-reindex-20261027/delivery-result.json`，最终收据CI均PASS；独立Docker部署初版记录见`docs/deployment/docker-20261027`（目前在main工作树）。本次新快照验收归S10E，不覆盖旧部署历史证据。
-- 当前运行开关create/generation/updates/withdrawals/deletions/reindexes=true，backfill=false，PDF/DOCX/STRUCTURE_V3继续保持；沿现有Docker运行入口，不另启writer。
-- 保留.local凭据/固定键/账本/快照、.logs及旧数据；不清理、不生产部署。当前仅人工专业pass，原全局MULTI_CLIENT_DRIFT_BLOCKED不改，无子Agent。
-- 规范：session-handoff/continue-approved-delivery、backend/frontend-implementation、engineering-workflows、runtime-and-deploy、implementation-validation、project-documentation/update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/接口/并发/容量/发布。
+- 任务：`capability-delivery-20261021`；已批准51项、parallel=no；S8A–F/S9A–D/S10A–E已交付，后续仍PLANNED/CONDITIONAL。继续S10F，无需重复确认。
+- S10E backend `cd35002`（实现45c9a05并整合Docker main38a3440）、frontend `ca086ed`正常合并推origin/main；分支CI40649696015/40649699483、main CI40650728333/40650747104均PASS。收据见[delivery-result](../../qa/document-dedup-20261027/delivery-result.json)；收据文档自身CI待核对，未变产品源码。
+- [S10E验收](../../qa/document-dedup-20261027/TEST_RESULT.md)：Java143单元+123集成、前端99、协议浏览器4、真实浏览器1与HTTP均PASS；[源码指纹](../../qa/document-dedup-20261027/validation.json)、[审查](../../qa/document-dedup-20261027/REVIEW.md)。合并只增加已验收Docker文件和CI语法检查，其他产品hash一致。
+- 当前运行：Docker快照`52c4cd0088b45e33`，9容器健康、10项smoke；test/dev Knowledge V11、Tasks V4。启动/验收/preview进程均结束，保留正常应用容器。禁止使用旧writer回退。
+- 数据/预算：61条dev资料与两本账本hash前后相同；local-dev知识/中央在途均0。Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限；本片新付费调用0。保留20%当前会话额度，使用`.local/check_session_quota.py`，不沿用旧会话78%记录。
+- 下一步：提交/推送本片收据→核对其精确SHA CI→新建原目录S10F分支→有界契约设计（任务筛选、失败阶段与操作建议、逐项可靠恢复）→后端/前端实现与验证。草案在`.local/s10f-design-notes.md`，尚非正式契约；重试恢复需核对旧CAS接口能证明的范围，不能虚构受理回执。
+- Git：backend原目录本片分支，main在既有Docker工作树；frontend原目录复用本片分支提交收据。没有创建或删除工作树。Docker工作树含原部署快照和日志，保留；.local/.logs/target/dist/依赖缓存保留以复现，未清理。
+- 本地开关create/generation/updates/withdrawals/deletions/reindexes=true，backfill=false，PDF/DOCX/STRUCTURE_V3保持；沿Docker入口，不另启writer。不新增付费探针、生产部署或清理。
+- 原全局MULTI_CLIENT_DRIFT_BLOCKED不改，手工专业pass、无子Agent。已用session-handoff/continue-approved-delivery、backend/frontend-implementation、engineering-workflows、runtime-and-deploy、implementation-validation、project-documentation/update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/接口/并发/容量/发布。
 
 ## 历史：20 项差距的框架化实施计划
 
