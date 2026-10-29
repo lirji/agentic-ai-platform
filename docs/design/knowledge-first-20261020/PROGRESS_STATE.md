@@ -1,6 +1,6 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前状态：S11E 接入分析已保存，产品待实施
+## 当前状态：S11E 恢复核对通过，额度限制下保留检查点
 
 - 任务capability-delivery-20261021，51项已批准、parallel=no；S8A–F/S9A–D/S10A–F/S11A–C已交付；S11D协议/预算/失败机制及必需本地验收PASS，真实模型U04条件保留。S11E已开始只读接入分析，公共/任务契约与产品实施尚未完成；整个平台未完成。
 - 后端原目录feat/retrieval-consumers-20261028，基线5779cf08c240e28ee7803738b7e4e294709cfb3b，S11D实现b357b385773ebf47f47982bf96883c782cc44a1c已正常FF推main，分支CI40686683218/mainCI40687038468 PASS；最终收据5779cf0分支CI40687419254 PASS，已正常FF推main，最终main CI40687859328 PASS，.local/s11d-final-ci.json。S11C实现1c67d42分支CI40682978986/mainCI40683250413 PASS；最终c3e5125分支CI40683550955/mainCI40684005520 PASS并已FF推main，.local/s11c-final-ci.json。main在既有Docker工作树；前端只读4a9a280且干净。
@@ -11,7 +11,9 @@
 - S11E分析产物：[RETRIEVAL_CONSUMER_READINESS](RETRIEVAL_CONSUMER_READINESS.md)，20项源码摘要在docs/qa/retrieval-consumers-20261028/preflight-evidence.json。已定位v1图/input的固定路由、Conversation策略持久化缺口、Evaluation旧画像约束、Tasks V4数组CHECK、三元组与完整8分量证据差异、跨进程总容量及前端请求/实际策略区分；只是事实与待冻结清单，未修改产品或宣布新API生效。
 - S11E接入分析文档767ad58f85691fc102a81c0f816736a0288c37ef已正常FF推main，分支CI40688066056/mainCI40688510030 PASS。最后文档收据以当前Git HEAD为准，精确最终CI保存在.local/s11e-final-ci.json；不递归填写自身提交。前端未改；现有main工作树保留，无新工作树。
 - 下一步：从S11E恢复入口完成公共/任务策略/完整证据与旧任务兼容契约和共享夹具，再实施。优先核对HTTP与worker的容量总量和完整身份恢复，不能直接投影为旧DTO而丢弃代次。S11E只读分析完成，不代表正式契约冻结或产品完成。本轮为保留额度停止新增工作，没有运行中的构建、测试、模型调用或迁移；仅最后收据Git/CI收尾结果按上项核对。
-- 用户要求保留25%额度；本会话.local/check_session_quota.py于12:31Z为73%已用（约27%剩余），73%开始收尾、75%前停止新增并保存。不能沿用旧会话数据或把额度停止写作平台完成。
+- 2026-10-29恢复核对：用户要求继续S11；后端HEAD为5dd5e99、前端HEAD为4a9a280，开始时两仓干净。preflight-evidence.json中20项源码SHA256全部一致，已有接入分析仍适用；本次没有修改产品、契约、运行配置或执行模型/迁移/构建任务。下一步仍是S11E步骤1契约与兼容，不重做S11A–D。
+- 额度停止条件：本次通过.local/check_session_quota.py读取当前会话2026-10-29T07:11:08.322Z记录，primary窗口已用78%（剩余约22%，窗口10080分钟），低于用户既有保留25%的要求，因此停止新增实现，只保存恢复核对。此为当前额度观测，不沿用上轮73%数据；S11E仍IN_PROGRESS，未宣称完成。
+- 本次收尾仅修改CODEX_PROGRESS.md与本文件；Markdown差异/链接核对后按已有Git授权交付。精确提交以Git日志为准，无新工作树或清理动作；忽略的.local/日志/缓存沿原用途保留。
 - 沿用backend-implementation/validation/runtime/doc/progress/Git/CI技能和已读建模/接口/并发/容量/发布规范；无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。正常合并推送已授权；无生产部署或清理授权，保留.local/日志/数据/原工作树。
 
 ## 历史：20 项差距的框架化实施计划
