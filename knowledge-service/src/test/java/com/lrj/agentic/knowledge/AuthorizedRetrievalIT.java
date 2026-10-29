@@ -37,8 +37,10 @@ import org.springframework.security.oauth2.jwt.*;
                 "knowledge.lifecycle.deletions-enabled=true", "knowledge.lifecycle.reindexes-enabled=true"})
 class AuthorizedRetrievalIT {
     private static final KeyPair KEYS = keys(), WRONG_KEYS = keys();
-    private static final Path PUBLIC_KEY = publicKey();
+    private static final Path PUBLIC_KEY = publicKey(KEYS), CITATION_PUBLIC_KEY = publicKey(WRONG_KEYS);
     @DynamicPropertySource static void runtimeIdentity(DynamicPropertyRegistry registry) {
+        registry.add("knowledge.citation-reader.enabled", () -> true);
+        registry.add("knowledge.citation-reader.public-key", () -> CITATION_PUBLIC_KEY.toUri().toString());
         registry.add("knowledge.runtime.enabled", () -> true);
         registry.add("knowledge.runtime.public-key", () -> PUBLIC_KEY.toUri().toString());
     }
@@ -190,6 +192,50 @@ class AuthorizedRetrievalIT {
         error(KnowledgeError.DATABASE_UNAVAILABLE, () -> unavailable.published(owner(), List.of("a".repeat(64))));
     }
 
+
+    @Test void generationCitationCheckPreservesRestrictedRoleAndCurrentAuthority() throws Exception {
+        var owner = owner(); var fixture = publish(owner, "完整身份资料");
+        var claims = Map.<String, Object>of("iss", "urn:agentic-ai:task-knowledge-reader", "azp", "async-task-service", "scope", "knowledge:citations:check");
+        String credential = token(owner, claims, WRONG_KEYS);
+        var body = json.createObjectNode().put("schemaVersion", "knowledge-evidence-v2");
+        body.set("references", json.valueToTree(List.of(identity(fixture))));
+        var current = citationPost(body.toString(), credential, false);
+        assertThat(current.statusCode()).isEqualTo(200);
+        assertThat(json.readTree(current.body())).isEqualTo(json.readTree("{\"accessible\":true}"));
+        assertThat(citationPost(body.toString(), null, false).statusCode()).isEqualTo(401);
+        assertThat(citationPost(body.toString(), token(owner, Map.of(), KEYS), false).statusCode()).isEqualTo(401);
+        assertThat(citationPost(body.toString(), credential, true).statusCode()).isEqualTo(401);
+        var wrongScope = new HashMap<String, Object>(claims); wrongScope.put("scope", "knowledge:read");
+        assertThat(citationPost(body.toString(), token(owner, wrongScope, WRONG_KEYS), false).statusCode()).isEqualTo(403);
+        assertThat(post("candidates", json.writeValueAsString(candidate(null, 1)), credential, false).statusCode()).isEqualTo(401);
+        assertThat(json.readTree(citationPost(body.toString(), token(new Caller(owner.tenantId(), "other"), claims, WRONG_KEYS), false).body()).path("accessible").booleanValue()).isFalse();
+        for (String field : List.of("version", "indexGeneration", "jobId", "processorVersion", "chunkId", "batchDigest", "textHash")) {
+            var stale = body.deepCopy(); var reference = (ObjectNode) stale.path("references").get(0);
+            if (field.equals("version") || field.equals("indexGeneration")) reference.put(field, 2);
+            else if (field.equals("jobId")) reference.put(field, UUID.randomUUID().toString());
+            else if (field.equals("processorVersion")) reference.put(field, "other-profile");
+            else reference.put(field, "f".repeat(64));
+            var reply = citationPost(stale.toString(), credential, false);
+            assertThat(reply.statusCode()).as(field).isEqualTo(200);
+            assertThat(json.readTree(reply.body()).path("accessible").booleanValue()).as(field).isFalse();
+        }
+        var invalid = body.deepCopy(); ((ObjectNode) invalid.path("references").get(0)).remove("indexGeneration");
+        assertThat(citationPost(invalid.toString(), credential, false).statusCode()).isEqualTo(400);
+        var document = lifecycle.document(owner, fixture.job().documentId());
+        lifecycle.visibility(owner, fixture.job().documentId(), UUID.randomUUID().toString(), document.revision(), Operation.WITHDRAW);
+        assertThat(json.readTree(citationPost(body.toString(), credential, false).body()).path("accessible").booleanValue()).isFalse();
+    }
+
+    private HttpResponse<String> citationPost(String body, String credential, boolean duplicate) throws Exception {
+        var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/internal/v2/knowledge/citations/check"))
+                .timeout(Duration.ofSeconds(15)).header("Content-Type", "application/json");
+        if (credential != null) request.header("X-Internal-Token", credential);
+        if (duplicate) request.header("X-Internal-Token", credential);
+        try (var client = HttpClient.newHttpClient()) {
+            return client.send(request.POST(HttpRequest.BodyPublishers.ofString(body)).build(), HttpResponse.BodyHandlers.ofString());
+        }
+    }
+
     private Fixture publish(Caller owner, String name) {
         String key = UUID.randomUUID().toString(); var job = knowledge.submit(owner, key, upload(key, name));
         return finish(job);
@@ -257,10 +303,10 @@ class AuthorizedRetrievalIT {
         try { var generator = KeyPairGenerator.getInstance("RSA"); generator.initialize(2048); return generator.generateKeyPair(); }
         catch (GeneralSecurityException failure) { throw new ExceptionInInitializerError(failure); }
     }
-    private static Path publicKey() {
+    private static Path publicKey(KeyPair keys) {
         try {
             var path = Files.createTempFile("retrieval-it-public-", ".pem"); path.toFile().deleteOnExit();
-            String pem = "-----BEGIN PUBLIC KEY-----\n" + Base64.getMimeEncoder(64, new byte[]{'\n'}).encodeToString(KEYS.getPublic().getEncoded()) + "\n-----END PUBLIC KEY-----\n";
+            String pem = "-----BEGIN PUBLIC KEY-----\n" + Base64.getMimeEncoder(64, new byte[]{'\n'}).encodeToString(keys.getPublic().getEncoded()) + "\n-----END PUBLIC KEY-----\n";
             return Files.writeString(path, pem);
         } catch (java.io.IOException failure) { throw new ExceptionInInitializerError(failure); }
     }

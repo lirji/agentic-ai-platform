@@ -85,6 +85,8 @@ class WorkGraphState(WorkGraphInput, total=False):
 class WorkPipeline:
     """每次领取构造独享执行器，租户、用户和知识范围由中央 Lease 固定。"""
 
+    input_fields = tuple(WorkGraphInput.__annotations__)
+
     def __init__(
         self,
         binding: TaskLease,
@@ -95,7 +97,7 @@ class WorkPipeline:
         self.binding, self.central, self.knowledge, self.chat = binding, central, knowledge, chat
         self.registration = EvidenceRegistration(central, binding, MAX_EVIDENCE)
         try:
-            self.request = WorkInput.model_validate_json(json.dumps(binding.input))
+            self.request = self.parse_input(binding.input)
         except (ValidationError, ValueError, TypeError):
             raise QaError(QaCode.INPUT_REJECTED) from None
         if (
@@ -104,6 +106,10 @@ class WorkPipeline:
             or binding.worker_id != central.worker_id
         ):
             raise QaError(QaCode.INPUT_REJECTED)
+
+    def parse_input(self, value: object) -> WorkInput:
+        """旧图只接受v1输入；新图通过独立适配保留原内容规则。"""
+        return WorkInput.model_validate_json(json.dumps(value))
 
     async def assert_active(self) -> None:
         """每个外部动作前续租，不把本地任务对象当成仍有执行权的证明。"""
@@ -193,10 +199,8 @@ class WorkPipeline:
     async def retrieve(self, state: WorkGraphState) -> dict[str, object]:
         """初始授权检索完成后提交根图快照，空证据不会进入模型循环。"""
         try:
-            incoming = {
-                key: cast(dict[str, object], state)[key] for key in WorkGraphInput.__annotations__
-            }
-            if WorkInput.model_validate_json(json.dumps(incoming)) != self.request:
+            incoming = {key: cast(dict[str, object], state)[key] for key in self.input_fields}
+            if self.parse_input(incoming) != self.request:
                 raise ValueError
         except (ValidationError, ValueError, KeyError, TypeError):
             raise QaError(QaCode.INPUT_REJECTED) from None

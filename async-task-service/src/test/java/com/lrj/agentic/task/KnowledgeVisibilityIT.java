@@ -31,6 +31,15 @@ class KnowledgeVisibilityIT {
     private static final Reference B = new Reference("00000000-0000-4000-8000-000000000002", 1, "b".repeat(64));
     @BeforeEach void available() { knowledge.reset(); }
 
+    @Test void newGenerationAdmissionIsClosedByDefaultWhileLegacyRemainsAvailable() {
+        var owner = owner();
+        error(TaskError.INPUT_INVALID, () -> tasks.claim(worker(owner),
+                new Claim(TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2)));
+        error(TaskError.INPUT_INVALID, () -> tasks.submit(owner, "closed-v2", new Submit(UUID.randomUUID().toString(),
+                TaskProtocol.KIND, TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2, json.createObjectNode())));
+        assertThat(run(owner, false).graphVersion()).isEqualTo(TaskProtocol.GRAPH);
+    }
+
     @Test void manifestReplayMonotonicityLeaseAndFrozenEventBinding() {
         var owner = owner(); var run = run(owner, false); var worker = worker(owner); String id = run.task().taskId();
         error(TaskError.CONFLICT, () -> tasks.append(worker, id, delta(run, "before")));

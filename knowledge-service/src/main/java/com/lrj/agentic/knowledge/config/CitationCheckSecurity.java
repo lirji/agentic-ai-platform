@@ -5,6 +5,7 @@ import com.lrj.agentic.contract.ApiError;
 import com.lrj.agentic.contract.PlatformError;
 import com.lrj.agentic.knowledge.api.RequestCorrelation;
 import com.lrj.agentic.contract.knowledge.CitationProtocol;
+import com.lrj.agentic.contract.knowledge.GenerationCitationProtocol;
 import com.lrj.agentic.security.IdentityProtocol;
 import com.lrj.agentic.security.JwtTrust;
 import java.time.Duration;
@@ -45,11 +46,11 @@ public class CitationCheckSecurity {
         decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(JwtTrust.validator(
                 CitationProtocol.ISSUER, IdentityProtocol.KNOWLEDGE_AUDIENCE, IdentityProtocol.TENANT_CLAIM),
                 new JwtTimestampValidator(Duration.ZERO), bounds));
-        return http.securityMatcher(CitationProtocol.PATH)
+        return http.securityMatcher(CitationProtocol.PATH, GenerationCitationProtocol.PATH)
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, CitationProtocol.PATH)
+                        .requestMatchers(HttpMethod.POST, CitationProtocol.PATH, GenerationCitationProtocol.PATH)
                         .hasAuthority("SCOPE_" + CitationProtocol.SCOPE)
                         .anyRequest().denyAll())
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(decoder))

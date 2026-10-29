@@ -208,3 +208,69 @@ def test_pg_preflight_failure_never_claims_or_constructs_chat_client(tmp_path, m
         asyncio.run(run_worker(config, check_only=True))
     assert called == ["closed", "closed"]
     assert read_ledger(chat_config)["calls"] == []
+
+
+@pytest.mark.parametrize("kind", ["KNOWLEDGE_QA", "RESEARCH"])
+def test_v2_routes_are_explicit_and_require_shared_retrieval(monkeypatch, kind):
+    from test_generation_qa import setup as qa_setup
+    from test_generation_work import setup as work_setup
+
+    from agentic_ai.agents.generation_pipeline import GenerationWorkPipeline
+    from agentic_ai.qa.generation_pipeline import GenerationQaPipeline
+
+    async def scenario():
+        pipeline, _, embedding, candidates, chat, use_case = (
+            qa_setup() if kind == "KNOWLEDGE_QA" else work_setup()
+        )
+        seen = []
+
+        async def routed(current, _checkpoints):
+            seen.append(current)
+            return current.binding.task
+
+        monkeypatch.setattr(worker, "_run_with_heartbeat", routed)
+        central = CentralWithFailure(pipeline.binding)
+        await execute_qa_task(
+            pipeline.binding,
+            central,
+            UNUSED_PG,
+            Knowledge(),
+            Chat(),
+            tool_chat=chat if kind == "RESEARCH" else None,
+            retrieval=use_case,
+            candidates=candidates,
+        )
+        assert isinstance(
+            seen[0], GenerationQaPipeline if kind == "KNOWLEDGE_QA" else GenerationWorkPipeline
+        )
+        central = CentralWithFailure(pipeline.binding)
+        result = await execute_qa_task(pipeline.binding, central, UNUSED_PG, Knowledge(), Chat())
+        assert result.error_code == "INPUT_REJECTED" and len(seen) == 1
+        assert not embedding.calls
+
+    asyncio.run(scenario())
+
+
+def test_retrieval_failure_mapping_does_not_enable_retry_for_budget_or_identity():
+    from agentic_ai.rag.errors import EmbeddingError, EmbeddingErrorCode
+    from agentic_ai.retrieval.errors import RetrievalCode, RetrievalError
+
+    for code in (
+        RetrievalCode.RERANK_DISABLED,
+        RetrievalCode.EVIDENCE_REJECTED,
+        RetrievalCode.AUTH_REJECTED,
+        RetrievalCode.INPUT_INVALID,
+    ):
+        assert failure_code(RetrievalError(code)) == (TaskFailureCode.INPUT_REJECTED, False)
+    assert failure_code(RetrievalError(RetrievalCode.RERANK_BUDGET_REJECTED)) == (
+        TaskFailureCode.BUDGET_EXCEEDED,
+        False,
+    )
+    assert failure_code(EmbeddingError(EmbeddingErrorCode.BUDGET_REJECTED)) == (
+        TaskFailureCode.BUDGET_EXCEEDED,
+        False,
+    )
+    assert failure_code(RetrievalError(RetrievalCode.KNOWLEDGE_UNAVAILABLE)) == (
+        TaskFailureCode.AI_UNAVAILABLE,
+        True,
+    )

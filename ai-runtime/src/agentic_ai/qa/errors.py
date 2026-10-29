@@ -4,6 +4,8 @@ from enum import StrEnum
 
 from pydantic import ValidationError
 
+from agentic_ai.rag.errors import EmbeddingError, EmbeddingErrorCode
+from agentic_ai.retrieval.errors import RetrievalCode, RetrievalError
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.models import TaskFailureCode
 
@@ -31,6 +33,21 @@ class QaError(RuntimeError):
 
 def failure_code(error: Exception) -> tuple[TaskFailureCode, bool]:
     """只把目录编码写入中央失败事实，预算/输入失败不开放自动额度恢复。"""
+    if isinstance(error, RetrievalError):
+        if error.code == RetrievalCode.RERANK_BUDGET_REJECTED:
+            return TaskFailureCode.BUDGET_EXCEEDED, False
+        if error.code in {
+            RetrievalCode.CAPACITY_EXCEEDED,
+            RetrievalCode.DEADLINE_EXCEEDED,
+            RetrievalCode.KNOWLEDGE_UNAVAILABLE,
+            RetrievalCode.RERANK_UNAVAILABLE,
+        }:
+            return TaskFailureCode.AI_UNAVAILABLE, True
+        return TaskFailureCode.INPUT_REJECTED, False
+    if isinstance(error, EmbeddingError):
+        if error.code == EmbeddingErrorCode.BUDGET_REJECTED:
+            return TaskFailureCode.BUDGET_EXCEEDED, False
+        return TaskFailureCode.AI_UNAVAILABLE, error.retryable
     if isinstance(error, QaError):
         if error.code == QaCode.BUDGET_EXCEEDED:
             return TaskFailureCode.BUDGET_EXCEEDED, False

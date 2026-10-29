@@ -2,6 +2,7 @@ package com.lrj.agentic.task.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lrj.agentic.contract.knowledge.CitationProtocol;
+import com.lrj.agentic.contract.knowledge.GenerationCitationProtocol;
 import com.lrj.agentic.security.Caller;
 import com.lrj.agentic.security.IdentityProtocol;
 import com.lrj.agentic.security.JwtTrust;
@@ -57,22 +58,33 @@ public class KnowledgeCitationClient {
 
     /** 整个公共读取共享同一期限；队列满和依赖不可用统一503，不能当作资源不存在。 */
     public boolean accessible(Caller owner, List<CitationProtocol.Reference> references, long deadline) {
+        CitationProtocol.validateReferences(references, 0, CitationProtocol.MAX_REFERENCES);
         if (references.isEmpty()) { return true; }
+        return check(owner, new CitationProtocol.Check(references), CitationProtocol.PATH, deadline);
+    }
+
+    /** 完整身份使用独立v2路径，密钥、容量与总期限仍共享原受限角色。 */
+    public boolean generationsAccessible(Caller owner, List<GenerationCitationProtocol.Reference> references, long deadline) {
+        GenerationCitationProtocol.normalized(references, 0, GenerationCitationProtocol.MAX_REFERENCES);
+        if (references.isEmpty()) { return true; }
+        return check(owner, new GenerationCitationProtocol.Check(GenerationCitationProtocol.SCHEMA, references), GenerationCitationProtocol.PATH, deadline);
+    }
+
+    private boolean check(Caller owner, Object command, String path, long deadline) {
         if (encoder == null || System.nanoTime() >= deadline || !slots.tryAcquire()) { unavailable(); }
         CompletableFuture<HttpResponse<byte[]>> pending = null;
         var span = tracer.nextSpan().name("tasks.knowledge-citations").start();
         try (var scope = tracer.withSpan(span)) {
-            CitationProtocol.validateReferences(references, 1, CitationProtocol.MAX_REFERENCES);
             Instant now = Instant.now();
             var claims = JwtClaimsSet.builder().issuer(CitationProtocol.ISSUER).audience(List.of(CitationProtocol.AUDIENCE))
                     .subject(owner.userId()).issuedAt(now).notBefore(now).expiresAt(now.plusSeconds(60))
                     .claim("azp", CitationProtocol.PARTY).claim(IdentityProtocol.TENANT_CLAIM, owner.tenantId())
                     .claim(IdentityProtocol.SCOPE_CLAIM, CitationProtocol.SCOPE).build();
             String token = encoder.encode(JwtEncoderParameters.from(JwsHeader.with(SignatureAlgorithm.RS256).build(), claims)).getTokenValue();
-            byte[] body = json.writeValueAsBytes(new CitationProtocol.Check(references));
+            byte[] body = json.writeValueAsBytes(command);
             if (body.length > CitationProtocol.MAX_BYTES) { unavailable(); }
             long remaining = deadline - System.nanoTime(); if (remaining <= 0) { unavailable(); }
-            var builder = HttpRequest.newBuilder(properties.endpoint().resolve(CitationProtocol.PATH)).timeout(Duration.ofNanos(remaining))
+            var builder = HttpRequest.newBuilder(properties.endpoint().resolve(path)).timeout(Duration.ofNanos(remaining))
                     .header(IdentityProtocol.INTERNAL_HEADER, token).header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofByteArray(body));
             Map<String, String> traceHeaders = new HashMap<>(); propagator.inject(span.context(), traceHeaders, Map::put);

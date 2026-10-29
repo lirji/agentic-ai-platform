@@ -12,13 +12,18 @@ public final class ConversationDtos {
     public record Create(@NotNull String title) { }
     public record Ask(@NotNull @Min(0) Long expectedRevision, @NotNull String question,
             @NotNull List<String> documentIds, String contextTurnId) { }
+    /** v2策略是不可变请求的一部分，不接受省略后的部署默认值。 */
+    public record AskGeneration(@NotNull @Min(0) Long expectedRevision, @NotNull String question,
+            @NotNull List<String> documentIds, String contextTurnId, @NotNull String retrievalStrategy) { }
     public record Retry(@NotNull @Min(0) Long expectedRevision) { }
     public record Conversation(String conversationId, String title, long revision,
             Instant createdAt, Instant updatedAt) { }
     public record Turn(String turnId, String conversationId, long sequence, String question,
             List<String> documentIds, String contextTurnId, String taskId, DispatchState dispatchState,
             int dispatchAttempts, int retryCount, long revision, String errorCode,
-            Instant createdAt, Instant updatedAt) { }
+            Instant createdAt, Instant updatedAt,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+            String retrievalStrategy) { }
     public record Conversations(List<Conversation> items, String nextCursor) { }
     public record Turns(List<Turn> items, Long nextCursor) { }
 }

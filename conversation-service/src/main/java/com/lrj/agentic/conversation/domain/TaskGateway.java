@@ -13,5 +13,13 @@ public interface TaskGateway {
     /** 传给 Python 的业务输入没有用户 JWT 或数据库连接信息。 */
     record QuestionInput(String schemaVersion, String conversationId, String turnId,
             String question, java.util.List<String> documentIds, String contextTurnId,
-            String contextTaskId, String contextQuestion) { }
+            String contextTaskId, String contextQuestion,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+            String retrievalStrategy) {
+        /** 旧调用者保持原输入结构，JSON不写出空策略字段。 */
+        public QuestionInput(String schemaVersion, String conversationId, String turnId, String question,
+                java.util.List<String> documentIds, String contextTurnId, String contextTaskId, String contextQuestion) {
+            this(schemaVersion, conversationId, turnId, question, documentIds, contextTurnId, contextTaskId, contextQuestion, null);
+        }
+    }
 }

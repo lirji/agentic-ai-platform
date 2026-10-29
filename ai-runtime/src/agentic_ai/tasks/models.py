@@ -86,7 +86,14 @@ class TaskLease(WireModel):
     owner_id: SubjectId
     input: dict[str, JsonValue]
     runtime_version: Literal["langgraph-v1"]
-    graph_version: Literal["knowledge-qa-v1", "knowledge-work-v1", "knowledge-evaluation-v1"]
+    graph_version: Literal[
+        "knowledge-qa-v1",
+        "knowledge-work-v1",
+        "knowledge-evaluation-v1",
+        "knowledge-qa-v2",
+        "knowledge-work-v2",
+        "knowledge-evaluation-v2",
+    ]
     epoch: int = Field(ge=0)
     worker_id: SubjectId | None
     lease_expires_at: AwareDatetime | None

@@ -59,3 +59,13 @@ Task：`taskId,kind,status,revision,attemptCount,resumeCount,retryable,errorCode
 ## S5A 验收
 
 真实 MySQL 验证：创建同键并发/异参；并发领取只一个胜者；数据库过期接管/旧 epoch 拒绝；heartbeat、取消、迟到完成；事件序号/同键重放/边界；完成未知响应对账；checkpoint 指针不得被旧 worker 推进；失败显式恢复和次数界限；租户/owner 隔离；真实 HTTP 身份拒绝、网关路由、重启可查。S5A 不调用聊天模型，也不声称 PG 联合 fencing 或用户问答已验收。
+
+## S11E：完整证据兼容增量
+
+依据[检索契约第9节](RETRIEVAL_CONTRACTS.md#9-s11e消费者接入增量2026-10-29)。新graph为knowledge-qa-v2/knowledge-work-v2/knowledge-evaluation-v2，只有对应输入、执行器与消费者全部完成后才允许受理/领取；当前基础模块不宣称路由已开放。Tasks的task.generation-enabled默认false，拒绝新图受理/领取；worker的retrieval_enabled默认false，不装配模型依赖或领取新图。双方只在消费者联合验收后一起启用，关闭时不改写已有任务或清单。
+
+完整登记新增`POST /internal/v1/task-worker/{id}/knowledge-evidence-v2`，沿原worker身份/租约/行锁/operationKey；请求恰为`{epoch,operationKey,schemaVersion:"knowledge-evidence-v2",references:[完整八分量]}`，QA至多5项、work至多10项，可为空；同epoch只可追加，同键异内容409。v1登记不能用于v2图，v2登记不能用于v1图。回复仍是`{taskId,epoch,evidenceDigest}`，digest按检索契约的版本化长度前缀算法；正文事件绑定确切修订。Tasks V5仅追加evidence_schema列、默认旧v1、闭合集合CHECK，references_json继续ARRAY，禁止改变V4或旧摘要。
+
+v2最终结果为`{schemaVersion, strategy, content, references, retrieval}`。schemaVersion为knowledge-qa-result-v2或knowledge-work-result-v2；content完整保留对应v1结果结构和全部原校验，references为content最终引用的一一对应完整身份，retrieval为1..5个`{strategy,mode,degraded:false,elapsedMs}`实际调用诊断，无查询/正文。外层strategy与不可变输入retrievalStrategy相同，每项诊断策略相同；RRF策略只有RRF/EMPTY，精排策略只有RERANKED/EMPTY，未知模式拒绝。任何最终引用必须来自当前epoch完整清单；历史读取及SSE使用完整清单验证全部生成依赖，不能降到content三元组，也不能通过空references绕过非空正文。
+
+为保证v2追问继承完整生成依赖，增加只读`GET /internal/v1/task-worker/{id}/knowledge-evidence-v2`：沿原worker租户身份，只接受已成功v2任务，按原owner现时核验全部清单，返回`{taskId,epoch,schemaVersion,evidenceDigest,references}`（schema固定knowledge-evidence-v2，references 0..10，摘要同登记）。未成功/旧图/跨租户/失效返回TASK_NOT_FOUND；依赖不可用仍503。清单不含正文，不能改变或重算历史摘要。新QA上下文只可连接同owner/会话/范围的成功v2问题，原v1上下文继续使用v1入口；不将旧三元组补成新代次。追问在生成、恢复、完成前重验并将前文完整依赖并入本次清单，总上限沿QA的5项；超限拒绝，不静默裁剪。此增量仅随对应消费者联合验收后开放。

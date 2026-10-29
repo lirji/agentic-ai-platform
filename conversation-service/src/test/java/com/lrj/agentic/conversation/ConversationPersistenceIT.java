@@ -31,6 +31,41 @@ class ConversationPersistenceIT {
     @Autowired CentralScenario central;
 
     @Test
+    void generationStrategyIsDurableAndUnknownDispatchReplaysOriginalInput() {
+        var owner = owner();
+        var conversation = conversations.create(owner, "new", new Create("策略恢复"));
+        var command = new AskGeneration(0L, "固定策略问题", List.of(), null, "LLAMA_RRF_V1");
+        var turn = conversations.askGeneration(owner, conversation.conversationId(), "ask", command);
+        assertThat(turn.retrievalStrategy()).isEqualTo("LLAMA_RRF_V1");
+        assertThat(conversations.askGeneration(owner, conversation.conversationId(), "ask", command)).isEqualTo(turn);
+        error(ConversationError.IDEMPOTENCY_CONFLICT, () -> conversations.askGeneration(owner, conversation.conversationId(), "ask",
+                new AskGeneration(0L, command.question(), List.of(), null, "LLAMA_RERANK_V1")));
+        error(ConversationError.IDEMPOTENCY_CONFLICT, () -> conversations.ask(owner, conversation.conversationId(), "ask",
+                new Ask(0L, command.question(), List.of(), null)));
+        assertThat(jdbc.queryForObject("SELECT retrieval_strategy FROM knowledge_turn WHERE turn_id=?", String.class, turn.turnId()))
+                .isEqualTo("LLAMA_RRF_V1");
+        central.dropOnce.add(turn.taskId());
+        var first = dispatch.claim(owner.tenantId(), "worker-first").orElseThrow();
+        dispatch.dispatch(first);
+        var sent = central.inputs.get(turn.taskId());
+        assertThat(sent.schemaVersion()).isEqualTo("knowledge-qa-input-v2");
+        assertThat(sent.retrievalStrategy()).isEqualTo("LLAMA_RRF_V1");
+        jdbc.update("UPDATE knowledge_turn SET next_attempt_at=UTC_TIMESTAMP(6) WHERE turn_id=?", turn.turnId());
+        dispatch.dispatch(dispatch.claim(owner.tenantId(), "worker-restored").orElseThrow());
+        assertThat(central.inputs.get(turn.taskId())).isEqualTo(sent);
+        assertThat(central.counts.get(turn.taskId())).isEqualTo(2);
+        assertThat(conversations.turn(owner, conversation.conversationId(), turn.turnId()).dispatchState()).isEqualTo(DispatchState.SUBMITTED);
+        central.statuses.put(turn.taskId(), TaskStatus.SUCCEEDED);
+        error(ConversationError.CONTEXT_INVALID, () -> conversations.ask(owner, conversation.conversationId(), "old-context",
+                new Ask(1L, "不能将完整证据降为旧图", List.of(), turn.turnId())));
+        var followup = conversations.askGeneration(owner, conversation.conversationId(), "followup",
+                new AskGeneration(1L, "同家族可换策略", List.of(), turn.turnId(), "LLAMA_RERANK_V1"));
+        assertThat(followup.contextTurnId()).isEqualTo(turn.turnId());
+        error(ConversationError.INPUT_INVALID, () -> conversations.askGeneration(owner, conversation.conversationId(), "invalid",
+                new AskGeneration(2L, "不能升级旧策略", List.of(), null, "JAVA_RRF_LEGACY")));
+    }
+
+    @Test
     void concurrentCreateAndIdempotentTurnReplayCommitOneResource() throws Exception {
         var owner = owner();
         var created = race(6, () -> conversations.create(owner, "create", new Create("合成会话")));

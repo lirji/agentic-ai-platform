@@ -1,0 +1,176 @@
+{
+  "slice": "S11E",
+  "status": "PARTIAL",
+  "foundation": "VALIDATED",
+  "public_entrypoints": "NOT_ENABLED",
+  "baseline": "7b75c1ed5895c71e74df8cdd7e2dbb653d0fef4b",
+  "source_inputs": {
+    "ai-runtime/src/agentic_ai/agents/generation_pipeline.py": "60d24509c3ba6e66bdea1fd07a2a4e9d059e4b00de6d718db7a5d533dce39551",
+    "ai-runtime/src/agentic_ai/agents/pipeline.py": "690a6f0252ff88e3885b921d619ba64aef4b30014e8fd12377efdebaa51aa538",
+    "ai-runtime/src/agentic_ai/qa/errors.py": "f7ce148f46fed9d942def494eb7c02f395a28b55d5daba8453e2920543b551cc",
+    "ai-runtime/src/agentic_ai/qa/generation_pipeline.py": "cdd07a2f097f06d55071083108561b4beccb07e3de51f8657c844b1cb346e93b",
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "5608ef07cde497c86aa27083dfd46a8bacbce7dc262a4b4fbdc3b13f4a0f150a",
+    "ai-runtime/src/agentic_ai/qa/worker.py": "1c8befdd01a949d23a9f5bf53cad711573fde9e95e76add92270fa58f9d10432",
+    "ai-runtime/src/agentic_ai/retrieval/consumer.py": "7e402e663a61798908e13e9c6d049b022e8d8852eba7afb9918f2cfcb88a69c5",
+    "ai-runtime/src/agentic_ai/retrieval/deadline.py": "984b604b8977e00cb6d44c2e4144919fe4442384ee9d627528e1a12ee94d6a34",
+    "ai-runtime/src/agentic_ai/retrieval/evidence.py": "da798aba585fdf3f8d8a9a44ddb39a50779385e061f74f9d3e8403c4477db047",
+    "ai-runtime/src/agentic_ai/retrieval/task_evidence.py": "2325f4d5dcafed21e15a1c418e1b3a281489d4f9a68f3f2491bc209d99e3088d",
+    "ai-runtime/src/agentic_ai/retrieval/task_models.py": "c6e3187731542c279cbc2c22092cf7ca0de7350f2721444d2a0400a7d93fa9d9",
+    "ai-runtime/src/agentic_ai/tasks/client.py": "4754b63fd0d4a204b484b30d803144e70c176befce1e205a3deb496245cffd08",
+    "ai-runtime/src/agentic_ai/tasks/models.py": "c286e55421846ad817a7e6e2ff3b24ad3b254bb780a621595465da036abc54c2",
+    "ai-runtime/tests/test_generation_qa.py": "c462842f840308a3b68a3b7f01f8cfe777fcf4bdc0f694908e11e36460febcfc",
+    "ai-runtime/tests/test_generation_work.py": "93929266382b2279e3fd6f612c63facafc839976516a2d0940b1735703d84050",
+    "ai-runtime/tests/test_qa_worker.py": "5fbca29e6c898d3afea58df3b53b548c59df4491ff5dba85fbc5c8f90dec5146",
+    "ai-runtime/tests/test_retrieval_consumers.py": "decc586e27dc29089ecd998d7443e7056abf258362b00cca164a7e3fa6a8b372",
+    "async-task-service/src/main/java/com/lrj/agentic/task/api/TaskController.java": "baf9cecffe6d025891b6ba892dbe85dfc9f372adb5bc8172b331ea7f74832930",
+    "async-task-service/src/main/java/com/lrj/agentic/task/api/TaskDtos.java": "25bc7e21ecf131beadca3c5a921786f1a28ddf6a0841370c87e970d219f8b039",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/GenerationKnowledgeResults.java": "cc68a4fa34ee6e32234933d631a375cd21b22d30d926fd9ecbebb03fd0a0ee38",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/RetrievalTaskRequests.java": "4d1ddf9fe4275680c2fefd6cbce056f64fb1639dfa2f7b30f37d6a7f657ef06d",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskKnowledgeEvidence.java": "42586903c460965f524eb897b51423625fb8c08b226f5b3e6c007810729d0254",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskKnowledgeVisibility.java": "5c8bba217dd9da46f0fdceb8e6c9cab6c78c1b43578b218906efcdea9c955fd1",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskService.java": "b1326f157a0d30053b7e4c81d405f675f11cdb1602c1b14aef8f19628801c238",
+    "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskProtocol.java": "02ccce9d5cbb8a0f171891d4ed5b638838e049687ab880355ea1d95f3a6bbf8b",
+    "async-task-service/src/main/java/com/lrj/agentic/task/infrastructure/KnowledgeCitationClient.java": "0d7c41fabb42295d4fe0a56840bd35bad141da0c171fba5e83bbb5b5840457a3",
+    "async-task-service/src/main/java/com/lrj/agentic/task/infrastructure/KnowledgeEvidenceRow.java": "7c981001e06f948eea940e1de532a085847c8c4bf278712851a90af2b1de8479",
+    "async-task-service/src/main/resources/db/migration/V5__generation_evidence.sql": "5384d398d0f6fd576fd1decb935c32460f62dc5439cc33ed5a9a5ae81828e1ac",
+    "async-task-service/src/main/resources/mapper/KnowledgeEvidenceMapper.xml": "c6885b07aabfc920279c2aa2f0fa8998105c8983ea681300acb41447ef4f998e",
+    "async-task-service/src/test/java/com/lrj/agentic/task/CitationTestConfiguration.java": "0c8e59c5fa2d28c8cba87f310d3649745249bc4af4773fdb17e369f96e8aef67",
+    "async-task-service/src/test/java/com/lrj/agentic/task/KnowledgeVisibilityIT.java": "6f4071e496112bd318c060e74f95be9dda2db7698bbeb9f1892b83d4c4d0e087",
+    "async-task-service/src/test/java/com/lrj/agentic/task/TaskPersistenceIT.java": "46f43f82536884b332aef97155a7b6b75a10ae95386482b45ebd600f12ca847a",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/api/ConversationDtos.java": "e615dfcac2cff02687a7b708d27c7739e98b3a0668d7c8676006af319a6578c3",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationService.java": "dd9b6b00bb294a01f060421350aa1fb720576c2e9c44616ea3eed7d40d7c4df4",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationValues.java": "78cf2d6b7ae05970e5ed08756ad0f8447eed93336274d1c614f8f1709ca467d2",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java": "bd6156853b48d80bd9500b9fe4da31e24ba0cd3f36cd981cfd74030d44ba2c02",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/TaskGateway.java": "9bd1c3ed0f67bf7bd8aab1ea38a6ac65d8a218cf9a4595b3916060682f2e8042",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/CentralTaskGateway.java": "6739cbdf73c7ee1c3bcf12102bc4f46d9ca8c8f7f87b33cd75eab989ceb85bc8",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/TurnRow.java": "6c1e91a8baaf8d99d1c4986cd252e2230da4218af2043f2dceaab7355c3f974c",
+    "conversation-service/src/main/resources/db/migration/V2__retrieval_strategy.sql": "b468870f3d6526734b2e90eef6a00a0a2567176293a8348a28f7e83d25ab89fd",
+    "conversation-service/src/main/resources/mapper/ConversationMapper.xml": "1d1bb50a5d258aca79bd87dfccb11c2724321a913f575d0555a4a1e1ea06f959",
+    "conversation-service/src/test/java/com/lrj/agentic/conversation/CentralTaskGatewayTest.java": "734221fddcc7c9b9e41cb869ad7439a8fe9b880b2982af19164125acbeca2312",
+    "conversation-service/src/test/java/com/lrj/agentic/conversation/ConversationPersistenceIT.java": "3c40a92ac4424c72a877fd4183cbfc1ee00aa38e07547c780dc5b07c475ea4cf",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/CitationCheckController.java": "0b3559ccc993eb65ac5e91a7afbf531fd50680d440a90adc02f7055cdb50513c",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/GenerationCitationCheck.java": "f7f04f11e5b089a56bc8e9a7a56696c02afb8adaf427426b3e32e977b42e5cf8",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/CitationCheckSecurity.java": "276d1362d7cd70fc2cf92f991d120cfbe34deb553fde5ec764e9c1f0987e689d",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/AuthorizedRetrievalIT.java": "ddb8d3e29ceaeb0849ee82f74879e51f29158e26e8f69255a7b2575e02aa76b8",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/GenerationCitationTest.java": "98d1d0cac31262a3af8a514d2e8b69238887682900225ce11f196d436b75ca7e",
+    "knowledge-service/src/test/resources/generation-evidence-golden.json": "ee1e71d7976bdc872dca595effe8b5e80b8f8d7b6f814e6751d8d7a20424c261",
+    "platform-contracts/src/main/java/com/lrj/agentic/contract/knowledge/GenerationCitationProtocol.java": "0ad2e9b6b6e4f729a204ebea8260e1802c4b575d3c646d36340c8d4afa016ba8",
+    "platform-contracts/src/main/java/com/lrj/agentic/contract/knowledge/RetrievalStrategy.java": "e3d13b744aeef05cba4bb1821bb53fa6fbbbb770cf0a580cfbdce8c5849bf4c0"
+  },
+  "logs": {
+    "s11e-python-current.log": {
+      "sha256": "a22a7cb69771704b90203c29e82a2b370b646589f9d7625091a4627c98bb10b5",
+      "summary": [
+        "526 passed, 53 skipped, 22 warnings in 7.56s"
+      ]
+    },
+    "s11e-final-focused.log": {
+      "sha256": "7be63c61f7b528978e2acfc83e956af33c44c12ee80a51542fc3f31011f260f5",
+      "summary": [
+        "45 passed, 3 warnings in 2.68s"
+      ]
+    },
+    "s11e-worker-final.log": {
+      "sha256": "c3a3f366d7426d4c7e6a816567a67225a8818015e721fb545381f6caf3e14e30",
+      "summary": [
+        "19 passed in 2.51s"
+      ]
+    },
+    "s11e-public-protocol-final.log": {
+      "sha256": "257a44575f997eabb6b58c07f78f0dafa647157cd46e722355c1816fc15f2568",
+      "summary": [
+        "11 passed in 0.83s"
+      ]
+    },
+    "s11e-java-current-unit.log": {
+      "sha256": "a6f1d5bfad6617c774431ee6ab304a5097be97eacc65bb302c17cea4c16e4ea4",
+      "summary": [
+        "Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.951 s -- in com.lrj.agentic.parser.DocxArchiveTest",
+        "Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.058 s -- in com.lrj.agentic.parser.PdfExtractorTest",
+        "Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.652 s -- in com.lrj.agentic.parser.DocxExtractorTest",
+        "Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.546 s -- in com.lrj.agentic.security.JwtTrustTest",
+        "Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.104 s -- in com.lrj.agentic.knowledge.AdaptiveKnowledgeSearchTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.160 s -- in com.lrj.agentic.knowledge.GenerationCitationTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.377 s -- in com.lrj.agentic.knowledge.config.ProcessingAdmissionTest",
+        "Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.090 s -- in com.lrj.agentic.knowledge.DocxStructureTest",
+        "Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.882 s -- in com.lrj.agentic.knowledge.ProcessingBoundaryTest",
+        "Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.158 s -- in com.lrj.agentic.knowledge.StructuredProfileTest",
+        "Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.024 s -- in com.lrj.agentic.knowledge.ComparisonRulesTest",
+        "Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s -- in com.lrj.agentic.knowledge.EvaluationWireContractTest",
+        "Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.lrj.agentic.knowledge.ChunkSourcesTest",
+        "Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.055 s -- in com.lrj.agentic.knowledge.EvaluationRulesTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s -- in com.lrj.agentic.knowledge.IndexReadbackTest",
+        "Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.067 s -- in com.lrj.agentic.knowledge.StructuredProcessingTest",
+        "Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in com.lrj.agentic.knowledge.ReviewRulesTest",
+        "Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.lrj.agentic.knowledge.RetrievalFusionGoldenTest",
+        "Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in com.lrj.agentic.knowledge.application.UploadRulesTest",
+        "Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s -- in com.lrj.agentic.knowledge.application.DocxUploadRulesTest",
+        "Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.473 s -- in com.lrj.agentic.knowledge.infrastructure.processing.ParserProcessTest",
+        "Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.302 s -- in com.lrj.agentic.knowledge.infrastructure.storage.SourceConfigurationTest",
+        "Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.046 s -- in com.lrj.agentic.knowledge.infrastructure.evaluation.EvaluationHttpTest",
+        "Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.098 s -- in com.lrj.agentic.knowledge.GenerationProcessingTest",
+        "Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.062 s -- in com.lrj.agentic.knowledge.AuthorizedRetrievalTest",
+        "Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.lrj.agentic.knowledge.ProcessingDiagnosticsTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.136 s -- in com.lrj.agentic.task.TaskValuesTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.272 s -- in com.lrj.agentic.task.KnowledgeCitationClientTest",
+        "Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.178 s -- in com.lrj.agentic.conversation.config.ConversationJsonTest",
+        "Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.439 s -- in com.lrj.agentic.conversation.CentralTaskGatewayTest",
+        "Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.375 s -- in com.lrj.agentic.gateway.KnowledgeUploadLimitTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s -- in com.lrj.agentic.gateway.IdentityExchangeTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.389 s -- in com.lrj.agentic.gateway.GatewaySecurityTest",
+        "BUILD SUCCESS"
+      ]
+    },
+    "s11e-java-foundation-final.log": {
+      "sha256": "99b503e563e6255cb3caac99916078bbfef85332c67b1aee8f9cf7f327dabae9",
+      "summary": [
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.241 s -- in com.lrj.agentic.knowledge.GenerationCitationTest",
+        "Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.85 s -- in com.lrj.agentic.knowledge.AuthorizedRetrievalIT",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.127 s -- in com.lrj.agentic.task.TaskValuesTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.298 s -- in com.lrj.agentic.task.KnowledgeCitationClientTest",
+        "Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.876 s -- in com.lrj.agentic.task.TaskPersistenceIT",
+        "Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.591 s -- in com.lrj.agentic.conversation.CentralTaskGatewayTest",
+        "Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.639 s -- in com.lrj.agentic.conversation.ConversationPersistenceIT",
+        "BUILD SUCCESS"
+      ]
+    },
+    "s11e-task-gated-final.log": {
+      "sha256": "d6bc57cf57f44ba9760e384ac26c1284494cf8c5e0bcf85f1e0aea665af9b982",
+      "summary": [
+        "Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.471 s -- in com.lrj.agentic.security.JwtTrustTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.126 s -- in com.lrj.agentic.task.TaskValuesTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.170 s -- in com.lrj.agentic.task.KnowledgeCitationClientTest",
+        "Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.123 s -- in com.lrj.agentic.task.KnowledgeVisibilityIT",
+        "Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.331 s -- in com.lrj.agentic.task.TaskPersistenceIT",
+        "BUILD SUCCESS"
+      ]
+    },
+    "s11e-task-default-gate.log": {
+      "sha256": "77c962f9f7d1c8f9ce5589fd20f83b6718c743f71954e45b1f2e2404180461c5",
+      "summary": [
+        "Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.446 s -- in com.lrj.agentic.security.JwtTrustTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.118 s -- in com.lrj.agentic.task.TaskValuesTest",
+        "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.199 s -- in com.lrj.agentic.task.KnowledgeCitationClientTest",
+        "Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.031 s -- in com.lrj.agentic.task.KnowledgeVisibilityIT",
+        "BUILD SUCCESS"
+      ]
+    }
+  },
+  "commands": [
+    "cd ai-runtime && uv run ruff check src tests && uv run ruff format --check src tests && uv run mypy src && uv run pytest -q",
+    "mvn -B -ntp test",
+    "mvn -B -ntp -pl knowledge-service,async-task-service,conversation-service -am -Pintegration -Dit.test=AuthorizedRetrievalIT,TaskPersistenceIT,ConversationPersistenceIT -Dfailsafe.failIfNoSpecifiedTests=false -Dtest=GenerationCitationTest,TaskValuesTest,KnowledgeCitationClientTest,CentralTaskGatewayTest -Dsurefire.failIfNoSpecifiedTests=false verify",
+    "mvn -B -ntp -pl async-task-service -am -Pintegration -Dit.test=TaskPersistenceIT,KnowledgeVisibilityIT -Dfailsafe.failIfNoSpecifiedTests=false verify",
+    "python3 ci/check_contract_docs.py"
+  ],
+  "environment": "Java integration uses deploy.local.environment(test), existing dev_infra, isolated synthetic records; no credentials in report",
+  "unverified": [
+    "Evaluation v2",
+    "public facade",
+    "frontend",
+    "real PG/new Tasks HTTP recovery",
+    "two-process capacity",
+    "new runtime containers",
+    "real rerank quality U04"
+  ]
+}

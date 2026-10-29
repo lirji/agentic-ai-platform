@@ -85,3 +85,31 @@ S11E必须使搜索、问答、研究和评测调用同一个策略实现；受�
 固定代码与框架证据见[取证](../../qa/retrieval-contracts-20261028/source-evidence.json)，验收见[矩阵](RETRIEVAL_ACCEPTANCE.md)。官方重排文档目前给出qwen3-rerank示例、独立/reranks接口与地域业务空间端点；这不证明当前账号开通、旧端点兼容或模型效果。本片保留已批准的优先候选，S11D再按账号核实型号/端点/价格/独立额度。[百炼官方文档](https://help.aliyun.com/zh/model-studio/rerank)
 
 U01代表语料/标注、U04真实Reranker条件、U03共享身份、U06规模SLO仍未决。它们不阻断S11A契约或S11B/C隔离机制实现；不据此宣布真实重排质量、生产容量或共享授权完成。
+
+## 9. S11E消费者接入增量（2026-10-29）
+
+以下为本次已授权范围内冻结的兼容边界；具体实现及可用状态以S11E验收为准。旧请求、图、结果和摘要不重写。
+
+### 9.1 共用用例、公开投影与部署容量
+
+搜索、QA、研究、评测的新路径调用同一个`RetrievalUseCase`，只接收第3–6节既定的查询、范围、topK、策略与可信调用上下文。用例返回完整JSON证据及诊断：`strategy`、`mode`（RRF/RERANKED/EMPTY）、`degraded=false`、`elapsedMs`（本次用例实际单调时钟耗时）、`hits`。每个命中保留完整八分量身份、权威正文/source、rrfScore、可选rerankScore、内部contributions；EMPTY没有命中，RERANKED只来自真实适配器成功评分，未配置精排在Embedding之前拒绝。当前不注册允许降级的策略，不把失败伪装RRF_ONLY。
+
+公开投影为`{schemaVersion:"knowledge-search-result-v2",strategy,mode,degraded,elapsedMs,hits}`；每条命中恰为`{rank,identity,text,source,rrfScore,rerankScore,routes}`，rank从1连续编号，routes固定VECTOR/KEYWORD顺序，仅表达该合法命中的贡献来源。rrfScore沿既有兼容协议提供，不能额外公开sourceRank/sourceScore、候选总量、过滤数量或内部URL。rerankScore未实际观察时为null；不增加推算费用或未计时阶段的零值。
+
+HTTP和worker分别复用进程级单实例用例，每进程最多1个在途，无等待队列；当前部署必须固定一个HTTP进程和一个串行worker，合计最多2。不能将通用测试类的默认2许可直接各装配一次。扩副本/uvicorn多worker前必须重新分配容量，当前不承诺集群分布式信号量。Java公共门面不获取候选回调许可；原语仍复用已有Knowledge容量。每次执行的30秒总限额夹紧到调用方剩余期限，取消继续传播且不退回已预留模型费用。
+
+### 9.2 完整引用的受限核验
+
+新增`POST /internal/v2/knowledge/citations/check`，复用K08专用issuer/audience/azp、签名密钥及`knowledge:citations:check`，只返回`{accessible:boolean}`，绝不授予Tasks检索/原文权限。请求恰为`{schemaVersion:"knowledge-evidence-v2",references:[Identity]}`。Identity恰为第4节八分量；version/indexGeneration在1..2147483647，processorVersion为1..128个可编码UTF-8非空白字符，拒绝NUL。引用1..20项、不重复，正文上限32KiB；重复键、未知/缺失字段、错误schema和类型均400。错误身份401/403；数据库故障503，不伪装accessible=false；任一引用缺失、跨owner、被撤下或任一分量变化均返回false且不提供原因。一次有界权威读取，不使用索引或缓存替代当前发布记录。
+
+Tasks的新证据清单仍保存JSON数组，沿V4的0..10长度约束；新追加schema列区分knowledge-evidence-v1/v2，旧行默认v1，不修改V4历史。v2清单不得被v1注册路径写入；任务graph决定所需证据版本，未知schema拒绝。摘要为UTF-8字符串`knowledge-evidence-v2\n`加规范引用key以LF连接的SHA256。引用key按(documentId,version,indexGeneration,jobId,processorVersion,chunkId,batchDigest,textHash)每个分量的UTF-8字节数、冒号、原值依次拼接，禁止分隔符歧义；引用按上述八分量字典序排序，其中两个版本按数值排序。空清单也保留版本前缀。跨语言共享金标覆盖排序、空列表、同内容新代及非法输入。
+
+### 9.3 任务与旧数据兼容
+
+新QA/work/evaluation输入和图采用独立v2版本；显式`retrievalStrategy`仅允许LLAMA_RRF_V1/LLAMA_RERANK_V1。受理事务先持久冻结策略并纳入原请求指纹，再分派中央；同键更换策略409。v1输入缺策略仅解释为JAVA_RRF_LEGACY，不默认升级，不将旧评测画像/基线摘要重新计算为新策略。新worker同时保留v1路由，原检查点按持久graph恢复。
+
+新图的检索状态持久保存完整身份、贡献与诊断，不保存客户端/框架节点；生成前、完成前、检查点恢复和历史正文读取均验证v2清单。最终引用只可来自清单；不能仅登记最终被模型引用的子集。新图不得降为三元组核验，旧v1结果继续按旧规则读取。新结果承接原QA/work内容语义，通过独立v2 schema携带retrieval诊断及完整引用，S12的新回答结构仍不在本片范围。
+
+### 9.4 开放顺序与验收
+
+先交付共享报文/完整核验，再持久策略和版本路由，最后装配公共门面及前端。只有全部对应消费者就绪才开放v2入口；旧入口保留供版本回退。UI未执行前标记请求策略，终态按服务端实际mode展示；不可用精排禁选并说明条件，未知提交沿同一幂等键查回执。联合验收覆盖同输入一致性、旧任务恢复、同内容重索引失效、撤下/跨owner、失败恢复、取消、两进程总容量及公开响应脱敏。真实精排效果仍受U04约束，协议替身只证明机制。

@@ -14,6 +14,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from pydantic import BaseModel, ValidationError
 
+from agentic_ai.retrieval.evidence import GenerationManifest, GenerationReference
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.evidence import EvidenceReceipt, EvidenceReference, digest
 from agentic_ai.tasks.models import (
@@ -185,6 +186,15 @@ class CentralTaskClient:
         """未知操作结果先查询中央事实，不盲目重做。"""
         return await self._request("GET", self._path(task_id), TaskLease)
 
+    async def generation_manifest(self, task_id: str) -> "GenerationManifest":
+        """上下文继承中央完整清单，服务端按原owner重新核验当前权限。"""
+        result = await self._request(
+            "GET", self._path(task_id, "/knowledge-evidence-v2"), GenerationManifest
+        )
+        if result.task_id != task_id:
+            raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID)
+        return result
+
     async def heartbeat(self, task_id: str, epoch: int) -> TaskLease:
         """中央数据库期限是有效性的唯一依据。"""
         return await self._request(
@@ -223,6 +233,31 @@ class CentralTaskClient:
             {
                 "epoch": epoch,
                 "operationKey": f"evidence:{epoch}:{expected}",
+                "references": [item.model_dump(mode="json", by_alias=True) for item in references],
+            },
+        )
+        if (receipt.task_id, receipt.epoch, receipt.evidence_digest) != (task_id, epoch, expected):
+            raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID)
+        return receipt
+
+    async def generation_evidence(
+        self, task_id: str, epoch: int, references: tuple["GenerationReference", ...]
+    ) -> EvidenceReceipt:
+        """完整身份按独立schema登记；稳定摘要键支持未知响应后安全核对。"""
+        from agentic_ai.retrieval.evidence import EVIDENCE_SCHEMA, generation_digest
+
+        self._path(task_id)
+        if len(references) > 10:
+            raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID)
+        expected = generation_digest(references)
+        receipt = await self._request(
+            "POST",
+            self._path(task_id, "/knowledge-evidence-v2"),
+            EvidenceReceipt,
+            {
+                "epoch": epoch,
+                "operationKey": f"evidence:{epoch}:{expected}",
+                "schemaVersion": EVIDENCE_SCHEMA,
                 "references": [item.model_dump(mode="json", by_alias=True) for item in references],
             },
         )

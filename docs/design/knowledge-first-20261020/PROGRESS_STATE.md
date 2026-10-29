@@ -1,20 +1,36 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前状态：S11E 恢复核对通过，额度限制下保留检查点
+## 当前任务：S11E 检索消费者接入（IN_PROGRESS）
 
-- 任务capability-delivery-20261021，51项已批准、parallel=no；S8A–F/S9A–D/S10A–F/S11A–C已交付；S11D协议/预算/失败机制及必需本地验收PASS，真实模型U04条件保留。S11E已开始只读接入分析，公共/任务契约与产品实施尚未完成；整个平台未完成。
-- 后端原目录feat/retrieval-consumers-20261028，基线5779cf08c240e28ee7803738b7e4e294709cfb3b，S11D实现b357b385773ebf47f47982bf96883c782cc44a1c已正常FF推main，分支CI40686683218/mainCI40687038468 PASS；最终收据5779cf0分支CI40687419254 PASS，已正常FF推main，最终main CI40687859328 PASS，.local/s11d-final-ci.json。S11C实现1c67d42分支CI40682978986/mainCI40683250413 PASS；最终c3e5125分支CI40683550955/mainCI40684005520 PASS并已FF推main，.local/s11c-final-ci.json。main在既有Docker工作树；前端只读4a9a280且干净。
-- S11D：固定50候选→一次融合→模型外发前核权→原生异步后处理→选K→最终核权；独立私密配置/累计预算、先行fsync与取消保留、严格评分协议、默认FAIL。原RRF兼容；消费者/应用装配/策略落盘归S11E，无DDL/新依赖/付费调用。
-- 验证：Python497通过/53默认跳过，52项本片离线行为；显式真实知识服务联调2项通过（模型仅HTTP替身）；Ruff/mypy62/compileall通过。307项全部Java模块/构建输入与S11C一致，复用154单元及S11B 133真实集成证据。前端容器114/格式/类型/lint/生产构建PASS。代码卫生无阻断，6条数值建议分类为协议/命名边界；Java formatter工具限制保留。QA docs/qa/rerank-budget-20261028/。
-- 当前运行01a95560586ee526，447项后端输入（含共享金标）与隔离构建一致、前端484项hash一致；9健康容器/10项smoke，RRF与精排原生链路通过。内部Knowledge仍沿现有容器网络；Knowledge V11/Tasks V4。构建/启动/验证进程已结束，日志.logs/s11d-*。
-- 预算/data：dev资料61，local-dev知识/中央在途0；Embedding70批/0.721784元、chat24次/0.889964元，各1元累计上限，hash与.local/s11d-runtime-before.json一致，新增付费调用0。U04真实Reranker账号/地域/端点/型号/价格/独立预算未满足；临时账本只服务协议替身，不挪用旧账本，不声明真实质量消融完成。
-- S11E分析产物：[RETRIEVAL_CONSUMER_READINESS](RETRIEVAL_CONSUMER_READINESS.md)，20项源码摘要在docs/qa/retrieval-consumers-20261028/preflight-evidence.json。已定位v1图/input的固定路由、Conversation策略持久化缺口、Evaluation旧画像约束、Tasks V4数组CHECK、三元组与完整8分量证据差异、跨进程总容量及前端请求/实际策略区分；只是事实与待冻结清单，未修改产品或宣布新API生效。
-- S11E接入分析文档767ad58f85691fc102a81c0f816736a0288c37ef已正常FF推main，分支CI40688066056/mainCI40688510030 PASS。最后文档收据以当前Git HEAD为准，精确最终CI保存在.local/s11e-final-ci.json；不递归填写自身提交。前端未改；现有main工作树保留，无新工作树。
-- 下一步：从S11E恢复入口完成公共/任务策略/完整证据与旧任务兼容契约和共享夹具，再实施。优先核对HTTP与worker的容量总量和完整身份恢复，不能直接投影为旧DTO而丢弃代次。S11E只读分析完成，不代表正式契约冻结或产品完成。本轮为保留额度停止新增工作，没有运行中的构建、测试、模型调用或迁移；仅最后收据Git/CI收尾结果按上项核对。
-- 2026-10-29恢复核对：用户要求继续S11；后端HEAD为5dd5e99、前端HEAD为4a9a280，开始时两仓干净。preflight-evidence.json中20项源码SHA256全部一致，已有接入分析仍适用；本次没有修改产品、契约、运行配置或执行模型/迁移/构建任务。下一步仍是S11E步骤1契约与兼容，不重做S11A–D。
-- 额度停止条件：本次通过.local/check_session_quota.py读取当前会话2026-10-29T07:11:08.322Z记录，primary窗口已用78%（剩余约22%，窗口10080分钟），低于用户既有保留25%的要求，因此停止新增实现，只保存恢复核对。此为当前额度观测，不沿用上轮73%数据；S11E仍IN_PROGRESS，未宣称完成。
-- 本次收尾仅修改CODEX_PROGRESS.md与本文件；Markdown差异/链接核对后按已有Git授权交付。精确提交以Git日志为准，无新工作树或清理动作；忽略的.local/日志/缓存沿原用途保留。
-- 沿用backend-implementation/validation/runtime/doc/progress/Git/CI技能和已读建模/接口/并发/容量/发布规范；无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。正常合并推送已授权；无生产部署或清理授权，保留.local/日志/数据/原工作树。
+- 任务 `capability-delivery-20261021`，51项已批准，parallel=no；S8A–F/S9A–D/S10A–F/S11A–D已交付。用户2026-10-29取消本次25%额度保留限制，2026-10-30再次要求连续执行。全平台与S11E均未完成。
+- 后端 `/Users/liruijun/personal/LLM/agentic-ai-platform`，复用分支 `feat/retrieval-consumers-20261028`，本阶段起点 `7b75c1e`；main位于原Docker工作树 `~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027`。前端 `../agentic-ai-platform-web` 仍未修改；本次无新工作树。
+- 沿既有授权完成本地实现、验证和正常Git交付；不强推/清理/生产部署。Embedding/chat仍各1元累计上限；U04真实精排端点/账号/价格/独立预算未满足，新增付费调用0。已取消的额度保留限制不再作为停止条件。
+
+### 已实现与验证
+
+1. S11E契约第9节、Tasks v2证据/结果信封、上下文完整清单与Conversation持久策略兼容已冻结。旧v1输入、图、请求指纹和历史摘要不重写；跨版本上下文拒绝，不为旧三元组补代次。
+2. 共用 `RetrievalUseCase`、公开白名单投影、完整八分量引用/跨语言摘要、K08 v2受限核验已实现。Tasks V5保持原JSON数组，加schema列；清单累加、正文事件绑定、终态/历史读取都使用完整身份。
+3. QA/work v2原生根图保留完整证据与实际诊断，新执行器恢复后重验全部生成依赖（包括未被最终引用的项），不重复已完成检索/生成。QA前文从中央继承全部依赖；研究仍用原Deep Agents只读工具和边界。
+4. Conversation V2在测试库迁移成功，策略和问题/分派账本原子保存，原幂等指纹仅对新版本加入策略。未知提交按原taskId/输入/策略重放；旧输入序列化不增加空策略字段。新公共入口尚未开放。
+5. Worker新增显式v2路由，共用单实例单许可用例，复用旧Embedding累计账本和独立精排配置；默认retrieval_enabled=false。Tasks新增task.generation-enabled=false受理/领取门禁；新路径待联合验收后同时启用，关闭不改写历史。
+6. Python全量526 PASS/53默认跳过（.logs/s11e-python-current.log）；随后局部安全/装配修改的针对性复验见 .logs/s11e-worker-final.log、s11e-final-focused.log、s11e-public-protocol-final.log。Ruff/格式/mypy68文件PASS。真实PG+新Tasks HTTP恢复尚未运行，不能据内存图测试宣称完成。
+7. Java全模块156单元PASS（.logs/s11e-java-current-unit.log）；Knowledge7 + Tasks18 + Conversation12真实集成PASS（.logs/s11e-java-foundation-final.log）；后续枚举修正Tasks18复验PASS（s11e-task-enum-retest.log）。Tasks默认关闭门禁/旧可见性回归PASS（含默认关闭新增用例），日志 .logs/s11e-task-gated-final.log、s11e-task-default-gate.log。
+8. Code Hygiene已修复模式硬编码，当前无阻断项，4条数值建议为协议上限；Java无项目格式化器的工具限制保留（.logs/s11e-hygiene-final.json）。首次图schema/枚举JSON边界和会话测试编译失败均已修复并保留日志；不得把旧失败日志误认为最新结果。
+
+### 运行与交付边界
+
+- 当前运行仍是S11D固定快照 `01a95560586ee526`，本阶段没有替换运行容器、启用v2公共接口或修改前端；Knowledge/Tasks开发库仍以原运行版本为准。Tasks测试库V5、Conversation测试库V2只涉及隔离测试记录。
+- S11D真实运行/CI证据仍在 `docs/qa/rerank-budget-20261028/`，最后收据mainCI `40834097285` 对应恢复基线7b75c1e；本阶段尚未推main，不把旧CI当新代码证据。
+- 基础实现收据在 `docs/qa/retrieval-consumers-20261028/`；本阶段产品改动尚未提交，正在按可审查逻辑单元保存任务分支提交。旧接入前20项摘要只代表原基线，不代表当前源码。
+- 日志/临时配置/.local/缓存和原工作树全部保留；没有清理授权。沿backend-implementation、implementation-validation、update-progress-docs和task-git-delivery；采用建模/持久化/接口/并发安全/容量/发布规范。无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。
+
+### 剩余验收与下一步
+
+1. 当前基础验证、实现记录与51项源码摘要已落盘；按用户分批提交规则保存已验证基础实现，S11E保持IN_PROGRESS。
+2. Evaluation v2不可变策略/画像、完整逐题证据与报告读取，保留旧画像/基线摘要；当前尚未实施，不应领取evaluation-v2。
+3. HTTP进程共用检索单实例、Java公共门面/版本路由与真实策略可用性；Tasks研究v2和Conversation v2公开受理；每进程1、总量2，禁止装配为每进程2。
+4. 前端搜索/问答/研究/评测一致消费，区分请求策略和实际mode；错误、未知提交、刷新、引用、禁用精排与浏览器检查。
+5. 真实PG/HTTP/数据库/双索引联合恢复、同内容重索引/撤权/跨owner、取消/总容量、两仓摘要/容器smoke/CI和正常合并推main。U04只阻断真实重排质量消融，不妨碍其余机制验收。
 
 ## 历史：20 项差距的框架化实施计划
 

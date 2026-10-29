@@ -13,9 +13,10 @@ from pathlib import Path
 from typing import Self
 from uuid import uuid4
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from agentic_ai.agents.chat import ToolChatClient, ToolChatPort
+from agentic_ai.agents.generation_pipeline import GenerationWorkPipeline
 from agentic_ai.agents.models import WORK_EXECUTION_SECONDS, WORK_GRAPH
 from agentic_ai.agents.pipeline import WorkPipeline
 from agentic_ai.evaluation.client import EvaluationClient, EvaluationPort
@@ -25,9 +26,14 @@ from agentic_ai.qa.chat import ChatClient, ChatPort
 from agentic_ai.qa.chat_budget import ChatBudget
 from agentic_ai.qa.chat_config import MAX_CONFIG_BYTES, ChatConfig
 from agentic_ai.qa.errors import QaCode, QaError, failure_code
+from agentic_ai.qa.generation_pipeline import GenerationQaPipeline
 from agentic_ai.qa.knowledge import KnowledgeClient
 from agentic_ai.qa.pipeline import QaPipeline
 from agentic_ai.qa.retriever import KnowledgePort
+from agentic_ai.retrieval.client import RetrievalClient
+from agentic_ai.retrieval.consumer import RetrievalUseCase
+from agentic_ai.retrieval.retriever import CandidatePort
+from agentic_ai.retrieval.task_models import QA_GRAPH_V2, WORK_GRAPH_V2
 from agentic_ai.tasks.client import CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.execution import MAX_EXECUTION_SECONDS, MAX_GRAPH_STEPS, run_claimed_graph
@@ -51,6 +57,15 @@ class WorkerConfig(BaseModel):
     evaluation_private_key: Path | None = Field(default=None, repr=False)
     chat_config: Path = Field(repr=False)
     checkpoints: CheckpointConfig = Field(repr=False)
+    retrieval_enabled: bool = Field(default=False, strict=True)
+    rerank_config: Path | None = Field(default=None, repr=False)
+
+    @model_validator(mode="after")
+    def retrieval_configuration(self) -> Self:
+        """精排配置不能在关闭的消费者上被忽略，避免误报已启用。"""
+        if self.rerank_config is not None and not self.retrieval_enabled:
+            raise ValueError(QaCode.CONFIG_INVALID.value)
+        return self
 
     @field_validator("task_private_key", "knowledge_private_key", "chat_config")
     @classmethod
@@ -60,7 +75,7 @@ class WorkerConfig(BaseModel):
             raise ValueError("worker 配置需要绝对路径")
         return value
 
-    @field_validator("evaluation_private_key")
+    @field_validator("evaluation_private_key", "rerank_config")
     @classmethod
     def evaluation_absolute(cls, value: Path | None) -> Path | None:
         """旧配置默认不领取评测，新身份必须显式配置绝对路径。"""
@@ -143,11 +158,24 @@ async def execute_qa_task(
     tool_chat: ToolChatPort | None = None,
     evaluations: EvaluationPort | None = None,
     profile: Profile | None = None,
+    retrieval: RetrievalUseCase | None = None,
+    candidates: CandidatePort | None = None,
 ) -> TaskView:
     """异常先核对中央；取消/完成赢得竞争后不再报告覆盖它的失败。"""
     try:
         pipeline: QaPipeline | WorkPipeline | EvaluationPipeline
-        if binding.graph_version == EVALUATION_GRAPH:
+        if binding.graph_version in (QA_GRAPH_V2, WORK_GRAPH_V2):
+            if retrieval is None or candidates is None:
+                raise QaError(QaCode.CONFIG_INVALID)
+            if binding.graph_version == WORK_GRAPH_V2:
+                if tool_chat is None:
+                    raise QaError(QaCode.CONFIG_INVALID)
+                pipeline = GenerationWorkPipeline(
+                    binding, central, candidates, tool_chat, retrieval
+                )
+            else:
+                pipeline = GenerationQaPipeline(binding, central, candidates, chat, retrieval)
+        elif binding.graph_version == EVALUATION_GRAPH:
             if evaluations is None or profile is None:
                 raise QaError(QaCode.CONFIG_INVALID)
             opened = await evaluations.open(profile)
@@ -276,12 +304,40 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
             stack.push_async_callback(chat.aclose)
             tool_chat = ToolChatClient(chat_config, budget)
             stack.push_async_callback(tool_chat.aclose)
+            retrieval = None
+            if config.retrieval_enabled:
+                # 单worker只装配一个许可；与单HTTP进程的一个许可合计为契约总量2。
+                from agentic_ai.adapters.openai_embedding import OpenAIEmbeddingAdapter
+                from agentic_ai.processing.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL
+                from agentic_ai.retrieval.deadline import RetrievalCapacity
+                from agentic_ai.retrieval.rerank_client import RerankClient
+                from agentic_ai.retrieval.rerank_config import RerankConfig
+                from agentic_ai.runtime.embedding_budget import EmbeddingBudget
+                from agentic_ai.runtime.embedding_config import EmbeddingConfig
+
+                embedding_config = EmbeddingConfig.from_environment()
+                if (
+                    embedding_config.model != EMBEDDING_MODEL
+                    or embedding_config.dimensions != EMBEDDING_DIMENSIONS
+                ):
+                    raise QaError(QaCode.CONFIG_INVALID)
+                embedding = OpenAIEmbeddingAdapter(
+                    embedding_config, budget=EmbeddingBudget.from_environment()
+                )
+                stack.push_async_callback(embedding.aclose)
+                reranker = None
+                if config.rerank_config is not None:
+                    reranker = RerankClient(RerankConfig.from_file(config.rerank_config))
+                    stack.push_async_callback(reranker.aclose)
+                retrieval = RetrievalUseCase(embedding, RetrievalCapacity(1), reranker)
             if check_only:
                 _log("CONFIGURATION_VALID")
                 return
             _log("READY")
-            graph_versions = ("knowledge-qa-v1", WORK_GRAPH) + (
-                (EVALUATION_GRAPH,) if config.evaluation_private_key is not None else ()
+            graph_versions = (
+                ("knowledge-qa-v1", WORK_GRAPH)
+                + ((EVALUATION_GRAPH,) if config.evaluation_private_key is not None else ())
+                + ((QA_GRAPH_V2, WORK_GRAPH_V2) if retrieval is not None else ())
             )
             next_graph = 0
             while not stop.is_set():
@@ -293,7 +349,12 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                     _log("CENTRAL_UNAVAILABLE")
                     binding = None
                 if binding is not None and not stop.is_set():
-                    knowledge = KnowledgeClient.from_file(
+                    knowledge_type = (
+                        RetrievalClient
+                        if binding.graph_version in (QA_GRAPH_V2, WORK_GRAPH_V2)
+                        else KnowledgeClient
+                    )
+                    knowledge = knowledge_type.from_file(
                         config.knowledge_endpoint,
                         binding.tenant_id,
                         binding.owner_id,
@@ -304,6 +365,7 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                         if binding.graph_version == EVALUATION_GRAPH and evaluation_key is not None
                         else None
                     )
+                    candidates = knowledge if isinstance(knowledge, RetrievalClient) else None
                     started = time.monotonic()
                     _log("EXECUTING", task=binding.task)
                     work = asyncio.create_task(
@@ -316,6 +378,8 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                             tool_chat,
                             evaluations,
                             evaluation_profile if evaluations is not None else None,
+                            retrieval,
+                            candidates,
                         )
                     )
                     stopping = asyncio.create_task(stop.wait())

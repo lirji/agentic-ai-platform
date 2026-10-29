@@ -74,6 +74,8 @@ class GraphState(GraphInput, total=False):
 class QaPipeline:
     """一次中央租约绑定一张图；框架不能选择租户、所有者、模型或网络工具。"""
 
+    input_fields = tuple(GraphInput.__annotations__)
+
     def __init__(
         self,
         binding: TaskLease,
@@ -92,7 +94,7 @@ class QaPipeline:
         self.operation_scope, self.emit_text = operation_scope, emit_text
         self.registration = EvidenceRegistration(central, binding, MAX_HITS)
         try:
-            self.question = evaluation_question or QaInput.model_validate(binding.input)
+            self.question = evaluation_question or self.parse_input(binding.input)
         except ValidationError:
             raise QaError(QaCode.INPUT_REJECTED) from None
         if (
@@ -101,6 +103,10 @@ class QaPipeline:
             or self.question.context_task_id == binding.task.task_id
         ):
             raise QaError(QaCode.INPUT_REJECTED)
+
+    def parse_input(self, value: object) -> QaInput:
+        """旧图固定v1；新图只适配内容校验，不改写中央冻结输入。"""
+        return QaInput.model_validate(value)
 
     async def assert_active(self) -> None:
         """每个外部副作用前向中央续租，取消或旧代次立即停止后续调用。"""
@@ -198,9 +204,7 @@ class QaPipeline:
         """原生 LlamaIndex 只读取 Java 授权资料，完成后保存完整证据快照。"""
         try:
             values = cast(dict[str, object], state)
-            incoming = QaInput.model_validate(
-                {key: values[key] for key in GraphInput.__annotations__}
-            )
+            incoming = self.parse_input({key: values[key] for key in self.input_fields})
         except (ValidationError, KeyError):
             raise QaError(QaCode.INPUT_REJECTED) from None
         if incoming != self.question:

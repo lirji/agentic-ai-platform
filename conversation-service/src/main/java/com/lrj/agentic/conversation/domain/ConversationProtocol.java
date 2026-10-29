@@ -12,6 +12,8 @@ public final class ConversationProtocol {
     public static final String TASK_RUNTIME = "langgraph-v1";
     public static final String TASK_GRAPH = "knowledge-qa-v1";
     public static final String INPUT_VERSION = "knowledge-qa-input-v1";
+    public static final String TASK_GRAPH_V2 = "knowledge-qa-v2";
+    public static final String INPUT_VERSION_V2 = "knowledge-qa-input-v2";
     public static final int MAX_BODY = 32 * 1024;
     public static final int MAX_RESPONSE = 256 * 1024;
     public static final int MAX_TITLE = 100;

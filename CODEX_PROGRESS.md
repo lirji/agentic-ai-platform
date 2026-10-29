@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务capability-delivery-20261021：S11A已交付；S11B实现/容器/主分支CI均PASS；S11C实现/必需验收/main CI PASS，S11D协议/必需验收/main CI PASS，S11E接入分析已保存、产品未实施；U04真实模型仍未启用。
-- 后端原目录分支feat/retrieval-consumers-20261028，前端只读。唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，包含精确CI/运行/预算、实施范围与下一步。2026-10-29恢复核对20项源码摘要一致；当前额度已用78%，触发既有保留25%要求，未开始新实现。S11E从契约冻结继续。
-- Docker独立任务历史见[原部署进度](docs/deployment/docker-20261027/PROGRESS_STATE.md)，本次运行证据归各实施片，不覆盖旧收据。
+- 当前任务 `capability-delivery-20261021`：S11A–D已交付，S11E IN_PROGRESS。完整证据、QA/work v2图和Conversation策略持久化已实现并通过相关测试；默认关闭新路由，评测/公共入口/前端及真实联合恢复仍待完成。
+- 后端原目录分支 `feat/retrieval-consumers-20261028`；唯一权威状态与下一操作：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。用户已取消本次25%额度保留限制，继续原授权计划；无新增模型预算或生产部署授权。
+- Docker独立历史：[原部署进度](docs/deployment/docker-20261027/PROGRESS_STATE.md)。本阶段验证日志 `.logs/s11e-*`，实现收据 `docs/qa/retrieval-consumers-20261028/`。
 
 ## 前期可行性任务记录
 

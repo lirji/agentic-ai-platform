@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lrj.agentic.conversation.api.ConversationDtos.*;
 import com.lrj.agentic.conversation.domain.*;
 import com.lrj.agentic.conversation.infrastructure.*;
+import com.lrj.agentic.contract.knowledge.RetrievalStrategy;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -92,14 +93,16 @@ public class ConversationValues {
         return new Turn(row.turnId(), row.conversationId(), row.sequence(), row.question(),
                 documents(row.documentIds()), row.contextTurnId(), row.taskId(), row.dispatchState(),
                 row.dispatchAttempts(), row.retryCount(), row.revision(), row.errorCode(),
-                row.createdAt(), row.updatedAt());
+                row.createdAt(), row.updatedAt(), legacy(row) ? null : row.retrievalStrategy());
     }
     /** 下游输入只能从已提交问题重建，不接受运行时覆盖原问题或身份。 */
     public TaskGateway.QuestionInput input(TurnRow row) {
-        return new TaskGateway.QuestionInput(ConversationProtocol.INPUT_VERSION, row.conversationId(),
+        return new TaskGateway.QuestionInput(legacy(row) ? ConversationProtocol.INPUT_VERSION : ConversationProtocol.INPUT_VERSION_V2, row.conversationId(),
                 row.turnId(), row.question(), documents(row.documentIds()), row.contextTurnId(),
-                row.contextTaskId(), row.contextQuestion());
+                row.contextTaskId(), row.contextQuestion(), legacy(row) ? null : row.retrievalStrategy());
     }
+    /** 只有历史显式策略走旧图，未知持久值由数据库闭集约束拒绝。 */
+    public static boolean legacy(TurnRow row) { return RetrievalStrategy.LEGACY.code().equals(row.retrievalStrategy()); }
     /** 固定时间/ID 对形成稳定列表位置，游标不包含身份。 */
     public static String cursor(ConversationRow row) {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(

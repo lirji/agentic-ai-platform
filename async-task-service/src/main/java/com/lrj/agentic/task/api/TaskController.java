@@ -102,7 +102,17 @@ public class TaskController {
     @PostMapping("/internal/v1/task-worker/{id}/events")
     public Event append(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
             @Valid @RequestBody Append command) { return tasks.append(JwtTrust.caller(jwt), id, command); }
-    /** 中央凭据决定哪些 PG 快照允许恢复。 */
+    /** v2请求只登记完整引用，沿原worker角色和租约校验。 */
+    @PostMapping("/internal/v1/task-worker/{id}/knowledge-evidence-v2")
+    public EvidenceReceipt generationEvidence(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
+            @Valid @RequestBody GenerationEvidence command) { return tasks.generationEvidence(JwtTrust.caller(jwt), id, command); }
+
+    /** 上下文只可继承已成功且当前仍可读的完整清单。 */
+    @GetMapping("/internal/v1/task-worker/{id}/knowledge-evidence-v2")
+    public GenerationManifest generationManifest(@AuthenticationPrincipal Jwt jwt, @PathVariable String id) {
+        return tasks.generationManifest(JwtTrust.caller(jwt), id);
+    }
+
     @PostMapping("/internal/v1/tasks/{id}/knowledge-evidence")
     public EvidenceReceipt evidence(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
             @Valid @RequestBody Evidence command) { return tasks.evidence(JwtTrust.caller(jwt), id, command); }

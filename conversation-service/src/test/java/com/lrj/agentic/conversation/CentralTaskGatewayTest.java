@@ -74,6 +74,13 @@ class CentralTaskGatewayTest {
             assertThat(received).hasSize(2);
             assertThat(received.getFirst()).isEqualTo(received.getLast());
             assertThat(received.getFirst()).containsEntry("taskId", task);
+            assertThat(received.getFirst()).containsEntry("graphVersion", "knowledge-qa-v1");
+            assertThat(((Map<?, ?>) received.getFirst().get("input")).containsKey("retrievalStrategy")).isFalse();
+            var generation = new TaskGateway.QuestionInput("knowledge-qa-input-v2", input.conversationId(),
+                    turn, input.question(), input.documentIds(), null, null, null, "LLAMA_RRF_V1");
+            gateway.submit(owner, task, turn, generation);
+            assertThat(received.getLast()).containsEntry("graphVersion", "knowledge-qa-v2");
+            assertThat(((Map<?, ?>) received.getLast().get("input")).get("retrievalStrategy")).isEqualTo("LLAMA_RRF_V1");
         } finally { http.close(); server.stop(0); }
     }
 

@@ -22,16 +22,18 @@ public class TaskService {
     private final int leaseSeconds;
     private final TaskKnowledgeEvidence evidence;
     private final TaskKnowledgeVisibility visibility;
+    private final boolean generationEnabled;
 
     /** 单独限制事务时长；显式传递身份，避免复用线程泄漏主体。 */
     public TaskService(TaskMapper mapper, TaskValues values, PlatformTransactionManager manager,
             @Value("${task.lease-seconds:60}") int leaseSeconds, TaskKnowledgeEvidence evidence,
-            TaskKnowledgeVisibility visibility) {
+            TaskKnowledgeVisibility visibility, @Value("${task.generation-enabled:false}") boolean generationEnabled) {
         if (leaseSeconds < 5 || leaseSeconds > 60) { throw new IllegalArgumentException("任务租约配置无效"); }
         this.mapper = mapper; this.values = values; this.leaseSeconds = leaseSeconds;
         this.tx = new TransactionTemplate(manager);
         this.tx.setTimeout(5);
         this.evidence = evidence; this.visibility = visibility;
+        this.generationEnabled = generationEnabled;
     }
 
     /** 唯一约束争用必须先回滚败方事务，再读取已经提交的同键结果。 */
@@ -50,8 +52,9 @@ public class TaskService {
     private View accept(Caller owner, String key, Submit command) {
         TaskValues.id(command.taskId()); TaskValues.key(key);
         versions(command.runtimeVersion(), command.graphVersion());
+        if (TaskProtocol.generationGraph(command.graphVersion())) RetrievalTaskRequests.validate(command);
         require(TaskProtocol.EVALUATION_GRAPH.equals(command.graphVersion())
-                ? TaskProtocol.EVALUATION_KIND.equals(command.kind()) : TaskProtocol.GRAPH.equals(command.graphVersion())
+                ? TaskProtocol.EVALUATION_KIND.equals(command.kind()) : (TaskProtocol.GRAPH.equals(command.graphVersion()) || TaskProtocol.GRAPH_V2.equals(command.graphVersion()))
                 ? TaskProtocol.KIND.equals(command.kind())
                 : WorkKind.parse(command.kind()) != null, TaskError.INPUT_INVALID);
         String input = values.object(command.input(), TaskProtocol.MAX_VALUE);
@@ -137,6 +140,15 @@ public class TaskService {
         return lease(found(mapper.read(worker.tenantId(), TaskValues.id(id))));
     }
 
+    /** 上下文继承全部依赖；按原owner在事务外核权，避免只继承模型最终引用子集。 */
+    public GenerationManifest generationManifest(Caller worker, String id) {
+        long deadline = TaskKnowledgeVisibility.deadline();
+        var row = found(mapper.read(worker.tenantId(), TaskValues.id(id)));
+        require(row.status() == TaskStatus.SUCCEEDED && TaskProtocol.generationGraph(row.graphVersion()), TaskError.NOT_FOUND);
+        visibility.verify(new Caller(row.tenantId(), row.ownerId()), row, deadline);
+        return evidence.generationManifest(row);
+    }
+
     /** SKIP LOCKED 避免多个领取者互等；过期任务最多自动领取五次。 */
     public Claimed claim(Caller worker, Claim command) {
         versions(command.runtimeVersion(), command.graphVersion());
@@ -182,6 +194,11 @@ public class TaskService {
     /** 新正文之前登记依赖；任务行锁与原租约栅栏同一次事务裁决。 */
     public EvidenceReceipt evidence(Caller worker, String id, Evidence command) {
         return tx.execute(ignored -> evidence.register(active(worker, id, command.epoch()), command));
+    }
+
+    /** 新图在同一任务事务登记完整证据，禁止改用旧版本接口。 */
+    public EvidenceReceipt generationEvidence(Caller worker, String id, GenerationEvidence command) {
+        return tx.execute(ignored -> evidence.registerGeneration(active(worker, id, command.epoch()), command));
     }
 
     /** 只提交租约仍有效的 PG 准备凭据，未知响应重放不能把新指针倒退到旧快照。 */
@@ -385,10 +402,12 @@ public class TaskService {
     private static TaskRow found(TaskRow row) {
         require(row != null, TaskError.NOT_FOUND); return row;
     }
-    private static void versions(String runtime, String graph) {
+    private void versions(String runtime, String graph) {
+        // 公共消费者联合验收前不接受或领取新图，关闭开关不改写历史任务。
+        require(!TaskProtocol.generationGraph(graph) || generationEnabled, TaskError.INPUT_INVALID);
         require(TaskProtocol.RUNTIME.equals(runtime)
                 && (TaskProtocol.GRAPH.equals(graph) || TaskProtocol.WORK_GRAPH.equals(graph)
-                    || TaskProtocol.EVALUATION_GRAPH.equals(graph)), TaskError.INPUT_INVALID);
+                    || TaskProtocol.EVALUATION_GRAPH.equals(graph) || TaskProtocol.GRAPH_V2.equals(graph) || TaskProtocol.WORK_GRAPH_V2.equals(graph)), TaskError.INPUT_INVALID);
     }
     private static void changed(int count) { require(count == 1, TaskError.CONFLICT); }
     private static void require(boolean valid, TaskError code) {

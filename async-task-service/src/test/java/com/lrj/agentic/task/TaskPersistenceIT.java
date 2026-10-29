@@ -26,7 +26,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 /** 真实 MySQL 的锁、事务与约束验证；每例使用新租户，不清理或覆盖旧数据。 */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"management.server.port=0", "spring.main.banner-mode=off"})
+        properties = {"management.server.port=0", "spring.main.banner-mode=off", "task.generation-enabled=true"})
 @org.springframework.context.annotation.Import(CitationTestConfiguration.class)
 class TaskPersistenceIT {
     @Autowired CitationTestConfiguration.ControlledCitations citations;
@@ -354,6 +354,63 @@ class TaskPersistenceIT {
                 org.springframework.web.servlet.view.xslt.XsltViewResolver.class)).isEmpty();
         assertThatThrownBy(() -> Class.forName("org.springframework.web.reactive.DispatcherHandler"))
                 .isInstanceOf(ClassNotFoundException.class);
+    }
+
+
+    @Test void generationManifestIsDurableMonotonicAndNeverUsesLegacyAuthorization() {
+        var owner = owner(); String id = UUID.randomUUID().toString();
+        var input = json.createObjectNode().put("schemaVersion", "knowledge-qa-input-v2")
+                .put("conversationId", UUID.randomUUID().toString()).put("turnId", UUID.randomUUID().toString())
+                .put("question", "完整证据").put("retrievalStrategy", "LLAMA_RRF_V1");
+        input.putArray("documentIds"); input.putNull("contextTurnId"); input.putNull("contextTaskId"); input.putNull("contextQuestion");
+        var command = new Submit(id, TaskProtocol.KIND, TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2, input);
+        tasks.submit(owner, "new-qa", command);
+        var changed = input.deepCopy().put("retrievalStrategy", "LLAMA_RERANK_V1");
+        error(TaskError.CONFLICT, () -> tasks.submit(owner, "new-qa", new Submit(id, TaskProtocol.KIND, TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2, changed)));
+        var worker = worker(owner, "generation-worker");
+        var lease = tasks.claim(worker, new Claim(TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2)).task();
+        var ref = new com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference(UUID.randomUUID().toString(), 1, 2,
+                UUID.randomUUID().toString(), "text-v1", "a".repeat(64), "b".repeat(64), "c".repeat(64));
+        var registration = new GenerationEvidence(lease.epoch(), "full", "knowledge-evidence-v2", List.of(ref));
+        var receipt = tasks.generationEvidence(worker, id, registration);
+        assertThat(tasks.generationEvidence(worker, id, registration)).isEqualTo(receipt);
+        assertThat(jdbc.queryForObject("SELECT evidence_schema FROM ai_task_knowledge_evidence WHERE task_id=?", String.class, id)).isEqualTo("knowledge-evidence-v2");
+        error(TaskError.CONFLICT, () -> tasks.evidence(worker, id, new Evidence(lease.epoch(), "old", List.of())));
+        error(TaskError.CONFLICT, () -> tasks.generationEvidence(worker, id, new GenerationEvidence(lease.epoch(), "full", "knowledge-evidence-v2", List.of())));
+        error(TaskError.CONFLICT, () -> tasks.generationEvidence(worker, id, new GenerationEvidence(lease.epoch(), "shrink", "knowledge-evidence-v2", List.of())));
+        tasks.append(worker, id, delta(lease.epoch(), "text"));
+        citations.response = refs -> { throw new AssertionError("v2 must not invoke legacy check"); };
+        assertThat(tasks.events(owner, id, 0, 100).events()).anyMatch(event -> event.type().equals("TEXT_DELTA"));
+        citations.generationResponse = refs -> false;
+        error(TaskError.NOT_FOUND, () -> tasks.get(owner, id));
+        error(TaskError.NOT_FOUND, () -> tasks.events(owner, id, 0, 100));
+        citations.generationResponse = refs -> true;
+        assertThat(tasks.get(owner, id).status()).isEqualTo(TaskStatus.RUNNING);
+        error(TaskError.NOT_FOUND, () -> tasks.generationManifest(worker, id));
+        var hiddenDependency = new com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference(
+                UUID.randomUUID().toString(), 1, 3, UUID.randomUUID().toString(), "text-v1",
+                "d".repeat(64), "e".repeat(64), "f".repeat(64));
+        tasks.generationEvidence(worker, id, new GenerationEvidence(lease.epoch(), "expanded",
+                "knowledge-evidence-v2", List.of(ref, hiddenDependency)));
+        var content = json.createObjectNode().put("schemaVersion", "knowledge-qa-result-v1")
+                .put("answerability", "ANSWERED").put("answer", "已核验的回答[1]");
+        var citation = content.putArray("citations").addObject().put("citationId", "1")
+                .put("documentId", ref.documentId()).put("version", ref.version()).put("chunkId", ref.chunkId());
+        citation.putObject("source").put("displayName", "合成资料").put("locator", "utf8-bytes:0-8");
+        var result = json.createObjectNode().put("schemaVersion", "knowledge-qa-result-v2").put("strategy", "LLAMA_RRF_V1");
+        result.set("content", content);
+        result.set("references", json.valueToTree(List.of(ref)));
+        result.putArray("retrieval").addObject().put("strategy", "LLAMA_RRF_V1").put("mode", "RRF")
+                .put("degraded", false).put("elapsedMs", 1);
+        tasks.complete(worker, id, new Complete(lease.epoch(), "complete", result));
+        var inherited = tasks.generationManifest(worker, id);
+        assertThat(inherited.references()).containsExactlyInAnyOrder(ref, hiddenDependency);
+        assertThat(inherited.evidenceDigest()).isEqualTo(com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.digest(inherited.references()));
+        error(TaskError.NOT_FOUND, () -> tasks.generationManifest(worker(owner(), "other-tenant"), id));
+        // 即使最终只引用第一项，前文使用过的第二项失效也不能再被追问继承。
+        citations.generationResponse = refs -> !refs.contains(hiddenDependency);
+        error(TaskError.NOT_FOUND, () -> tasks.generationManifest(worker, id));
+        error(TaskError.NOT_FOUND, () -> tasks.get(owner, id));
     }
 
     private View submit(Caller owner) { return tasks.submit(owner, UUID.randomUUID().toString(), input()); }

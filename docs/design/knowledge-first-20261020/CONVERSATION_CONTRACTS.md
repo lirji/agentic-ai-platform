@@ -74,3 +74,9 @@
 ## S5C 验收
 
 真实 MySQL + Gateway + Tasks：会话与问题创建/分页/重启持久；同键重放/异参冲突；同 revision 并发只接收一个；同用户跨租户/同租户异用户均不能读取、关联或重试；上下文只接受同范围成功轮次；中央提交成功响应丢失、本地进程退出/租约接管均最终绑定同一个 taskId；分派失败有界、人工恢复仍用原命令；旧 epoch 无法落账；Tasks 不可达时原问题可查且不伪造成功；错误/body/权限/连接/退出界限。S5A 受影响协议回归、构建/Code Hygiene/文档/Git 通过后交付。真实模型与可见问答页下一片单独验收。
+
+## S11E：持久检索策略与版本兼容
+
+新入口`POST /api/v2/conversations/{id}/turns`在原Ask字段上强制增加`retrievalStrategy`（LLAMA_RRF_V1/LLAMA_RERANK_V1），权限、限制、幂等键作用域与原Q01一致。Conversation V2仅追加retrieval_strategy列，旧记录默认JAVA_RRF_LEGACY；旧v1输入/指纹/中央graph保持原样。新策略与规范Ask在同一受理事务固定并进入指纹，同键不同策略或跨v1/v2复用409。分派从持久行重建knowledge-qa-input-v2和knowledge-qa-v2，不读取全局默认；未知响应仍重放同一taskId、输入和键。
+
+Turn对新问题额外返回retrievalStrategy，旧问题不增加此字段；它只表示请求策略，实际执行模式从Tasks v2结果读取。上下文必须同输入版本家族：新问题只关联成功v2问题，两个新策略之间可以关联；旧问题只关联v1，跨家族CONVERSATION_CONTEXT_INVALID。前文完整生成依赖由worker按Tasks清单协议重验并继承，前端不能把三元组旧引用补成新代次。新入口仅在消费者联合验收后启用，现阶段仅实施持久能力。

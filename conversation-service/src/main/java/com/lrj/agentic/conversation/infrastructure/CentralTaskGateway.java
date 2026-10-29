@@ -46,7 +46,8 @@ public class CentralTaskGateway implements TaskGateway {
         byte[] body;
         try {
             body = json.writeValueAsBytes(Map.of("taskId", taskId, "kind", ConversationProtocol.TASK_KIND,
-                    "runtimeVersion", ConversationProtocol.TASK_RUNTIME, "graphVersion", ConversationProtocol.TASK_GRAPH,
+                    "runtimeVersion", ConversationProtocol.TASK_RUNTIME, "graphVersion",
+                    input.retrievalStrategy() == null ? ConversationProtocol.TASK_GRAPH : ConversationProtocol.TASK_GRAPH_V2,
                     "input", input));
         } catch (IOException invalid) { throw new ConversationFailure(ConversationError.DISPATCH_REJECTED); }
         var response = http.request("POST", properties.taskEndpoint().resolve("/internal/v1/tasks"), headers, body);

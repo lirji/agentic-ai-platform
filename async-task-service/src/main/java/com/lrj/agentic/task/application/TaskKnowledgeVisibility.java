@@ -27,6 +27,10 @@ public class TaskKnowledgeVisibility {
     public void verify(Caller owner, TaskRow row, long deadline) {
         time(deadline);
         if (TaskProtocol.EVALUATION_KIND.equals(row.kind())) { return; }
+        if (TaskProtocol.generationGraph(row.graphVersion())) {
+            verifyGeneration(owner, row, deadline);
+            return;
+        }
         var refs = new LinkedHashSet<CitationProtocol.Reference>();
         if (row.resultJson() != null) {
             try { refs.addAll(KnowledgeResults.references(row.kind(), values.read(row.resultJson()))); }
@@ -44,6 +48,14 @@ public class TaskKnowledgeVisibility {
         if ("TEXT_DELTA".equals(event.type())) {
             var manifest = mapper.eventEvidence(task.taskId(), event.sequence());
             if (manifest == null) { return false; }
+            if (TaskProtocol.generationGraph(task.graphVersion())) {
+                var refs = evidence.generationReferences(manifest);
+                if (refs.isEmpty()) return false;
+                if (checked.add(manifest.evidenceDigest()) && !client.generationsAccessible(owner, refs, deadline)) throw new TaskFailure(TaskError.NOT_FOUND);
+                time(deadline);
+                JsonNode payload = values.read(event.payloadJson());
+                return payload.isObject() && payload.size() == 1 && payload.path("text").isTextual();
+            }
             var refs = evidence.references(manifest);
             if (refs.isEmpty()) { return false; }
             if (checked.add(manifest.evidenceDigest())) { accessible(owner, refs, deadline); }
@@ -69,6 +81,18 @@ public class TaskKnowledgeVisibility {
                 && payload.path("hitCount").isIntegralNumber() && payload.path("hitCount").canConvertToInt()
                 && payload.path("hitCount").intValue() >= 0 && payload.path("hitCount").intValue() <= 10;
     }
+    private void verifyGeneration(Caller owner, TaskRow row, long deadline) {
+        var refs = new LinkedHashSet<com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference>();
+        if (row.resultJson() != null) {
+            try { refs.addAll(GenerationKnowledgeResults.references(row.kind(), values.read(row.resultJson()), values.read(row.inputJson()).path("retrievalStrategy").asText())); }
+            catch (IllegalArgumentException invalid) { throw new TaskFailure(TaskError.NOT_FOUND); }
+        }
+        var manifest = mapper.latest(row.taskId(), row.leaseEpoch());
+        if (manifest != null) refs.addAll(evidence.generationReferences(manifest));
+        if (!client.generationsAccessible(owner, List.copyOf(refs), deadline)) throw new TaskFailure(TaskError.NOT_FOUND);
+        time(deadline);
+    }
+
     private void accessible(Caller owner, List<CitationProtocol.Reference> refs, long deadline) {
         if (!client.accessible(owner, refs, deadline)) { throw new TaskFailure(TaskError.NOT_FOUND); }
         time(deadline);

@@ -24,6 +24,7 @@ class CitationTestConfiguration {
     static class ControlledCitations extends KnowledgeCitationClient {
         Predicate<List<Reference>> response = references -> true;
         int calls;
+        Predicate<List<com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference>> generationResponse = refs -> true;
         ControlledCitations(ObjectMapper json, Tracer tracer, Propagator propagator, MeterRegistry meters) throws IOException {
             super(new KnowledgeReaderProperties(false, null, null, null), json, tracer, propagator, meters);
         }
@@ -31,6 +32,10 @@ class CitationTestConfiguration {
             if (refs.isEmpty()) { return true; }
             calls++; return response.test(refs);
         }
-        void reset() { calls = 0; response = references -> true; }
+        @Override public boolean generationsAccessible(Caller owner, List<com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference> refs, long deadline) {
+            if (refs.isEmpty()) return true;
+            calls++; return generationResponse.test(refs);
+        }
+        void reset() { calls = 0; response = references -> true; generationResponse = refs -> true; }
     }
 }

@@ -1,0 +1,501 @@
+{
+  "protocol": "knowledge-evidence-v2",
+  "valid": {
+    "schemaVersion": "knowledge-evidence-v2",
+    "references": [
+      {
+        "documentId": "00000000-0000-0000-0000-000000000001",
+        "version": 1,
+        "indexGeneration": 1,
+        "jobId": "00000000-0000-0000-0000-000000000002",
+        "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+        "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ]
+  },
+  "digests": [
+    {
+      "name": "empty",
+      "references": [],
+      "digest": "8a1325e78a42c29ea017e8263d9c4adeeb72cf6ec9fb0c9250740b1be63223d2"
+    },
+    {
+      "name": "one",
+      "references": [
+        {
+          "documentId": "00000000-0000-0000-0000-000000000001",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "00000000-0000-0000-0000-000000000002",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "digest": "44c4b85ba62f044fa7f91f3cfbc75e880e81dcdb5d384563733992e4330e8e12"
+    },
+    {
+      "name": "generation-order",
+      "references": [
+        {
+          "documentId": "00000000-0000-0000-0000-000000000001",
+          "version": 1,
+          "indexGeneration": 10,
+          "jobId": "00000000-0000-0000-0000-000000000002",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        {
+          "documentId": "00000000-0000-0000-0000-000000000001",
+          "version": 1,
+          "indexGeneration": 2,
+          "jobId": "00000000-0000-0000-0000-000000000002",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "digest": "d217ca8fad948cac25ffee51e5ffb4db7d949caecfcc1505ec7ba5dd69f233a6"
+    },
+    {
+      "name": "unicode-order",
+      "references": [
+        {
+          "documentId": "00000000-0000-0000-0000-000000000001",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "00000000-0000-0000-0000-000000000002",
+          "processorVersion": "𐀀:处理\n2",
+          "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        {
+          "documentId": "00000000-0000-0000-0000-000000000001",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "00000000-0000-0000-0000-000000000002",
+          "processorVersion": ":处理\n2",
+          "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "digest": "a8ed0990c9ee2913f15a8b16eb6c14df92004c7b9203cc3e226bca197afe989c"
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing-documentId",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-version",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-indexGeneration",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-jobId",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-processorVersion",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-chunkId",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-batchDigest",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-textHash",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-version8",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1.0,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-version9",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": true,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-version10",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 2147483648,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-indexGeneration11",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 0,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-processorVersion12",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "  ",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-processorVersion13",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "a\u0000b",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-jobId14",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "invalid",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-textHash15",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+          }
+        ]
+      }
+    },
+    {
+      "name": "old-schema",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v1",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-check",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": []
+      }
+    },
+    {
+      "name": "duplicate",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          },
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "extra",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ],
+        "ownerId": "attacker"
+      }
+    },
+    {
+      "name": "blank-nbsp",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": " ",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "blank-nel",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    },
+    {
+      "name": "blank-mixed",
+      "body": {
+        "schemaVersion": "knowledge-evidence-v2",
+        "references": [
+          {
+            "documentId": "00000000-0000-0000-0000-000000000001",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "00000000-0000-0000-0000-000000000002",
+            "processorVersion": "   \t",
+            "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ]
+      }
+    }
+  ]
+}

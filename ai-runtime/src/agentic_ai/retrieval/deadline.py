@@ -44,8 +44,11 @@ class RetrievalDeadline:
 class RetrievalCapacity:
     """由装配方在应用范围共享，不能为每个请求另建两个许可。"""
 
-    def __init__(self) -> None:
-        self._slots = asyncio.Semaphore(QUERY_CAPACITY)
+    def __init__(self, maximum: int = QUERY_CAPACITY) -> None:
+        # 生产装配按HTTP/worker分别分配1许可，不能因新增进程翻倍总容量。
+        if type(maximum) is not int or not 1 <= maximum <= QUERY_CAPACITY:
+            raise RetrievalError(RetrievalCode.CONFIG_INVALID)
+        self._slots = asyncio.Semaphore(maximum)
 
     @asynccontextmanager
     async def enter(self) -> AsyncIterator[None]:

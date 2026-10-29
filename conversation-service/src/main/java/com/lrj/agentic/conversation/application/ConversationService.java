@@ -1,6 +1,7 @@
 package com.lrj.agentic.conversation.application;
 
 import com.lrj.agentic.contract.TaskStatus;
+import com.lrj.agentic.contract.knowledge.RetrievalStrategy;
 import com.lrj.agentic.conversation.api.ConversationDtos.*;
 import com.lrj.agentic.conversation.domain.*;
 import com.lrj.agentic.conversation.infrastructure.*;
@@ -52,13 +53,30 @@ public class ConversationService {
 
     /** 同键返回原轮次；上下文远程核验在锁会话行之前完成。 */
     public Turn ask(Caller owner, String conversationId, String key, Ask command) {
+        return ask(owner, conversationId, key, command, RetrievalStrategy.LEGACY);
+    }
+
+    /** 新输入在受理事务前校验策略；与问题和分派账本一起固定。 */
+    public Turn askGeneration(Caller owner, String conversationId, String key, AskGeneration command) {
+        require(command != null, ConversationError.INPUT_INVALID);
+        RetrievalStrategy strategy;
+        try { strategy = RetrievalStrategy.consumer(command.retrievalStrategy()); }
+        catch (IllegalArgumentException invalid) { throw new ConversationFailure(ConversationError.INPUT_INVALID); }
+        return ask(owner, conversationId, key, new Ask(command.expectedRevision(), command.question(),
+                command.documentIds(), command.contextTurnId()), strategy);
+    }
+
+    private Turn ask(Caller owner, String conversationId, String key, Ask command, RetrievalStrategy strategy) {
         ConversationValues.id(conversationId);
         Ask request = ConversationValues.validated(command);
-        String keyHash = ConversationValues.key(key), requestHash = values.fingerprint(request);
+        // 旧指纹逐字节不变；新策略参与指纹，未知响应只能重放原策略。
+        String keyHash = ConversationValues.key(key), requestHash = values.fingerprint(strategy == RetrievalStrategy.LEGACY
+                ? request : new AskGeneration(request.expectedRevision(), request.question(), request.documentIds(),
+                        request.contextTurnId(), strategy.code()));
         requireConversation(owner, conversationId);
         var replay = mapper.turnByKey(owner, conversationId, keyHash);
         if (replay != null) { same(replay.requestHash(), requestHash); return values.view(replay); }
-        TurnRow context = context(owner, conversationId, request);
+        TurnRow context = context(owner, conversationId, request, strategy);
         return Objects.requireNonNull(tx.execute(ignored -> {
             var conversation = mapper.lockConversation(owner, conversationId);
             require(conversation != null, ConversationError.NOT_FOUND);
@@ -70,7 +88,7 @@ public class ConversationService {
                     conversation.revision() + 1, request.question(), values.write(request.documentIds()),
                     context == null ? null : context.turnId(), context == null ? null : context.taskId(),
                     context == null ? null : context.question(), UUID.randomUUID().toString(), keyHash,
-                    requestHash, DispatchState.PENDING, 0, 0, 0, 0, null, null, null, null, null, null);
+                    requestHash, DispatchState.PENDING, 0, 0, 0, 0, null, null, null, null, null, null, strategy.code());
             mapper.insertTurn(row);
             require(mapper.advance(owner, conversationId, conversation.revision()) == 1,
                     ConversationError.REVISION_CONFLICT);
@@ -78,10 +96,11 @@ public class ConversationService {
         }));
     }
 
-    private TurnRow context(Caller owner, String conversationId, Ask request) {
+    private TurnRow context(Caller owner, String conversationId, Ask request, RetrievalStrategy strategy) {
         if (request.contextTurnId() == null) { return null; }
         var row = mapper.turn(owner, conversationId, request.contextTurnId());
         require(row != null, ConversationError.NOT_FOUND);
+        require(ConversationValues.legacy(row) == (strategy == RetrievalStrategy.LEGACY), ConversationError.CONTEXT_INVALID);
         require(values.documents(row.documentIds()).equals(request.documentIds()), ConversationError.CONTEXT_INVALID);
         require(tasks.status(owner, row.taskId()) == TaskStatus.SUCCEEDED, ConversationError.CONTEXT_INVALID);
         return row;

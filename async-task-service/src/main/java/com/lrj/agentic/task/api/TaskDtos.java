@@ -22,7 +22,14 @@ public final class TaskDtos {
     public record Epoch(@NotNull @Min(1) Long epoch) { }
     public record Evidence(@NotNull @Min(1) Long epoch, @NotNull String operationKey,
             @NotNull List<com.lrj.agentic.contract.knowledge.CitationProtocol.Reference> references) { }
+    /** v2清单强制完整身份，不能与旧登记DTO混用。 */
+    public record GenerationEvidence(@NotNull @Min(1) Long epoch, @NotNull String operationKey,
+            @NotNull String schemaVersion,
+            @NotNull List<com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference> references) { }
     public record EvidenceReceipt(String taskId, long epoch, String evidenceDigest) { }
+    /** 已完成上下文的全部生成依赖，不包含正文或可替换的owner参数。 */
+    public record GenerationManifest(String taskId, long epoch, String schemaVersion, String evidenceDigest,
+            List<com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference> references) { }
     public record Append(@NotNull @Min(1) Long epoch, @NotNull String operationKey,
             @NotNull String type, @NotNull JsonNode payload) { }
     public record Checkpoint(@NotNull @Min(1) Long epoch, @NotNull String operationKey,
