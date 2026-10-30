@@ -1,9 +1,9 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S11E 已验收，最终Git交付中
+## 当前任务：S11E 已合并推送，收据归档后进入S12A
 
 - 任务 `capability-delivery-20261021`，51项已批准，parallel=no；S8A–F/S9A–D/S10A–F/S11A–E必要验收通过；完整平台未完成，下一片S12A。用户取消本轮25%额度保留限制，要求连续执行。
-- 原目录后端`/Users/liruijun/personal/LLM/agentic-ai-platform`、前端`../agentic-ai-platform-web`，均复用`feat/retrieval-consumers-20261028`。后端当前06d85aa，前端3731de7，均已推送且精确CI通过（40991011887三项、40990887015 web）。后端main在原Docker工作树；无新worktree。
+- 原目录后端`/Users/liruijun/personal/LLM/agentic-ai-platform`、前端`../agentic-ai-platform-web`，均复用`feat/retrieval-consumers-20261028`。后端实现52c2e52、前端31315b8均已正常快进合并推送main，精确分支CI通过（40996351248三项、40996318198 web）。后端main在原Docker工作树；无新worktree。
 - 授权：完成既有计划，本地实现/验证、逻辑单元提交与正常合并推main；用户明确批准本次正常Docker Desktop重启且已成功。无强推、清理、生产部署、子Agent或新增模型预算。Embedding/chat仍各1元累计，U04真实精排账号/端点/价格/独立预算未具备；本轮付费调用0。
 
 ### S11E 已完成与证据
@@ -18,7 +18,7 @@
 
 - 实际运行仍S11D快照01a95560586ee526，新受理开关保持关闭；开发库未迁移，测试库Knowledge V12/Tasks V5/Conversation V2。current.json/compose.env保持原运行指针。候选只用于验证。
 - 所有本轮重启/构建/代理测试已退出：1740/99473/18044均0；首次取消及失败日志保留。前端预览28186（exec43308）和生产预览28187（exec49095）保留，`.logs/s11e-*`可追溯。
-- 未提交为本片容器路由修复/测试脚本与验收、CI、价格核验和进度文档；产品联合源码已推送。先提交这组完整修复，确认精确CI后正常合并推两仓main、记录交付；同轮立即进入S12A契约/影响核对与实现，不等待再次“继续”。
+- 当前收尾仅将原字节smoke脚本归入deploy/docker/tests并归档最终CI/交付收据；卫生Gate已通过（既有格式化器限制），不重复业务测试。提交推送此归档后立即建立S12A任务分支，完成C-QA2契约/影响核对与实现，不等待再次“继续”。
 - S12A范围：指定前文的受控追问/指代、原问题与检索问题分离；先冻结C-QA2增量与版本兼容，不能改写已完成v2图或将旧答案当原文。
 - 保留所有.local凭据/账本/运行状态、.logs、缓存和工作树；不清理、不重新付费探针。Java格式化器/Deep Agents既有警告/前端包大小及U04质量限制如实保留。全局MULTI_CLIENT_DRIFT_BLOCKED不改，沿手动专业技能路径，无子Agent。
 - 采用session-handoff、continue-approved-delivery、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/接口/并发安全/容量/发布章节。

@@ -10,7 +10,7 @@
   "pendingPermission": null,
   "sourceHashes": {
     "deploy/docker/web.config.ts": "9563150b890327f01a7c8e5e5a0e0fcc5b4f49295042440c786f9111ead302ce",
-    "deploy/docker/web-proxy-smoke.mjs": "f353a808489d99f0d17c036e734e53eda6748b7d842d48ecf3e3171e3a6eb629"
+    "deploy/docker/tests/web-proxy-smoke.mjs": "f353a808489d99f0d17c036e734e53eda6748b7d842d48ecf3e3171e3a6eb629"
   },
   "logs": [
     ".logs/s11e-container-build.log",
@@ -82,5 +82,13 @@
     "Candidate artifacts were tested but not deployed; running app remains S11D snapshot; no development schema migration",
     "U04 actual reranker quality still conditional; no paid calls"
   ],
-  "sourceComparison": "All Java/Python and frontend product source files matched original candidate; only Docker web proxy config changed, tested in corrected web image"
+  "sourceComparison": "All Java/Python and frontend product source files matched original candidate; only Docker web proxy config changed, tested in corrected web image",
+  "testLocation": "Moved unchanged smoke script into deploy/docker/tests so static classification recognizes test-only echo/assertion output; existing successful container command used the former path and identical bytes.",
+  "codeHygiene": {
+    "status": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+    "limitation": "FORMAT_TOOL_NOT_AVAILABLE",
+    "base": "06d85aa",
+    "logSha256": "e5bd239f14f1b3b844c62b1009d05b5912b29e72946667c9a8d703c8d6018dba",
+    "initialFalseClassification": "test-only console result was identified as production debug output; unchanged script now in deploy/docker/tests"
+  }
 }
