@@ -11,7 +11,11 @@ export default defineConfig({
     strictPort: true,
     cors: false,
     proxy: Object.fromEntries(
-      ['/api/v2/knowledge', '/api/v1/knowledge', '/api/v1/conversations', '/api/v1/tasks'].map(
+      [
+        '/api/v2/knowledge', '/api/v1/knowledge',
+        '/api/v2/conversations', '/api/v1/conversations',
+        '/api/v2/tasks', '/api/v1/tasks',
+      ].map(
         (path) => [path, {
           target: 'http://127.0.0.1:28080',
           changeOrigin: true,

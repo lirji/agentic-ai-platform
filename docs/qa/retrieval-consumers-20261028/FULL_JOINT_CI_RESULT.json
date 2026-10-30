@@ -1,0 +1,23 @@
+{
+  "headSha": "06d85aa03b4dacbdc686bdb217e44f97df4b5840",
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40991011887",
+  "jobs": [
+    {
+      "name": "java",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "python",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "documents",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}

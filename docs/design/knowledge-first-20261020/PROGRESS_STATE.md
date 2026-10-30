@@ -1,33 +1,27 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S11E 检索消费者接入（IN_PROGRESS）
+## 当前任务：S11E 已验收，最终Git交付中
 
-- 任务 `capability-delivery-20261021`，51项已批准，parallel=no；S8A–F/S9A–D/S10A–F/S11A–D已交付。用户2026-10-29取消本次25%额度保留限制，2026-10-30要求连续执行；全平台与S11E均未完成。
-- 后端原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`，任务分支 `feat/retrieval-consumers-20261028`，已提交跨语言验收 `e591784`（CI40987954204三项PASS）；PG验收增量 `6fe3977` 已推送，CI40988700034三项PASS；main在原Docker工作树。前端原目录 `../agentic-ai-platform-web` 同名任务分支，已提交并推送 `967fb40`（起点 `4a9a280`），CI40985973789 PASS。无新工作树。
-- 授权沿原计划做本地实现/验证、完整逻辑单元提交与正常推送，验收后合并main；无强推、清理、生产部署、子Agent或新增模型预算。Embedding/chat仍各1元累计上限；U04真实精排账号/端点/价格/独立预算缺失，不影响机制验证，本轮新增付费调用0。
+- 任务 `capability-delivery-20261021`，51项已批准，parallel=no；S8A–F/S9A–D/S10A–F/S11A–E必要验收通过；完整平台未完成，下一片S12A。用户取消本轮25%额度保留限制，要求连续执行。
+- 原目录后端`/Users/liruijun/personal/LLM/agentic-ai-platform`、前端`../agentic-ai-platform-web`，均复用`feat/retrieval-consumers-20261028`。后端当前06d85aa，前端3731de7，均已推送且精确CI通过（40991011887三项、40990887015 web）。后端main在原Docker工作树；无新worktree。
+- 授权：完成既有计划，本地实现/验证、逻辑单元提交与正常合并推main；用户明确批准本次正常Docker Desktop重启且已成功。无强推、清理、生产部署、子Agent或新增模型预算。Embedding/chat仍各1元累计，U04真实精排账号/端点/价格/独立预算未具备；本轮付费调用0。
 
-### 已完成的增量与证据
+### S11E 已完成与证据
 
-1. 后端完整证据、QA/work v2图与上下文清单、Conversation持久策略兼容：`bea8c02`，CI40976298838三项PASS。旧输入/图/JSON/摘要保留，不给三元组补代次。基础Java156单元、Knowledge7/Tasks18/Conversation12真实集成、Python526通过/53默认跳过及后续专项复验见 `docs/qa/retrieval-consumers-20261028/foundation-evidence.json`。
-2. 评测v2：Knowledge V12冻结策略/画像/完整逐题依赖，真实MySQL22项（明确 `-Pintegration`）PASS；Java157单元、Python532通过/53跳过。`70a33c0`、CI40978201919三项PASS，见 `evaluation-evidence.json`。早期未带profile命令不作为集成证据。
-3. 公共检索/能力目录及安全装配：`6b35d0a`、CI40980734552三项PASS。Java164单元、5真实HTTP，Python549通过/53跳过及追加HTTP18项，Ruff/format/mypy PASS；7契约12夹具，见 `search-http-evidence.json`。
-4. 问答、研究/助手、评测v2公开受理：`f303f4a`、CI40981877873三项PASS；165单元、56真实HTTP/DB，跨版本幂等补充后Tasks/Conversation32项复验。旧读入口兼容，默认关闭，见 `public-consumer-evidence.json`。新评测启用完整HTTP仍待联合验收。
-5. 完整引用公开读取：契约9.6及 `825c6d1`，CI40982895570三项PASS。11项真实HTTP/MySQL/S3/双索引验证同内容重索引、撤下、跨owner、严格输入和关闭新受理后历史读取，见 `citation-read-evidence.json` / `CITATION_READ_CI_RESULT.json`。
-6. 前端四消费者已实现并专项验证：真实能力目录选择、请求/实际模式分开、完整身份及正文核验、原键/原策略恢复、QA同家族上下文、研究输入版本验证、评测完整依赖绑定、本地代理公开白名单。Node24.22下132单元、6组新增浏览器、11组旧问答/工作回归（最终工作3项复验）、类型/ESLint/构建/Prettier/Code Hygiene PASS。13张截图，代表主页面/弹层1440/1024/414已实际查看；证据在前端 `docs/qa/retrieval-consumers-20261030/`。仅协议预览，不等于真实后端联合。
+- 契约/完整8分量证据、QA/work/evaluation v2、旧版本恢复、默认关闭公开受理及前端真实策略/引用已实现；各逻辑单元bea8c02、70a33c0、6b35d0a、f303f4a、825c6d1及前端967fb40均通过对应CI。权威汇总`docs/qa/retrieval-consumers-20261028/TEST_RESULT.md`、REVIEW.md和各增量JSON。
+- Java最终165单元；Python550通过/68默认跳过，Ruff113文件/mypy71源码；真实数据库/HTTP/PG恢复专项、两Python进程容量/超时/取消、四消费者相同身份与输入对照PASS。评测真实报告逐题接管不重跑已完成题；撤下隐藏报告并拒绝正文读取。仅模型是协议替身。
+- 前端132单元、专项与旧浏览器回归、格式/ESLint/类型/构建PASS。17张协议与真实页面截图已查看；真实生产构建浏览器直接代理实际业务响应。前端证据`docs/qa/retrieval-consumers-20261030/`。
+- Docker网页代理漏v2/tasks与v2/conversations已补，候选web ba449282a95548d2镜像内静态/132测试/构建和断网代理smoke七路由/临时RSA/跨站拒绝PASS；后台候选01e494b1d3e59376及AI默认关闭/新图导入PASS。镜像ID和复用源摘要见container-evidence.json。
+- 两次Docker失去响应后经用户授权正常重启；恢复原两搜索容器。原9应用容器全部healthy，10项只读页面/API通过。worker原价格核验日期到期，核对官方价格后只刷新私密配置日期；仍原单价/1元/账本，见pricing-revalidation.json。无迁移/新镜像部署。
 
-7. 真实跨语言HTTP往返与两进程容量验证：新增 `CrossRuntimeRetrievalIT`，5单元/2真实集成PASS；真实MySQL/S3/Qdrant/ES，模型仅测试向量。完整引用、候选后同内容重索引拒绝、跨owner隔离、撤下失败关闭；两个Python进程每个1在途、超额429、断线/超时释放通过。见 `cross-runtime-evidence.json`；早期夹具密钥及搜索状态断言修正已留证，未改产品行为。
+### 现场、未交付与下一步
 
-8. 新图真实PG/中央HTTP接管14项PASS：QA/work生成前、验证前、完整快照；评测成功前缀/完整根图；证据失效、取消、成功清单撤权、旧QA图兼容及终态不连PG重放。默认Python550通过/67跳过，Ruff112文件/mypy71源码PASS。仅候选/模型/评测报告及独立引用响应为明确协议替身，Task/MySQL/PG真实；见 `generation-pg-evidence.json`。评测公开入口到真实报告服务的联合路径仍待完成。
-
-### 现场与剩余工作
-
-- 当前本地真实服务仍是S11D固定快照 `01a95560586ee526`；本阶段未替换容器、未启用v2开关、未迁移开发库。隔离测试库Knowledge V12 / Tasks V5 / Conversation V2。HTTP与worker均默认关闭新检索，每进程1、总量2；旧Embedding账本复用且缺配置拒绝启动。无新模型调用。
-- 前端隔离Vite预览 `127.0.0.1:28186` 正在运行（exec43308，前端 `.logs/s11e-preview.log`）；没有身份桥，不连接真实模型。跨语言与PG测试子进程均已正常退出；最终单元/静态/浏览器命令均完成，后续可按任务需要保留预览。
-- 下一步：四消费者真实HTTP、评测真实报告与PG接管、生产构建浏览器联合均PASS（`.logs/s11e-browser-production-verified.log`：5单元+3Java集成，子进程1联合测试+1浏览器测试；现场`.logs/s11e-joint-9103417658125114857/`）。4张真实页面/引用截图已逐张查看，1440/414无溢出。仅模型与浏览器会话身份为明确替身，业务响应未经改写。正在归档本增量并做候选镜像构建/隔离smoke；不替换运行容器。两仓最终摘要与CI通过后，正常合并推main并立即进入S12A。
-- 浏览器生产预览 `127.0.0.1:28187` 正在运行（exec49095，前端`.logs/s11e-production-preview.log`）；78167联合测试已退出0，所有测试Java/Python子进程已结束。早期开发预览StrictMode重复请求触发429/503，生产构建实际路径复验通过；无基线404为正式预期，仅精确基线路径/错误码放行。
-- 容器候选01e494b1d3e59376构建中（exec70130，`.logs/s11e-container-build.log`）；原current.json/compose.env已立即恢复。审查发现Docker网页代理缺v2/tasks和v2/conversations，已补路由并新增无网络容器代理验签/转发smoke（未验证）。首个候选为修复前快照，不能作为最终交付；待重制修复后web候选。
-- 运行恢复前先查状态，保留所有已有任务/账本/.local/.logs/缓存和工作树，不重发已完成付费探针。后端Java格式化器限制保留；全局MULTI_CLIENT_DRIFT_BLOCKED不改，沿手动专业技能路径，无子Agent。
-- 前端曾发现确认按钮加载图标改变可访问名称，已增加完整忙碌生命周期、稳定名称及aria-busy，最终原键恢复验收通过；窄屏以动画稳定后宽度断言，未放宽布局要求。早期失败与中止日志保留；有效结果只引用各增量最终收据。
+- 实际运行仍S11D快照01a95560586ee526，新受理开关保持关闭；开发库未迁移，测试库Knowledge V12/Tasks V5/Conversation V2。current.json/compose.env保持原运行指针。候选只用于验证。
+- 所有本轮重启/构建/代理测试已退出：1740/99473/18044均0；首次取消及失败日志保留。前端预览28186（exec43308）和生产预览28187（exec49095）保留，`.logs/s11e-*`可追溯。
+- 未提交为本片容器路由修复/测试脚本与验收、CI、价格核验和进度文档；产品联合源码已推送。先提交这组完整修复，确认精确CI后正常合并推两仓main、记录交付；同轮立即进入S12A契约/影响核对与实现，不等待再次“继续”。
+- S12A范围：指定前文的受控追问/指代、原问题与检索问题分离；先冻结C-QA2增量与版本兼容，不能改写已完成v2图或将旧答案当原文。
+- 保留所有.local凭据/账本/运行状态、.logs、缓存和工作树；不清理、不重新付费探针。Java格式化器/Deep Agents既有警告/前端包大小及U04质量限制如实保留。全局MULTI_CLIENT_DRIFT_BLOCKED不改，沿手动专业技能路径，无子Agent。
+- 采用session-handoff、continue-approved-delivery、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/接口/并发安全/容量/发布章节。
 
 ## 历史：20 项差距的框架化实施计划
 

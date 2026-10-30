@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-30",
+  "reference": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+  "model": "deepseek-flash",
+  "pricing": "peak/cache-miss CNY 2 input and CNY 8 output per million tokens match existing conservative values",
+  "changed": "pricing_checked_at only in private source/current runtime config; budget limit remains CNY 1",
+  "ledgerHashes": {
+    ".local/chat-budget-20261020.json": "1c04b2a704af63de93b527a0287d094c479cae7b753949a7cd0354328368d942",
+    ".local/embedding-budget-20261020.json": "5a79298d829e2f68e84e414f2cb2b4bd6298ddc16a44e4e75f6b0584a6c946f3"
+  },
+  "providerCalls": 0,
+  "reason": "restore worker after authorized Docker restart; previous verification 2026-10-21 older than seven days"
+}

@@ -1,0 +1,86 @@
+{
+  "slice": "S11E",
+  "status": "PASS",
+  "candidate": "01e494b1d3e59376",
+  "runningRelease": "01a95560586ee526",
+  "build": "Java 165 unit tests + six backend images at 01e494b1d3e59376; corrected web ba449282a95548d2 built with canonical Web.Dockerfile. Frontend format, ESLint, typecheck, 132 tests and build PASS.",
+  "smoke": "AI imports/liveness/default-off PASS. Corrected web production HTML/assets and seven proxy routes, signed local identity, stripped hostile headers, cross-origin/unknown route rejection PASS in network-none container.",
+  "finding": "Docker web proxy omitted v2 tasks and conversations; config patched, bounded offline smoke script added and Node syntax checked",
+  "isolation": "current.json and compose.env immediately restored; no compose up, migration, production deployment, volume/image deletion or budget reset",
+  "pendingPermission": null,
+  "sourceHashes": {
+    "deploy/docker/web.config.ts": "9563150b890327f01a7c8e5e5a0e0fcc5b4f49295042440c786f9111ead302ce",
+    "deploy/docker/web-proxy-smoke.mjs": "f353a808489d99f0d17c036e734e53eda6748b7d842d48ecf3e3171e3a6eb629"
+  },
+  "logs": [
+    ".logs/s11e-container-build.log",
+    ".logs/s11e-container-ai-smoke.log",
+    ".logs/s11e-container-ai-smoke-verified.log"
+  ],
+  "runningOperation": null,
+  "javaUnitPassed": 165,
+  "webCandidate": "ba449282a95548d2",
+  "recovery": "Authorized normal Docker Desktop restart succeeded. Started the two existing project search containers that lack auto-restart, refreshed verified chat-price date without changing prices/budget/ledger, all nine original app containers healthy and ten read-only UI/API probes PASS.",
+  "logHashes": {
+    ".logs/s11e-container-build.log": "108d584bc76b42271aff127a20dd31b16b4963221af596454ae8750ef44663e3",
+    ".logs/s11e-container-ai-smoke.log": "303de53aa882bd930df9656cabe5460e47da9043336ab6b68a2e2e1df88fe874",
+    ".logs/s11e-container-ai-smoke-verified.log": "638f11ee05b200990ed24ccf47c7b5142ece2ac68629e557adeddb5c56c9dab1",
+    ".logs/s11e-container-web-final-build.log": "e49a29d223e5cbd65566d5f638d01df8ca03cc0b37697cbaa0f6d7bcbc80b459",
+    ".logs/s11e-docker-restart.log": "5f83026ffb6adcef95ed27e8e68d43a0183d524611d0644977de86d6352ad3eb",
+    ".logs/s11e-container-web-after-restart.log": "cf5f77f83186d0c6947530345213b928144092c99e56b742c868a2263be2bd82",
+    ".logs/s11e-container-web-proxy-smoke.log": "33baf22a5d20e840f308363f9f8bb97e6354ffd0dcac773db9b4fbdf4a3bd70a",
+    ".logs/s11e-restart-existing-smoke-verified.log": "1897017d78c7fc61e7461eac0188ee4392019bafcd670113c1865ee3983f7ce9",
+    ".logs/s11e-restart-search-restore.log": "790bc371b49ea445135204288576e209393f3883619e07803804d7e40be80121",
+    ".logs/s11e-worker-restore.log": "aad255e3a8a0383d3a4bf3d72d5234b5d1ac0c4d91f30db99d5e4853fec7d596"
+  },
+  "restart": {
+    "authorization": "user explicitly allowed normal Docker Desktop restart",
+    "execSession": 1740,
+    "status": "PASS",
+    "log": ".logs/s11e-docker-restart.log",
+    "exitCode": 0
+  },
+  "images": [
+    {
+      "image": "agentic-ai/edge-gateway:01e494b1d3e59376",
+      "id": "sha256:4dc00d024fcfa31e9e8a5fdbb207944e12d100e40cadd92b14c02ac3dd0587e5",
+      "sourceFingerprint": "01e494b1d3e59376f69fd76abe06a1a894c994cc464af6212d8be7bd6c2e906f"
+    },
+    {
+      "image": "agentic-ai/knowledge-service:01e494b1d3e59376",
+      "id": "sha256:34f5e8247696863568b40b30dca8645ed329cc1e27fdd3631b03df77fed2bbdd",
+      "sourceFingerprint": "01e494b1d3e59376f69fd76abe06a1a894c994cc464af6212d8be7bd6c2e906f"
+    },
+    {
+      "image": "agentic-ai/async-task-service:01e494b1d3e59376",
+      "id": "sha256:e7dd86777344d3f51aab52acee3e9ca4d2bcf3a1841adfdf51392d7fc6f101d6",
+      "sourceFingerprint": "01e494b1d3e59376f69fd76abe06a1a894c994cc464af6212d8be7bd6c2e906f"
+    },
+    {
+      "image": "agentic-ai/conversation-service:01e494b1d3e59376",
+      "id": "sha256:24422aaf1ffa2bb2215427f0e765273d87e5d0726e7d5cdf21600b3505c76fce",
+      "sourceFingerprint": "01e494b1d3e59376f69fd76abe06a1a894c994cc464af6212d8be7bd6c2e906f"
+    },
+    {
+      "image": "agentic-ai/ai-runtime:01e494b1d3e59376",
+      "id": "sha256:da4aeb06e76bfa2397f919f70c5c18d2a3e0f4b5c6fe255ddd3e33fcf9241d6b",
+      "sourceFingerprint": "01e494b1d3e59376f69fd76abe06a1a894c994cc464af6212d8be7bd6c2e906f"
+    },
+    {
+      "image": "agentic-ai/model-proxy:01e494b1d3e59376",
+      "id": "sha256:1e44ea2064101303ad06ff5c738ec12539e2beda9842cf564c0230eff4d6974f",
+      "sourceFingerprint": "01e494b1d3e59376f69fd76abe06a1a894c994cc464af6212d8be7bd6c2e906f"
+    },
+    {
+      "image": "agentic-ai/web:ba449282a95548d2",
+      "id": "sha256:c3b01a040be15734c92c077144c7d22edaa84af6206ad257f686ba28539c2555",
+      "sourceFingerprint": "ba449282a95548d26fdefbb0ee8c2894ef2a4796b0b72cf7336fd7c9cfed79f2"
+    }
+  ],
+  "limitations": [
+    "Gateway response in isolated proxy smoke is an RSA-verifying echo fixture; business semantics are proven separately by full real-service joint evidence",
+    "Candidate artifacts were tested but not deployed; running app remains S11D snapshot; no development schema migration",
+    "U04 actual reranker quality still conditional; no paid calls"
+  ],
+  "sourceComparison": "All Java/Python and frontend product source files matched original candidate; only Docker web proxy config changed, tested in corrected web image"
+}

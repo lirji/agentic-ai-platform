@@ -1,35 +1,25 @@
-# S11E 当前阶段验证
+# S11E 验证结果
 
-当前：后端/前端/真实HTTP/PG/浏览器验收PASS，容器代理修复待验证，S11E整体仍PARTIAL。下表保留基础增量快照，后续各专项结果按末节与JSON收据追溯；旧UNVERIFIED不代表当前状态。验证由同一执行者完成，无独立Agent。
+结果：PASS；必要实现与验收完成。验证由同一执行者分阶段完成，无独立Agent。Git最终合并另见交付记录；本轮没有部署新镜像或产生付费模型调用。
 
-| 验收范围 | 结果 | 证据 |
-| --- | --- | --- |
-| Python原有与新增离线行为 | PASS | 全量526通过/53按配置跳过，后续公开布尔/worker装配修正运行针对性复验；命令和日志摘要见JSON |
-| Java全模块编译/单元 | PASS | 156项；后续受影响协议/Tasks变更运行相应模块复验 |
-| Knowledge完整身份/真实HTTP | PASS | AuthorizedRetrievalIT 7项，使用真实MySQL/S3/双索引，模型替身；旧代次/跨owner/撤下及受限身份 |
-| Tasks证据/上下文持久化 | PASS | TaskPersistenceIT 18项；完整清单/单调追加/摘要/结果子集/未引用依赖撤权/旧协议隔离 |
-| Conversation策略持久化 | PASS | ConversationPersistenceIT 12项；同键换策略、旧指纹/输入、未知提交重放、跨版本上下文拒绝；测试库V2 |
-| 默认关闭与旧历史兼容 | PASS | Tasks默认关闭/旧可见性回归，worker缺依赖拒绝新图；新旧路由独立 |
-| 图恢复机制 | PASS | 新QA/work实例恢复、完整身份漂移拒绝、未引用依赖失效、已完成检索/生成不重跑；内存检查点仅证明图机制 |
-| 格式/类型/静态/文档 | PASS | Ruff、format、mypy68文件、6份已登记契约与10份共享夹具检查、diff卫生 |
-| 代码卫生 | PASS（工具限制） | 无阻断项；4条数值提示为512字符正文、20项核验与10项清单/结果协议上限。Java项目未配置格式化器，沿周边风格人工检查 |
-| 新图真实PG+中央HTTP恢复 | UNVERIFIED | 尚未替换或装配新运行制品 |
-| Evaluation v2核心 | PASS | V12策略/画像/候选/完整身份读取、Tasks版本隔离；真实MySQL22项、原生图恢复、共享夹具；见evaluation-evidence.json |
-| 公共检索门面 | PASS（专项） | 严格协议/签名/许可/公开核验、真实Spring启用及关闭；见search-http-evidence.json；当前运行未启用 |
-| 前端与四消费者联合路径 | UNVERIFIED | 后续接入及联合验收 |
-| 两进程总容量/容器/浏览器 | UNVERIFIED | 后续联合验收，不能复用S11D快照冒充新代码证据 |
-| 真实精排质量与业务消融 | UNVERIFIED | U04账号/端点/价格/独立预算条件未满足；本阶段无付费模型调用 |
+| 验收范围 | 结果与证据 |
+| --- | --- |
+| 策略/完整证据/旧版本兼容 | PASS；foundation-evidence.json、public-consumer-evidence.json；旧JSON/图/摘要保留，同键换策略/版本409 |
+| 真实公开搜索、能力目录、完整引用 | PASS；search-http-evidence.json、citation-read-evidence.json；权威代次/同内容重索引/跨owner/撤下与门禁关闭后历史读取 |
+| 评测不可变画像、逐题报告与读核验 | PASS；evaluation-evidence.json；Knowledge V12、Tasks V5、Conversation V2仅隔离测试库 |
+| 新图实际PG/中央HTTP接管 | PASS；generation-pg-evidence.json，14项；完整/部分快照、取消、依赖失效及旧QA图恢复 |
+| 四消费者相同输入/证据对照 | PASS；four-consumer-joint-evidence.json，真实HTTP/MySQL/S3/双索引/PG；评测接管只跑未完成题，逐题撤权拒绝 |
+| 两进程容量/超时/断线释放 | PASS；cross-runtime-evidence.json，每进程1许可、总在途2，超额429与恢复 |
+| 前端原键重试、实际策略、引用与窄屏 | PASS；前端frontend-evidence.json及real-joint-evidence.json，132单元、专项与旧回归浏览器；13协议截图及4真实页面截图已查看 |
+| Java/Python/契约 | PASS；最终Java165单元，Python550通过/68按配置跳过，Ruff113文件、mypy71源码；7登记契约/12共享夹具 |
+| 当前制品与容器代理 | PASS；container-evidence.json；后台镜像与修复后web镜像、132镜像内前端单元及构建、无网络代理7条路由/边界检查 |
+| Docker恢复后的原服务 | PASS；授权重启后恢复原两搜索容器，原9应用容器健康，10项只读页面/API检查；原镜像未替换 |
+| 代码/运行审查 | PASS_WITH_LIMITATIONS；REVIEW.md，Java格式化器缺失，Deep Agents既有内部saver警告和前端包大小提示保留 |
+| 精确提交CI | PASS；各增量CI JSON；最终运行配置提交的CI随交付记录追加 |
+| 真实精排质量/业务消融 | CONDITIONAL；U04账号/端点/价格/独立预算缺失，不以模型替身证明真实质量 |
 
-旧失败日志保留：图schema丢字段与枚举JSON边界（s11e-generation-work*.log）、会话测试编译（s11e-conversation-unit.log、s11e-conversation-integration.log）。均有后续修正复验；完整命令/当前摘要见JSON。没有降低断言、删除测试或修改历史迁移以通过验证。
+模型仅确定性协议替身；真实服务、数据库、对象存储、双索引与PG恢复不由替身替代。QA公开Conversation入口在独立真实集成中验收，完整联合从其受限中央提交边界进入。实际浏览器仅用本地身份代理，业务响应未经改写，trace关闭。
 
-评测增量最新检查：Python532 PASS/53 opt-in跳过（含6项新评测测试）、Java157单元PASS，Ruff/format107文件/mypy69源码PASS；共享契约11夹具。22项真实MySQL集成必须引用s11e-evaluation-real-integration-retest.log，旧s11e-evaluation-db/java-final等命令遗漏-Pintegration，不能作为集成证据。原生图schema、测试Claimed包装、非法processor夹具CHECK和类型常量错误均已修复并保留初次失败日志。基础提交bea8c02的CI三项PASS见CI_RESULT.json，该CI不涵盖未提交的评测增量。Code Hygiene无阻断项，保留Java格式化器不可用限制。
+首次集成profile遗漏、夹具身份/排序/状态断言、图schema、开发StrictMode重复请求、容器导入命令与两次Docker失去响应均保留原日志；只将各最终有效收据作为PASS证据。无基线404和撤下后安全摘要200均按正式契约断言，没有放宽权限/容量边界。
 
-公共门面增量：Java全模块164单元PASS、ConsumerRetrievalHttpIT2/EnabledHttpIT1/EvaluationHttpIT2真实HTTP通过，最后HttpStatus枚举调整后7项协议复验通过。Python全量549通过/53默认跳过，随后仅增加正文耗时测试，HTTP专项18通过；Ruff/format110/mypy71通过。共享契约7份/12夹具通过。初次Spring构造器装配失败已修复，代码卫生终态COMPLETE_WITH_LIMITATIONS；详见search-http-evidence.json。评测提交70a33c0对应CI三项PASS见EVALUATION_CI_RESULT.json；公共门面CI将在提交后独立记录。
-
-公开受理增量：165单元、56真实HTTP/DB通过（Tasks19、旧可见性及关闭5、Conversation13、EvaluationRun8、Decision8、Http3）；测试补充跨版本工作幂等断言后Tasks/Conversation32项复验通过。网关受众/头清理测试已纳入单元。新评测正向服务持久与公开默认关闭分别验证，启用后的完整HTTP联合验收仍待完成。Code Hygiene无阻断，Java格式化器限制保留。检索门面6b35d0a远程CI三项PASS见SEARCH_HTTP_CI_RESULT.json，该CI不覆盖随后公开受理源代码。
-
-完整引用读取：受影响Knowledge及上游模块单元通过，AuthorizedRetrievalIT8 + ConsumerRetrievalHttpIT2 + EnabledHttpIT1共11项真实集成通过；新增路径验证完整身份、同内容重索引、撤下、跨owner、缺字段/超限/权限。首次失败为LongNode/IntNode树比较，改按真实JSON线格式比较后通过，未改产品断言边界。详见citation-read-evidence.json。公开受理f303f4a远程CI三项PASS见PUBLIC_CONSUMER_CI_RESULT.json。
-
-## 真实四消费者与浏览器增量
-
-5单元、3真实Java集成、内嵌1项四消费者完整HTTP及1项生产构建浏览器测试通过。Python全量550通过/68按配置跳过；Ruff113文件/mypy71源码通过。真实服务与存储覆盖搜索/QA/work/评测，逐题接管只运行未完成题，撤下隐藏摘要正文并拒绝逐题读取；模型均为明确协议替身，新增付费调用0。见 [联合证据](four-consumer-joint-evidence.json)。
+原聊天价格核验到期导致重启后worker拒绝启动；重新核对[官方价格](https://api-docs.deepseek.com/zh-cn/quick_start/pricing/)与现有保守单价一致，仅刷新本机私密配置日期，原1元上限及累计账本未变，见pricing-revalidation.json。
