@@ -1,0 +1,54 @@
+{
+  "slice": "S11E",
+  "status": "PASS",
+  "scope": "four consumers real Knowledge/Tasks HTTP + MySQL/S3/Qdrant/Elasticsearch/PostgreSQL + production frontend browser",
+  "backendBaseCommit": "6fe39776c06018673653b7b349eabeb0560d1db9",
+  "frontendProductCommit": "967fb40bbc00beb976816bbb79e60820cca78e72",
+  "tests": {
+    "javaUnit": 5,
+    "javaRealIntegration": 3,
+    "nestedFullHttpIntegration": 1,
+    "realBrowser": 1,
+    "pythonDefaultPassed": 550,
+    "pythonDefaultSkipped": 68
+  },
+  "static": "Ruff 113 files and mypy 71 sources PASS; frontend added test Prettier/ESLint/typecheck PASS",
+  "paidCalls": 0,
+  "checks": [
+    "search/QA/work/evaluation use identical current eight-field identity sets",
+    "QA/work one embedding each; evaluation two questions total two embeddings and two protocol chat calls including takeover",
+    "evaluation public v2 admission/replay/changed-strategy 409, real dispatch/Task lease/PG/real question-report writes",
+    "new lease resumes only unfinished question; old finished question not regenerated",
+    "foreign-owner run read 404; withdrawn evidence hides summary report and question read 409",
+    "production browser real search, full citation, research reload, evaluation question and citations; 1440/414 screenshots viewed",
+    "strict browser response checks including exact missing-baseline 404/code exception"
+  ],
+  "substitutes": [
+    "protocol Embedding/chat/tools models; no provider request or quality claim",
+    "browser local-session identity fixture; Node-only signed proxy forwards unmodified business responses"
+  ],
+  "limitations": [
+    "QA public Conversation admission is separately proven by ConversationPersistenceIT; this joint uses its restricted central submission boundary",
+    "rerank provider quality/ablation needs U04 credentials and separate budget",
+    "production browser passes; dev React StrictMode duplicate requests can trigger existing one-slot 429/503; no capacity weakening",
+    "Java formatter unavailable; existing Deep Agents internal saver warnings retained"
+  ],
+  "earlyFailures": [
+    "unsorted QA scope fixture rejected by canonical contract; corrected fixture sorting",
+    "withdraw run summary contract is safe 200 with report null, question remains 409; corrected assertion",
+    "dev preview duplicate catalog/task calls rejected 429/503; retested actual production build",
+    "production browser initially flagged legitimate absent baseline 404; now exact path/code asserted"
+  ],
+  "sourceHashes": {
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/CrossRuntimeRetrievalIT.java": "0d40130a5532bb5372e8046ee3bf34391f52c4147a7794ec185e9cdd19e1beee",
+    "ai-runtime/tests/test_evaluation_full_joint.py": "15e99d834a1f91ba07787214cd5e31bd0cffe151910f014ac3730db8fd526e1b",
+    "ai-runtime/tests/retrieval_joint_server.py": "b18e2ecd699d779892dca5447f747cdbdf00a483b204c3aec03e0f1b66c5f439"
+  },
+  "logHashes": {
+    ".logs/s11e-browser-production-verified.log": "6512d760dbd159083ca91adc9b13334bc7a6ee6e3618f177265b640a6016503e",
+    ".logs/s11e-python-final-regression.log": "d5d38ee94b2234381c419fc77022d27b016a7bc8d8366ac4b0130aebbd3c283a",
+    ".logs/s11e-joint-9103417658125114857/browser.log": "9fe831c3ee20903f74a1e01e05b50dfdefce2660a3e5d7632c0b0dad37badb7f",
+    ".logs/s11e-joint-9103417658125114857/consumers.log": "5da6434c89ad24ea1814543ab77eb617c0dacd1decef8f1b12eeddebe7e66a53"
+  },
+  "taskJarSha256": "1ef5984e580422b61369c8889dd1f9ee495e7483181645c5b1ecd24f8de60f5a"
+}

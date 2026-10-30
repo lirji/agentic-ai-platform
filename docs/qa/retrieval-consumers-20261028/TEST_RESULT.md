@@ -1,6 +1,6 @@
 # S11E 当前阶段验证
 
-整体：PARTIAL；S11E交付门禁HOLD（必要消费者/联合验收未完成）。以下基础实现检查通过，并不等于全片DONE。输入摘要见 [foundation-evidence.json](foundation-evidence.json)，验证由同一执行者分阶段完成，无独立Agent。
+当前：后端/前端/真实HTTP/PG/浏览器验收PASS，容器代理修复待验证，S11E整体仍PARTIAL。下表保留基础增量快照，后续各专项结果按末节与JSON收据追溯；旧UNVERIFIED不代表当前状态。验证由同一执行者完成，无独立Agent。
 
 | 验收范围 | 结果 | 证据 |
 | --- | --- | --- |
@@ -29,3 +29,7 @@
 公开受理增量：165单元、56真实HTTP/DB通过（Tasks19、旧可见性及关闭5、Conversation13、EvaluationRun8、Decision8、Http3）；测试补充跨版本工作幂等断言后Tasks/Conversation32项复验通过。网关受众/头清理测试已纳入单元。新评测正向服务持久与公开默认关闭分别验证，启用后的完整HTTP联合验收仍待完成。Code Hygiene无阻断，Java格式化器限制保留。检索门面6b35d0a远程CI三项PASS见SEARCH_HTTP_CI_RESULT.json，该CI不覆盖随后公开受理源代码。
 
 完整引用读取：受影响Knowledge及上游模块单元通过，AuthorizedRetrievalIT8 + ConsumerRetrievalHttpIT2 + EnabledHttpIT1共11项真实集成通过；新增路径验证完整身份、同内容重索引、撤下、跨owner、缺字段/超限/权限。首次失败为LongNode/IntNode树比较，改按真实JSON线格式比较后通过，未改产品断言边界。详见citation-read-evidence.json。公开受理f303f4a远程CI三项PASS见PUBLIC_CONSUMER_CI_RESULT.json。
+
+## 真实四消费者与浏览器增量
+
+5单元、3真实Java集成、内嵌1项四消费者完整HTTP及1项生产构建浏览器测试通过。Python全量550通过/68按配置跳过；Ruff113文件/mypy71源码通过。真实服务与存储覆盖搜索/QA/work/评测，逐题接管只运行未完成题，撤下隐藏摘要正文并拒绝逐题读取；模型均为明确协议替身，新增付费调用0。见 [联合证据](four-consumer-joint-evidence.json)。

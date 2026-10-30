@@ -3,7 +3,7 @@
 ## 当前任务：S11E 检索消费者接入（IN_PROGRESS）
 
 - 任务 `capability-delivery-20261021`，51项已批准，parallel=no；S8A–F/S9A–D/S10A–F/S11A–D已交付。用户2026-10-29取消本次25%额度保留限制，2026-10-30要求连续执行；全平台与S11E均未完成。
-- 后端原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`，任务分支 `feat/retrieval-consumers-20261028`，已提交跨语言验收 `e591784`（CI40987954204三项PASS）；当前PG验收增量待提交；main在原Docker工作树。前端原目录 `../agentic-ai-platform-web` 同名任务分支，已提交并推送 `967fb40`（起点 `4a9a280`），CI40985973789 PASS。无新工作树。
+- 后端原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`，任务分支 `feat/retrieval-consumers-20261028`，已提交跨语言验收 `e591784`（CI40987954204三项PASS）；PG验收增量 `6fe3977` 已推送，CI40988700034三项PASS；main在原Docker工作树。前端原目录 `../agentic-ai-platform-web` 同名任务分支，已提交并推送 `967fb40`（起点 `4a9a280`），CI40985973789 PASS。无新工作树。
 - 授权沿原计划做本地实现/验证、完整逻辑单元提交与正常推送，验收后合并main；无强推、清理、生产部署、子Agent或新增模型预算。Embedding/chat仍各1元累计上限；U04真实精排账号/端点/价格/独立预算缺失，不影响机制验证，本轮新增付费调用0。
 
 ### 已完成的增量与证据
@@ -23,7 +23,9 @@
 
 - 当前本地真实服务仍是S11D固定快照 `01a95560586ee526`；本阶段未替换容器、未启用v2开关、未迁移开发库。隔离测试库Knowledge V12 / Tasks V5 / Conversation V2。HTTP与worker均默认关闭新检索，每进程1、总量2；旧Embedding账本复用且缺配置拒绝启动。无新模型调用。
 - 前端隔离Vite预览 `127.0.0.1:28186` 正在运行（exec43308，前端 `.logs/s11e-preview.log`）；没有身份桥，不连接真实模型。跨语言与PG测试子进程均已正常退出；最终单元/静态/浏览器命令均完成，后续可按任务需要保留预览。
-- 下一步：前端已提交推送且CI通过；真实Python服务→Java候选/权威核验闭环已通过；新QA/work/evaluation图真实PG+中央HTTP恢复已通过；下一步启用评测公开HTTP/真实报告服务联合、同输入跨消费者对照。完成容器/浏览器smoke、两仓最终摘要与CI后，才正常合并推main并进入S12A。
+- 下一步：四消费者真实HTTP、评测真实报告与PG接管、生产构建浏览器联合均PASS（`.logs/s11e-browser-production-verified.log`：5单元+3Java集成，子进程1联合测试+1浏览器测试；现场`.logs/s11e-joint-9103417658125114857/`）。4张真实页面/引用截图已逐张查看，1440/414无溢出。仅模型与浏览器会话身份为明确替身，业务响应未经改写。正在归档本增量并做候选镜像构建/隔离smoke；不替换运行容器。两仓最终摘要与CI通过后，正常合并推main并立即进入S12A。
+- 浏览器生产预览 `127.0.0.1:28187` 正在运行（exec49095，前端`.logs/s11e-production-preview.log`）；78167联合测试已退出0，所有测试Java/Python子进程已结束。早期开发预览StrictMode重复请求触发429/503，生产构建实际路径复验通过；无基线404为正式预期，仅精确基线路径/错误码放行。
+- 容器候选01e494b1d3e59376构建中（exec70130，`.logs/s11e-container-build.log`）；原current.json/compose.env已立即恢复。审查发现Docker网页代理缺v2/tasks和v2/conversations，已补路由并新增无网络容器代理验签/转发smoke（未验证）。首个候选为修复前快照，不能作为最终交付；待重制修复后web候选。
 - 运行恢复前先查状态，保留所有已有任务/账本/.local/.logs/缓存和工作树，不重发已完成付费探针。后端Java格式化器限制保留；全局MULTI_CLIENT_DRIFT_BLOCKED不改，沿手动专业技能路径，无子Agent。
 - 前端曾发现确认按钮加载图标改变可访问名称，已增加完整忙碌生命周期、稳定名称及aria-busy，最终原键恢复验收通过；窄屏以动画稳定后宽度断言，未放宽布局要求。早期失败与中止日志保留；有效结果只引用各增量最终收据。
 

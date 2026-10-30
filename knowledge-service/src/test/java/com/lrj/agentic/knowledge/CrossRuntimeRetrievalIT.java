@@ -35,11 +35,16 @@ import org.springframework.test.context.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
         "management.server.port=0", "spring.main.banner-mode=off", "knowledge.processing.worker-enabled=false",
         "knowledge.retrieval.enabled=true", "knowledge.runtime.enabled=true",
+        "knowledge.evaluation.worker-enabled=true",
         "knowledge.lifecycle.generation-enabled=true", "knowledge.lifecycle.reindexes-enabled=true",
         "knowledge.lifecycle.withdrawals-enabled=true"})
 class CrossRuntimeRetrievalIT {
     private static PythonRuntime runtime;
+    private static final Caller EVALUATION_OWNER = new Caller("eval-joint-" + UUID.randomUUID(), "owner");
+    private static final int TASK_PORT = freePort();
     @DynamicPropertySource static void endpoint(DynamicPropertyRegistry registry) {
+        registry.add("knowledge.evaluation.task-endpoint", () -> "http://127.0.0.1:" + TASK_PORT);
+        registry.add("knowledge.evaluation.worker-tenant", EVALUATION_OWNER::tenantId);
         registry.add("knowledge.processing.ai-endpoint", () -> {
             if (runtime == null) runtime = PythonRuntime.start();
             return runtime.endpoint;
@@ -148,6 +153,40 @@ class CrossRuntimeRetrievalIT {
             assertThat(secondRequest.get(15, TimeUnit.SECONDS).statusCode()).isEqualTo(200);
             assertThat(http.send(runtimeRequest(runtime, owner, input), HttpResponse.BodyHandlers.ofString()).statusCode()).isEqualTo(200);
         } finally { Files.deleteIfExists(runtime.directory.resolve("embedding.hold")); }
+    }
+
+    @Test void fourConsumersUseSamePublishedEvidenceAndEvaluationPersistsThroughRealHttpAndPostgres() throws Exception {
+        var fixture = json.createObjectNode().put("knowledgeEndpoint", "http://127.0.0.1:" + port)
+                .put("taskPort", TASK_PORT).put("tenant", EVALUATION_OWNER.tenantId()).put("owner", EVALUATION_OWNER.userId());
+        var documents = fixture.putArray("documents");
+        for (int i = 0; i < 2; i++) {
+            var published = publish(EVALUATION_OWNER); var job = published.job(); var chunk = published.batch().chunks().getFirst();
+            documents.addObject().put("documentId", job.documentId()).put("version", job.documentVersion())
+                    .put("indexGeneration", job.indexGeneration()).put("jobId", job.jobId())
+                    .put("processorVersion", job.profile().processor()).put("chunkId", chunk.chunkId())
+                    .put("batchDigest", published.batch().batchDigest()).put("textHash", chunk.textHash());
+        }
+        Path input = runtime.directory.resolve("published-fixture.json");
+        Files.writeString(input, fixture.toString());
+        Path root = runtime.directory.getParent().getParent();
+        var builder = new ProcessBuilder(root.resolve("ai-runtime/.venv/bin/python").toString(), "-m", "pytest",
+                "tests/test_evaluation_full_joint.py", "-q");
+        builder.directory(root.resolve("ai-runtime").toFile()).redirectErrorStream(true)
+                .redirectOutput(runtime.directory.resolve("consumers.log").toFile());
+        builder.environment().put("AGENTIC_EVALUATION_FULL_IT", input.toString());
+        builder.environment().put("LANGSMITH_TRACING", "false");
+        builder.environment().put("LANGCHAIN_TRACING_V2", "false");
+        Process process = builder.start();
+        try {
+            assertThat(process.waitFor(180, TimeUnit.SECONDS)).as("四消费者联合验收有界结束").isTrue();
+            assertThat(process.exitValue()).as(runtime.directory.resolve("consumers.log").toString()).isZero();
+        } finally { if (process.isAlive()) { process.destroy(); process.waitFor(15, TimeUnit.SECONDS); } }
+    }
+
+    private static int freePort() {
+        try (var socket = new java.net.ServerSocket(0, 1, java.net.InetAddress.getLoopbackAddress())) {
+            return socket.getLocalPort();
+        } catch (java.io.IOException failure) { throw new ExceptionInInitializerError(failure); }
     }
 
     private ObjectNode input(String document) {
