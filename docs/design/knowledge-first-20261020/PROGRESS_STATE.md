@@ -3,7 +3,7 @@
 ## 当前任务：S11E 检索消费者接入（IN_PROGRESS）
 
 - 任务 `capability-delivery-20261021`，51项已批准，parallel=no；S8A–F/S9A–D/S10A–F/S11A–D已交付。用户2026-10-29取消本次25%额度保留限制，2026-10-30要求连续执行；全平台与S11E均未完成。
-- 后端原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`，任务分支 `feat/retrieval-consumers-20261028`，HEAD `825c6d1`；main在原Docker工作树。前端原目录 `../agentic-ai-platform-web` 同名任务分支，已提交并推送 `967fb40`（起点 `4a9a280`），CI40985973789 PASS。无新工作树。
+- 后端原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`，任务分支 `feat/retrieval-consumers-20261028`，已提交跨语言验收 `e591784`（CI40987954204三项PASS）；当前PG验收增量待提交；main在原Docker工作树。前端原目录 `../agentic-ai-platform-web` 同名任务分支，已提交并推送 `967fb40`（起点 `4a9a280`），CI40985973789 PASS。无新工作树。
 - 授权沿原计划做本地实现/验证、完整逻辑单元提交与正常推送，验收后合并main；无强推、清理、生产部署、子Agent或新增模型预算。Embedding/chat仍各1元累计上限；U04真实精排账号/端点/价格/独立预算缺失，不影响机制验证，本轮新增付费调用0。
 
 ### 已完成的增量与证据
@@ -17,11 +17,13 @@
 
 7. 真实跨语言HTTP往返与两进程容量验证：新增 `CrossRuntimeRetrievalIT`，5单元/2真实集成PASS；真实MySQL/S3/Qdrant/ES，模型仅测试向量。完整引用、候选后同内容重索引拒绝、跨owner隔离、撤下失败关闭；两个Python进程每个1在途、超额429、断线/超时释放通过。见 `cross-runtime-evidence.json`；早期夹具密钥及搜索状态断言修正已留证，未改产品行为。
 
+8. 新图真实PG/中央HTTP接管14项PASS：QA/work生成前、验证前、完整快照；评测成功前缀/完整根图；证据失效、取消、成功清单撤权、旧QA图兼容及终态不连PG重放。默认Python550通过/67跳过，Ruff112文件/mypy71源码PASS。仅候选/模型/评测报告及独立引用响应为明确协议替身，Task/MySQL/PG真实；见 `generation-pg-evidence.json`。评测公开入口到真实报告服务的联合路径仍待完成。
+
 ### 现场与剩余工作
 
 - 当前本地真实服务仍是S11D固定快照 `01a95560586ee526`；本阶段未替换容器、未启用v2开关、未迁移开发库。隔离测试库Knowledge V12 / Tasks V5 / Conversation V2。HTTP与worker均默认关闭新检索，每进程1、总量2；旧Embedding账本复用且缺配置拒绝启动。无新模型调用。
-- 前端隔离Vite预览 `127.0.0.1:28186` 正在运行（exec43308，前端 `.logs/s11e-preview.log`）；没有身份桥，不连接真实模型。跨语言测试子进程已正常退出；最终单元/静态/浏览器命令均完成，后续可按任务需要保留预览。
-- 下一步：前端已提交推送且CI通过；真实Python服务→Java候选/权威核验闭环已通过；正在补充新QA/work/evaluation图真实PG+中央HTTP恢复；覆盖同输入一致性、旧任务恢复、同内容重索引/撤权/跨owner、取消及两进程总容量。完成容器/浏览器smoke、两仓最终摘要与CI后，才正常合并推main并进入S12A。
+- 前端隔离Vite预览 `127.0.0.1:28186` 正在运行（exec43308，前端 `.logs/s11e-preview.log`）；没有身份桥，不连接真实模型。跨语言与PG测试子进程均已正常退出；最终单元/静态/浏览器命令均完成，后续可按任务需要保留预览。
+- 下一步：前端已提交推送且CI通过；真实Python服务→Java候选/权威核验闭环已通过；新QA/work/evaluation图真实PG+中央HTTP恢复已通过；下一步启用评测公开HTTP/真实报告服务联合、同输入跨消费者对照。完成容器/浏览器smoke、两仓最终摘要与CI后，才正常合并推main并进入S12A。
 - 运行恢复前先查状态，保留所有已有任务/账本/.local/.logs/缓存和工作树，不重发已完成付费探针。后端Java格式化器限制保留；全局MULTI_CLIENT_DRIFT_BLOCKED不改，沿手动专业技能路径，无子Agent。
 - 前端曾发现确认按钮加载图标改变可访问名称，已增加完整忙碌生命周期、稳定名称及aria-busy，最终原键恢复验收通过；窄屏以动画稳定后宽度断言，未放宽布局要求。早期失败与中止日志保留；有效结果只引用各增量最终收据。
 

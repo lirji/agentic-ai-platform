@@ -1,0 +1,51 @@
+{
+  "slice": "S11E",
+  "status": "PASS",
+  "scope": "new QA/work/evaluation graph and old QA graph real PostgreSQL checkpoints + isolated central Tasks HTTP/MySQL",
+  "baseCommit": "e5917846ac20a3d92ddada55f37edd1c3ae0aaba",
+  "tests": {
+    "realIntegration": 14,
+    "pythonDefaultPassed": 550,
+    "pythonDefaultSkipped": 67
+  },
+  "checks": [
+    "QA generate/verify/completed snapshot takeover preserves all eight-field dependencies and only runs unfinished nodes",
+    "work analyze/verify/completed snapshot takeover reuses retrieval and completed generation",
+    "evaluation successful prefix/completed root takeover preserves strategy, reuses saved questions and confirms new-epoch proof",
+    "generation drift before model blocks completion without another retrieval or model call",
+    "cancelled checkpoint does not call model or complete",
+    "successful context manifest reads revalidate central full evidence",
+    "old QA v1 input/graph/result and original citation protocol restore unchanged",
+    "terminal replay succeeds with unreachable PG and no model replay"
+  ],
+  "format": "Ruff 112 files PASS",
+  "static": "Ruff PASS; mypy 71 source files PASS",
+  "paidCalls": 0,
+  "isolation": "new loopback Tasks jar using existing test MySQL/PG; no development DB/container/config changes; own UUID task rows only lease expiry fault injection",
+  "testSubstitutes": [
+    "candidate/embedding/chat ports and evaluation report port are deterministic fixtures",
+    "Tasks→Knowledge citation HTTP is a JWT-verifying protocol substitute; real Knowledge authority is covered by cross-runtime-evidence.json and Java integration receipts"
+  ],
+  "earlyFailures": [
+    "attempted reading a central success-only manifest while task RUNNING; corrected test to inspect committed PG dependencies then compare final manifest",
+    "attempted central historical-read denial as completion authority while runtime source port still allowed; corrected to contract ownership: runtime drift test blocks restore; central read test rejects revoked history after success"
+  ],
+  "limitations": [
+    "evaluation enabled public HTTP/real report service joint still pending",
+    "protocol substitutes do not prove provider quality",
+    "existing Deep Agents durability warning for internal graph without saver retained"
+  ],
+  "sourceHashes": {
+    "ai-runtime/tests/test_generation_execution_integration.py": "9ca6d337be7be3763cc30f8022606efec3c2c3e0916d682cbd08926f7777a467"
+  },
+  "logHashes": {
+    ".logs/s11e-generation-pg.log": "1f05a44aaa2f75afbe0cea2f9d32451dc87ac9b2910d617f33bfab3ee6b3ca95",
+    ".logs/s11e-generation-pg-retest.log": "0db9deb25d832488616438c449beeba1b9736f277f118041f57d5d972b4302c5",
+    ".logs/s11e-generation-pg-evaluation.log": "30d9f9f044f2912416711de4f2fc1ff21effed9c8e45789b39c3038b88087b23",
+    ".logs/s11e-generation-pg-final.log": "35d66918b6e57ad9b371dd20e1af01627337c5342866bcbee396d50db2219f45",
+    ".logs/s11e-generation-pg-verified.log": "97dd6a36e4e31d0f2a15257994ce931abaf34abdb24d9678e479cd36d7d94847",
+    ".logs/s11e-python-joint-regression.log": "ace57d73f1b8a719274e1ac5456647626402e9fc9670470245effc6c68e4b5ec",
+    ".logs/s11e-task-jar.log": "9d3994a6d1955a99d0111cf850354f24b5ce5e8e5b0a9f9027ac2895c71cc96a"
+  },
+  "taskJarHash": "1ef5984e580422b61369c8889dd1f9ee495e7483181645c5b1ecd24f8de60f5a"
+}

@@ -1,0 +1,26 @@
+{
+  "status": "COMPLETED",
+  "gate": "PASS",
+  "ref": {
+    "type": "commit",
+    "value": "e5917846ac20a3d92ddada55f37edd1c3ae0aaba"
+  },
+  "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40987954204",
+  "checks": [
+    {
+      "name": "documents",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "java",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "python",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}
