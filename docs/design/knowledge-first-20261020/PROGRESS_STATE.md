@@ -2,37 +2,28 @@
 
 ## 当前任务：S11E 检索消费者接入（IN_PROGRESS）
 
-- 任务 `capability-delivery-20261021`，51项已批准，parallel=no；S8A–F/S9A–D/S10A–F/S11A–D已交付。用户2026-10-29取消本次25%额度保留限制，2026-10-30再次要求连续执行。全平台与S11E均未完成。
-- 后端 `/Users/liruijun/personal/LLM/agentic-ai-platform`，复用分支 `feat/retrieval-consumers-20261028`，本阶段起点 `7b75c1e`；main位于原Docker工作树 `~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027`。前端 `../agentic-ai-platform-web` 仍未修改；本次无新工作树。
-- 沿既有授权完成本地实现、验证和正常Git交付；不强推/清理/生产部署。Embedding/chat仍各1元累计上限；U04真实精排端点/账号/价格/独立预算未满足，新增付费调用0。已取消的额度保留限制不再作为停止条件。
+- 任务 `capability-delivery-20261021`，51项已批准，parallel=no；S8A–F/S9A–D/S10A–F/S11A–D已交付。用户2026-10-29取消本次25%额度保留限制，2026-10-30要求连续执行；全平台与S11E均未完成。
+- 后端原目录 `/Users/liruijun/personal/LLM/agentic-ai-platform`，任务分支 `feat/retrieval-consumers-20261028`，HEAD `825c6d1`；main在原Docker工作树。前端原目录 `../agentic-ai-platform-web` 同名任务分支，已提交并推送 `967fb40`（起点 `4a9a280`），CI40985973789 PASS。无新工作树。
+- 授权沿原计划做本地实现/验证、完整逻辑单元提交与正常推送，验收后合并main；无强推、清理、生产部署、子Agent或新增模型预算。Embedding/chat仍各1元累计上限；U04真实精排账号/端点/价格/独立预算缺失，不影响机制验证，本轮新增付费调用0。
 
-### 已实现与验证
+### 已完成的增量与证据
 
-1. S11E契约第9节、Tasks v2证据/结果信封、上下文完整清单与Conversation持久策略兼容已冻结。旧v1输入、图、请求指纹和历史摘要不重写；跨版本上下文拒绝，不为旧三元组补代次。
-2. 共用 `RetrievalUseCase`、公开白名单投影、完整八分量引用/跨语言摘要、K08 v2受限核验已实现。Tasks V5保持原JSON数组，加schema列；清单累加、正文事件绑定、终态/历史读取都使用完整身份。
-3. QA/work v2原生根图保留完整证据与实际诊断，新执行器恢复后重验全部生成依赖（包括未被最终引用的项），不重复已完成检索/生成。QA前文从中央继承全部依赖；研究仍用原Deep Agents只读工具和边界。
-4. Conversation V2在测试库迁移成功，策略和问题/分派账本原子保存，原幂等指纹仅对新版本加入策略。未知提交按原taskId/输入/策略重放；旧输入序列化不增加空策略字段。新公共入口尚未开放。
-5. Worker新增显式v2路由，共用单实例单许可用例，复用旧Embedding累计账本和独立精排配置；默认retrieval_enabled=false。Tasks新增task.generation-enabled=false受理/领取门禁；新路径待联合验收后同时启用，关闭不改写历史。
-6. Python全量526 PASS/53默认跳过（.logs/s11e-python-current.log）；随后局部安全/装配修改的针对性复验见 .logs/s11e-worker-final.log、s11e-final-focused.log、s11e-public-protocol-final.log。Ruff/格式/mypy68文件PASS。真实PG+新Tasks HTTP恢复尚未运行，不能据内存图测试宣称完成。
-7. Java全模块156单元PASS（.logs/s11e-java-current-unit.log）；Knowledge7 + Tasks18 + Conversation12真实集成PASS（.logs/s11e-java-foundation-final.log）；后续枚举修正Tasks18复验PASS（s11e-task-enum-retest.log）。Tasks默认关闭门禁/旧可见性回归PASS（含默认关闭新增用例），日志 .logs/s11e-task-gated-final.log、s11e-task-default-gate.log。
-8. Code Hygiene已修复模式硬编码，当前无阻断项，4条数值建议为协议上限；Java无项目格式化器的工具限制保留（.logs/s11e-hygiene-final.json）。首次图schema/枚举JSON边界和会话测试编译失败均已修复并保留日志；不得把旧失败日志误认为最新结果。
+1. 后端完整证据、QA/work v2图与上下文清单、Conversation持久策略兼容：`bea8c02`，CI40976298838三项PASS。旧输入/图/JSON/摘要保留，不给三元组补代次。基础Java156单元、Knowledge7/Tasks18/Conversation12真实集成、Python526通过/53默认跳过及后续专项复验见 `docs/qa/retrieval-consumers-20261028/foundation-evidence.json`。
+2. 评测v2：Knowledge V12冻结策略/画像/完整逐题依赖，真实MySQL22项（明确 `-Pintegration`）PASS；Java157单元、Python532通过/53跳过。`70a33c0`、CI40978201919三项PASS，见 `evaluation-evidence.json`。早期未带profile命令不作为集成证据。
+3. 公共检索/能力目录及安全装配：`6b35d0a`、CI40980734552三项PASS。Java164单元、5真实HTTP，Python549通过/53跳过及追加HTTP18项，Ruff/format/mypy PASS；7契约12夹具，见 `search-http-evidence.json`。
+4. 问答、研究/助手、评测v2公开受理：`f303f4a`、CI40981877873三项PASS；165单元、56真实HTTP/DB，跨版本幂等补充后Tasks/Conversation32项复验。旧读入口兼容，默认关闭，见 `public-consumer-evidence.json`。新评测启用完整HTTP仍待联合验收。
+5. 完整引用公开读取：契约9.6及 `825c6d1`，CI40982895570三项PASS。11项真实HTTP/MySQL/S3/双索引验证同内容重索引、撤下、跨owner、严格输入和关闭新受理后历史读取，见 `citation-read-evidence.json` / `CITATION_READ_CI_RESULT.json`。
+6. 前端四消费者已实现并专项验证：真实能力目录选择、请求/实际模式分开、完整身份及正文核验、原键/原策略恢复、QA同家族上下文、研究输入版本验证、评测完整依赖绑定、本地代理公开白名单。Node24.22下132单元、6组新增浏览器、11组旧问答/工作回归（最终工作3项复验）、类型/ESLint/构建/Prettier/Code Hygiene PASS。13张截图，代表主页面/弹层1440/1024/414已实际查看；证据在前端 `docs/qa/retrieval-consumers-20261030/`。仅协议预览，不等于真实后端联合。
 
-9. Evaluation新输入/图和逐题完整身份共享夹具已落地，旧报告序列化逐字节不变；Python新图条件分支schema已修复。当前恢复测试使用内存检查点，尚未将新评测图接入真实PG+中央HTTP联合恢复。
+7. 真实跨语言HTTP往返与两进程容量验证：新增 `CrossRuntimeRetrievalIT`，5单元/2真实集成PASS；真实MySQL/S3/Qdrant/ES，模型仅测试向量。完整引用、候选后同内容重索引拒绝、跨owner隔离、撤下失败关闭；两个Python进程每个1在途、超额429、断线/超时释放通过。见 `cross-runtime-evidence.json`；早期夹具密钥及搜索状态断言修正已留证，未改产品行为。
 
-### 运行与交付边界
+### 现场与剩余工作
 
-- 当前运行仍是S11D固定快照 `01a95560586ee526`，本阶段没有替换运行容器、启用v2公共接口或修改前端；Knowledge/Tasks开发库仍以原运行版本为准。Knowledge测试库V12、Tasks测试库V5、Conversation测试库V2只涉及隔离测试记录。
-- S11D真实运行/CI证据仍在 `docs/qa/rerank-budget-20261028/`，最后收据mainCI `40834097285` 对应恢复基线7b75c1e；本阶段尚未推main，不把旧CI当新代码证据。
-- 基础实现收据在 `docs/qa/retrieval-consumers-20261028/`；基础实现bea8c02与评测核心70a33c0均已推任务分支，基础CI40976298838三项PASS，评测CI40978201919三项PASS；尚未合并main。旧接入前20项摘要只代表原基线，不代表当前源码。
-- 日志/临时配置/.local/缓存和原工作树全部保留；没有清理授权。沿backend-implementation、implementation-validation、update-progress-docs和task-git-delivery；采用建模/持久化/接口/并发安全/容量/发布规范。无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。
-
-### 剩余验收与下一步
-
-1. 当前基础bea8c02及评测70a33c0已按逻辑单元提交推送；评测CI40978201919三项PASS，继续公共门面装配，S11E保持IN_PROGRESS。
-2. Evaluation v2核心已实现：Knowledge V12策略、画像绑定、逐题完整证据、批量读取/评审批量核验、Tasks版本领取和Python原生图恢复。真实隔离MySQL22项PASS（EvaluationRunIT8/DecisionIT8/TaskIT4/GenerationTaskIT2，显式-Pintegration，.logs/s11e-evaluation-real-integration-retest.log）；Java157单元、Python532通过/53按配置跳过。首次遗漏integration profile的命令不作为集成证据；首次真实集成因非法processor夹具违反CHECK失败，改用有效撤下故障并保留完整代次负例后通过。详细边界见evaluation-evidence.json；公共入口/运行配置仍未启用。
-3. 公共门面逻辑单元6b35d0a已正常提交推送，CI40980734552三项PASS：Java164单元、5项真实HTTP（默认关闭2/启用1/原评测2）；Python全量549通过/53默认跳过，追加正文读取耗时测试后HTTP专项18通过；Ruff/format110/mypy71通过。金标/契约7份12夹具通过；最后HttpStatus枚举调整后7项Java协议复验通过。Spring构造器装配回归、URN测试读取及代码卫生硬编码已修复；Code Hygiene无阻断，Java格式化器工具限制保留。证据search-http-evidence.json。后续公开受理实现已通过当前验证、待提交CI：Tasks /api/v2/tasks、Conversation /api/v2/conversations/{id}/turns、Evaluation /api/v2/knowledge/evaluations/runs，网关路由/受众及默认关闭门禁。研究历史保留旧JSON、只为新输入追加策略。165单元和56项真实HTTP/DB回归PASS，工作跨版本冲突断言与测试导入整理后32项复验PASS；代码卫生无阻断，Java格式化器限制保留。证据public-consumer-evidence.json；新评测启用状态完整HTTP留待联合验证。所有验证命令已结束，无模型调用。公开受理f303f4a已提交推送，CI40981877873通过。前端已在原目录创建同名任务分支（4a9a280起点），仅更新恢复入口。审查现有引用组件发现三元组读取会丢失完整代次，已按契约9.6补充完整引用读取聚合，该缺口已实现并通过11项真实HTTP/MySQL/S3/双索引验证，待提交；首次JSON树Long/Int断言已按实际线格式修正，代码卫生无阻断。收据citation-read-evidence.json；所有测试进程已结束。前端覆盖计划在前端docs/qa/retrieval-consumers-20261030/IMPLEMENTATION_EVIDENCE.md，生产页面尚未修改。下一步提交引用读取增量、实现前端四消费者，再做联合运行验收。勿提前启用开关。真实Python服务↔Java回调闭环尚未验收。HTTP预算沿旧账本且缺配置拒绝启动，每进程1、总量2。
-4. 前端搜索/问答/研究/评测一致消费，区分请求策略和实际mode；错误、未知提交、刷新、引用、禁用精排与浏览器检查。
-5. 真实PG/HTTP/数据库/双索引联合恢复、同内容重索引/撤权/跨owner、取消/总容量、两仓摘要/容器smoke/CI和正常合并推main。U04只阻断真实重排质量消融，不妨碍其余机制验收。
+- 当前本地真实服务仍是S11D固定快照 `01a95560586ee526`；本阶段未替换容器、未启用v2开关、未迁移开发库。隔离测试库Knowledge V12 / Tasks V5 / Conversation V2。HTTP与worker均默认关闭新检索，每进程1、总量2；旧Embedding账本复用且缺配置拒绝启动。无新模型调用。
+- 前端隔离Vite预览 `127.0.0.1:28186` 正在运行（exec43308，前端 `.logs/s11e-preview.log`）；没有身份桥，不连接真实模型。跨语言测试子进程已正常退出；最终单元/静态/浏览器命令均完成，后续可按任务需要保留预览。
+- 下一步：前端已提交推送且CI通过；真实Python服务→Java候选/权威核验闭环已通过；正在补充新QA/work/evaluation图真实PG+中央HTTP恢复；覆盖同输入一致性、旧任务恢复、同内容重索引/撤权/跨owner、取消及两进程总容量。完成容器/浏览器smoke、两仓最终摘要与CI后，才正常合并推main并进入S12A。
+- 运行恢复前先查状态，保留所有已有任务/账本/.local/.logs/缓存和工作树，不重发已完成付费探针。后端Java格式化器限制保留；全局MULTI_CLIENT_DRIFT_BLOCKED不改，沿手动专业技能路径，无子Agent。
+- 前端曾发现确认按钮加载图标改变可访问名称，已增加完整忙碌生命周期、稳定名称及aria-busy，最终原键恢复验收通过；窄屏以动画稳定后宽度断言，未放宽布局要求。早期失败与中止日志保留；有效结果只引用各增量最终收据。
 
 ## 历史：20 项差距的框架化实施计划
 

@@ -1,0 +1,17 @@
+{
+  "status": "COMPLETED",
+  "gate": "PASS",
+  "ref": {
+    "type": "commit",
+    "value": "967fb40bbc00beb976816bbb79e60820cca78e72"
+  },
+  "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/40985973789",
+  "checks": [
+    {
+      "name": "web",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "scope": "frontend four retrieval consumers; full-stack joint validation remains pending"
+}

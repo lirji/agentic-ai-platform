@@ -1,0 +1,27 @@
+{
+  "status": "COMPLETED",
+  "gate": "PASS",
+  "ref": {
+    "type": "commit",
+    "value": "825c6d18242d67c67bb769e9d3e4eb4877c20857"
+  },
+  "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40982895570",
+  "checks": [
+    {
+      "name": "documents",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "python",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "java",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "scope": "complete generation citation read; local real integration evidence is separate"
+}

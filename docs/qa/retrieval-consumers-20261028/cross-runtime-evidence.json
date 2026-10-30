@@ -1,0 +1,44 @@
+{
+  "slice": "S11E",
+  "status": "PASS",
+  "scope": "real Java public HTTP → Python HTTP/use case → Java authorization/MySQL/S3/Qdrant/Elasticsearch; two Python processes capacity/disconnect/timeout",
+  "productRevision": "825c6d18242d67c67bb769e9d3e4eb4877c20857",
+  "tests": {
+    "javaUnit": 5,
+    "crossRuntimeIntegration": 2
+  },
+  "evidence": ".logs/s11e-cross-runtime-final.log",
+  "checks": [
+    "capability causes no embedding",
+    "one embedding, one candidate call, one resolution; RRF score 2/61",
+    "full identity citation read",
+    "foreign search EMPTY and citation 409 without disclosure",
+    "same-content reindex between candidates and resolve rejects 409; new search sees new job",
+    "withdrawn stale index exhausts filtering and fails 503 rather than false EMPTY",
+    "two real processes admit two requests, each rejects another with 429",
+    "HTTP disconnect and deadline cancel in-flight protocol embedding, close clients and release admission"
+  ],
+  "testSubstitutes": [
+    "Embedding returns protocol vector only; no provider/rerank quality claims"
+  ],
+  "paidCalls": 0,
+  "earlyFailures": [
+    "test verifier used edge public key instead of real Knowledge→Python key; corrected fixture to production service identity",
+    "foreign/withdrawn search assertions corrected to existing contract: no index candidates EMPTY; filtered stale candidates exhausted fail closed"
+  ],
+  "remaining": [
+    "new graphs real PostgreSQL/central HTTP recovery",
+    "enabled evaluation full HTTP",
+    "containers/browser joint acceptance"
+  ],
+  "sourceHashes": {
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/CrossRuntimeRetrievalIT.java": "d99dbbd60915f11c79abc0e867a6c96df4b9c04ec0fe9f7d54d965ab78101650",
+    "ai-runtime/tests/retrieval_joint_server.py": "b18e2ecd699d779892dca5447f747cdbdf00a483b204c3aec03e0f1b66c5f439"
+  },
+  "logHashes": {
+    ".logs/s11e-cross-runtime.log": "62488c26c9b147643cbce0a3277fc5a0a23c78dc2e598cc394c1762877d48639",
+    ".logs/s11e-cross-runtime-retest.log": "77b5c1b53fe1921d60a34f97aa3f72c390539c46d5f5eab6728f92026484ad5c",
+    ".logs/s11e-cross-runtime-verified.log": "18d71f2ce188745ceb9ff85be37439fc753dae7c66a30781c2efaeaef566d96f",
+    ".logs/s11e-cross-runtime-final.log": "3e317be72ebb83a4fd501530f35f4647f33a2ff9b273659edb1724891624eac2"
+  }
+}
