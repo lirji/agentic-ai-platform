@@ -1,0 +1,65 @@
+{
+  "slice": "S11E",
+  "status": "IN_PROGRESS",
+  "scope": "complete-generation citation public read gap closed",
+  "baseline": "f303f4a6b4616beb99caa8a9aaf3d81e3b586397",
+  "source_inputs": {
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/ConsumerRetrievalController.java": "edd2b76cb82e345c5451cd8f744c8b470c923baf7db3b0798b70fb4a056d5c0f",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/GenerationCitationRead.java": "23c49d7e48d085b0e706bc399d358e96321bcfab2b99eb5834ebf4a6f44311b2",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/KnowledgeSecurity.java": "572d40848d857afefc3046276a4a2ab7aefe573b40308fb8ce17b7a6144fa911",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/AuthorizedRetrievalIT.java": "ae529d27e4251e1d50347826b965fe6ff2bf98dad5e5f4ac0bfa67f0cf3443ae"
+  },
+  "integration": [
+    {
+      "name": "AuthorizedRetrievalIT",
+      "tests": 8,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:54:22.914900+00:00",
+      "sha256": "4825d8852c5199716c82be4213bc8a450575edb64a6d9ead9ae03ee1dfaa0c52"
+    },
+    {
+      "name": "ConsumerRetrievalHttpIT",
+      "tests": 2,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:54:11.218118+00:00",
+      "sha256": "bfbf6e827db8ed5a93dbf6f25b37b4a254c4ed2b83084d4490415422a82da0c1"
+    },
+    {
+      "name": "ConsumerRetrievalEnabledHttpIT",
+      "tests": 1,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:54:11.961142+00:00",
+      "sha256": "3a6716288ba9474e9afea54ca1fa7ede6889839b78d43c7f7a286bb9624806a5"
+    }
+  ],
+  "logs": {
+    ".logs/s11e-citation-read-retest.log": "09b94c49de67a404c1c90ed734c1a0a686f68e63b80301b1694bdb65df388a96",
+    ".logs/s11e-citation-read-hygiene.json": "d5069c9c2ef24d4f7319df92075f11d1265293605da0cf8e5412be629ee5abbb"
+  },
+  "commands": [
+    "mvn -q -pl knowledge-service -am verify -Pintegration -Dit.test=AuthorizedRetrievalIT,ConsumerRetrievalHttpIT,ConsumerRetrievalEnabledHttpIT -Dfailsafe.failIfNoSpecifiedTests=false"
+  ],
+  "checks": {
+    "affected_modules_compile_unit": "PASS",
+    "real_http_mysql_s3_dual_index": 11,
+    "hygiene": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS; Java formatter not configured"
+  },
+  "review": {
+    "executor": "single executor",
+    "gap": "existing frontend source drawer only sent triples; new results require full generation read",
+    "behavior": "metadata/source gathered using existing rules, final complete identity recheck before any response; legacy API unchanged",
+    "failure_corrected": "JSON in-memory IntNode/LongNode equality differs; assertion now compares actual wire JSON, not weakened field matching"
+  },
+  "model_calls": 0,
+  "unverified": [
+    "structured citation bundle browser rendering",
+    "full Python/Java loop and PG new-graph restore",
+    "frontend and joint runtime activation"
+  ]
+}

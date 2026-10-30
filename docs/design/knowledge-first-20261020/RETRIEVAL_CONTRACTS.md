@@ -123,3 +123,7 @@ Tasks的新证据清单仍保存JSON数组，沿V4的0..10长度约束；新追�
 - Java公开`GET /api/v2/knowledge/retrieval-capabilities`同一read权限，以消费者总开关及真实内部目录为准；总开关默认关闭，未完成四消费者联合验收前不开放新受理。旧history/read继续有效。新公共错误沿Knowledge唯一目录映射，不能透出Python内部异常。
 
 - 公开错误映射：无总开关→KNOWLEDGE_RETRIEVAL_DISABLED（503），无精排配置→KNOWLEDGE_RETRIEVAL_STRATEGY_UNAVAILABLE（503），预算拒绝→KNOWLEDGE_RETRIEVAL_BUDGET_REJECTED（503），许可已满→KNOWLEDGE_BUSY（429），任何完整证据失效→KNOWLEDGE_RETRIEVAL_EVIDENCE_STALE（409），远端结果不合约→KNOWLEDGE_RETRIEVAL_RESULT_INVALID（502）；其余远端故障统一依赖不可用，不回传原message。
+
+### 9.6 完整引用原文读取（knowledge-citation-v2）
+
+前端核对新结果的原文不能退回三元组。新增`POST /api/v2/knowledge/citations/resolve`，沿原knowledge:read权限、严格32KiB正文；请求恰为`{schemaVersion:"knowledge-citation-input-v2",identity:完整八分量}`。返回`{schemaVersion:"knowledge-citation-result-v2",identity,text,source,metadata,chunkSource}`：text/source来自完整身份的现时权威解析，metadata/chunkSource沿原K06类型，包含TEXT等格式的明确来源。返回前核验完整身份及元数据/片段来源的一致性；重索引、撤下、跨owner或任一身份变化统一RETRIEVAL_EVIDENCE_STALE（409），不返回部分正文。无模型/索引调用，关闭新受理开关不关闭已授权历史读取。旧K04/K06三元组接口保持原语义，仅供旧结果与资料管理使用。

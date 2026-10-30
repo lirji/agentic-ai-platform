@@ -55,6 +55,64 @@ class AuthorizedRetrievalIT {
     @Autowired JdbcTemplate jdbc;
     @org.springframework.boot.test.web.server.LocalServerPort int port;
 
+    @org.springframework.beans.factory.annotation.Value("${knowledge.identity.public-key}") org.springframework.core.io.Resource edgePublic;
+    @org.springframework.beans.factory.annotation.Value("${INTERNAL_PRIVATE_KEY}") org.springframework.core.io.Resource edgePrivate;
+
+    @Test void completePublicCitationReadRejectsReindexWithdrawalAndForeignOwnersWithoutModels() throws Exception {
+        var owner = owner(); var first = publish(owner, "完整引用原文");
+        var input = citationInput(first);
+        var response = publicCitation(owner, "knowledge:read", json.writeValueAsString(input));
+        assertThat(response.statusCode()).isEqualTo(200);
+        var result = json.readTree(response.body());
+        assertThat(result.path("schemaVersion").asText()).isEqualTo(GenerationCitationRead.RESULT);
+        assertThat(result.get("identity")).isEqualTo(json.readTree(json.writeValueAsString(input.identity())));
+        assertThat(result.path("text").asText()).isEqualTo(first.batch().chunks().getFirst().text());
+        assertThat(result.path("metadata").path("sourceHash").asText()).isEqualTo(result.path("chunkSource").path("sourceHash").asText());
+        assertThat(publicCitation(new Caller(owner.tenantId(), "foreign"), "knowledge:read", json.writeValueAsString(input)).statusCode()).isEqualTo(409);
+        assertThat(publicCitation(owner, "knowledge:write", json.writeValueAsString(input)).statusCode()).isEqualTo(403);
+        assertThat(publicCitation(null, "", json.writeValueAsString(input)).statusCode()).isEqualTo(401);
+        ObjectNode invalid = json.valueToTree(input);
+        ((ObjectNode) invalid.get("identity")).remove("indexGeneration");
+        assertThat(publicCitation(owner, "knowledge:read", invalid.toString()).statusCode()).isEqualTo(400);
+        assertThat(publicCitation(owner, "knowledge:read", " ".repeat(com.lrj.agentic.knowledge.domain.retrieval.ConsumerRetrieval.MAX_BODY + 1)).statusCode()).isEqualTo(413);
+        var before = lifecycle.document(owner, first.job().documentId());
+        var accepted = lifecycle.reindex(owner, first.job().documentId(), UUID.randomUUID().toString(),
+                before.revision(), first.job().indexGeneration(), first.job().profile().processor());
+        var next = finish(knowledge.ingestion(owner, accepted.jobId()));
+        var stale = publicCitation(owner, "knowledge:read", json.writeValueAsString(input));
+        assertThat(stale.statusCode()).isEqualTo(409);
+        assertThat(stale.body()).doesNotContain(first.batch().chunks().getFirst().text(), "完整引用原文");
+        assertThat(publicCitation(owner, "knowledge:read", json.writeValueAsString(citationInput(next))).statusCode()).isEqualTo(200);
+        var current = lifecycle.document(owner, first.job().documentId());
+        lifecycle.visibility(owner, first.job().documentId(), UUID.randomUUID().toString(), current.revision(), Operation.WITHDRAW);
+        assertThat(publicCitation(owner, "knowledge:read", json.writeValueAsString(citationInput(next))).statusCode()).isEqualTo(409);
+    }
+
+    private GenerationCitationRead.Request citationInput(Fixture fixture) {
+        var r = identity(fixture);
+        return new GenerationCitationRead.Request(GenerationCitationRead.INPUT,
+                new com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference(r.documentId(), r.version(),
+                        r.indexGeneration(), r.jobId(), r.processorVersion(), r.chunkId(), r.batchDigest(), r.textHash()));
+    }
+    private HttpResponse<String> publicCitation(Caller owner, String scope, String body) throws Exception {
+        var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/api/v2/knowledge/citations/resolve"))
+                .timeout(Duration.ofSeconds(15)).header("Content-Type", "application/json");
+        if (owner != null) {
+            var key = new com.nimbusds.jose.jwk.RSAKey.Builder(com.lrj.agentic.security.JwtTrust.publicKey(edgePublic))
+                    .privateKey(com.lrj.agentic.security.JwtTrust.privateKey(edgePrivate)).build();
+            var signer = new NimbusJwtEncoder(new com.nimbusds.jose.jwk.source.ImmutableJWKSet<>(new com.nimbusds.jose.jwk.JWKSet(key)));
+            Instant now = Instant.now();
+            var claims = JwtClaimsSet.builder().issuer(com.lrj.agentic.security.IdentityProtocol.INTERNAL_ISSUER)
+                    .audience(List.of(com.lrj.agentic.security.IdentityProtocol.KNOWLEDGE_AUDIENCE)).subject(owner.userId())
+                    .issuedAt(now).expiresAt(now.plusSeconds(30)).claim("tenant_id", owner.tenantId()).claim("scope", scope).build();
+            request.header("X-Internal-Token", signer.encode(JwtEncoderParameters.from(JwsHeader.with(
+                    org.springframework.security.oauth2.jose.jws.SignatureAlgorithm.RS256).build(), claims)).getTokenValue());
+        }
+        try (var client = HttpClient.newHttpClient()) {
+            return client.send(request.POST(HttpRequest.BodyPublishers.ofString(body)).build(), HttpResponse.BodyHandlers.ofString());
+        }
+    }
+
     @Test void publishedAuthorityIgnoresFailedDraftAndForgedForeignIndexMetadata() throws Exception {
         var owner = owner(); var published = publish(owner, "发布名称");
         var foreign = publish(new Caller("foreign-" + UUID.randomUUID(), "other"), "不应泄漏名称");

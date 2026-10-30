@@ -36,3 +36,7 @@
 - 研究请求历史共用原读接口，只有新schema携带retrievalStrategy；旧JSON没有额外null策略。中央读取仍先核验完整生成依赖，旧图worker不能领取新工作图。
 - 网关新路由按Conversation/Tasks/Knowledge归属换发受众并清除外来身份头；新增入口沿原write权限。Tasks原JSON配置未拒绝数字转文本的问题已收紧到现有会话规则，不影响合法旧请求。
 - 真实HTTP/DB56项及165单元通过，补充跨版本幂等断言后Tasks19/Conversation13复验通过；评测启用状态的完整公开HTTP受理留待联合运行验证，未冒称全消费者链路已完成。详见public-consumer-evidence.json。
+
+## 完整引用读取缺口修复
+
+前端适配发现原引用抽屉仅按三元组调用K04/K06，无法保持新代次约束。增加knowledge-citation-v2公共只读聚合，复用来源规则并在返回前解析完整八分量身份；BODY、权限和错误均沿当前机制，不调用模型、索引或对象下载。引用有效历史读取不依赖新受理开关。真实HTTP/MySQL/S3/双索引11项通过，含同内容重索引/撤下/跨owner/安全错误及旧公共门面回归，见citation-read-evidence.json；前端展示仍待实现。

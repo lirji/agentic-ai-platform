@@ -27,3 +27,5 @@
 公共门面增量：Java全模块164单元PASS、ConsumerRetrievalHttpIT2/EnabledHttpIT1/EvaluationHttpIT2真实HTTP通过，最后HttpStatus枚举调整后7项协议复验通过。Python全量549通过/53默认跳过，随后仅增加正文耗时测试，HTTP专项18通过；Ruff/format110/mypy71通过。共享契约7份/12夹具通过。初次Spring构造器装配失败已修复，代码卫生终态COMPLETE_WITH_LIMITATIONS；详见search-http-evidence.json。评测提交70a33c0对应CI三项PASS见EVALUATION_CI_RESULT.json；公共门面CI将在提交后独立记录。
 
 公开受理增量：165单元、56真实HTTP/DB通过（Tasks19、旧可见性及关闭5、Conversation13、EvaluationRun8、Decision8、Http3）；测试补充跨版本工作幂等断言后Tasks/Conversation32项复验通过。网关受众/头清理测试已纳入单元。新评测正向服务持久与公开默认关闭分别验证，启用后的完整HTTP联合验收仍待完成。Code Hygiene无阻断，Java格式化器限制保留。检索门面6b35d0a远程CI三项PASS见SEARCH_HTTP_CI_RESULT.json，该CI不覆盖随后公开受理源代码。
+
+完整引用读取：受影响Knowledge及上游模块单元通过，AuthorizedRetrievalIT8 + ConsumerRetrievalHttpIT2 + EnabledHttpIT1共11项真实集成通过；新增路径验证完整身份、同内容重索引、撤下、跨owner、缺字段/超限/权限。首次失败为LongNode/IntNode树比较，改按真实JSON线格式比较后通过，未改产品断言边界。详见citation-read-evidence.json。公开受理f303f4a远程CI三项PASS见PUBLIC_CONSUMER_CI_RESULT.json。
