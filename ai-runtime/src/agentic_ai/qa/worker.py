@@ -32,6 +32,8 @@ from agentic_ai.evaluation.pipeline import EvaluationFailed, EvaluationPipeline,
 from agentic_ai.qa.chat import ChatClient, ChatPort
 from agentic_ai.qa.chat_budget import ChatBudget
 from agentic_ai.qa.chat_config import MAX_CONFIG_BYTES, ChatConfig
+from agentic_ai.qa.contextual_models import QA_GRAPH_V3
+from agentic_ai.qa.contextual_pipeline import ContextualQaPipeline
 from agentic_ai.qa.errors import QaCode, QaError, failure_code
 from agentic_ai.qa.generation_pipeline import GenerationQaPipeline
 from agentic_ai.qa.knowledge import KnowledgeClient
@@ -65,12 +67,15 @@ class WorkerConfig(BaseModel):
     chat_config: Path = Field(repr=False)
     checkpoints: CheckpointConfig = Field(repr=False)
     retrieval_enabled: bool = Field(default=False, strict=True)
+    contextual_qa_enabled: bool = Field(default=False, strict=True)
     rerank_config: Path | None = Field(default=None, repr=False)
 
     @model_validator(mode="after")
     def retrieval_configuration(self) -> Self:
         """精排配置不能在关闭的消费者上被忽略，避免误报已启用。"""
-        if self.rerank_config is not None and not self.retrieval_enabled:
+        if (
+            self.rerank_config is not None or self.contextual_qa_enabled
+        ) and not self.retrieval_enabled:
             raise ValueError(QaCode.CONFIG_INVALID.value)
         return self
 
@@ -171,7 +176,7 @@ async def execute_qa_task(
     """异常先核对中央；取消/完成赢得竞争后不再报告覆盖它的失败。"""
     try:
         pipeline: QaPipeline | WorkPipeline | EvaluationPipeline
-        if binding.graph_version in (QA_GRAPH_V2, WORK_GRAPH_V2):
+        if binding.graph_version in (QA_GRAPH_V2, QA_GRAPH_V3, WORK_GRAPH_V2):
             if retrieval is None or candidates is None:
                 raise QaError(QaCode.CONFIG_INVALID)
             if binding.graph_version == WORK_GRAPH_V2:
@@ -180,6 +185,8 @@ async def execute_qa_task(
                 pipeline = GenerationWorkPipeline(
                     binding, central, candidates, tool_chat, retrieval
                 )
+            elif binding.graph_version == QA_GRAPH_V3:
+                pipeline = ContextualQaPipeline(binding, central, candidates, chat, retrieval)
             else:
                 pipeline = GenerationQaPipeline(binding, central, candidates, chat, retrieval)
         elif binding.graph_version in (EVALUATION_GRAPH, EVALUATION_GRAPH_V2):
@@ -357,6 +364,7 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                 ("knowledge-qa-v1", WORK_GRAPH)
                 + ((EVALUATION_GRAPH,) if config.evaluation_private_key is not None else ())
                 + ((QA_GRAPH_V2, WORK_GRAPH_V2) if retrieval is not None else ())
+                + ((QA_GRAPH_V3,) if config.contextual_qa_enabled else ())
                 + (
                     (EVALUATION_GRAPH_V2,)
                     if retrieval is not None and evaluation_key is not None
@@ -376,7 +384,7 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                     knowledge_type = (
                         RetrievalClient
                         if binding.graph_version
-                        in (QA_GRAPH_V2, WORK_GRAPH_V2, EVALUATION_GRAPH_V2)
+                        in (QA_GRAPH_V2, QA_GRAPH_V3, WORK_GRAPH_V2, EVALUATION_GRAPH_V2)
                         else KnowledgeClient
                     )
                     knowledge = knowledge_type.from_file(

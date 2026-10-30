@@ -41,7 +41,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /** 真实 MySQL 验证事务/锁/约束；中央协议替身仅用于确定性故障，真实 HTTP 另行验收。 */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
-        "management.server.port=0", "conversation.worker-enabled=false", "conversation.generation-enabled=true", "spring.main.banner-mode=off"})
+        "management.server.port=0", "conversation.worker-enabled=false", "conversation.generation-enabled=true",
+        "conversation.contextual-query-enabled=true", "spring.main.banner-mode=off"})
 @Import(ConversationPersistenceIT.Dependencies.class)
 class ConversationPersistenceIT {
     @Autowired ConversationService conversations;
@@ -77,13 +78,77 @@ class ConversationPersistenceIT {
         }
         var closed = new ConversationService(context.getBean(com.lrj.agentic.conversation.infrastructure.ConversationMapper.class),
                 context.getBean(ConversationValues.class), context.getBean(TaskGateway.class),
-                context.getBean(org.springframework.transaction.PlatformTransactionManager.class), false);
+                context.getBean(org.springframework.transaction.PlatformTransactionManager.class), false, false);
         assertThat(closed.askGeneration(owner, conversation.conversationId(), "same", command).turnId()).isEqualTo(turn.turnId());
         error(ConversationError.RETRIEVAL_DISABLED, () -> closed.askGeneration(owner, conversation.conversationId(), "new",
                 new AskGeneration(1L, "拒绝新受理", List.of(), null, "LLAMA_RRF_V1")));
         assertThat(conversations.turns(owner, conversation.conversationId(), 0, 20).items()).hasSize(1);
         var old = closed.ask(owner, conversation.conversationId(), "legacy", new Ask(1L, "旧入口", List.of(), null));
         assertThat(json.readTree(json.writeValueAsString(old)).has("retrievalStrategy")).isFalse();
+    }
+
+    @Test void contextualPolicyPersistsAcrossUnknownResponseAndClosedAdmission() throws Exception {
+        var owner = owner();
+        var conversation = conversations.create(owner, "contextual", new Create("受控追问"));
+        String path = "/api/v3/conversations/" + conversation.conversationId() + "/turns";
+        var command = new AskContextual(0L, "原问题", List.of(), null, "LLAMA_RRF_V1", "CONTEXT_REWRITE_V1");
+        String body = json.writeValueAsString(command);
+        var accepted = http("POST", path, owner, "conversation:write", "same", body);
+        assertThat(accepted.statusCode()).isEqualTo(202);
+        var turn = json.readValue(accepted.body(), Turn.class);
+        assertThat(turn.queryPolicy()).isEqualTo("CONTEXT_REWRITE_V1");
+        assertThat(http("POST", path, owner, "conversation:write", "same", body).body()).isEqualTo(accepted.body());
+        var closed = new ConversationService(context.getBean(com.lrj.agentic.conversation.infrastructure.ConversationMapper.class),
+                context.getBean(ConversationValues.class), context.getBean(TaskGateway.class),
+                context.getBean(org.springframework.transaction.PlatformTransactionManager.class), false, false);
+        assertThat(closed.askContextual(owner, conversation.conversationId(), "same", command).turnId()).isEqualTo(turn.turnId());
+        assertThat(closed.capabilities().contextualQueryEnabled()).isFalse();
+        error(ConversationError.RETRIEVAL_DISABLED, () -> closed.askContextual(owner, conversation.conversationId(), "new", command));
+        error(ConversationError.IDEMPOTENCY_CONFLICT, () -> conversations.askGeneration(owner, conversation.conversationId(), "same",
+                new AskGeneration(0L, command.question(), List.of(), null, "LLAMA_RRF_V1")));
+        central.dropOnce.add(turn.taskId());
+        dispatch.dispatch(dispatch.claim(owner.tenantId(), "contextual-worker").orElseThrow());
+        var frozen = central.inputs.get(turn.taskId());
+        assertThat(frozen.schemaVersion()).isEqualTo("knowledge-qa-input-v3");
+        assertThat(frozen.queryPolicy()).isEqualTo("CONTEXT_REWRITE_V1");
+        ready(owner, turn.turnId());
+        dispatch.dispatch(dispatch.claim(owner.tenantId(), "contextual-worker").orElseThrow());
+        assertThat(central.inputs.get(turn.taskId())).isEqualTo(frozen);
+        assertThat(central.counts.get(turn.taskId())).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT query_policy FROM knowledge_turn WHERE turn_id=?", String.class, turn.turnId()))
+                .isEqualTo("CONTEXT_REWRITE_V1");
+        assertThatThrownBy(() -> jdbc.update("UPDATE knowledge_turn SET query_policy='UNKNOWN' WHERE turn_id=?", turn.turnId()))
+                .hasRootCauseInstanceOf(SQLException.class).rootCause()
+                .satisfies(error -> assertThat(((SQLException) error).getErrorCode()).isEqualTo(3819));
+        central.statuses.put(turn.taskId(), TaskStatus.SUCCEEDED);
+        error(ConversationError.CONTEXT_INVALID, () -> conversations.askGeneration(owner, conversation.conversationId(), "old-to-new",
+                new AskGeneration(1L, "旧图不能读新结果", List.of(), turn.turnId(), "LLAMA_RRF_V1")));
+        var followup = conversations.askContextual(owner, conversation.conversationId(), "followup",
+                new AskContextual(1L, "它有哪些限制？", List.of(), turn.turnId(), "LLAMA_RRF_V1", "CONTEXT_REWRITE_V1"));
+        assertThat(followup.contextTurnId()).isEqualTo(turn.turnId());
+        error(ConversationError.CONTEXT_INVALID, () -> conversations.askContextual(owner, conversation.conversationId(), "changed-scope",
+                new AskContextual(2L, "它有哪些限制？", List.of(UUID.randomUUID().toString()), turn.turnId(), "LLAMA_RRF_V1", "CONTEXT_REWRITE_V1")));
+    }
+
+    @Test void contextualHttpCapabilityScopeAndStrictInputAreEnforced() throws Exception {
+        var owner = owner(); var conversation = conversations.create(owner, "strict", new Create("查询能力"));
+        String capabilities = "/api/v2/conversations/capabilities";
+        var available = http("GET", capabilities, owner, "conversation:read", null, null);
+        assertThat(available.statusCode()).isEqualTo(200);
+        assertThat(json.readTree(available.body())).isEqualTo(json.readTree("{\"schemaVersion\":\"conversation-capabilities-v1\",\"contextualQueryEnabled\":true}"));
+        assertThat(http("GET", capabilities, owner, "conversation:write", null, null).statusCode()).isEqualTo(403);
+        String path = "/api/v3/conversations/" + conversation.conversationId() + "/turns";
+        String body = json.writeValueAsString(new AskContextual(0L, "问题", List.of(), null, "LLAMA_RRF_V1", "CONTEXT_REWRITE_V1"));
+        for (String invalid : List.of(body.replace("CONTEXT_REWRITE_V1", "ORIGINAL_V1"),
+                body.replace("LLAMA_RRF_V1", "JAVA_RRF_LEGACY"), body.replace("{", "{\"queryPolicy\":\"CONTEXT_REWRITE_V1\","),
+                body.replace("\"queryPolicy\":\"CONTEXT_REWRITE_V1\"", "\"queryPolicy\":true"),
+                body.replace("\"queryPolicy\":\"CONTEXT_REWRITE_V1\"", "\"contextAnswer\":\"forged\""))) {
+            assertThat(http("POST", path, owner, "conversation:write", "invalid", invalid).statusCode()).isEqualTo(400);
+        }
+        assertThat(http("POST", path, owner, "conversation:read", "forbidden", body).statusCode()).isEqualTo(403);
+        assertThat(http("POST", path, null, "", "anonymous", body).statusCode()).isEqualTo(401);
+        assertThat(http("POST", path, new Caller(owner.tenantId(), "foreign"), "conversation:write", "foreign", body).statusCode()).isEqualTo(404);
+        assertThat(conversations.get(owner, conversation.conversationId()).revision()).isZero();
     }
 
     private HttpResponse<String> http(String method, String path, Caller owner, String scope, String key, String body) throws Exception {

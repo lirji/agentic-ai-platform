@@ -305,3 +305,9 @@ K07新增 `POST /api/v2/knowledge/documents/{id}/withdrawals` 与 `/deletions`�
 重建只使用当前发布修订原文件，失败新稿及原内容任务状态不变。每次发布前两sink全量核对ID/身份/batchDigest（ES另核对正文），DONE恢复也核验；若DONE目标被外部损坏，先恢复投影或另发明确重建，再沿原准备包重试，不重新调用模型掩盖损坏。检索每路20/60/100，共用一次Embedding和aiSeconds+2×indexSeconds原总预算；不足topK且有淘汰候选时503，不伪装无答案。
 
 本机S10D验收完成后create/generation/updates/withdrawals/deletions/reindexes=true，backfill=false；解析/PDF/DOCX/STRUCTURE_V3继续显式配置，Java/AI/model-proxy/qa-worker已恢复。固定资料和命令在`.local/s10d-http-state.json`；[分阶段工具](../docs/qa/document-reindex-20261027/http_probe.py)与[验收](../docs/qa/document-reindex-20261027/TEST_RESULT.md)仅供授权隔离环境恢复。不要重复执行已成功/未知模型请求或重置预算。
+
+## S12A 受控追问接入状态
+
+后端已实现Conversation V3追加`knowledge_turn.query_policy`，旧行默认`ORIGINAL_V1`，新v3输入固定`CONTEXT_REWRITE_V1`；旧JSON及请求指纹保持。只对隔离测试库应用了V3，当前开发库/运行容器尚未升级。新增`GET /api/v2/conversations/capabilities`与`POST /api/v3/conversations/{id}/turns`，本增量的网关/网页接入仍在后续实施中。
+
+配置`CONVERSATION_CONTEXTUAL_QUERY_ENABLED=false`、`TASK_CONTEXTUAL_QA_ENABLED=false`与worker的`contextual_qa_enabled=false`均默认关闭，需配套原generation/retrieval能力。回退先关闭新受理，保留理解v3持久行的Conversation writer及worker处理在途任务；不能把新问题降级分派为旧图，也不能删除迁移、重置账本或以代码回退冒充数据回退。完整配置和验证边界见[C-QA2](../docs/design/knowledge-first-20261020/CONTEXTUAL_QA_CONTRACTS.md)。

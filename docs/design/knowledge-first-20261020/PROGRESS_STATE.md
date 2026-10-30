@@ -1,10 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S11E 已合并推送，收据归档后进入S12A
+## 当前任务：S12A 追问指代与受控上下文（IN_PROGRESS）
 
-- 任务 `capability-delivery-20261021`，51项已批准，parallel=no；S8A–F/S9A–D/S10A–F/S11A–E必要验收通过；完整平台未完成，下一片S12A。用户取消本轮25%额度保留限制，要求连续执行。
-- 原目录后端`/Users/liruijun/personal/LLM/agentic-ai-platform`、前端`../agentic-ai-platform-web`，均复用`feat/retrieval-consumers-20261028`。后端实现52c2e52、前端31315b8均已正常快进合并推送main，精确分支CI通过（40996351248三项、40996318198 web）。后端main在原Docker工作树；无新worktree。
-- 授权：完成既有计划，本地实现/验证、逻辑单元提交与正常合并推main；用户明确批准本次正常Docker Desktop重启且已成功。无强推、清理、生产部署、子Agent或新增模型预算。Embedding/chat仍各1元累计，U04真实精排账号/端点/价格/独立预算未具备；本轮付费调用0。
+- 任务`capability-delivery-20261021`，51项已批准，parallel=no；S11E已验收并交付，完整计划未完成。继续已批准顺序，不等再次“继续”。
+- 原目录两仓均已建立`feat/contextual-qa-20261030`，后端起点b0974202f1c7597366699ea767d115b4c03b8b6d，前端起点31315b849be914522558fc1fa5084cd70d24136f；此前实现与归档均正常合并推送main。后端归档CI40997189482三项PASS；S11E主实现main CI40996629920、前端main CI40996825273 PASS。
+- 本片清单：①C-QA2契约/共享金标；②Conversation V3与Tasks v3输入/结果；③Python独立v3图/有界改写/恢复；④前端能力/冻结提交/实际查询；⑤真实DB/PG/HTTP/浏览器及有预算的小样本对照；⑥文档/审查/CI/正常Git交付。
+- 后端核心已实现并验证：C-QA2/共享金标、Conversation V3受理/可靠分派、Tasks v3输入/结果/历史绑定、Python独立v3图/有界改写/worker。旧解析和v1/v2图兼容；尚未接前端与网关/代理，不能宣布整片可用。
+- 关键决定：完整证据家族v2/v3可作一个指定前文；同owner/会话/范围，历史全部依赖+当前去重最多10，不截断依赖；历史答案仅作指代数据且最多2000码点。超时/无效模型输出才回退原问题，预算/配置/权限/取消不能回退吞掉。
+- 授权沿原计划本地实施/验证、任务分支完整逻辑提交、验证后正常合并推main；无子Agent、强推、清理或生产部署。Docker正常重启已获明确授权并完成，无需再确认相同行动；不包含共享资源配置调整或恢复出厂。
+- 模型：Embedding/chat各1元累计不变；聊天账本保守预留0.889964元，剩余0.110036元（非账单），本片新增付费调用0。先做机制测试，真实探针逐次预估；不足不得提高额度。U04真实精排仍无账号/预算授权。
+- 验证：Java169单元、Python590通过/74默认跳过、Ruff120文件/mypy74源码；真实MySQL/HTTP41项、真实PG接管6项均PASS。改写后/检索后/生成后/完整快照接管不重复已确认调用，前文失权和取消阻断后续操作。模型/Knowledge正文为协议替身；仅Conversation隔离测试库迁移V3。证据`docs/qa/contextual-qa-20261030/backend-evidence.json`；日志`.logs/s12a-*`，失败试验与修正原因已记录。代码卫生WITH_LIMITATIONS（既有Java格式器缺失，5条误报已审）。
+- 当前无运行中的构建、迁移或测试。后端核心准备按已授权完整逻辑单元提交；前端仍仅进度文件变动。下一步：页面能力/冻结原策略与路由/实际查询诊断，网关/本地与容器代理公开路径，真实接口浏览器与原预算内质量对照，最后S12A完整审查/CI/合并推送。保留全局Runtime漂移的手工专业pass，不改全局技能。
 
 ### S11E 已完成与证据
 
@@ -14,14 +20,12 @@
 - Docker网页代理漏v2/tasks与v2/conversations已补，候选web ba449282a95548d2镜像内静态/132测试/构建和断网代理smoke七路由/临时RSA/跨站拒绝PASS；后台候选01e494b1d3e59376及AI默认关闭/新图导入PASS。镜像ID和复用源摘要见container-evidence.json。
 - 两次Docker失去响应后经用户授权正常重启；恢复原两搜索容器。原9应用容器全部healthy，10项只读页面/API通过。worker原价格核验日期到期，核对官方价格后只刷新私密配置日期；仍原单价/1元/账本，见pricing-revalidation.json。无迁移/新镜像部署。
 
-### 现场、未交付与下一步
+### 当前运行与保留项
 
-- 实际运行仍S11D快照01a95560586ee526，新受理开关保持关闭；开发库未迁移，测试库Knowledge V12/Tasks V5/Conversation V2。current.json/compose.env保持原运行指针。候选只用于验证。
-- 所有本轮重启/构建/代理测试已退出：1740/99473/18044均0；首次取消及失败日志保留。前端预览28186（exec43308）和生产预览28187（exec49095）保留，`.logs/s11e-*`可追溯。
-- 当前收尾仅将原字节smoke脚本归入deploy/docker/tests并归档最终CI/交付收据；卫生Gate已通过（既有格式化器限制），不重复业务测试。提交推送此归档后立即建立S12A任务分支，完成C-QA2契约/影响核对与实现，不等待再次“继续”。
-- S12A范围：指定前文的受控追问/指代、原问题与检索问题分离；先冻结C-QA2增量与版本兼容，不能改写已完成v2图或将旧答案当原文。
-- 保留所有.local凭据/账本/运行状态、.logs、缓存和工作树；不清理、不重新付费探针。Java格式化器/Deep Agents既有警告/前端包大小及U04质量限制如实保留。全局MULTI_CLIENT_DRIFT_BLOCKED不改，沿手动专业技能路径，无子Agent。
-- 采用session-handoff、continue-approved-delivery、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery/ci-cd-gate；架构建模/持久化/接口/并发安全/容量/发布章节。
+- 原9应用容器全部healthy（本轮用户询问部署进度时已实时复核），仍S11D快照01a95560586ee526；两搜索容器已按原配置恢复。候选后台01e494b1d3e59376、web ba449282a95548d2只用于验证。没有新部署或开发库迁移，测试库Knowledge V12/Tasks V5/Conversation V3。
+- 前端28186开发预览（exec43308）、28187生产预览（exec49095）保留；无进行中的构建/重启/模型任务。S11E证据在后端docs/qa/retrieval-consumers-20261028及前端docs/qa/retrieval-consumers-20261030，日志.logs/s11e-*。
+- 原任务/预算/.local/.logs/缓存及Docker main工作树全部保留，不清理、不重复付费探针。Java格式化器缺失、Deep Agents既有saver警告、前端包大小与U04真实质量限制不隐瞒。
+- 采用规范：用户AGENTS约定；架构建模、持久化、接口、并发安全、容量和发布章节；现有个人栈兼容约束；Contracts、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery/ci-cd-gate。
 
 ## 历史：20 项差距的框架化实施计划
 

@@ -34,9 +34,9 @@
     </select>
     <insert id="insertTurn">
         INSERT INTO knowledge_turn(turn_id,conversation_id,tenant_id,owner_id,sequence,question,document_ids,
-            context_turn_id,context_task_id,context_question,task_id,idempotency_hash,request_hash,dispatch_state,retrieval_strategy)
+            context_turn_id,context_task_id,context_question,task_id,idempotency_hash,request_hash,dispatch_state,retrieval_strategy,query_policy)
         VALUES(#{turnId},#{conversationId},#{tenantId},#{ownerId},#{sequence},#{question},#{documentIds},
-            #{contextTurnId},#{contextTaskId},#{contextQuestion},#{taskId},#{idempotencyHash},#{requestHash},'PENDING',#{retrievalStrategy})
+            #{contextTurnId},#{contextTaskId},#{contextQuestion},#{taskId},#{idempotencyHash},#{requestHash},'PENDING',#{retrievalStrategy},#{queryPolicy})
     </insert>
     <select id="nextDispatch" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow">
         SELECT * FROM knowledge_turn WHERE tenant_id=#{tenant}

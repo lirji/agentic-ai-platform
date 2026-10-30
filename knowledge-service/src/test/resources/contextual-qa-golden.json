@@ -1,0 +1,147 @@
+{
+  "protocol": "contextual-qa-v1",
+  "capabilities": {
+    "schemaVersion": "conversation-capabilities-v1",
+    "contextualQueryEnabled": true
+  },
+  "input": {
+    "schemaVersion": "knowledge-qa-input-v3",
+    "conversationId": "10000000-0000-4000-8000-000000000001",
+    "turnId": "10000000-0000-4000-8000-000000000002",
+    "question": "它有哪些限制？",
+    "documentIds": [
+      "00000000-0000-0000-0000-000000000001"
+    ],
+    "contextTurnId": "10000000-0000-4000-8000-000000000003",
+    "contextTaskId": "10000000-0000-4000-8000-000000000004",
+    "contextQuestion": "资料中如何描述示例产品？",
+    "retrievalStrategy": "LLAMA_RRF_V1",
+    "queryPolicy": "CONTEXT_REWRITE_V1"
+  },
+  "result": {
+    "schemaVersion": "knowledge-qa-result-v3",
+    "strategy": "LLAMA_RRF_V1",
+    "content": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "示例产品有资料中列出的限制。[1]",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "00000000-0000-0000-0000-000000000001",
+          "version": 1,
+          "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "source": {
+            "displayName": "契约测试资料",
+            "locator": "utf8-bytes:0-20"
+          }
+        }
+      ]
+    },
+    "references": [
+      {
+        "documentId": "00000000-0000-0000-0000-000000000001",
+        "version": 1,
+        "indexGeneration": 1,
+        "jobId": "00000000-0000-0000-0000-000000000002",
+        "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+        "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "retrieval": [
+      {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 8
+      }
+    ],
+    "query": {
+      "originalQuestion": "它有哪些限制？",
+      "retrievalQuestion": "资料中示例产品有哪些限制？",
+      "mode": "REWRITTEN",
+      "fallbackReason": null,
+      "contextTruncated": false
+    }
+  },
+  "queries": {
+    "rewritten": {
+      "originalQuestion": "它有哪些限制？",
+      "retrievalQuestion": "资料中示例产品有哪些限制？",
+      "mode": "REWRITTEN",
+      "fallbackReason": null,
+      "contextTruncated": false
+    },
+    "original": {
+      "originalQuestion": "它有哪些限制？",
+      "retrievalQuestion": "它有哪些限制？",
+      "mode": "ORIGINAL",
+      "fallbackReason": null,
+      "contextTruncated": false
+    },
+    "fallback": {
+      "originalQuestion": "它有哪些限制？",
+      "retrievalQuestion": "它有哪些限制？",
+      "mode": "FALLBACK",
+      "fallbackReason": "TIMEOUT",
+      "contextTruncated": false
+    }
+  },
+  "invalidInputs": [
+    {
+      "name": "old-policy",
+      "replace": {
+        "queryPolicy": "ORIGINAL_V1"
+      }
+    },
+    {
+      "name": "partial-context",
+      "replace": {
+        "contextTaskId": null
+      }
+    },
+    {
+      "name": "legacy-strategy",
+      "replace": {
+        "retrievalStrategy": "JAVA_RRF_LEGACY"
+      }
+    }
+  ],
+  "invalidQueries": [
+    {
+      "name": "invented-original",
+      "replace": {
+        "originalQuestion": "另一个问题"
+      }
+    },
+    {
+      "name": "fallback-changes-question",
+      "replace": {
+        "mode": "FALLBACK",
+        "fallbackReason": "TIMEOUT"
+      }
+    },
+    {
+      "name": "numeric-boolean",
+      "replace": {
+        "contextTruncated": 0
+      }
+    },
+    {
+      "name": "rewritten-reason",
+      "replace": {
+        "fallbackReason": "TIMEOUT"
+      }
+    },
+    {
+      "name": "unknown-reason",
+      "replace": {
+        "mode": "FALLBACK",
+        "retrievalQuestion": "它有哪些限制？",
+        "fallbackReason": "IGNORE_PERMISSION"
+      }
+    }
+  ]
+}

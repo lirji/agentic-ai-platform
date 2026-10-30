@@ -14,6 +14,7 @@ from agentic_ai.qa.models import MAX_HITS, QaInput, QaResult
 from agentic_ai.qa.pipeline import GraphInput, GraphState, QaPipeline
 from agentic_ai.retrieval.consumer import RetrievalUseCase
 from agentic_ai.retrieval.evidence import GenerationReference
+from agentic_ai.retrieval.models import RetrievalStrategy
 from agentic_ai.retrieval.retriever import CandidatePort
 from agentic_ai.retrieval.task_evidence import GenerationEvidenceRegistration, GenerationKnowledge
 from agentic_ai.retrieval.task_models import QA_GRAPH_V2, GenerationResult, generation_input
@@ -54,6 +55,8 @@ class GenerationQaPipeline(QaPipeline):
     """复用原提示词、流事件、引用编号和检查点fencing；只适配版本边界。"""
 
     input_fields = (*QaPipeline.input_fields, "retrievalStrategy")
+    graph_version = QA_GRAPH_V2
+    maximum_dependencies = MAX_HITS
 
     def __init__(
         self,
@@ -63,25 +66,42 @@ class GenerationQaPipeline(QaPipeline):
         chat: ChatPort,
         use_case: RetrievalUseCase,
     ) -> None:
-        if binding.graph_version != QA_GRAPH_V2:
+        if binding.graph_version != self.graph_version:
             raise QaError(QaCode.INPUT_REJECTED)
-        request, self.strategy = generation_input(binding.input, qa=True)
+        request, self.strategy = self.decode_input(binding.input)
         self.generation = GenerationKnowledge(
             use_case, candidates, self.strategy, request.document_ids, MAX_HITS
         )
         self.context_references: tuple[GenerationReference, ...] | None = None
         super().__init__(binding, central, self.generation, chat)
         self.complete_registration = GenerationEvidenceRegistration(
-            central, binding, MAX_HITS, self.generation
+            central, binding, self.maximum_dependencies, self.generation
         )
         self.registration = self.complete_registration
 
     def parse_input(self, value: object) -> QaInput:
         """新schema严格要求显式策略，原问题、范围和关联校验继续复用。"""
-        request, strategy = generation_input(value, qa=True)
+        request, strategy = self.decode_input(value)
         if not isinstance(request, QaInput) or strategy != self.strategy:
             raise QaError(QaCode.INPUT_REJECTED)
         return request
+
+    def decode_input(self, value: object) -> tuple[QaInput, RetrievalStrategy]:
+        """默认严格保持v2输入，新图通过独立解析器扩展而不改写旧快照。"""
+        request, strategy = generation_input(value, qa=True)
+        if not isinstance(request, QaInput):
+            raise QaError(QaCode.INPUT_REJECTED)
+        return request, strategy
+
+    def previous_content(self, previous: TaskLease) -> tuple[QaInput, GenerationResult]:
+        """旧图仅支持原v2前文，不自动接纳未来版本的结果结构。"""
+        if previous.graph_version != QA_GRAPH_V2:
+            raise QaError(QaCode.EVIDENCE_REJECTED)
+        request, strategy = generation_input(previous.input, qa=True)
+        result = GenerationResult.from_wire(json.dumps(previous.task.result).encode())
+        if not isinstance(request, QaInput) or result.strategy != strategy:
+            raise QaError(QaCode.EVIDENCE_REJECTED)
+        return request, result
 
     async def _context(self) -> dict[str, object] | None:
         """继承前文全部依赖并重新核权，不只信任模型最后选中的引用子集。"""
@@ -94,19 +114,16 @@ class GenerationQaPipeline(QaPipeline):
         await self.assert_active()
         previous = await self.central.inspect(task_id)
         if (
-            previous.graph_version != QA_GRAPH_V2
-            or previous.task.status != TaskStatus.SUCCEEDED
+            previous.task.status != TaskStatus.SUCCEEDED
             or previous.task.task_id != task_id
             or previous.tenant_id != self.binding.tenant_id
             or previous.owner_id != self.binding.owner_id
         ):
             raise QaError(QaCode.EVIDENCE_REJECTED)
-        previous_question, previous_strategy = generation_input(previous.input, qa=True)
-        result = GenerationResult.from_wire(json.dumps(previous.task.result).encode())
+        previous_question, result = self.previous_content(previous)
         if (
             not isinstance(previous_question, QaInput)
             or not isinstance(result.content, QaResult)
-            or result.strategy != previous_strategy
             or previous_question.conversation_id != self.question.conversation_id
             or previous_question.turn_id != self.question.context_turn_id
             or previous_question.question != self.question.context_question
@@ -165,12 +182,16 @@ class GenerationQaPipeline(QaPipeline):
         """生成完成的快照必须包含上下文依赖；缺字段不能降格成无上下文。"""
         state = cast(dict[str, object], value)
         self.generation.restore(state)
+        self._restore_context(state)
+
+    def _restore_context(self, state: dict[str, object]) -> None:
+        """前文可在检索前已确认，新图复用同一完整身份与唯一性约束。"""
         context = state.get("contextEvidence")
         if context is None:
             if "draft" in state or "content" in state:
                 raise QaError(QaCode.EVIDENCE_REJECTED)
             self.context_references = None
-        elif isinstance(context, list) and len(context) <= MAX_HITS:
+        elif isinstance(context, list) and len(context) <= self.maximum_dependencies:
             self.context_references = tuple(
                 GenerationReference.from_wire(json.dumps(r).encode()) for r in context
             )

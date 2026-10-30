@@ -7,6 +7,7 @@ import com.lrj.agentic.conversation.api.ConversationDtos.*;
 import com.lrj.agentic.conversation.domain.*;
 import com.lrj.agentic.conversation.infrastructure.*;
 import com.lrj.agentic.contract.knowledge.RetrievalStrategy;
+import com.lrj.agentic.contract.knowledge.QueryPolicy;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -93,13 +94,22 @@ public class ConversationValues {
         return new Turn(row.turnId(), row.conversationId(), row.sequence(), row.question(),
                 documents(row.documentIds()), row.contextTurnId(), row.taskId(), row.dispatchState(),
                 row.dispatchAttempts(), row.retryCount(), row.revision(), row.errorCode(),
-                row.createdAt(), row.updatedAt(), legacy(row) ? null : row.retrievalStrategy());
+                row.createdAt(), row.updatedAt(), legacy(row) ? null : row.retrievalStrategy(),
+                contextual(row) ? row.queryPolicy() : null);
     }
     /** 下游输入只能从已提交问题重建，不接受运行时覆盖原问题或身份。 */
     public TaskGateway.QuestionInput input(TurnRow row) {
-        return new TaskGateway.QuestionInput(legacy(row) ? ConversationProtocol.INPUT_VERSION : ConversationProtocol.INPUT_VERSION_V2, row.conversationId(),
+        String version = contextual(row) ? ConversationProtocol.INPUT_VERSION_V3
+                : legacy(row) ? ConversationProtocol.INPUT_VERSION : ConversationProtocol.INPUT_VERSION_V2;
+        return new TaskGateway.QuestionInput(version, row.conversationId(),
                 row.turnId(), row.question(), documents(row.documentIds()), row.contextTurnId(),
-                row.contextTaskId(), row.contextQuestion(), legacy(row) ? null : row.retrievalStrategy());
+                row.contextTaskId(), row.contextQuestion(), legacy(row) ? null : row.retrievalStrategy(),
+                contextual(row) ? row.queryPolicy() : null);
+    }
+    /** 持久策略必须属于闭集，损坏行不能按默认策略继续分派。 */
+    public static boolean contextual(TurnRow row) {
+        try { return QueryPolicy.parse(row.queryPolicy()) == QueryPolicy.CONTEXTUAL; }
+        catch (IllegalArgumentException invalid) { throw new ConversationFailure(ConversationError.STORAGE_UNAVAILABLE); }
     }
     /** 只有历史显式策略走旧图，未知持久值由数据库闭集约束拒绝。 */
     public static boolean legacy(TurnRow row) { return RetrievalStrategy.LEGACY.code().equals(row.retrievalStrategy()); }

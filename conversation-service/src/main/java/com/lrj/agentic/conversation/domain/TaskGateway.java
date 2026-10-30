@@ -15,7 +15,16 @@ public interface TaskGateway {
             String question, java.util.List<String> documentIds, String contextTurnId,
             String contextTaskId, String contextQuestion,
             @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-            String retrievalStrategy) {
+            String retrievalStrategy,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+            String queryPolicy) {
+        /** v2保持九字段输入，不输出新策略空字段。 */
+        public QuestionInput(String schemaVersion, String conversationId, String turnId, String question,
+                java.util.List<String> documentIds, String contextTurnId, String contextTaskId,
+                String contextQuestion, String retrievalStrategy) {
+            this(schemaVersion, conversationId, turnId, question, documentIds, contextTurnId,
+                    contextTaskId, contextQuestion, retrievalStrategy, null);
+        }
         /** 旧调用者保持原输入结构，JSON不写出空策略字段。 */
         public QuestionInput(String schemaVersion, String conversationId, String turnId, String question,
                 java.util.List<String> documentIds, String contextTurnId, String contextTaskId, String contextQuestion) {

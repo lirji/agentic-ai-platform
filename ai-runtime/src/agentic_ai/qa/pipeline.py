@@ -217,8 +217,12 @@ class QaPipeline:
         await self._progress(QaStage.RETRIEVING)
         await self.assert_active()
         retriever = AuthorizedRetriever(self.knowledge, tuple(self.question.document_ids))
-        hits = await retrieve_evidence(retriever, self.question.question)
+        hits = await retrieve_evidence(retriever, self.retrieval_question(state))
         return {"evidence": [hit.model_dump(mode="json", by_alias=True) for hit in hits]}
+
+    def retrieval_question(self, state: GraphState) -> str:
+        """旧图始终使用原问题；新版本必须自行验证派生查询与任务的绑定。"""
+        return self.question.question
 
     async def generate(self, state: GraphState) -> dict[str, object]:
         """无证据不消费聊天预算；有证据在实际发送前重新判权。"""

@@ -84,7 +84,7 @@ public class TaskKnowledgeVisibility {
     private void verifyGeneration(Caller owner, TaskRow row, long deadline) {
         var refs = new LinkedHashSet<com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference>();
         if (row.resultJson() != null) {
-            try { refs.addAll(GenerationKnowledgeResults.references(row.kind(), values.read(row.resultJson()), values.read(row.inputJson()).path("retrievalStrategy").asText())); }
+            try { refs.addAll(GenerationKnowledgeResults.references(row.kind(), row.graphVersion(), values.read(row.resultJson()), values.read(row.inputJson()))); }
             catch (IllegalArgumentException invalid) { throw new TaskFailure(TaskError.NOT_FOUND); }
         }
         var manifest = mapper.latest(row.taskId(), row.leaseEpoch());

@@ -45,7 +45,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 /** 真实 MySQL 的锁、事务与约束验证；每例使用新租户，不清理或覆盖旧数据。 */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"management.server.port=0", "spring.main.banner-mode=off", "task.generation-enabled=true"})
+        properties = {"management.server.port=0", "spring.main.banner-mode=off", "task.generation-enabled=true", "task.contextual-qa-enabled=true"})
 @org.springframework.context.annotation.Import(CitationTestConfiguration.class)
 class TaskPersistenceIT {
     @Autowired CitationTestConfiguration.ControlledCitations citations;
@@ -87,6 +87,65 @@ class TaskPersistenceIT {
         }
         assertThat(tasks.claim(worker(owner, "old-worker"), new Claim(TaskProtocol.RUNTIME, TaskProtocol.WORK_GRAPH)).task().task().taskId()).isEqualTo(legacy.taskId());
         assertThat(tasks.claim(worker(owner, "new-worker"), new Claim(TaskProtocol.RUNTIME, TaskProtocol.WORK_GRAPH_V2)).task().task().taskId()).isEqualTo(id);
+    }
+
+    @Test void contextualCompletionBindsOriginalAndPreservesAllTenDependencies() throws Exception {
+        var golden = json.readTree(java.nio.file.Path.of("../knowledge-service/src/test/resources/contextual-qa-golden.json").toFile());
+        var owner = owner(); String id = UUID.randomUUID().toString();
+        var command = new Submit(id, TaskProtocol.KIND, TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V3, golden.path("input"));
+        tasks.submit(owner, "contextual", command);
+        var worker = worker(owner, "contextual-worker");
+        var lease = tasks.claim(worker, new Claim(TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V3)).task();
+        var first = json.treeToValue(golden.path("result").path("references").get(0),
+                com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference.class);
+        var full = new ArrayList<com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference>();
+        full.add(first);
+        for (int i = 1; i <= 10; i++) full.add(new com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference(
+                first.documentId(), first.version(), first.indexGeneration(), first.jobId(), first.processorVersion(),
+                String.format("%064x", i), first.batchDigest(), first.textHash()));
+        error(TaskError.INPUT_INVALID, () -> tasks.generationEvidence(worker, id,
+                new GenerationEvidence(lease.epoch(), "too-many", "knowledge-evidence-v2", full)));
+        var ten = List.copyOf(full.subList(0, 10));
+        tasks.generationEvidence(worker, id, new GenerationEvidence(lease.epoch(), "full", "knowledge-evidence-v2", ten));
+        com.fasterxml.jackson.databind.node.ObjectNode invalid = golden.path("result").deepCopy();
+        ((com.fasterxml.jackson.databind.node.ObjectNode) invalid.path("query")).put("originalQuestion", "另一任务的问题");
+        error(TaskError.INPUT_INVALID, () -> tasks.complete(worker, id, new Complete(lease.epoch(), "bad-result", invalid)));
+        var result = golden.path("result");
+        var done = tasks.complete(worker, id, new Complete(lease.epoch(), "done", result));
+        assertThat(tasks.get(owner, id)).isEqualTo(done);
+        assertThat(tasks.generationManifest(worker, id).references()).containsExactlyInAnyOrderElementsOf(ten);
+        citations.generationResponse = refs -> !refs.contains(ten.getLast());
+        error(TaskError.NOT_FOUND, () -> tasks.get(owner, id));
+        error(TaskError.NOT_FOUND, () -> tasks.generationManifest(worker, id));
+        citations.generationResponse = refs -> true;
+        jdbc.update("UPDATE ai_task SET result_json=? WHERE task_id=?", json.writeValueAsString(invalid), id);
+        error(TaskError.NOT_FOUND, () -> tasks.get(owner, id));
+        jdbc.update("UPDATE ai_task SET result_json=? WHERE task_id=?", json.writeValueAsString(result), id);
+        assertThat(tasks.get(owner, id)).isEqualTo(done);
+        // v2的依赖上限保持5，不因新图恢复预算增加而悄悄放宽旧协议。
+        var oldInput = golden.path("input").deepCopy();
+        ((com.fasterxml.jackson.databind.node.ObjectNode) oldInput).remove("queryPolicy");
+        ((com.fasterxml.jackson.databind.node.ObjectNode) oldInput).put("schemaVersion", "knowledge-qa-input-v2");
+        String oldId = UUID.randomUUID().toString();
+        tasks.submit(owner, "old-cap", new Submit(oldId, TaskProtocol.KIND, TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2, oldInput));
+        var oldLease = tasks.claim(worker, new Claim(TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2)).task();
+        error(TaskError.INPUT_INVALID, () -> tasks.generationEvidence(worker, oldId,
+                new GenerationEvidence(oldLease.epoch(), "six", "knowledge-evidence-v2", ten.subList(0, 6))));
+    }
+
+    @Test void contextualGateClosesOnlyNewAdmissionAndPreservesReplayAndDrain() throws Exception {
+        var golden = json.readTree(java.nio.file.Path.of("../knowledge-service/src/test/resources/contextual-qa-golden.json").toFile());
+        var owner = owner(); String id = UUID.randomUUID().toString();
+        var command = new Submit(id, TaskProtocol.KIND, TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V3, golden.path("input"));
+        var accepted = tasks.submit(owner, "frozen", command);
+        var closed = new TaskService(context.getBean(com.lrj.agentic.task.infrastructure.TaskMapper.class), values,
+                context.getBean(org.springframework.transaction.PlatformTransactionManager.class), 60,
+                context.getBean(com.lrj.agentic.task.application.TaskKnowledgeEvidence.class),
+                context.getBean(com.lrj.agentic.task.application.TaskKnowledgeVisibility.class), false, false);
+        assertThat(closed.submit(owner, "frozen", command)).isEqualTo(accepted);
+        error(TaskError.INPUT_INVALID, () -> closed.submit(owner, "new", new Submit(UUID.randomUUID().toString(),
+                TaskProtocol.KIND, TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V3, golden.path("input"))));
+        assertThat(closed.claim(worker(owner, "drain"), new Claim(TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V3)).task().task().taskId()).isEqualTo(id);
     }
 
     private HttpResponse<String> http(String method, String path, Caller owner, String scope, String key, String body) throws Exception {

@@ -164,6 +164,13 @@ def test_worker_config_is_private_absolute_and_missing_config_cli_is_safe(tmp_pa
     path.chmod(0o600)
     parsed = WorkerConfig.from_file(path)
     assert parsed.tenant_id == "synthetic-tenant" and "synthetic-secret" not in repr(parsed)
+    assert not parsed.contextual_qa_enabled
+    path.write_text(json.dumps({**value, "contextual_qa_enabled": True}))
+    with pytest.raises(QaError, match=QaCode.CONFIG_INVALID):
+        WorkerConfig.from_file(path)
+    path.write_text(json.dumps({**value, "retrieval_enabled": True, "contextual_qa_enabled": True}))
+    assert WorkerConfig.from_file(path).contextual_qa_enabled
+    path.write_text(json.dumps(value))
     path.chmod(0o644)
     with pytest.raises(QaError, match=QaCode.CONFIG_INVALID):
         WorkerConfig.from_file(path)

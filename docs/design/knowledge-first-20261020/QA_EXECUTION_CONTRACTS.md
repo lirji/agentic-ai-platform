@@ -81,3 +81,7 @@ Python 每个任务创建固定 tenant/owner 的客户端，HTTPS 或 loopback H
 5. 真实模型/独立 LiteLLM/实际答案质量与费用在已获准的 deepseek-flash 路由上验证；验收通过之前保持 UNVERIFIED，不能将受控模型结果作为真实问答交付。问答 UI 消费本契约与已有真实 Q/T/K API，分别完成可见状态和操作验收。
 
 资料：[LiteLLM 官方发布](https://github.com/BerriAI/litellm/releases/tag/v1.106.0)、[配置参考](https://docs.litellm.ai/docs/proxy/config_settings)、[LlamaIndex 检索接口](https://developers.llamaindex.ai/python/framework/module_guides/querying/retriever/)。具体兼容性以已锁定依赖源码和实际执行为准。
+
+## S12A 版本化追问增量
+
+受控上下文、派生检索问题、新v3图及兼容门禁以 [C-QA2](CONTEXTUAL_QA_CONTRACTS.md) 为准。原v1/v2输入、图、原问题与结果内容保持原语义，不向旧图注入改写节点。

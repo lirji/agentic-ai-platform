@@ -49,7 +49,9 @@ public class TaskKnowledgeEvidence {
         List<GenerationCitationProtocol.Reference> references;
         try {
             if (!GenerationCitationProtocol.SCHEMA.equals(command.schemaVersion())) throw new IllegalArgumentException();
-            references = GenerationCitationProtocol.normalized(command.references(), 0, TaskProtocol.KIND.equals(row.kind()) ? 5 : 10);
+            int maximum = TaskProtocol.GRAPH_V3.equals(row.graphVersion()) ? TaskProtocol.MAX_CONTEXTUAL_DEPENDENCIES
+                    : TaskProtocol.KIND.equals(row.kind()) ? 5 : 10;
+            references = GenerationCitationProtocol.normalized(command.references(), 0, maximum);
         } catch (IllegalArgumentException invalid) { throw new TaskFailure(TaskError.INPUT_INVALID); }
         String digest = GenerationCitationProtocol.digest(references);
         var old = mapper.byKey(row.taskId(), command.epoch(), command.operationKey());
@@ -82,8 +84,8 @@ public class TaskKnowledgeEvidence {
         require(TaskProtocol.generationGraph(task.graphVersion()));
         var stored = mapper.latest(task.taskId(), task.leaseEpoch());
         var references = stored == null ? List.<GenerationCitationProtocol.Reference>of() : generationReferences(stored);
-        var result = GenerationKnowledgeResults.references(task.kind(), values.read(task.resultJson()),
-                values.read(task.inputJson()).path("retrievalStrategy").asText());
+        var result = GenerationKnowledgeResults.references(task.kind(), task.graphVersion(), values.read(task.resultJson()),
+                values.read(task.inputJson()));
         require(references.containsAll(result));
         return new GenerationManifest(task.taskId(), task.leaseEpoch(), GenerationCitationProtocol.SCHEMA,
                 GenerationCitationProtocol.digest(references), references);
@@ -101,7 +103,7 @@ public class TaskKnowledgeEvidence {
     public void validateResult(TaskRow row, JsonNode result) {
         if (TaskProtocol.generationGraph(row.graphVersion())) {
             List<GenerationCitationProtocol.Reference> full;
-            try { full = GenerationKnowledgeResults.references(row.kind(), result, values.read(row.inputJson()).path("retrievalStrategy").asText()); }
+            try { full = GenerationKnowledgeResults.references(row.kind(), row.graphVersion(), result, values.read(row.inputJson())); }
             catch (IllegalArgumentException invalid) { throw new TaskFailure(TaskError.INPUT_INVALID); }
             var manifest = mapper.latest(row.taskId(), row.leaseEpoch());
             require(full.isEmpty() || manifest != null && generationReferences(manifest).containsAll(full));

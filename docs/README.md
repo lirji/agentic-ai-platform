@@ -43,6 +43,7 @@
 | [会话与交接契约](design/knowledge-first-20261020/CONVERSATION_CONTRACTS.md) | Q01–Q03 原问题、上下文、交接、查询；T01 owner 委托读取扩展 | S5C 冻结并验证；模型问答由后续 S5D 验收 |
 | [S5C 验证结果](qa/knowledge-conversations-20261021/TEST_RESULT.md) | 45 项 Java、40 项真实 HTTP、重启/依赖故障和 Python 恢复回归 | 历史 S5C 会话/交接验收通过，该批无付费调用 |
 | [问答执行契约](design/knowledge-first-20261020/QA_EXECUTION_CONTRACTS.md) | K05、原生问答图、引用/事件、累计预算与 worker | S5D 冻结；deepseek-flash 已批准并实测 |
+| [追问与检索问题契约](design/knowledge-first-20261020/CONTEXTUAL_QA_CONTRACTS.md) | C-QA2、独立v3图、查询改写与完整依赖 | S12A契约增量；产品实现/质量验证以进度为准 |
 | [S5D 验证结果](qa/knowledge-qa-execution-20261021/TEST_RESULT.md) | 263 项 Python、真实知识读取与 PG/Tasks/合成模型恢复 | PASS；真实模型、问答/引用、预算重启已验证 |
 | S5E 前端 `docs/qa/s5e/TEST_RESULT.md` | 会话/提问/任务/流式/引用、真实Q/T、无付费浏览器与视觉验收 | 独立前端仓库验收通过；不替代真实模型效果 |
 | [研究与只读助手准备](design/knowledge-first-20261020/RESEARCH_READINESS.md) | Deep Agents 默认工具、文本适配与工具循环、根图恢复和研究契约缺口 | 历史准备分析；R02/A01 与 S6/S7 已另行冻结并验收 |

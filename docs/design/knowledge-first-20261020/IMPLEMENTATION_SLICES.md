@@ -218,7 +218,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S11C | LlamaIndex 接管两路编排与融合 | S11B, S8E | IMPLEMENT | DONE |
 | S11D | 独立模型 Reranker 与预算/失败策略 | S11C, S8D | IMPLEMENT | DONE（协议；U04真实条件待满足） |
 | S11E | 搜索、问答和研究共用检索策略 | S11D, S10F | IMPLEMENT | DONE |
-| S12A | 追问指代与受控上下文 | S11E | IMPLEMENT | PLANNED |
+| S12A | 追问指代与受控上下文 | S11E | IMPLEMENT | IN_PROGRESS |
 | S12B | 答案支撑、覆盖与拒答评测 | S12A, S8D | IMPLEMENT | PLANNED |
 | S12C | 研究计划、证据覆盖和缺口结果 | S12B | IMPLEMENT | PLANNED |
 | S12D | 研究根图分阶段恢复 | S12C | IMPLEMENT | PLANNED |
@@ -489,7 +489,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-QA2；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 指代/跨文档/改变知识范围/撤权样本；旧答案不当原文；上下文与模型调用有界；失败回退不改变原问题；追问改善和退化分别记录。
 - **Pass / Runtime：** IMPLEMENT；现有聊天出口与累计预算；新费用不得隐式增加。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G08 G18。
+- **状态 / 并行 / 对应缺口：** IN_PROGRESS（C-QA2增量已落盘，待金标与实现；新图v3保留原问题和旧图兼容）；parallel=no；G08 G18。
 
 ### S12B · 答案支撑、覆盖与拒答评测
 

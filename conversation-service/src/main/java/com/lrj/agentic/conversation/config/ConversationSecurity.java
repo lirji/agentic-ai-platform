@@ -42,10 +42,10 @@ public class ConversationSecurity {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/conversations", "/api/v1/conversations/**")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/conversations", "/api/v1/conversations/**", "/api/v2/conversations/capabilities")
                         .hasAuthority("SCOPE_" + ConversationProtocol.READ)
                         .requestMatchers(HttpMethod.POST, "/api/v1/conversations", "/api/v1/conversations/*/turns", "/api/v2/conversations/*/turns",
-                                "/api/v1/conversations/*/turns/*/retry-dispatch")
+                                "/api/v3/conversations/*/turns", "/api/v1/conversations/*/turns/*/retry-dispatch")
                         .hasAuthority("SCOPE_" + ConversationProtocol.WRITE).anyRequest().denyAll())
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(decoder))
                         .bearerTokenResolver(request -> {

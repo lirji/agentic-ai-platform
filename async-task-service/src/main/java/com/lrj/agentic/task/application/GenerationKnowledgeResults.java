@@ -11,6 +11,15 @@ import java.util.*;
 public final class GenerationKnowledgeResults {
     private GenerationKnowledgeResults() { }
 
+    /** 持久graph决定结果协议；v3必须绑定原输入，旧任务不能借新信封跳过校验。 */
+    public static List<Reference> references(String kind, String graph, JsonNode result, JsonNode input) {
+        if (TaskProtocol.GRAPH_V3.equals(graph)) {
+            require(TaskProtocol.KIND.equals(kind));
+            return ContextualKnowledgeResults.references(result, input);
+        }
+        return references(kind, result, input.path("retrievalStrategy").asText());
+    }
+
     /** 复用v1内容校验，再核对策略、实际诊断与完整引用的一一对应。 */
     public static List<Reference> references(String kind, JsonNode result, String strategy) {
         fields(result, Set.of("schemaVersion", "strategy", "content", "references", "retrieval"));

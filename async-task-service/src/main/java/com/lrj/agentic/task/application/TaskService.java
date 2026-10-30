@@ -23,17 +23,20 @@ public class TaskService {
     private final TaskKnowledgeEvidence evidence;
     private final TaskKnowledgeVisibility visibility;
     private final boolean generationEnabled;
+    private final boolean contextualEnabled;
 
     /** 单独限制事务时长；显式传递身份，避免复用线程泄漏主体。 */
     public TaskService(TaskMapper mapper, TaskValues values, PlatformTransactionManager manager,
             @Value("${task.lease-seconds:60}") int leaseSeconds, TaskKnowledgeEvidence evidence,
-            TaskKnowledgeVisibility visibility, @Value("${task.generation-enabled:false}") boolean generationEnabled) {
+            TaskKnowledgeVisibility visibility, @Value("${task.generation-enabled:false}") boolean generationEnabled,
+            @Value("${task.contextual-qa-enabled:false}") boolean contextualEnabled) {
         if (leaseSeconds < 5 || leaseSeconds > 60) { throw new IllegalArgumentException("任务租约配置无效"); }
         this.mapper = mapper; this.values = values; this.leaseSeconds = leaseSeconds;
         this.tx = new TransactionTemplate(manager);
         this.tx.setTimeout(5);
         this.evidence = evidence; this.visibility = visibility;
         this.generationEnabled = generationEnabled;
+        this.contextualEnabled = contextualEnabled;
     }
 
     /** 唯一约束争用必须先回滚败方事务，再读取已经提交的同键结果。 */
@@ -54,13 +57,15 @@ public class TaskService {
         versions(command.runtimeVersion(), command.graphVersion());
         if (TaskProtocol.generationGraph(command.graphVersion()) && !TaskProtocol.EVALUATION_KIND.equals(command.kind())) RetrievalTaskRequests.validate(command);
         require((TaskProtocol.EVALUATION_GRAPH.equals(command.graphVersion()) || TaskProtocol.EVALUATION_GRAPH_V2.equals(command.graphVersion()))
-                ? TaskProtocol.EVALUATION_KIND.equals(command.kind()) : (TaskProtocol.GRAPH.equals(command.graphVersion()) || TaskProtocol.GRAPH_V2.equals(command.graphVersion()))
+                ? TaskProtocol.EVALUATION_KIND.equals(command.kind()) : (TaskProtocol.GRAPH.equals(command.graphVersion()) || TaskProtocol.GRAPH_V2.equals(command.graphVersion()) || TaskProtocol.GRAPH_V3.equals(command.graphVersion()))
                 ? TaskProtocol.KIND.equals(command.kind())
                 : WorkKind.parse(command.kind()) != null, TaskError.INPUT_INVALID);
         String input = values.object(command.input(), TaskProtocol.MAX_VALUE);
         String digest = TaskValues.sha(values.write(command));
         var existing = mapper.byKey(owner.tenantId(), owner.userId(), key);
         if (existing != null) { return replay(existing, digest); }
+        // v3开关只控制新受理；同键重放和已持久任务的领取必须可以完成在途交接。
+        require(!TaskProtocol.GRAPH_V3.equals(command.graphVersion()) || generationEnabled && contextualEnabled, TaskError.INPUT_INVALID);
         try {
             return tx.execute(ignored -> {
                 var row = new TaskRow(command.taskId(), owner.tenantId(), owner.userId(), key, digest,
@@ -416,10 +421,10 @@ public class TaskService {
     }
     private void versions(String runtime, String graph) {
         // 公共消费者联合验收前不接受或领取新图，关闭开关不改写历史任务。
-        require(!TaskProtocol.generationGraph(graph) || generationEnabled, TaskError.INPUT_INVALID);
+        require(TaskProtocol.GRAPH_V3.equals(graph) || !TaskProtocol.generationGraph(graph) || generationEnabled, TaskError.INPUT_INVALID);
         require(TaskProtocol.RUNTIME.equals(runtime)
                 && (TaskProtocol.GRAPH.equals(graph) || TaskProtocol.WORK_GRAPH.equals(graph)
-                    || TaskProtocol.EVALUATION_GRAPH.equals(graph) || TaskProtocol.EVALUATION_GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V2.equals(graph) || TaskProtocol.WORK_GRAPH_V2.equals(graph)), TaskError.INPUT_INVALID);
+                    || TaskProtocol.EVALUATION_GRAPH.equals(graph) || TaskProtocol.EVALUATION_GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V3.equals(graph) || TaskProtocol.WORK_GRAPH_V2.equals(graph)), TaskError.INPUT_INVALID);
     }
     private static void changed(int count) { require(count == 1, TaskError.CONFLICT); }
     private static void require(boolean valid, TaskError code) {

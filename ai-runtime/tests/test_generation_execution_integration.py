@@ -103,6 +103,7 @@ def services():
             TASK_PORT=str(port),
             TASK_MANAGEMENT_PORT="0",
             TASK_GENERATION_ENABLED="true",
+            TASK_CONTEXTUAL_QA_ENABLED="true",
             TASK_KNOWLEDGE_READER_ENABLED="true",
             TASK_KNOWLEDGE_READER_ENDPOINT=f"http://127.0.0.1:{server.server_port}",
         )

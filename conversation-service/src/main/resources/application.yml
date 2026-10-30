@@ -44,6 +44,7 @@ mybatis-plus:
   global-config:
     banner: false
 conversation:
+  contextual-query-enabled: ${CONVERSATION_CONTEXTUAL_QUERY_ENABLED:false}
   generation-enabled: ${CONVERSATION_GENERATION_ENABLED:false}
   edge-public-key: ${INTERNAL_PUBLIC_KEY}
   task-endpoint: ${CONVERSATION_TASK_ENDPOINT:http://127.0.0.1:28087}

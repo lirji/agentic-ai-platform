@@ -44,6 +44,7 @@ mybatis-plus:
   global-config:
     banner: false
 task:
+  contextual-qa-enabled: ${TASK_CONTEXTUAL_QA_ENABLED:false}
   generation-enabled: ${TASK_GENERATION_ENABLED:false}
   knowledge-reader:
     enabled: ${TASK_KNOWLEDGE_READER_ENABLED:false}

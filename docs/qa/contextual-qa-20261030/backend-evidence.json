@@ -1,0 +1,88 @@
+{
+  "slice": "S12A",
+  "scope": "backend-core",
+  "status": "PARTIAL_VALIDATION_PASS",
+  "base": "b0974202f1c7597366699ea767d115b4c03b8b6d",
+  "sourceSha256": {
+    "ai-runtime/src/agentic_ai/qa/contextual_models.py": "acd324a3a4c97d52afdf4173c227ef13b4a9f1f195e0fc65d8bb639f6a368847",
+    "ai-runtime/src/agentic_ai/qa/contextual_pipeline.py": "ad9bbf09c49d326545ce28ff76d0020a4f7e6eb54674c1ec8fb1a498fa6851a1",
+    "ai-runtime/src/agentic_ai/qa/generation_pipeline.py": "3f6b055238ae27827b0c3f1721f12e9d2db21e45714c79e0dcde384775fe3e70",
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "fbfbd63eb435877f0e399e7557c392f417d52ed0a2c95a321e37c110753780e7",
+    "ai-runtime/src/agentic_ai/qa/query_rewrite.py": "de93dc843b1e63079485efd3d59704f6b628855d532598d00537f30e5c2aa06f",
+    "ai-runtime/src/agentic_ai/qa/worker.py": "e05b2f7bf325c2a5fcb1d403da05ec102fbf17037e68b2c912fd2fdf3ca0771e",
+    "ai-runtime/src/agentic_ai/tasks/models.py": "5ba5a86b97e5b14cae7b9145f62323a6f355e4637bbe71c1b102865a55a0305d",
+    "ai-runtime/tests/test_contextual_execution_integration.py": "9e3807fe640cd43703fdace8a146ea4e5d4f693cd4b289870db81e0497256b2a",
+    "ai-runtime/tests/test_contextual_models.py": "798677c0d5811fbd9debba12fedb4d070097e1afa53949457871f258bbac5df3",
+    "ai-runtime/tests/test_contextual_pipeline.py": "c1cad9c532229785751724ccf729764431e8f28c6585d6bb8c37c050cf66a5ea",
+    "ai-runtime/tests/test_generation_execution_integration.py": "7924731c0300dfacbc0b7684f48026fadbcefd135b14b62d501ca7d1b9586028",
+    "ai-runtime/tests/test_qa_worker.py": "ca33621761a5b465473fdf5989c3e10d90a7ea4efc293684859570e17b7b2f95",
+    "ai-runtime/tests/test_query_rewrite.py": "aeac5ad481cb6a696789cb8a16d4226797a5cf920e6531155a9327ac0d035601",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/ContextualKnowledgeResults.java": "c70366510e5b786fd51a5a4dde697c09589eee8addf2f6272f4d693921e72b27",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/GenerationKnowledgeResults.java": "e7d6b5b2e8133f6c134bc3d4d812038c5c5462ac340787e0d9d53665140f54bb",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/RetrievalTaskRequests.java": "07988190ec7b207f7fb3e9852bf403901bbc00cd00cd446a37529561b322741f",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskKnowledgeEvidence.java": "727df7ad4a9a2a6be55f787234501ced304e7ab478cb563a1b6f7fd6608f4ac6",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskKnowledgeVisibility.java": "72ba02e15d54c3fc5b7054acb8165ec2b246c69009cd3cc58276a18eda8ea013",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskService.java": "68f526de67754d1d5c8f21878b864e68431f2df6b3bfc0240046704a09b2ff44",
+    "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskProtocol.java": "14b5d53f1248ab8c5871c7954b164d4b06f072e5786a19acfda2ea92db53ebf9",
+    "async-task-service/src/main/resources/application.yml": "1b9586c1e2b52e1bef2062b128f4b73bf93355096b782db39064f788700fd925",
+    "async-task-service/src/test/java/com/lrj/agentic/task/ContextualQaContractTest.java": "c898b1934bb776a9df6d1171b1b3c4d7ffbe13b35018fe2b8d05410c699f4db1",
+    "async-task-service/src/test/java/com/lrj/agentic/task/TaskPersistenceIT.java": "2dca12cb98efdc3ae11cd5740907c00eb3cb8f55916474f96a292557c78bdfa4",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/api/ContextualConversationController.java": "c2d8b85a261b7a6eab9799be6bf6daafe383adf779c57b4148a90a0ceb08d084",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/api/ConversationDtos.java": "9df8fc75e067ce4ac0d1f9990b1540d6550b4ebb9515638f176507242e7df6ae",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationService.java": "908b16a7f43e7786e305d4ceecf813c0784ea23c59574be388fc90f7f312d9d5",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationValues.java": "09ff232f0d7c49816ecb1e61878baaa00fc87e0b50d7f983ff4e0646c186f6f5",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/config/ConversationSecurity.java": "1d5709abfa69ba56167bed400f5acc9537fa7eae3d5cc8b798191274df4dbca9",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationProtocol.java": "26ae9ed7006cd2394478269edd43762cadae63a427dc2cc0017a7ca6c0476b69",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/TaskGateway.java": "16ce3c70b39c159038367991c274aec04a41b983f504e0a896a53a2009fcaeb9",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/CentralTaskGateway.java": "fc3b2ac486ae6dc18488ff63f8d294fe33de58c0e702bf60c4978dd2acb0bab8",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/TurnRow.java": "1c973adc4cc87db5f89095d0f5ea5efb2d7070291b05835a6717961c3e37371a",
+    "conversation-service/src/main/resources/application.yml": "53209e5113b43617dd0712e20a5d4a86f13fa7b1d82410dafb44fbdf9fc8892d",
+    "conversation-service/src/main/resources/db/migration/V3__contextual_query_policy.sql": "354d0c0fe2e5accfc434ff9eb194ee1e09840df2c8aa35aef830f64c48219421",
+    "conversation-service/src/main/resources/mapper/ConversationMapper.xml": "10293932e89e0c1f3d38a5182e9ef7999380d79b7c4b28e18682665a89543162",
+    "conversation-service/src/test/java/com/lrj/agentic/conversation/CentralTaskGatewayTest.java": "785b69c89f8246bd5f8d7e24d99fc486052ab29066b5d11ef200b5bb3d6259d6",
+    "conversation-service/src/test/java/com/lrj/agentic/conversation/ConversationPersistenceIT.java": "85850b39b50b35f696ce23f76d4265b7c5225f44bea43e60ab302a642ff5200c",
+    "knowledge-service/src/test/resources/contextual-qa-golden.json": "e40ca3b4a5f3e6812a1daadd1fa0546af2709bf1c5b3feb84cdba3910f20bb71",
+    "platform-contracts/src/main/java/com/lrj/agentic/contract/knowledge/QueryPolicy.java": "6fe47acfbc91add0f1e94c776be877d7b3d3afe85585b152f9c6a2e27d6ba74a"
+  },
+  "tests": {
+    "javaUnit": 169,
+    "pythonUnit": 590,
+    "pythonSkippedDefault": 74,
+    "pythonLintFiles": 120,
+    "pythonMypySources": 74,
+    "realMysqlHttp": 41,
+    "realPostgresTakeover": 6
+  },
+  "logs": [
+    ".logs/s12a-backend-java.log",
+    ".logs/s12a-backend-python.log",
+    ".logs/s12a-java-persistence.log",
+    ".logs/s12a-contextual-pg.log",
+    ".logs/s12a-backend-hygiene.log"
+  ],
+  "review": {
+    "scopeAndOwnership": "Conversation retains original input, Tasks validates v3 result binding and all dependencies, Python stores derived query only",
+    "compatibility": "v1/v2 remain separate; new gates default false; v2 dependency cap stays 5",
+    "idempotency": "v3 policy/version fingerprints persist; closed admission replays and drains accepted tasks",
+    "recovery": "real PG after rewrite/retrieve/generate/complete plus revoked history and cancellation; no repeated confirmed calls",
+    "hygiene": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS; Java formatter missing; 3 constant declarations and 2 unrelated dependency enum matches reviewed as false-positive advisories"
+  },
+  "paidModelCalls": 0,
+  "deployment": {
+    "newImageRollout": false,
+    "migration": "Conversation V3 only in owned isolated test database"
+  },
+  "remaining": [
+    "frontend capability/frozen intent/query display",
+    "gateway/local proxy wiring",
+    "real API browser validation",
+    "budgeted real model quality comparison",
+    "final review and delivery"
+  ],
+  "failedAttempts": [
+    "alias ambiguity fixed in v3 raw wire only",
+    "test dispatch method name corrected",
+    "MySQL CHECK assertion now uses exact vendor code 3819",
+    "Jackson generic assertion and integer-node comparison corrected without changing wire expectations"
+  ]
+}

@@ -42,6 +42,10 @@ public final class TaskProtocol {
     public static final int MAX_VALUE = 64 * 1024;
     public static final int MAX_EVENT_VALUE = 8 * 1024;
     public static final String GRAPH_V2 = "knowledge-qa-v2";
+    public static final String GRAPH_V3 = "knowledge-qa-v3";
+    public static final String INPUT_V3 = "knowledge-qa-input-v3";
+    public static final String RESULT_V3 = "knowledge-qa-result-v3";
+    public static final int MAX_CONTEXTUAL_DEPENDENCIES = 10;
     public static final String WORK_INPUT_V2 = "knowledge-work-input-v2";
     public static final String WORK_GRAPH_V2 = "knowledge-work-v2";
     public static final String EVALUATION_INPUT_V2 = "evaluation-input-v2";
@@ -49,7 +53,7 @@ public final class TaskProtocol {
     public static final String EVIDENCE_V1 = "knowledge-evidence-v1";
     /** 仅用于已持久任务的证据版本判断；受理版本仍由独立入口控制。 */
     public static boolean generationGraph(String graph) {
-        return Set.of(GRAPH_V2, WORK_GRAPH_V2, EVALUATION_GRAPH_V2).contains(graph);
+        return Set.of(GRAPH_V2, GRAPH_V3, WORK_GRAPH_V2, EVALUATION_GRAPH_V2).contains(graph);
     }
     private TaskProtocol() { }
 }

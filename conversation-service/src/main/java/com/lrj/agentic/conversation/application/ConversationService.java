@@ -2,6 +2,7 @@ package com.lrj.agentic.conversation.application;
 
 import com.lrj.agentic.contract.TaskStatus;
 import com.lrj.agentic.contract.knowledge.RetrievalStrategy;
+import com.lrj.agentic.contract.knowledge.QueryPolicy;
 import com.lrj.agentic.conversation.api.ConversationDtos.*;
 import com.lrj.agentic.conversation.domain.*;
 import com.lrj.agentic.conversation.infrastructure.*;
@@ -22,12 +23,15 @@ public class ConversationService {
     private final TaskGateway tasks;
     private final TransactionTemplate tx;
     private final boolean generationEnabled;
+    private final boolean contextualEnabled;
 
     /** 使用短事务和显式身份；不会读取其他领域的业务库。 */
     public ConversationService(ConversationMapper mapper, ConversationValues values, TaskGateway tasks,
-            PlatformTransactionManager manager, @Value("${conversation.generation-enabled:false}") boolean generationEnabled) {
+            PlatformTransactionManager manager, @Value("${conversation.generation-enabled:false}") boolean generationEnabled,
+            @Value("${conversation.contextual-query-enabled:false}") boolean contextualEnabled) {
         this.mapper = mapper; this.values = values; this.tasks = tasks;
         this.generationEnabled = generationEnabled;
+        this.contextualEnabled = contextualEnabled;
         tx = new TransactionTemplate(manager);
         tx.setTimeout(5);
     }
@@ -56,7 +60,7 @@ public class ConversationService {
 
     /** 同键返回原轮次；上下文远程核验在锁会话行之前完成。 */
     public Turn ask(Caller owner, String conversationId, String key, Ask command) {
-        return ask(owner, conversationId, key, command, RetrievalStrategy.LEGACY);
+        return ask(owner, conversationId, key, command, RetrievalStrategy.LEGACY, QueryPolicy.ORIGINAL);
     }
 
     /** 新输入在受理事务前校验策略；与问题和分派账本一起固定。 */
@@ -66,22 +70,46 @@ public class ConversationService {
         try { strategy = RetrievalStrategy.consumer(command.retrievalStrategy()); }
         catch (IllegalArgumentException invalid) { throw new ConversationFailure(ConversationError.INPUT_INVALID); }
         return ask(owner, conversationId, key, new Ask(command.expectedRevision(), command.question(),
-                command.documentIds(), command.contextTurnId()), strategy);
+                command.documentIds(), command.contextTurnId()), strategy, QueryPolicy.ORIGINAL);
     }
 
-    private Turn ask(Caller owner, String conversationId, String key, Ask command, RetrievalStrategy strategy) {
+    /** 已批准的新协议只接受受控改写策略；历史合法输入保持独立版本。 */
+    public Turn askContextual(Caller owner, String conversationId, String key, AskContextual command) {
+        require(command != null, ConversationError.INPUT_INVALID);
+        RetrievalStrategy strategy;
+        try {
+            strategy = RetrievalStrategy.consumer(command.retrievalStrategy());
+            require(QueryPolicy.parse(command.queryPolicy()) == QueryPolicy.CONTEXTUAL, ConversationError.INPUT_INVALID);
+        } catch (IllegalArgumentException invalid) { throw new ConversationFailure(ConversationError.INPUT_INVALID); }
+        return ask(owner, conversationId, key, new Ask(command.expectedRevision(), command.question(),
+                command.documentIds(), command.contextTurnId()), strategy, QueryPolicy.CONTEXTUAL);
+    }
+
+    /** 配置能力不等于下游实时健康；读取没有远程副作用。 */
+    public Capabilities capabilities() {
+        return new Capabilities(ConversationProtocol.CAPABILITIES_VERSION, generationEnabled && contextualEnabled);
+    }
+
+    private Turn ask(Caller owner, String conversationId, String key, Ask command,
+            RetrievalStrategy strategy, QueryPolicy policy) {
         ConversationValues.id(conversationId);
         Ask request = ConversationValues.validated(command);
         // 旧指纹逐字节不变；新策略参与指纹，未知响应只能重放原策略。
-        String keyHash = ConversationValues.key(key), requestHash = values.fingerprint(strategy == RetrievalStrategy.LEGACY
-                ? request : new AskGeneration(request.expectedRevision(), request.question(), request.documentIds(),
-                        request.contextTurnId(), strategy.code()));
+        Object fingerprint = policy == QueryPolicy.CONTEXTUAL
+                ? new ContextualFingerprint(ConversationProtocol.INPUT_VERSION_V3, new AskContextual(
+                        request.expectedRevision(), request.question(), request.documentIds(), request.contextTurnId(),
+                        strategy.code(), policy.code()))
+                : strategy == RetrievalStrategy.LEGACY ? request
+                : new AskGeneration(request.expectedRevision(), request.question(), request.documentIds(),
+                        request.contextTurnId(), strategy.code());
+        String keyHash = ConversationValues.key(key), requestHash = values.fingerprint(fingerprint);
         requireConversation(owner, conversationId);
         var replay = mapper.turnByKey(owner, conversationId, keyHash);
         if (replay != null) { same(replay.requestHash(), requestHash); return values.view(replay); }
         // 已受理同键仍可恢复；关闭新受理不改写历史，也不能新增分派账本。
         require(strategy == RetrievalStrategy.LEGACY || generationEnabled, ConversationError.RETRIEVAL_DISABLED);
-        TurnRow context = context(owner, conversationId, request, strategy);
+        require(policy != QueryPolicy.CONTEXTUAL || contextualEnabled, ConversationError.RETRIEVAL_DISABLED);
+        TurnRow context = context(owner, conversationId, request, strategy, policy);
         return Objects.requireNonNull(tx.execute(ignored -> {
             var conversation = mapper.lockConversation(owner, conversationId);
             require(conversation != null, ConversationError.NOT_FOUND);
@@ -93,7 +121,8 @@ public class ConversationService {
                     conversation.revision() + 1, request.question(), values.write(request.documentIds()),
                     context == null ? null : context.turnId(), context == null ? null : context.taskId(),
                     context == null ? null : context.question(), UUID.randomUUID().toString(), keyHash,
-                    requestHash, DispatchState.PENDING, 0, 0, 0, 0, null, null, null, null, null, null, strategy.code());
+                    requestHash, DispatchState.PENDING, 0, 0, 0, 0, null, null, null, null, null, null,
+                    strategy.code(), policy.code());
             mapper.insertTurn(row);
             require(mapper.advance(owner, conversationId, conversation.revision()) == 1,
                     ConversationError.REVISION_CONFLICT);
@@ -101,15 +130,21 @@ public class ConversationService {
         }));
     }
 
-    private TurnRow context(Caller owner, String conversationId, Ask request, RetrievalStrategy strategy) {
+    private TurnRow context(Caller owner, String conversationId, Ask request,
+            RetrievalStrategy strategy, QueryPolicy policy) {
         if (request.contextTurnId() == null) { return null; }
         var row = mapper.turn(owner, conversationId, request.contextTurnId());
         require(row != null, ConversationError.NOT_FOUND);
         require(ConversationValues.legacy(row) == (strategy == RetrievalStrategy.LEGACY), ConversationError.CONTEXT_INVALID);
+        // 新图能理解v2/v3完整依赖；旧图不能读取v3信封，不能受理后才让worker失败。
+        require(policy == QueryPolicy.CONTEXTUAL || !ConversationValues.contextual(row), ConversationError.CONTEXT_INVALID);
         require(values.documents(row.documentIds()).equals(request.documentIds()), ConversationError.CONTEXT_INVALID);
         require(tasks.status(owner, row.taskId()) == TaskStatus.SUCCEEDED, ConversationError.CONTEXT_INVALID);
         return row;
     }
+
+    /** 版本参与新指纹，禁止同键跨协议重放成另一个执行图。 */
+    private record ContextualFingerprint(String schemaVersion, AskContextual command) { }
 
     /** 会话读取只依赖本地持久事实，Tasks 故障不会吞掉用户问题。 */
     public Conversation get(Caller owner, String id) { return values.view(requireConversation(owner, id)); }

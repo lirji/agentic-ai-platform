@@ -13,6 +13,7 @@ REGISTERED_CONTRACTS = {
     "PROCESSING_CONTRACTS.md": "knowledge-preparation-v1",
     "STRUCTURED_PROCESSING_CONTRACTS.md": "knowledge-preparation-v2",
     "LIFECYCLE_CONTRACTS.md": "knowledge-lifecycle-v1",
+    "CONTEXTUAL_QA_CONTRACTS.md": "contextual-qa-v1",
 }
 FIXTURES = ROOT / "knowledge-service/src/test/resources"
 
@@ -59,7 +60,12 @@ def main() -> None:
     assert search["input"]["schemaVersion"] == "knowledge-search-input-v2"
     assert search["result"]["schemaVersion"] == "knowledge-search-result-v2"
     assert search["capabilities"]["schemaVersion"] == "knowledge-retrieval-capabilities-v1"
-    print("7 registered contracts and 12 shared wire fixture files: PASS")
+    contextual = json.loads((FIXTURES / "contextual-qa-golden.json").read_text())
+    assert contextual["protocol"] == REGISTERED_CONTRACTS["CONTEXTUAL_QA_CONTRACTS.md"]
+    assert contextual["input"]["schemaVersion"] == "knowledge-qa-input-v3"
+    assert contextual["result"]["schemaVersion"] == "knowledge-qa-result-v3"
+    assert contextual["result"]["query"]["originalQuestion"] == contextual["input"]["question"]
+    print("8 registered contracts and 13 shared wire fixture files: PASS")
 
 
 if __name__ == "__main__":

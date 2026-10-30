@@ -91,6 +91,7 @@ class TaskLease(WireModel):
         "knowledge-work-v1",
         "knowledge-evaluation-v1",
         "knowledge-qa-v2",
+        "knowledge-qa-v3",
         "knowledge-work-v2",
         "knowledge-evaluation-v2",
     ]

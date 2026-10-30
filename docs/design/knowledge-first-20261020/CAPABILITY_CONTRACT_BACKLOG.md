@@ -13,7 +13,7 @@
 | C-LIFECYCLE | S10A；Knowledge；已冻结[knowledge-lifecycle-v1](LIFECYCLE_CONTRACTS.md) | document revision、published revision、index generation/profile；更新、撤下、删除、重索引及历史引用规则；幂等/版本冲突/清理资格 | 更新失败保留旧发布版；并发只有合法版本推进；已删除/撤下不能被重试或恢复重新发布；旧版本与索引代次分开；清理不是普通更新隐式行为 |
 | C-RETRIEVAL | S11A；Knowledge + Python RAG 边界 | 可信调用者/owner 委托；查询与向量模型；两路权威候选、原始 sourceRank、doc/version/chunk/batchDigest；RRF/重排/最终验证；策略标识与诊断 | 正文返回/外发前授权；过滤后内部名次不压缩，对外不泄露无权数量/ID或名次空位；候选上限/总 deadline；新旧路径不重复融合；引用失效和重排失败不同错误 |
 | C-RERANK | S11A/D；Python 模型适配 + 预算 Owner | query/document 输入、候选映射、topN、分数语义、模型版本、大小/超时/额度；正常/降级结果 | 重复/越界索引和非法分数拒绝；未知计费结果不盲重试；原分数与重排分数分开；回退必须显式；独立费用账本、地域和数据边界 |
-| C-QA2 | S12A/B；Conversation + Python QA | 指定历史轮次/摘要引用、检索问题变换、证据支持/拒答类别、引用与答案版本、评价标记 | 不改原问题权威；历史答案不是新证据；恢复前重新校验历史/资料权限；语义裁判失败不伪装成验证通过 |
+| C-QA2 | S12A/B；Conversation + Python QA（S12A增量见[契约](CONTEXTUAL_QA_CONTRACTS.md)；S12B未冻结） | 指定历史轮次/摘要引用、检索问题变换、证据支持/拒答类别、引用与答案版本、评价标记 | 不改原问题权威；历史答案不是新证据；恢复前重新校验历史/资料权限；语义裁判失败不伪装成验证通过 |
 | C-WORK2 | S12C/D；Tasks + Python Agent | 研究问题清单、计划/证据覆盖/缺口、阶段输出、根图版本、工具记录及取消/恢复行为 | JSON 状态白名单和大小预算；旧 work-v1 任务按原版本恢复；不直接开启 Deep Agents 内部 saver/子 Agent；无法完成必须说明边界 |
 | C-IDENTITY | S13A；Gateway + 已选 IAM + 各服务 | 登录/退出/续期、角色/scope/组织来源；内部 audience/issuer/委托身份；401/403 及前端恢复 | 不信任客户端租户/用户字段；开发会话桥不成为正式认证回退；失效/退出后旧会话行为明确，跨环境凭据隔离 |
 | C-SHARING | S13B/C；Knowledge 授权 Owner | owner/团队成员/运营者行为矩阵；授权/撤权命令及版本；文档范围、任务与引用可见性 | 事务提交后各读取路径一致拒绝；语料/候选/精排输入/历史结果/评测/在途任务均检查；策略变动不是仅清前端缓存 |

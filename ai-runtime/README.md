@@ -125,3 +125,9 @@ AGENTIC_WORK_IT=1 AGENTIC_QA_EXECUTION_IT=1 AGENTIC_CHECKPOINT_IT=1 uv run --fro
 LlamaIndex提供Recall/MRR适配；分级nDCG按已冻结公式计算。空召回应答题计0，无答案/执行失败不混入同一分母。真实费用未返回则记录未知，保守预留与供应商费用分开。每题事件/预算键包含题目身份，不复用第一题的操作键，也不向浏览器广播评测答案TEXT_DELTA。
 
 新图只在配置 `evaluation_private_key` 后领取；初始化见 [本机运行](../deploy/README.md)。本图600秒/202步，最多100题；既有QA/work期限保持。`tests/test_evaluation_pipeline.py`为确定性图/公式验证，`test_evaluation_execution_integration.py`在显式本机开关下验证真实服务/PG，测试前暂停模型worker，结果不等于真实模型质量。
+
+## 受控追问新图（S12A，接入中）
+
+`contextual_pipeline.py`的独立`knowledge-qa-v3`在原检索前新增`prepare_query`，只读取指定成功前文的原问题及最多2000码点答案。一次改写最多等待5秒，预算、配置、权限与取消不允许回退；可回退的模型失败使用原问题。原问题保持不变，实际查询和原因保存在v3结果的`query`。完整依赖并集最多10条，当前引用仍最多5条；v1/v2图保留旧语义。
+
+worker新增`contextual_qa_enabled=false`，开启还需`retrieval_enabled=true`。复用现有ChatPort、累计账本、45秒/32步和PG/中央fencing，无新增模型、密钥或预算。`tests/test_contextual_execution_integration.py`使用`AGENTIC_GENERATION_PG_IT=1`验证真实测试库与HTTP，包含改写/检索/生成后接管、失权和取消，模型仍为协议替身。当前未切换运行容器；正式边界见[C-QA2](../docs/design/knowledge-first-20261020/CONTEXTUAL_QA_CONTRACTS.md)。
