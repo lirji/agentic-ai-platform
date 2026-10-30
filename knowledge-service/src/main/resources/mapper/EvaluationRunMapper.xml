@@ -7,7 +7,7 @@
         dataset_revision, definition_digest, top_k, revision, dispatch_state, dispatch_attempts, lease_owner,
         lease_generation, lease_until, next_attempt_at, last_error, cancel_requested, resume_revision,
         last_control, observed_revision, observed_task_json, report_epoch, report_digest, profile_json,
-        profile_digest, settled, created_at, updated_at</sql>
+        profile_digest, settled, created_at, updated_at, retrieval_strategy</sql>
     <select id="byKey" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow">
         SELECT <include refid="columns"/> FROM knowledge_evaluation_run WHERE <include refid="owned"/> AND key_hash = #{key}
     </select>
@@ -17,14 +17,14 @@
     </select>
     <insert id="create">
         INSERT INTO knowledge_evaluation_run (run_id, tenant_id, owner_id, key_hash, request_fingerprint,
-            task_id, dataset_id, dataset_revision, definition_digest, top_k, next_attempt_at, created_at, updated_at)
+            task_id, dataset_id, dataset_revision, definition_digest, top_k, retrieval_strategy, next_attempt_at, created_at, updated_at)
         VALUES (#{row.runId}, #{row.tenantId}, #{row.ownerId}, #{row.keyHash}, #{row.requestFingerprint},
-            #{row.taskId}, #{row.datasetId}, #{row.datasetRevision}, #{row.definitionDigest}, #{row.topK},
+            #{row.taskId}, #{row.datasetId}, #{row.datasetRevision}, #{row.definitionDigest}, #{row.topK}, #{row.retrievalStrategy},
             UTC_TIMESTAMP(6), UTC_TIMESTAMP(6), UTC_TIMESTAMP(6))
     </insert>
-    <select id="list" resultType="com.lrj.agentic.knowledge.domain.evaluation.RunModels$RunSummary">
+    <select id="list" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow">
         SELECT run_id, dataset_id, dataset_revision, definition_digest, top_k, revision, dispatch_state,
-            cancel_requested, created_at FROM knowledge_evaluation_run
+            cancel_requested, created_at, retrieval_strategy FROM knowledge_evaluation_run
         WHERE <include refid="owned"/> AND dataset_id = #{dataset}
         <if test="after != null">AND run_id &gt; #{after}</if>
         ORDER BY run_id LIMIT #{limit}
@@ -77,6 +77,13 @@
     </select>
     <select id="summaries" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow$Stored">
         SELECT digest, summary_json AS body FROM knowledge_evaluation_candidate
+        WHERE <include refid="owned"/> AND run_id = #{id} AND
+        <foreach collection="receipts" item="receipt" separator=" OR " open="(" close=")">
+            (epoch = #{receipt.epoch} AND question_id = #{receipt.questionId} AND digest = #{receipt.digest})
+        </foreach>
+    </select>
+    <select id="generations" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRunRow$Stored">
+        SELECT digest, JSON_EXTRACT(report_json, '$.generation') AS body FROM knowledge_evaluation_candidate
         WHERE <include refid="owned"/> AND run_id = #{id} AND
         <foreach collection="receipts" item="receipt" separator=" OR " open="(" close=")">
             (epoch = #{receipt.epoch} AND question_id = #{receipt.questionId} AND digest = #{receipt.digest})

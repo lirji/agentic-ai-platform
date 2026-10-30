@@ -1,14 +1,18 @@
 """E01/E02 严格传输模型；问题定义和运行身份由 Knowledge/Tasks 冻结。"""
 
-from typing import Annotated, Literal, Self
+from typing import Annotated, Final, Literal, Self
 
 from pydantic import Field, StringConstraints, model_validator
 
 from agentic_ai.qa.models import CitationSource, QaResult
+from agentic_ai.retrieval.evidence import GenerationReference
+from agentic_ai.retrieval.models import RetrievalStrategy
+from agentic_ai.retrieval.task_models import RetrievalDiagnostic
 from agentic_ai.tasks.models import CanonicalId, Sha256, TaskFailureCode, WireModel
 
 EVALUATION_GRAPH = "knowledge-evaluation-v1"
 EVALUATION_KIND = "KNOWLEDGE_EVALUATION"
+LEGACY_RETRIEVAL_PROFILE: Final = "java-rrf60-v1"
 EXECUTION_SECONDS = 600
 GRAPH_STEPS = 202
 MAX_QUESTIONS = 100
@@ -97,7 +101,7 @@ class Profile(WireModel):
     route: Literal["chat-default"]
     max_output_tokens: int = Field(ge=1, le=1024)
     prompt_digest: Sha256
-    retrieval_profile: Literal["java-rrf60-v1"]
+    retrieval_profile: Literal["java-rrf60-v1", "LLAMA_RRF_V1", "LLAMA_RERANK_V1"]
 
 
 class Opened(WireModel):
@@ -217,3 +221,56 @@ class Completion(WireModel):
     run_id: CanonicalId
     epoch: int = Field(ge=1)
     manifest_digest: Sha256
+
+
+class GenerationEvaluationInput(WireModel):
+    """独立v2输入必须带冻结策略，不能为旧输入补默认值。"""
+
+    schema_version: Literal["evaluation-input-v2"]
+    run_id: CanonicalId
+    dataset_id: CanonicalId
+    dataset_revision: int = Field(ge=1)
+    definition_digest: Sha256
+    top_k: Literal[5]
+    retrieval_strategy: RetrievalStrategy
+
+
+class GenerationEvidence(WireModel):
+    """逐题全部生成依赖，不只保存最终答案的引用。"""
+
+    schema_version: Literal["evaluation-evidence-v2"] = "evaluation-evidence-v2"
+    strategy: RetrievalStrategy
+    references: tuple[GenerationReference, ...] = Field(max_length=TOP_K)
+    retrieval: RetrievalDiagnostic | None
+
+    @model_validator(mode="after")
+    def consistent(self) -> Self:
+        """失败于检索之前可无诊断，但不能把失败解释为EMPTY或伪精排。"""
+        triples = [(r.document_id, r.version, r.chunk_id) for r in self.references]
+        if len(set(triples)) != len(triples):
+            raise ValueError("评测完整证据重复")
+        if self.retrieval is None:
+            if self.references:
+                raise ValueError("评测诊断缺失")
+        elif self.retrieval.strategy != self.strategy or (
+            (self.retrieval.mode == "EMPTY") != (not self.references)
+        ):
+            raise ValueError("评测诊断与完整证据不一致")
+        return self
+
+
+class GenerationQuestionReport(QuestionReport):
+    """v1字段与摘要不变；v2完整证据与实际召回逐项对应。"""
+
+    generation: GenerationEvidence
+
+    @model_validator(mode="after")
+    def generation_bound(self) -> Self:
+        """未引用命中同样影响生成，必须完整保存并在恢复时核验。"""
+        actual = [(r.document_id, r.version, r.chunk_id, r.text_hash) for r in self.retrieved]
+        expected = [
+            (r.document_id, r.version, r.chunk_id, r.text_hash) for r in self.generation.references
+        ]
+        if actual != expected or self.outcome == "SUCCEEDED" and self.generation.retrieval is None:
+            raise ValueError("评测完整证据缺失或错配")
+        return self

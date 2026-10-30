@@ -10,6 +10,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from pydantic import JsonValue, ValidationError
 
+from agentic_ai.evaluation.models import EVALUATION_GRAPH
 from agentic_ai.qa.chat import ChatMessage, ChatPort
 from agentic_ai.qa.errors import QaCode, QaError
 from agentic_ai.qa.models import (
@@ -23,6 +24,7 @@ from agentic_ai.qa.models import (
     QaResult,
 )
 from agentic_ai.qa.retriever import AuthorizedRetriever, KnowledgePort, retrieve_evidence
+from agentic_ai.retrieval.task_models import EVALUATION_GRAPH_V2
 from agentic_ai.tasks.client import CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.evidence import EvidenceRegistration
@@ -89,7 +91,10 @@ class QaPipeline:
     ) -> None:
         self.binding, self.central, self.knowledge, self.chat = binding, central, knowledge, chat
         # 评测只替换内部独立问题，中央 binding/input 原样保留用于每次续租核对。
-        if evaluation_question is not None and binding.graph_version != "knowledge-evaluation-v1":
+        if evaluation_question is not None and binding.graph_version not in (
+            EVALUATION_GRAPH,
+            EVALUATION_GRAPH_V2,
+        ):
             raise QaError(QaCode.INPUT_REJECTED)
         self.operation_scope, self.emit_text = operation_scope, emit_text
         self.registration = EvidenceRegistration(central, binding, MAX_HITS)

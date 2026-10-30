@@ -18,16 +18,20 @@ from pydantic import ValidationError
 
 from agentic_ai.evaluation.models import (
     EVALUATION_GRAPH,
+    LEGACY_RETRIEVAL_PROFILE,
     MAX_OPEN_BYTES,
     MAX_REPORT_BYTES,
     CandidateReceipt,
     EvaluationInput,
+    GenerationEvaluationInput,
+    GenerationQuestionReport,
     ManifestReceipt,
     Opened,
     Profile,
     QuestionReport,
 )
 from agentic_ai.qa.errors import QaCode, QaError
+from agentic_ai.retrieval.task_models import EVALUATION_GRAPH_V2
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.models import TaskLease, WireModel
 
@@ -73,11 +77,16 @@ class EvaluationClient:
         try:
             parts = urlsplit(endpoint)
             port = parts.port
-            self.input = EvaluationInput.model_validate(binding.input)
+            model = (
+                GenerationEvaluationInput
+                if binding.graph_version == EVALUATION_GRAPH_V2
+                else EvaluationInput
+            )
+            self.input = model.model_validate_json(json.dumps(binding.input))
         except (ValueError, ValidationError):
             raise QaError(QaCode.CONFIG_INVALID) from None
         if (
-            binding.graph_version != EVALUATION_GRAPH
+            binding.graph_version not in (EVALUATION_GRAPH, EVALUATION_GRAPH_V2)
             or binding.worker_id is None
             or not fullmatch(r"[A-Za-z0-9._:-]{1,128}", binding.worker_id)
             or parts.scheme not in {"http", "https"}
@@ -196,6 +205,13 @@ class EvaluationClient:
 
     async def open(self, profile: Profile) -> Opened:
         """开图/最终提交都复核定义，返回值不能替换中央输入身份。"""
+        expected_profile = (
+            self.input.retrieval_strategy.value
+            if isinstance(self.input, GenerationEvaluationInput)
+            else LEGACY_RETRIEVAL_PROFILE
+        )
+        if profile.retrieval_profile != expected_profile:
+            raise QaError(QaCode.INPUT_REJECTED)
         opened = await self._request(
             "POST",
             "/open",
@@ -206,7 +222,7 @@ class EvaluationClient:
                 "profile": profile.model_dump(mode="json", by_alias=True),
             },
         )
-        expected = self.input.model_dump(exclude={"schema_version"})
+        expected = self.input.model_dump(exclude={"schema_version", "retrieval_strategy"})
         actual = opened.model_dump(include=set(expected))
         if actual != expected or opened.task_id != self.binding.task.task_id:
             raise QaError(QaCode.EVIDENCE_REJECTED)
@@ -214,6 +230,7 @@ class EvaluationClient:
 
     async def save(self, report: QuestionReport) -> CandidateReceipt:
         """保持本次完整正文不变；落盘而未收到响应时不能换成同键失败正文覆盖。"""
+        self._validate_report(report)
         receipt = await self._request(
             "PUT",
             f"/questions/{report.question_id}",
@@ -233,11 +250,24 @@ class EvaluationClient:
         report = await self._request(
             "GET",
             f"/questions/{receipt.question_id}?epoch={receipt.epoch}&digest={receipt.digest}",
-            QuestionReport,
+            GenerationQuestionReport
+            if isinstance(self.input, GenerationEvaluationInput)
+            else QuestionReport,
         )
+        self._validate_report(report)
         if report.question_id != receipt.question_id:
             raise QaError(QaCode.EVIDENCE_REJECTED)
         return report
+
+    def _validate_report(self, report: QuestionReport) -> None:
+        """客户端同样阻断跨策略保存/恢复，不依赖服务端宽松反序列化。"""
+        generation = isinstance(self.input, GenerationEvaluationInput)
+        if generation != isinstance(report, GenerationQuestionReport) or (
+            isinstance(self.input, GenerationEvaluationInput)
+            and isinstance(report, GenerationQuestionReport)
+            and report.generation.strategy != self.input.retrieval_strategy
+        ):
+            raise QaError(QaCode.EVIDENCE_REJECTED)
 
     async def manifest(
         self, profile_digest: str, complete: bool, questions: list[CandidateReceipt]

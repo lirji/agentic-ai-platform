@@ -77,3 +77,15 @@ QuestionReport：`questionId,outcome,result,retrieved,metrics,timing,cost,errorC
 真实 MySQL 验证运行同键争用、交接租约/未知响应、取消意图、资料失效、候选不可变、错误中央凭据、迟到 epoch、单调投影和跨 owner/tenant。Tasks 验证评测类型/专用身份、错误 epoch proof、失败结果重放和公共恢复绕过拒绝。Python 用确定性检索/聊天端口验证公式、失败/空召回区分、逐题 PG 重启恢复与中央提交窗口；真实模型质量仅由 S8E 证明。UI 验证运行/取消/未知恢复/逐题失败，三屏宽与当前正文授权。
 
 迁移先扩展；停止评测领取/交接后可回到兼容旧应用，保留 V5 与已接受中央任务，不回滚数据库或清空账本。旧 worker 不认识新图时不领取，原问答/研究图继续兼容。没有生产部署或删除候选/历史的授权；保留清理仍按后续生命周期约定推进。
+
+## S11E：版本化检索评测增量
+
+本节协议标识`evaluation-run-v2`，冻结新路径契约，是否开放以S11E验收为准。现有E02 v1请求、模型画像、逐题报告、候选摘要、清单和基线摘要保持原字节语义；禁止回填完整代次。
+
+- 新受理采用独立`POST /api/v2/knowledge/evaluations/runs`，请求为原datasetId/revision/topK加必填`retrievalStrategy`，仅LLAMA_RRF_V1或LLAMA_RERANK_V1。受理先把策略写入Knowledge运行账本并纳入指纹；同键换策略或换版本冲突。旧行持久策略固定JAVA_RRF_LEGACY，旧公开序列化不追加null字段。
+- 新中央输入为`evaluation-input-v2`、图`knowledge-evaluation-v2`，原六字段加retrievalStrategy。分派、观察、续领和恢复按持久策略；新worker未就绪时禁止受理/领取。原`evaluation-completion-v1`小型清单凭据沿用，报告所有权仍在Knowledge。
+- 画像结构不变，新`retrievalProfile`等于持久策略code；旧画像仍java-rrf60-v1。首开固定模型画像，重开必须精确一致。模型未知字段、任意route、运行中换策略均拒绝。
+- 新逐题QuestionReport保留原八字段，必加`generation`对象：`schemaVersion=evaluation-evidence-v2`、`strategy`、`references`（完整八分量身份，按retrieved实际顺序，最多5项）、`retrieval`（单次实际诊断或null）。references与所有retrieved逐项匹配documentId/version/chunkId/textHash，不仅保存最终引用。旧retrieved.score仍为RRF分数，排序采用实际用例输出；实际模式只读retrieval.mode。
+- retrieval诊断严格为strategy/mode/degraded/elapsedMs；degraded必须Boolean false，mode只允许与策略相符的RRF/RERANKED或EMPTY。成功题必须有诊断；EMPTY当且仅当references为空。检索完成前失败可为null且references为空；后续生成失败仍保存已完成检索的全部证据和诊断。不得把失败伪装EMPTY或伪精排。指标与原金标匹配规则不变。
+- Knowledge保存候选前核验所有完整引用及原内容/指标约束。恢复候选、提交清单、公开详情/逐题报告、人工评审与基线比较统一核验现时完整代次；同内容重索引也使旧代次不可用，不退回三元组。权限/代次失效沿EVALUATION_BINDING_INVALID处理。摘要读取只批量提取精确候选中的generation，不把百道答案加载到轮询。单次完整引用核验最多20项、总题数仍100。
+- 根图仍只保存逐题不可变收据，已保存成功题恢复不重新检索/调用模型；不把100题的证据累加进Tasks QA五项清单。不新增模型预算。新旧共享夹具须验证旧摘要未漂移、策略/诊断不匹配及缺失身份拒绝。

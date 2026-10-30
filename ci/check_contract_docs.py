@@ -23,6 +23,11 @@ def main() -> None:
         assert marker in text, f"{name}: missing protocol marker {marker}"
         assert sum(line.startswith("```") for line in text.splitlines()) % 2 == 0, name
     evaluation = json.loads((FIXTURES / "evaluation-wire-golden.json").read_text())
+    generation = json.loads((FIXTURES / "evaluation-generation-golden.json").read_text())
+    assert generation["protocol"] == "evaluation-run-v2"
+    assert generation["protocol"] in (DESIGN / "EVALUATION_RUN_CONTRACTS.md").read_text()
+    assert generation["input"]["schemaVersion"] == "evaluation-input-v2"
+    assert set(generation["reports"]) == set(evaluation["reports"])
     processing = json.loads((FIXTURES / "processing-golden.json").read_text())
     assert evaluation["protocol"] == REGISTERED_CONTRACTS["EVALUATION_RUN_CONTRACTS.md"]
     assert (
@@ -48,7 +53,7 @@ def main() -> None:
             assert generation["prepared"]["schemaVersion"] == "knowledge-generation-preparation-v1"
         if fixture["sourceFixture"] is not None:
             assert (ROOT / fixture["sourceFixture"]).is_file()
-    print("6 registered contracts and 10 shared wire fixture files: PASS")
+    print("6 registered contracts and 11 shared wire fixture files: PASS")
 
 
 if __name__ == "__main__":

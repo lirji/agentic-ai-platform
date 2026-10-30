@@ -69,3 +69,9 @@ Task：`taskId,kind,status,revision,attemptCount,resumeCount,retryable,errorCode
 v2最终结果为`{schemaVersion, strategy, content, references, retrieval}`。schemaVersion为knowledge-qa-result-v2或knowledge-work-result-v2；content完整保留对应v1结果结构和全部原校验，references为content最终引用的一一对应完整身份，retrieval为1..5个`{strategy,mode,degraded:false,elapsedMs}`实际调用诊断，无查询/正文。外层strategy与不可变输入retrievalStrategy相同，每项诊断策略相同；RRF策略只有RRF/EMPTY，精排策略只有RERANKED/EMPTY，未知模式拒绝。任何最终引用必须来自当前epoch完整清单；历史读取及SSE使用完整清单验证全部生成依赖，不能降到content三元组，也不能通过空references绕过非空正文。
 
 为保证v2追问继承完整生成依赖，增加只读`GET /internal/v1/task-worker/{id}/knowledge-evidence-v2`：沿原worker租户身份，只接受已成功v2任务，按原owner现时核验全部清单，返回`{taskId,epoch,schemaVersion,evidenceDigest,references}`（schema固定knowledge-evidence-v2，references 0..10，摘要同登记）。未成功/旧图/跨租户/失效返回TASK_NOT_FOUND；依赖不可用仍503。清单不含正文，不能改变或重算历史摘要。新QA上下文只可连接同owner/会话/范围的成功v2问题，原v1上下文继续使用v1入口；不将旧三元组补成新代次。追问在生成、恢复、完成前重验并将前文完整依赖并入本次清单，总上限沿QA的5项；超限拒绝，不静默裁剪。此增量仅随对应消费者联合验收后开放。
+
+### S11E评测v2中央边界
+
+`knowledge-evaluation-v2`只从原受限`/internal/v1/evaluation-tasks`入口受理；input严格为`evaluation-input-v2`，原runId/datasetId/datasetRevision/definitionDigest/topK加必填retrievalStrategy（LLAMA_RRF_V1或LLAMA_RERANK_V1），不得省略/填legacy/与v1图交叉。策略进入原请求指纹、持久input及每次租约观察。v1 worker不可领取v2；共同受task.generation-enabled默认false约束。
+
+逐题完整证据、候选、报告及权限仍由Knowledge拥有，中央completion/failureProof沿用evaluation-completion-v1并绑定当前epoch；不将整份评测依赖存进QA/研究的中央证据清单。新worker须同时具备评测独立身份及统一检索配置才领取v2。恢复先读取每项精确候选并由Knowledge复核完整身份，再继续未完成题；最终清单由Knowledge重新批量核验全部依赖。

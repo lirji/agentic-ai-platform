@@ -1,0 +1,19 @@
+{
+  "status": "READ_ONLY_NEXT_CONSUMER_CHECK",
+  "baseline": "bea8c02c95b2cedf09ffd9d2b6924c6deaff7890",
+  "files": {
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunModels.java": "9fe61c2bd3744a671a434ef4c0ab7f47de207b65d765b4241550f77ac9c73749",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunRules.java": "95a9d319912452e6d298fc31ab8e0b2b852bcb611cf705de47ecd531e17636b1",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationRunService.java": "5f118f384b29087f818ba40dd98cf0ff98abf99b05c4e106df410978ec1bcfe8",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationDecisionService.java": "d29e7578d83372617727a2b02f645eabc392b22c068a902e3a9c85cae9d95a51",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationRunRow.java": "97737317f962c373cfcb19ea30e9c0c4bd420f345bbd38a823d0d07d72fe6704",
+    "knowledge-service/src/main/resources/mapper/EvaluationRunMapper.xml": "4835389df95ccb976033984329d6cf0b44db0a60269e6e5c5e59f2c9d362d6f9",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/evaluation/EvaluationTaskClient.java": "73b3f52f5fe693e5be6bc66ecc9952fa1dae260215eb1d8ef1a63e49532f0106",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/EvaluationTaskRequests.java": "c5ad8a773e8a634fdc007e4cee2e6f291f394a5a0809f96b66b694eebd779c57",
+    "ai-runtime/src/agentic_ai/evaluation/pipeline.py": "0da2fb22036221ee1895033b1ddcb47a388ea1a2b6c3a3dcec1731b280057a09",
+    "ai-runtime/src/agentic_ai/evaluation/models.py": "a6b6a6ab99d86dc1a304689a1d5d28653d5abc10e1c9e3a0f2919f152f74fe82",
+    "ai-runtime/src/agentic_ai/evaluation/client.py": "a56d7afc5ba666da217dfcf1dd0250e28e9bc2dc125d39ccb3b11bee110c97db"
+  },
+  "findings": "RETRIEVAL_CONSUMER_READINESS.md final section",
+  "implemented": false
+}

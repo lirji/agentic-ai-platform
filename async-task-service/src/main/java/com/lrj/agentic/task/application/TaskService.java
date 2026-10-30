@@ -52,8 +52,8 @@ public class TaskService {
     private View accept(Caller owner, String key, Submit command) {
         TaskValues.id(command.taskId()); TaskValues.key(key);
         versions(command.runtimeVersion(), command.graphVersion());
-        if (TaskProtocol.generationGraph(command.graphVersion())) RetrievalTaskRequests.validate(command);
-        require(TaskProtocol.EVALUATION_GRAPH.equals(command.graphVersion())
+        if (TaskProtocol.generationGraph(command.graphVersion()) && !TaskProtocol.EVALUATION_KIND.equals(command.kind())) RetrievalTaskRequests.validate(command);
+        require((TaskProtocol.EVALUATION_GRAPH.equals(command.graphVersion()) || TaskProtocol.EVALUATION_GRAPH_V2.equals(command.graphVersion()))
                 ? TaskProtocol.EVALUATION_KIND.equals(command.kind()) : (TaskProtocol.GRAPH.equals(command.graphVersion()) || TaskProtocol.GRAPH_V2.equals(command.graphVersion()))
                 ? TaskProtocol.KIND.equals(command.kind())
                 : WorkKind.parse(command.kind()) != null, TaskError.INPUT_INVALID);
@@ -407,7 +407,7 @@ public class TaskService {
         require(!TaskProtocol.generationGraph(graph) || generationEnabled, TaskError.INPUT_INVALID);
         require(TaskProtocol.RUNTIME.equals(runtime)
                 && (TaskProtocol.GRAPH.equals(graph) || TaskProtocol.WORK_GRAPH.equals(graph)
-                    || TaskProtocol.EVALUATION_GRAPH.equals(graph) || TaskProtocol.GRAPH_V2.equals(graph) || TaskProtocol.WORK_GRAPH_V2.equals(graph)), TaskError.INPUT_INVALID);
+                    || TaskProtocol.EVALUATION_GRAPH.equals(graph) || TaskProtocol.EVALUATION_GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V2.equals(graph) || TaskProtocol.WORK_GRAPH_V2.equals(graph)), TaskError.INPUT_INVALID);
     }
     private static void changed(int count) { require(count == 1, TaskError.CONFLICT); }
     private static void require(boolean valid, TaskError code) {

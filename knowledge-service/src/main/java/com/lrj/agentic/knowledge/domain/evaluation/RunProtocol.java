@@ -9,6 +9,10 @@ public final class RunProtocol {
     public static final String RUNTIME = "langgraph-v1";
     public static final String GRAPH = "knowledge-evaluation-v1";
     public static final String INPUT = "evaluation-input-v1";
+    public static final String GENERATION_INPUT = "evaluation-input-v2";
+    public static final String GENERATION_GRAPH = "knowledge-evaluation-v2";
+    public static final String GENERATION_EVIDENCE = "evaluation-evidence-v2";
+    public static final String MODE_RRF = "RRF", MODE_RERANKED = "RERANKED", MODE_EMPTY = "EMPTY";
     public static final String COMPLETION = "evaluation-completion-v1";
     public static final String QA_RESULT = "knowledge-qa-result-v1";
     public static final String RETRIEVAL = "java-rrf60-v1";

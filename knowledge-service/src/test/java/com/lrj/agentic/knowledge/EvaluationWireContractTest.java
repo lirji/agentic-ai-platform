@@ -71,6 +71,36 @@ class EvaluationWireContractTest {
     }
 
     @Test
+    void generationGoldenKeepsLegacyBytesAndRejectsMissingOrMismatchedEvidence() throws Exception {
+        JsonNode golden;
+        try (var stream = getClass().getResourceAsStream("/evaluation-generation-golden.json")) { golden = mapper.readTree(stream); }
+        var input = roundTrip(golden.get("input"), RunModels.RunInput.class);
+        assertThat(input.retrievalStrategy()).isEqualTo("LLAMA_RRF_V1");
+        RunRules.profile(roundTrip(golden.get("profile"), RunModels.Profile.class), input.retrievalStrategy());
+        for (var tree : golden.get("reports")) {
+            var report = roundTrip(tree, RunModels.QuestionReport.class);
+            com.lrj.agentic.knowledge.domain.evaluation.GenerationRunRules.report(input.retrievalStrategy(), report);
+        }
+        for (String mutation : List.of("missing-generation", "missing-component", "wrong-mode", "numeric-boolean", "wrong-hash", "missing-diagnostic")) {
+            ObjectNode report = golden.get("reports").get("answerable").deepCopy();
+            ObjectNode generation = (ObjectNode) report.get("generation");
+            switch (mutation) {
+                case "missing-generation" -> report.remove("generation");
+                case "missing-component" -> ((ObjectNode) generation.get("references").get(0)).remove("jobId");
+                case "wrong-mode" -> ((ObjectNode) generation.get("retrieval")).put("mode", "RERANKED");
+                case "numeric-boolean" -> ((ObjectNode) generation.get("retrieval")).put("degraded", 0);
+                case "wrong-hash" -> ((ObjectNode) generation.get("references").get(0)).put("textHash", "f".repeat(64));
+                default -> generation.putNull("retrieval");
+            }
+            assertThatThrownBy(() -> com.lrj.agentic.knowledge.domain.evaluation.GenerationRunRules.report(input.retrievalStrategy(),
+                    json.input(json.bytes(report), RunModels.QuestionReport.class))).isInstanceOf(KnowledgeFailure.class);
+        }
+        for (var tree : fixture().get("reports")) {
+            assertThat(json.bytes(json.input(json.bytes(tree), RunModels.QuestionReport.class))).isEqualTo(json.bytes(tree));
+        }
+    }
+
+    @Test
     void renamedFieldAndScalarCoercionCannotPassTheContractGate() throws Exception {
         var golden = fixture();
         ObjectNode profile = golden.get("profile").deepCopy();

@@ -39,6 +39,7 @@ class EvaluationDecisionIT {
     @Autowired EvaluationRepository definitions;
     @Autowired EvaluationService definitionsService;
     @Autowired EvaluationJson json;
+    @Autowired GenerationCitationCheck generations;
     @Autowired KnowledgeService knowledge;
     @Autowired LifecycleService lifecycle;
     @Autowired ProcessingRepository processing;
@@ -196,7 +197,7 @@ class EvaluationDecisionIT {
         var last = new Question(UUID.randomUUID().toString(), "未记载的业务额度是多少？", "NO_ANSWER", false, "必须拒答", "", List.of(job.documentId()), List.of());
         var definition = new Definition("评审与比较", "确定性持久化夹具", "MECHANISM", List.of(first, last));
         var dataset = definitionsService.create(owner, "definition", definition);
-        var central = new Central(); var runs = new EvaluationRunService(definitions, definitionsService, reports, central, json);
+        var central = new Central(); var runs = new EvaluationRunService(definitions, definitionsService, reports, central, json, generations);
         return new Harness(owner, job.documentId(), definition, dataset, central, runs,
                 new EvaluationDecisionService(decisions, reports, runs, definitionsService, json));
     }

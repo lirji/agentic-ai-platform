@@ -32,12 +32,15 @@ public final class RunRules {
     }
 
     /** 固定安全模型画像，不接受 URL、任意 route 或过大输出上限。 */
-    public static Profile profile(Profile value) {
+    public static Profile profile(Profile value) { return profile(value, RunProtocol.RETRIEVAL); }
+
+    /** 检索画像绑定不可变策略，不允许恢复时切换实现。 */
+    public static Profile profile(Profile value, String retrieval) {
         require(value != null && value.model() != null && value.model().matches("[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}"));
         require("chat-default".equals(value.route()) && value.maxOutputTokens() != null
                 && value.maxOutputTokens() > 0 && value.maxOutputTokens() <= 1024);
         digest(value.promptDigest());
-        require(RunProtocol.RETRIEVAL.equals(value.retrievalProfile()));
+        require(retrieval.equals(value.retrievalProfile()));
         return value;
     }
 

@@ -20,7 +20,14 @@ from agentic_ai.agents.generation_pipeline import GenerationWorkPipeline
 from agentic_ai.agents.models import WORK_EXECUTION_SECONDS, WORK_GRAPH
 from agentic_ai.agents.pipeline import WorkPipeline
 from agentic_ai.evaluation.client import EvaluationClient, EvaluationPort
-from agentic_ai.evaluation.models import EVALUATION_GRAPH, EXECUTION_SECONDS, GRAPH_STEPS, Profile
+from agentic_ai.evaluation.generation_pipeline import GenerationEvaluationPipeline
+from agentic_ai.evaluation.models import (
+    EVALUATION_GRAPH,
+    EXECUTION_SECONDS,
+    GRAPH_STEPS,
+    GenerationEvaluationInput,
+    Profile,
+)
 from agentic_ai.evaluation.pipeline import EvaluationFailed, EvaluationPipeline, model_profile
 from agentic_ai.qa.chat import ChatClient, ChatPort
 from agentic_ai.qa.chat_budget import ChatBudget
@@ -33,7 +40,7 @@ from agentic_ai.qa.retriever import KnowledgePort
 from agentic_ai.retrieval.client import RetrievalClient
 from agentic_ai.retrieval.consumer import RetrievalUseCase
 from agentic_ai.retrieval.retriever import CandidatePort
-from agentic_ai.retrieval.task_models import QA_GRAPH_V2, WORK_GRAPH_V2
+from agentic_ai.retrieval.task_models import EVALUATION_GRAPH_V2, QA_GRAPH_V2, WORK_GRAPH_V2
 from agentic_ai.tasks.client import CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.execution import MAX_EXECUTION_SECONDS, MAX_GRAPH_STEPS, run_claimed_graph
@@ -119,7 +126,7 @@ async def _run_with_heartbeat(
             pipeline.build,
             before_complete=pipeline.before_complete,
             before_restore=pipeline.before_restore
-            if isinstance(pipeline, (QaPipeline, WorkPipeline))
+            if isinstance(pipeline, (QaPipeline, WorkPipeline, GenerationEvaluationPipeline))
             else None,
             execution_seconds=(
                 EXECUTION_SECONDS
@@ -175,13 +182,25 @@ async def execute_qa_task(
                 )
             else:
                 pipeline = GenerationQaPipeline(binding, central, candidates, chat, retrieval)
-        elif binding.graph_version == EVALUATION_GRAPH:
+        elif binding.graph_version in (EVALUATION_GRAPH, EVALUATION_GRAPH_V2):
             if evaluations is None or profile is None:
                 raise QaError(QaCode.CONFIG_INVALID)
-            opened = await evaluations.open(profile)
-            pipeline = EvaluationPipeline(
-                binding, central, knowledge, chat, evaluations, profile, opened
-            )
+            if binding.graph_version == EVALUATION_GRAPH_V2:
+                if retrieval is None or candidates is None:
+                    raise QaError(QaCode.CONFIG_INVALID)
+                incoming = GenerationEvaluationInput.model_validate_json(json.dumps(binding.input))
+                profile = profile.model_copy(
+                    update={"retrieval_profile": incoming.retrieval_strategy.value}
+                )
+                opened = await evaluations.open(profile)
+                pipeline = GenerationEvaluationPipeline(
+                    binding, central, candidates, chat, evaluations, profile, opened, retrieval
+                )
+            else:
+                opened = await evaluations.open(profile)
+                pipeline = EvaluationPipeline(
+                    binding, central, knowledge, chat, evaluations, profile, opened
+                )
         elif binding.graph_version == WORK_GRAPH:
             if tool_chat is None:
                 raise QaError(QaCode.CONFIG_INVALID)
@@ -338,6 +357,11 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                 ("knowledge-qa-v1", WORK_GRAPH)
                 + ((EVALUATION_GRAPH,) if config.evaluation_private_key is not None else ())
                 + ((QA_GRAPH_V2, WORK_GRAPH_V2) if retrieval is not None else ())
+                + (
+                    (EVALUATION_GRAPH_V2,)
+                    if retrieval is not None and evaluation_key is not None
+                    else ()
+                )
             )
             next_graph = 0
             while not stop.is_set():
@@ -351,7 +375,8 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                 if binding is not None and not stop.is_set():
                     knowledge_type = (
                         RetrievalClient
-                        if binding.graph_version in (QA_GRAPH_V2, WORK_GRAPH_V2)
+                        if binding.graph_version
+                        in (QA_GRAPH_V2, WORK_GRAPH_V2, EVALUATION_GRAPH_V2)
                         else KnowledgeClient
                     )
                     knowledge = knowledge_type.from_file(
@@ -362,7 +387,8 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                     )
                     evaluations = (
                         EvaluationClient(config.knowledge_endpoint, binding, evaluation_key)
-                        if binding.graph_version == EVALUATION_GRAPH and evaluation_key is not None
+                        if binding.graph_version in (EVALUATION_GRAPH, EVALUATION_GRAPH_V2)
+                        and evaluation_key is not None
                         else None
                     )
                     candidates = knowledge if isinstance(knowledge, RetrievalClient) else None

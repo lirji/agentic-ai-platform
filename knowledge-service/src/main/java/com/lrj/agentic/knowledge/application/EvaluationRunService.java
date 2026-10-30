@@ -5,6 +5,9 @@ import static com.lrj.agentic.knowledge.domain.evaluation.EvaluationRules.*;
 import static com.lrj.agentic.knowledge.domain.evaluation.RunModels.*;
 
 import com.lrj.agentic.contract.TaskStatus;
+import com.lrj.agentic.contract.knowledge.GenerationCitationProtocol;
+import com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference;
+import com.lrj.agentic.contract.knowledge.RetrievalStrategy;
 import com.lrj.agentic.knowledge.domain.ContentDigest;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
@@ -13,6 +16,7 @@ import com.lrj.agentic.security.Caller;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +28,28 @@ public class EvaluationRunService {
     private final EvaluationRunRepository runs;
     private final EvaluationTaskGateway tasks;
     private final EvaluationJson json;
+    private final GenerationCitationCheck generations;
 
     /** 固定领域端口，不把框架客户端或 SQL 泄漏到 API。 */
     public EvaluationRunService(EvaluationRepository definitions, EvaluationService evaluations,
-            EvaluationRunRepository runs, EvaluationTaskGateway tasks, EvaluationJson json) {
-        this.definitions = definitions; this.evaluations = evaluations; this.runs = runs; this.tasks = tasks; this.json = json;
+            EvaluationRunRepository runs, EvaluationTaskGateway tasks, EvaluationJson json, GenerationCitationCheck generations) {
+        this.definitions = definitions; this.evaluations = evaluations; this.runs = runs; this.tasks = tasks; this.json = json; this.generations = generations;
     }
 
     /** 同键先恢复原结果，再判断是否能接收新运行。 */
     public RunView start(Caller owner, String key, Start command) {
         Start input = RunRules.start(command);
-        String keyHash = keyHash(key), fingerprint = json.digest(input);
+        return start(owner, key, input, json.digest(input), RetrievalStrategy.LEGACY.code());
+    }
+
+    /** v2策略与受理原子持久化；公共路由须在消费者联合验收后才开放。 */
+    public RunView startGeneration(Caller owner, String key, StartGeneration command) {
+        var input = GenerationRunRules.start(command);
+        return start(owner, key, new Start(input.datasetId(), input.revision(), input.topK()), json.digest(input), input.retrievalStrategy());
+    }
+
+    private RunView start(Caller owner, String key, Start input, String fingerprint, String strategy) {
+        String keyHash = keyHash(key);
         var original = runs.byKey(owner, keyHash);
         if (original.isPresent()) {
             if (!original.get().requestFingerprint().equals(fingerprint)) { throw failure(KnowledgeError.IDEMPOTENCY_CONFLICT); }
@@ -44,7 +59,7 @@ public class EvaluationRunService {
         var definition = evaluations.detail(owner, input.datasetId(), input.revision());
         available(definition);
         require(!definition.definition().questions().isEmpty());
-        return view(owner, runs.create(owner, keyHash, fingerprint, input, definition.summary().definitionDigest()), false);
+        return view(owner, runs.create(owner, keyHash, fingerprint, input, definition.summary().definitionDigest(), strategy), false);
     }
 
     /** 未知创建结果按原键查询；不触发新运行或模型。 */
@@ -76,6 +91,7 @@ public class EvaluationRunService {
         require(command != null && command.expectedTaskRevision() != null && command.expectedTaskRevision() >= 0);
         Run run = reconcile(owner, owned(owner, id));
         available(definition(owner, run));
+        if (run.reportDigest() != null) { checkGenerations(owner, run, confirmed(owner, run).questions()); }
         return view(owner, runs.resume(owner, id, command.expectedTaskRevision()), false);
     }
     /** 手动重试交接沿用原任务身份，无新费用副作用。 */
@@ -96,7 +112,7 @@ public class EvaluationRunService {
         }
         var receipt = manifest.questions().stream().filter(item -> item.questionId().equals(question)).findFirst()
                 .orElseThrow(() -> failure(KnowledgeError.NOT_FOUND));
-        return runs.candidate(owner, id, receipt);
+        return checkedCandidate(owner, run, receipt);
     }
 
     /** 每次接管重新检查中央活跃租约和当前资料，首个 worker 固定模型画像。 */
@@ -105,7 +121,7 @@ public class EvaluationRunService {
         Run run = owned(owner, id);
         active(owner, worker, run, command.taskId(), command.epoch());
         var definition = definition(owner, run); available(definition);
-        run = runs.bindProfile(owner, id, RunRules.profile(command.profile()));
+        run = runs.bindProfile(owner, id, RunRules.profile(command.profile(), run.generation() ? run.summary().retrievalStrategy() : RunProtocol.RETRIEVAL));
         return new Opened(id, run.taskId(), run.summary().datasetId(), run.summary().datasetRevision(),
                 run.summary().definitionDigest(), run.summary().topK(), run.profileDigest(), definition.definition(), definition.bindings());
     }
@@ -122,6 +138,8 @@ public class EvaluationRunService {
         var chunks = command.report().retrieved().stream().map(item -> {
             require(item != null); return digest(item.chunkId());
         }).toList();
+        GenerationRunRules.report(run.summary().retrievalStrategy(), command.report());
+        if (run.generation()) { accessible(owner, command.report().generation().references()); }
         var report = RunRules.report(question, command.report(), definitions.publishedEvidence(owner, chunks));
         require(json.bytes(report).length <= RunProtocol.MAX_REPORT_BYTES);
         return runs.saveCandidate(owner, id, command.epoch(), report);
@@ -134,7 +152,7 @@ public class EvaluationRunService {
         Observation current = active(owner, worker, run, run.taskId(), null);
         require(receipt.epoch() <= current.epoch());
         available(definition(owner, run));
-        return runs.candidate(owner, id, receipt);
+        return checkedCandidate(owner, run, receipt);
     }
 
     /** 清单是成功前缀或完整成功，失败题只能位于最后且必须属于当前执行代次。 */
@@ -151,6 +169,7 @@ public class EvaluationRunService {
             require(receipt != null && questions.get(i).questionId().equals(receipt.questionId()));
             positive(receipt.epoch()); digest(receipt.digest()); require(receipt.epoch() <= epoch);
         }
+        checkGenerations(owner, run, receipts);
         var summaries = runs.summaries(owner, id, receipts);
         for (int i = 0; i < summaries.size(); i++) {
             boolean failed = !command.complete() && i == summaries.size() - 1;
@@ -188,6 +207,8 @@ public class EvaluationRunService {
         ReportSummary report = null;
         if (definition.definition() != null && run.reportDigest() != null) {
             var manifest = confirmed(owner, run);
+            // 人工评审/基线比较都先经过此处，不允许轻量facts投影绕过完整代次核验。
+            checkGenerations(owner, run, manifest.questions());
             var summaries = runs.summaries(owner, run.summary().runId(), manifest.questions());
             int succeeded = (int) summaries.stream().filter(item -> RunProtocol.Outcome.SUCCEEDED.code().equals(item.outcome())).count();
             int failed = summaries.size() - succeeded, planned = definition.summary().questionCount();
@@ -236,8 +257,31 @@ public class EvaluationRunService {
         if (value == null || value.task() == null || value.task().status() == null || value.task().revision() < 0
                 || !owner.tenantId().equals(value.tenantId()) || !owner.userId().equals(value.ownerId())
                 || !run.taskId().equals(value.task().taskId()) || !RunProtocol.KIND.equals(value.task().kind())
-                || !RunProtocol.RUNTIME.equals(value.runtimeVersion()) || !RunProtocol.GRAPH.equals(value.graphVersion())
+                || !RunProtocol.RUNTIME.equals(value.runtimeVersion()) || !run.graph().equals(value.graphVersion())
                 || !run.input().equals(value.input())) { throw failure(KnowledgeError.EVALUATION_TASK_UNAVAILABLE); }
+    }
+    private QuestionReport checkedCandidate(Caller owner, Run run, CandidateReceipt receipt) {
+        var report = runs.candidate(owner, run.summary().runId(), receipt);
+        GenerationRunRules.report(run.summary().retrievalStrategy(), report);
+        if (run.generation()) { accessible(owner, report.generation().references()); }
+        return report;
+    }
+    private void checkGenerations(Caller owner, Run run, List<CandidateReceipt> receipts) {
+        if (!run.generation()) { return; }
+        var references = new LinkedHashSet<Reference>();
+        for (var evidence : runs.generations(owner, run.summary().runId(), receipts)) {
+            GenerationRunRules.evidence(run.summary().retrievalStrategy(), evidence);
+            references.addAll(evidence.references());
+        }
+        accessible(owner, List.copyOf(references));
+    }
+    private void accessible(Caller owner, List<Reference> references) {
+        int size = GenerationCitationProtocol.MAX_REFERENCES;
+        for (int start = 0; start < references.size(); start += size) {
+            if (!generations.accessible(owner, references.subList(start, Math.min(start + size, references.size())))) {
+                throw failure(KnowledgeError.EVALUATION_BINDING_INVALID);
+            }
+        }
     }
     private Run owned(Caller owner, String id) {
         id(id); return runs.get(owner, id).orElseThrow(() -> failure(KnowledgeError.NOT_FOUND));

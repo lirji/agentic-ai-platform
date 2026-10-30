@@ -15,11 +15,18 @@ public final class EvaluationTaskRequests {
     /** 严格限制评测输入，防止运行时或浏览器把任意业务请求混入专用执行图。 */
     public static void validate(Submit command) {
         require(command != null && TaskProtocol.EVALUATION_KIND.equals(command.kind())
-                && TaskProtocol.EVALUATION_GRAPH.equals(command.graphVersion())
+                && (TaskProtocol.EVALUATION_GRAPH.equals(command.graphVersion()) || TaskProtocol.EVALUATION_GRAPH_V2.equals(command.graphVersion()))
                 && TaskProtocol.RUNTIME.equals(command.runtimeVersion()));
         JsonNode input = command.input();
-        fields(input, Set.of("schemaVersion", "runId", "datasetId", "datasetRevision", "definitionDigest", "topK"));
-        require(TaskProtocol.EVALUATION_INPUT.equals(text(input, "schemaVersion")));
+        boolean generation = TaskProtocol.EVALUATION_GRAPH_V2.equals(command.graphVersion());
+        var expected = new HashSet<>(Set.of("schemaVersion", "runId", "datasetId", "datasetRevision", "definitionDigest", "topK"));
+        if (generation) { expected.add("retrievalStrategy"); }
+        fields(input, expected);
+        require((generation ? TaskProtocol.EVALUATION_INPUT_V2 : TaskProtocol.EVALUATION_INPUT).equals(text(input, "schemaVersion")));
+        if (generation) {
+            try { com.lrj.agentic.contract.knowledge.RetrievalStrategy.consumer(text(input, "retrievalStrategy")); }
+            catch (IllegalArgumentException invalid) { require(false); }
+        }
         TaskValues.id(text(input, "runId")); TaskValues.id(text(input, "datasetId"));
         positive(input.get("datasetRevision"));
         require(text(input, "definitionDigest").matches("[0-9a-f]{64}"));

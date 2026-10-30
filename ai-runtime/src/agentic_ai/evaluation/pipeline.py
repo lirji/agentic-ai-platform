@@ -13,11 +13,13 @@ from pydantic import Field, JsonValue
 from agentic_ai.evaluation.client import EvaluationPort
 from agentic_ai.evaluation.metrics import retrieval_metrics
 from agentic_ai.evaluation.models import (
+    LEGACY_RETRIEVAL_PROFILE,
     MAX_QUESTIONS,
     CandidateReceipt,
     Completion,
     Cost,
     EvaluationInput,
+    GenerationEvaluationInput,
     Opened,
     Profile,
     Question,
@@ -53,6 +55,14 @@ class RunSnapshot(EvaluationInput):
     receipts: list[CandidateReceipt] = Field(max_length=MAX_QUESTIONS)
 
 
+class GenerationRunSnapshot(GenerationEvaluationInput):
+    """v2检查点额外冻结策略，仍只保存不可变候选寻址。"""
+
+    next_index: int = Field(ge=0, le=MAX_QUESTIONS)
+    profile_digest: str
+    receipts: list[CandidateReceipt] = Field(max_length=MAX_QUESTIONS)
+
+
 class GraphInput(TypedDict):
     """中央冻结输入原样进入根图。"""
 
@@ -79,12 +89,27 @@ def model_profile(config: ChatConfig) -> Profile:
         route=config.route,
         max_output_tokens=config.max_tokens,
         prompt_digest=sha256(SYSTEM_PROMPT.encode()).hexdigest(),
-        retrieval_profile="java-rrf60-v1",
+        retrieval_profile=LEGACY_RETRIEVAL_PROFILE,
     )
 
 
 class EvaluationPipeline:
     """每题直接复用生产 QA 方法，图只负责顺序、报告与恢复。"""
+
+    input_model: type[EvaluationInput | GenerationEvaluationInput] = EvaluationInput
+    snapshot_model: type[RunSnapshot | GenerationRunSnapshot] = RunSnapshot
+
+    def parse_input(self, value: object) -> EvaluationInput | GenerationEvaluationInput:
+        """输入版本由执行图固定；JSON边界保持严格枚举与类型校验。"""
+        return self.input_model.model_validate_json(json.dumps(value))
+
+    def _knowledge(self, question: Question) -> KnowledgePort:
+        """旧图保持原端口，新图按每题范围创建完整身份适配。"""
+        return self.knowledge
+
+    def _report(self, qa: QaPipeline, report: QuestionReport) -> QuestionReport:
+        """旧报告字节结构不扩充，版本扩展在保存前统一完成。"""
+        return report
 
     def __init__(
         self,
@@ -98,7 +123,7 @@ class EvaluationPipeline:
     ) -> None:
         self.binding, self.central, self.knowledge, self.chat = binding, central, knowledge, chat
         self.evaluations, self.profile, self.opened = evaluations, profile, opened
-        self.input = EvaluationInput.model_validate(binding.input)
+        self.input = self.parse_input(binding.input)
         if (
             opened.run_id != self.input.run_id
             or opened.task_id != binding.task.task_id
@@ -107,6 +132,13 @@ class EvaluationPipeline:
             or opened.definition_digest != self.input.definition_digest
             or opened.top_k != self.input.top_k
         ):
+            raise QaError(QaCode.INPUT_REJECTED)
+        expected_profile = (
+            self.input.retrieval_strategy.value
+            if isinstance(self.input, GenerationEvaluationInput)
+            else LEGACY_RETRIEVAL_PROFILE
+        )
+        if profile.retrieval_profile != expected_profile:
             raise QaError(QaCode.INPUT_REJECTED)
         self.guard = self._qa(opened.definition.questions[0])
 
@@ -124,7 +156,7 @@ class EvaluationPipeline:
         return QaPipeline(
             self.binding,
             self.central,
-            self.knowledge,
+            self._knowledge(question),
             self.chat,
             evaluation_question=independent,
             operation_scope=f"eval:{question.question_id}",
@@ -141,11 +173,13 @@ class EvaluationPipeline:
         if current != self.opened:
             raise QaError(QaCode.EVIDENCE_REJECTED)
 
-    def _snapshot(self, state: dict[str, object]) -> RunSnapshot:
-        snapshot = RunSnapshot.model_validate(state)
+    def _snapshot(self, state: dict[str, object]) -> RunSnapshot | GenerationRunSnapshot:
+        snapshot = self.snapshot_model.model_validate_json(json.dumps(state))
         if (
-            EvaluationInput.model_validate(
-                snapshot.model_dump(include=set(EvaluationInput.model_fields))
+            self.parse_input(
+                snapshot.model_dump(
+                    mode="json", by_alias=True, include=set(self.input_model.model_fields)
+                )
             )
             != self.input
             or snapshot.profile_digest != self.opened.profile_digest
@@ -162,7 +196,7 @@ class EvaluationPipeline:
 
     async def initialize(self, state: GraphState) -> dict[str, object]:
         """首次运行只初始化顺序状态，恢复不会覆盖已有成功前缀。"""
-        if EvaluationInput.model_validate(state) != self.input:
+        if self.parse_input(state) != self.input:
             raise QaError(QaCode.INPUT_REJECTED)
         await self._current()
         return {"nextIndex": 0, "receipts": [], "profileDigest": self.opened.profile_digest}
@@ -236,7 +270,7 @@ class EvaluationPipeline:
             )
             # 只在仍有权限/活跃租约时形成失败报告；失败上报本身未知则由中央接管，不伪造凭据。
             await self._current()
-            failed = await self.evaluations.save(report)
+            failed = await self.evaluations.save(self._report(qa, report))
             manifest = await self.evaluations.manifest(
                 self.opened.profile_digest, False, [*snapshot.receipts, failed]
             )
@@ -257,7 +291,7 @@ class EvaluationPipeline:
             error_code=None,
         )
         await self._current()
-        receipt = await self.evaluations.save(report)
+        receipt = await self.evaluations.save(self._report(qa, report))
         return {
             "nextIndex": snapshot.next_index + 1,
             "receipts": [

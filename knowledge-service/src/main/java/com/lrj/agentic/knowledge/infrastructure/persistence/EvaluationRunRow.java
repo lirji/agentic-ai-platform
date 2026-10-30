@@ -11,6 +11,7 @@ import java.time.Instant;
 @TableName("knowledge_evaluation_run")
 public class EvaluationRunRow {
     @TableId(type = IdType.INPUT) public String runId;
+    public String retrievalStrategy;
     public String tenantId, ownerId, keyHash, requestFingerprint, taskId, datasetId, definitionDigest;
     public long datasetRevision, revision, leaseGeneration, observedRevision;
     public int topK, dispatchAttempts;
@@ -22,7 +23,8 @@ public class EvaluationRunRow {
     /** 列表不暴露命令摘要、租约或完整报告。 */
     public RunSummary summary() {
         return new RunSummary(runId, datasetId, datasetRevision, definitionDigest, topK, revision,
-                dispatchState, cancelRequested, createdAt);
+                dispatchState, cancelRequested, createdAt,
+                com.lrj.agentic.contract.knowledge.RetrievalStrategy.LEGACY.code().equals(retrievalStrategy) ? null : retrievalStrategy);
     }
     /** 存储 JSON 损坏必须报错，不能返回空成功。 */
     public Run domain(EvaluationJson json) {

@@ -43,6 +43,7 @@ public final class TaskProtocol {
     public static final int MAX_EVENT_VALUE = 8 * 1024;
     public static final String GRAPH_V2 = "knowledge-qa-v2";
     public static final String WORK_GRAPH_V2 = "knowledge-work-v2";
+    public static final String EVALUATION_INPUT_V2 = "evaluation-input-v2";
     public static final String EVALUATION_GRAPH_V2 = "knowledge-evaluation-v2";
     public static final String EVIDENCE_V1 = "knowledge-evidence-v1";
     /** 仅用于已持久任务的证据版本判断；受理版本仍由独立入口控制。 */

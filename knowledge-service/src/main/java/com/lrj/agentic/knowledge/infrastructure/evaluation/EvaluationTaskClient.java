@@ -46,7 +46,7 @@ public class EvaluationTaskClient implements EvaluationTaskGateway {
         var headers = headers(owner);
         headers.put("Idempotency-Key", "evaluation-run:" + run.summary().runId());
         var response = http.request("POST", properties.taskEndpoint().resolve(ROOT), headers, json.bytes(
-                new Submit(run.taskId(), RunProtocol.KIND, RunProtocol.RUNTIME, RunProtocol.GRAPH, run.input())));
+                new Submit(run.taskId(), RunProtocol.KIND, RunProtocol.RUNTIME, run.graph(), run.input())));
         accepted(response, HttpStatus.ACCEPTED.value());
         var view = decode(response.body(), TaskView.class);
         if (!run.taskId().equals(view.taskId()) || !RunProtocol.KIND.equals(view.kind())) { throw unavailable(); }

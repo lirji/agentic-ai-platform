@@ -17,17 +17,19 @@
 7. Java全模块156单元PASS（.logs/s11e-java-current-unit.log）；Knowledge7 + Tasks18 + Conversation12真实集成PASS（.logs/s11e-java-foundation-final.log）；后续枚举修正Tasks18复验PASS（s11e-task-enum-retest.log）。Tasks默认关闭门禁/旧可见性回归PASS（含默认关闭新增用例），日志 .logs/s11e-task-gated-final.log、s11e-task-default-gate.log。
 8. Code Hygiene已修复模式硬编码，当前无阻断项，4条数值建议为协议上限；Java无项目格式化器的工具限制保留（.logs/s11e-hygiene-final.json）。首次图schema/枚举JSON边界和会话测试编译失败均已修复并保留日志；不得把旧失败日志误认为最新结果。
 
+9. Evaluation新输入/图和逐题完整身份共享夹具已落地，旧报告序列化逐字节不变；Python新图条件分支schema已修复。当前恢复测试使用内存检查点，尚未将新评测图接入真实PG+中央HTTP联合恢复。
+
 ### 运行与交付边界
 
-- 当前运行仍是S11D固定快照 `01a95560586ee526`，本阶段没有替换运行容器、启用v2公共接口或修改前端；Knowledge/Tasks开发库仍以原运行版本为准。Tasks测试库V5、Conversation测试库V2只涉及隔离测试记录。
+- 当前运行仍是S11D固定快照 `01a95560586ee526`，本阶段没有替换运行容器、启用v2公共接口或修改前端；Knowledge/Tasks开发库仍以原运行版本为准。Knowledge测试库V12、Tasks测试库V5、Conversation测试库V2只涉及隔离测试记录。
 - S11D真实运行/CI证据仍在 `docs/qa/rerank-budget-20261028/`，最后收据mainCI `40834097285` 对应恢复基线7b75c1e；本阶段尚未推main，不把旧CI当新代码证据。
-- 基础实现收据在 `docs/qa/retrieval-consumers-20261028/`；本阶段产品改动尚未提交，正在按可审查逻辑单元保存任务分支提交。旧接入前20项摘要只代表原基线，不代表当前源码。
+- 基础实现收据在 `docs/qa/retrieval-consumers-20261028/`；基础实现已提交bea8c02并推任务分支，CI40976298838三项PASS；尚未合并main。旧接入前20项摘要只代表原基线，不代表当前源码。
 - 日志/临时配置/.local/缓存和原工作树全部保留；没有清理授权。沿backend-implementation、implementation-validation、update-progress-docs和task-git-delivery；采用建模/持久化/接口/并发安全/容量/发布规范。无子Agent，不变更全局MULTI_CLIENT_DRIFT_BLOCKED。
 
 ### 剩余验收与下一步
 
-1. 当前基础验证、实现记录与51项源码摘要已落盘；按用户分批提交规则保存已验证基础实现，S11E保持IN_PROGRESS。
-2. Evaluation v2不可变策略/画像、完整逐题证据与报告读取，保留旧画像/基线摘要；当前尚未实施，不应领取evaluation-v2。
+1. 当前基础实现已按逻辑单元提交bea8c02并推任务分支；CI40976298838文档/Java/Python均PASS，S11E保持IN_PROGRESS。
+2. Evaluation v2核心已实现：Knowledge V12策略、画像绑定、逐题完整证据、批量读取/评审批量核验、Tasks版本领取和Python原生图恢复。真实隔离MySQL22项PASS（EvaluationRunIT8/DecisionIT8/TaskIT4/GenerationTaskIT2，显式-Pintegration，.logs/s11e-evaluation-real-integration-retest.log）；Java157单元、Python532通过/53按配置跳过。首次遗漏integration profile的命令不作为集成证据；首次真实集成因非法processor夹具违反CHECK失败，改用有效撤下故障并保留完整代次负例后通过。详细边界见evaluation-evidence.json；公共入口/运行配置仍未启用。
 3. HTTP进程共用检索单实例、Java公共门面/版本路由与真实策略可用性；Tasks研究v2和Conversation v2公开受理；每进程1、总量2，禁止装配为每进程2。
 4. 前端搜索/问答/研究/评测一致消费，区分请求策略和实际mode；错误、未知提交、刷新、引用、禁用精排与浏览器检查。
 5. 真实PG/HTTP/数据库/双索引联合恢复、同内容重索引/撤权/跨owner、取消/总容量、两仓摘要/容器smoke/CI和正常合并推main。U04只阻断真实重排质量消融，不妨碍其余机制验收。

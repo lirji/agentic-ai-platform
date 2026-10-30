@@ -1,0 +1,115 @@
+{
+  "slice": "S11E",
+  "status": "IN_PROGRESS",
+  "scope": "evaluation v2 core PASS; public/runtime/joint recovery not enabled",
+  "baseline": "bea8c02c95b2cedf09ffd9d2b6924c6deaff7890",
+  "source_inputs": {
+    "ai-runtime/src/agentic_ai/evaluation/client.py": "afed178703db8994b4e3124bcac65b74adad2fdbc3b5d880bbcba3001b081f86",
+    "ai-runtime/src/agentic_ai/evaluation/generation_pipeline.py": "dc970b20c0787a707c6105959604a4388d1fa9c24f45b61d7657480ecd9ac3b3",
+    "ai-runtime/src/agentic_ai/evaluation/models.py": "a659dfc57d65a3bbe376a038ddad41339a4cd0f3735b7e067d150f82b87f5b4a",
+    "ai-runtime/src/agentic_ai/evaluation/pipeline.py": "ed941db35514b9e890f40404130aef191438ca1d5cd5895b6b964cd32e43d858",
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "333ac9a1bc60eb28d8a6aa3695045314ed5b19f774fa5e4a27a52000519d48a1",
+    "ai-runtime/src/agentic_ai/qa/worker.py": "3f48d694c2fa20aae21874b1eb7879f4b55692cc8274d624066a58054de6de35",
+    "ai-runtime/tests/test_generation_evaluation.py": "2c2763e85497587e7db9985e6e030dcc70a3b7cb2532be4c0e7069ba8723dd89",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/EvaluationTaskRequests.java": "56658eb7a19d7ffb1d767e5f222319327e154b8abeda1d4ba60a3421ac28ff6a",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskService.java": "de514fd7f5c5f7a8b177713bfd0dc9e0a724fc40e62e9d2fc0a00eeb65357738",
+    "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskProtocol.java": "c5cecbf4fc460c0b77668d7345114c0a0b2d782d81f89c861a30ff9d526de378",
+    "async-task-service/src/test/java/com/lrj/agentic/task/GenerationEvaluationTaskIT.java": "d94686ac632e08f3c33c095c9295220394870c59b14b6b483088e31af254edab",
+    "ci/check_contract_docs.py": "57ef7f43e17e6d86c432e8a2d95cd788f60b53a053e60ecec74a7bda2d93af67",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationRunService.java": "ea02f8cc57a23ab15565071735823f7b1a6d5ed6dbc9390d04794b92853b6339",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationRunRepository.java": "de7805d9363197973b586ba13d9738f81e3ed03018f455f5300533190712c7ae",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/GenerationRunRules.java": "f4f25a006e547271fd2ebd9f9e6d1487c961a8ca0baa393977f6ac007c288924",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunModels.java": "519d1af6b20b41e43e2bd2399ad4458da1c1e28977196b239ad12c78e63af541",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunProtocol.java": "81ecde03d84eaf18677fc751e09cd26918fd7d54bddbf450acfcc329dd38703d",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/RunRules.java": "2dc4504b86fa00e2163f239b314f6bbdd162a115b8862eda592bc5577c47525b",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/evaluation/EvaluationTaskClient.java": "7daa4b5d8e57287090861b9b4411e977199d0546cee468cc6c55a41b30991431",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationRunMapper.java": "f1628df6159d33f6ac9ec709b467fae23378b8ffaba2e6f4d2bfc84861df4779",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/EvaluationRunRow.java": "c38922ff50ab999a16a464b9fe1af13b5ad0c8e81b94070b9d5ff85c5b64982d",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlEvaluationRunRepository.java": "0a80a8dc5d0e0cb34a5ca5000f6688ba29eee44d4b3bc8218329cb44aa1e832c",
+    "knowledge-service/src/main/resources/db/migration/V12__evaluation_retrieval_strategy.sql": "5e3293ce0f6dfcf2511f0ddaa2f5ea63a7e7b4d5a9747a579bbdb30cadeea47c",
+    "knowledge-service/src/main/resources/mapper/EvaluationRunMapper.xml": "a0d557a143fdfa0029be5c8c9b65567505a95a79b594bd0d9ef55ec213c1eab0",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationDecisionIT.java": "cdb58b999fb5dc6df5a05d7ddb7d3a96fc71fc10c0dadb2b5e5f15db6b8d9aa8",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationRunIT.java": "5d94d60d6b2a1b0979c85e3a7c27877bb6b339101cdf1b781e1ba4a3714adfde",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationWireContractTest.java": "8e467d448fb17c12bdfdf33f11bbc4d73d28c0ca8bcd0732ca2a6016ce10b30e",
+    "knowledge-service/src/test/resources/evaluation-generation-golden.json": "6d0b4225cd5be63cdac645250d0073efc92eab93ad74a9a0e03b7484658f42a6"
+  },
+  "logs": {
+    ".logs/s11e-evaluation-python-all.log": "39d7742eef5083c4b8de48888a8deee10f060bcacb65c57a0796a4f712272d5a",
+    ".logs/s11e-generation-evaluation-final.log": "240b5a8c7a6083ff7515069f0328e630a53372b3669f4ef944b61b074a279c8b",
+    ".logs/s11e-evaluation-java-all-unit.log": "a79b2835a2a8f335fbe3339a93eedb0f5413ff81a76df7caa0f521d4686d2180",
+    ".logs/s11e-evaluation-java-last-unit.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".logs/s11e-evaluation-real-integration-retest.log": "d71c756bb7c103634fc6ecff2f3309351782fcd9ced2a2e058bebb2720a94202",
+    ".logs/s11e-evaluation-hygiene.json": "d5069c9c2ef24d4f7319df92075f11d1265293605da0cf8e5412be629ee5abbb"
+  },
+  "integration": [
+    {
+      "name": "EvaluationRunIT",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "timestamp": null,
+      "sha256": "981b768dd1bc0d50dbfa6ddc40ae89f2cb22d5b5afcad2f94cccc6dd499aa759"
+    },
+    {
+      "name": "EvaluationDecisionIT",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "timestamp": null,
+      "sha256": "1cfa82861b068cd3b14f314e5e5a4b5d66a968325137d4ead2f3b2acebb030d0"
+    },
+    {
+      "name": "EvaluationTaskIT",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "timestamp": null,
+      "sha256": "b5bf6bec0a77c30f6c983673c3f897185d3f4cd645268d1c2b9948f04271ac5c"
+    },
+    {
+      "name": "GenerationEvaluationTaskIT",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "timestamp": null,
+      "sha256": "bf7abeb3e38560025cf4108c54d81edabef65446c3cb551e5f63705d422e9e6f"
+    }
+  ],
+  "checks": {
+    "python": {
+      "passed": 532,
+      "skipped": 53,
+      "warnings": 22
+    },
+    "java_unit": 157,
+    "java_real_integration": 22,
+    "mypy_sources": 69,
+    "ruff_format_files": 107,
+    "code_hygiene": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+    "limitation": "FORMAT_TOOL_NOT_AVAILABLE"
+  },
+  "commands": [
+    "cd ai-runtime && uv run ruff check src tests && uv run ruff format --check src tests && uv run mypy src && uv run pytest -q",
+    "mvn -q test",
+    "mvn -pl knowledge-service,async-task-service -am verify -Pintegration -Dtest=EvaluationWireContractTest,EvaluationRulesTest,ComparisonRulesTest,ReviewRulesTest -Dsurefire.failIfNoSpecifiedTests=false -Dit.test=EvaluationRunIT,EvaluationDecisionIT,EvaluationTaskIT,GenerationEvaluationTaskIT -Dfailsafe.failIfNoSpecifiedTests=false",
+    "python3 ci/check_contract_docs.py"
+  ],
+  "environment": {
+    "database": "project isolated test databases only; Knowledge V12 applied",
+    "runtime": "still S11D immutable snapshot",
+    "model_calls": 0,
+    "agents": "single executor; no independent reviewer"
+  },
+  "invalidated_evidence": [
+    "s11e-evaluation-db/java-current/java-final/java-retest commands omitted integration profile; not integration evidence",
+    "first actual integration failed because synthetic processor metadata violated existing CHECK; replaced with valid withdrawal fixture, retained complete identity negative cases"
+  ],
+  "unverified": [
+    "v2 public routes and real capability gates",
+    "new evaluation graph PG + central HTTP recovery",
+    "same-content reindex of live evaluation report",
+    "browser/four-consumer wiring",
+    "two process total capacity",
+    "real rerank quality U04"
+  ]
+}

@@ -13,7 +13,11 @@ public interface EvaluationRunRepository {
     /** 运行归属先于内容读取。 */
     Optional<Run> get(Caller owner, String runId);
     /** 同键唯一约束处理并发受理。 */
-    Run create(Caller owner, String keyHash, String fingerprint, Start input, String definitionDigest);
+    default Run create(Caller owner, String keyHash, String fingerprint, Start input, String definitionDigest) {
+        return create(owner, keyHash, fingerprint, input, definitionDigest, com.lrj.agentic.contract.knowledge.RetrievalStrategy.LEGACY.code());
+    }
+    /** 策略与任务身份同事务冻结，未知结果按原键恢复。 */
+    Run create(Caller owner, String keyHash, String fingerprint, Start input, String definitionDigest, String strategy);
     /** 轻量元数据分页。 */
     List<RunSummary> list(Caller owner, String datasetId, String after, int limit);
     /** 持久取消意图，不假称跨库已取消。 */
@@ -36,6 +40,8 @@ public interface EvaluationRunRepository {
     QuestionReport candidate(Caller owner, String runId, CandidateReceipt receipt);
     /** 批量读取摘要，不将所有答案装进列表。 */
     List<QuestionSummary> summaries(Caller owner, String runId, List<CandidateReceipt> receipts);
+    /** 精确候选批量读取完整依赖，不加载答案正文。 */
+    List<GenerationEvidence> generations(Caller owner, String runId, List<CandidateReceipt> receipts);
     /** 清单不可变，保存不等于中央确认。 */
     ManifestReceipt saveManifest(Caller owner, Manifest manifest);
     /** 正式报告由被中央接受的摘要寻址。 */

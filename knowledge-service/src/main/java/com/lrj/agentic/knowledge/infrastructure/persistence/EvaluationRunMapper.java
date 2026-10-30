@@ -16,7 +16,7 @@ public interface EvaluationRunMapper extends BaseMapper<EvaluationRunRow> {
     /** 单条持久受理。 */
     int create(@Param("row") EvaluationRunRow row);
     /** 列表只读元数据。 */
-    List<RunSummary> list(@Param("caller") Caller caller, @Param("dataset") String dataset,
+    List<EvaluationRunRow> list(@Param("caller") Caller caller, @Param("dataset") String dataset,
             @Param("after") String after, @Param("limit") int limit);
     /** 控制修订 CAS 与后台字段独立。 */
     int control(@Param("row") EvaluationRunRow row, @Param("expected") long expected);
@@ -36,6 +36,9 @@ public interface EvaluationRunMapper extends BaseMapper<EvaluationRunRow> {
             @Param("receipt") CandidateReceipt receipt);
     /** 批量加载摘要，用精确摘要和代次限定。 */
     List<Stored> summaries(@Param("caller") Caller caller, @Param("id") String id,
+            @Param("receipts") List<CandidateReceipt> receipts);
+    /** JSON提取不会把整份回答带到轮询内存。 */
+    List<Stored> generations(@Param("caller") Caller caller, @Param("id") String id,
             @Param("receipts") List<CandidateReceipt> receipts);
     /** 候选只新增。 */
     int addCandidate(@Param("caller") Caller caller, @Param("id") String id,

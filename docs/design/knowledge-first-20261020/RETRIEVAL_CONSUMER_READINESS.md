@@ -39,3 +39,16 @@
 | 6 文档与交付 | 两仓当前输入摘要、必要Java/Python/前端与容器验证、任务分支正常合并推送、精确CI收据、更新唯一进度入口 |
 
 U04仍只阻断真实重排与质量消融，不阻断已授权的兼容设计和机制实现。原Embedding/chat累计上限各1元不变；不能为补联调重发已完成的真实付费探针或重置账本。用户已于2026-10-29明确取消本次25%额度保留限制，沿已批准范围继续；S11E仍须全部必要验收通过才可标记完成。
+
+## 2026-10-30基础提交后的评测接入核对
+
+基础实现提交后继续核对下一未完成消费者，以下为实施约束而非已实现声明：
+
+- `RunModels.Start/RunInput`、`EvaluationRunRow` 和 `EvaluationRunMapper.xml` 尚无受理策略；不能只放宽 `Profile.retrievalProfile`。策略必须在创建运行时持久，进入指纹和中央input/graph；旧行、旧JSON和摘要保持原样。
+- `RunRules.profile` 只允许java-rrf60-v1；新画像必须与该运行受理策略匹配。`bindProfile` 现有首次固定/后续摘要匹配机制可复用；不得把已存在运行重标为新检索。
+- `RunRules.report` 和 `QuestionReport.retrieved` 只有旧三元组/textHash。新逐题报文需要同时保存完整身份和实际诊断，保持原指标、答案和费用语义；失败前尚未观察到的检索不可伪造EMPTY或0耗时。
+- `EvaluationRunService.question`、内部candidate恢复读取须重验完整代次。`EvaluationDecisionService.context`通过`decisions.facts`直接读取评审/对比投影，不能只修逐题详情；基线选择、人工评审和比较也需要经过同一完整身份核验，否则同内容重索引仍可能保留过期报告的可用性。
+- 当前 `RunSummary` 列表为Mapper直接record映射，新增策略须同步select字段/构造兼容；`EvaluationTaskClient.submit` 和 `EvaluationRunService.matches` 的graph目前固定v1，中央 `EvaluationTaskRequests` 同样仅接受v1。三处需同步，不可先放开worker领取evaluation-v2。
+- Python `EvaluationPipeline`直接复用QA三个阶段，逐题结果存Knowledge、根图只存不可变候选收据。这一恢复边界保留；新路径应复用已完成的统一检索与完整证据校验，继续禁止把模型/HTTP客户端放入PG。不要机械把任务QA的5项中央清单累计成整个100题评测清单，逐题证据由Knowledge报告拥有。
+
+该核对后已完成E02新旧契约/共享夹具及Knowledge→Tasks→Python核心实现，V12仅在隔离测试库应用；真实集成22项PASS。旧画像/报告字节与基线兼容保留；新公共入口和运行开关仍未启用。进入HTTP单实例装配、公共门面/策略可用性和前端，随后真实PG/中央HTTP联合验收。

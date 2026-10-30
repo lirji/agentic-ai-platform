@@ -31,6 +31,9 @@ class EvaluationRunIT {
     @Autowired EvaluationRepository definitions;
     @Autowired EvaluationService definitionsService;
     @Autowired EvaluationJson json;
+    @Autowired GenerationCitationCheck generations;
+    @Autowired com.lrj.agentic.knowledge.domain.retrieval.RetrievalRepository retrieval;
+    @Autowired EvaluationDecisionRepository decisions;
     @Autowired KnowledgeService knowledge;
     @Autowired ProcessingRepository processing;
     @Autowired JdbcTemplate jdbc;
@@ -183,6 +186,86 @@ class EvaluationRunIT {
         assertThat(repository.get(h.owner, id).orElseThrow().reportDigest()).isNull();
     }
 
+    @Test void generationStrategyPersistsAcrossUnknownSubmissionAndCannotChange() {
+        var h = fixture(); String strategy = "LLAMA_RRF_V1";
+        var command = new StartGeneration(h.dataset.datasetId(), 1L, 5, strategy);
+        var view = h.service.startGeneration(h.owner, "new-run", command);
+        var run = repository.get(h.owner, view.summary().runId()).orElseThrow();
+        assertThat(run.input().schemaVersion()).isEqualTo(RunProtocol.GENERATION_INPUT);
+        assertThat(run.input().retrievalStrategy()).isEqualTo(strategy);
+        assertThat(h.service.list(h.owner, h.dataset.datasetId(), 10, null).items().getFirst().retrievalStrategy()).isEqualTo(strategy);
+        assertThat(h.service.startGeneration(h.owner, "new-run", command).summary().runId()).isEqualTo(run.summary().runId());
+        error(KnowledgeError.IDEMPOTENCY_CONFLICT, () -> h.service.startGeneration(h.owner, "new-run",
+                new StartGeneration(h.dataset.datasetId(), 1L, 5, "LLAMA_RERANK_V1")));
+        error(KnowledgeError.IDEMPOTENCY_CONFLICT, () -> h.service.start(h.owner, "new-run", new Start(h.dataset.datasetId(), 1L, 5)));
+        h.central.loseSubmitResponse = true;
+        var claim = repository.claim(h.owner.tenantId(), "dispatch").orElseThrow();
+        error(KnowledgeError.EVALUATION_TASK_UNAVAILABLE, () -> h.service.dispatch(claim));
+        h.service.dispatch(claim); repository.release(claim, true, null);
+        assertThat(h.central.submits).isEqualTo(1);
+        h.central.running(run, 1);
+        error(KnowledgeError.INPUT_INVALID, () -> h.service.open(h.owner, "worker", run.summary().runId(), new Open(run.taskId(), 1L, profile())));
+        h.service.open(h.owner, "worker", run.summary().runId(), new Open(run.taskId(), 1L,
+                new Profile("mechanism-fixture", "chat-default", 512, "a".repeat(64), strategy)));
+    }
+
+    @Test void generationEvidenceIsRequiredForEveryHitAndCheckedOnRecoveryManifestAndPublicRead() {
+        var h = fixture(); String strategy = "LLAMA_RRF_V1";
+        var view = h.service.startGeneration(h.owner, "v2", new StartGeneration(h.dataset.datasetId(), 1L, 5, strategy));
+        var run = repository.get(h.owner, view.summary().runId()).orElseThrow(); String id = run.summary().runId();
+        var claim = repository.claim(h.owner.tenantId(), "dispatch").orElseThrow();
+        h.service.dispatch(claim); repository.release(claim, true, null); h.central.running(run, 1);
+        var opened = h.service.open(h.owner, "worker", id, new Open(run.taskId(), 1L,
+                new Profile("mechanism-fixture", "chat-default", 512, "a".repeat(64), strategy)));
+        var question = h.definition.questions().getFirst();
+        var row = retrieval.published(h.owner, List.of(question.evidence().getFirst().chunkId())).getFirst();
+        var ref = new com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference(row.documentId(), row.version(),
+                row.indexGeneration(), row.jobId(), row.processorVersion(), row.chunkId(), row.batchDigest(), row.textHash());
+        var source = definitions.publishedEvidence(h.owner, List.of(row.chunkId())).getFirst().source();
+        var hit = new Retrieved(row.documentId(), row.version(), row.chunkId(), row.textHash(), 0.01, source);
+        // 失败题仍保存检索依赖；最终正文为空不能绕过全量证据核验。
+        var report = new QuestionReport(question.questionId(), "FAILED", null, List.of(hit), null,
+                new Timing(1L, null, null, 1L), new Cost(null, null, null, null, null), "AI_UNAVAILABLE",
+                new GenerationEvidence(RunProtocol.GENERATION_EVIDENCE, strategy, List.of(ref),
+                        new RetrievalDiagnostic(strategy, RunProtocol.MODE_RRF, false, 1L)));
+        var stale = new com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference(ref.documentId(), ref.version(),
+                ref.indexGeneration() + 1, ref.jobId(), ref.processorVersion(), ref.chunkId(), ref.batchDigest(), ref.textHash());
+        var wrong = new QuestionReport(report.questionId(), report.outcome(), report.result(), report.retrieved(), report.metrics(),
+                report.timing(), report.cost(), report.errorCode(), new GenerationEvidence(RunProtocol.GENERATION_EVIDENCE, strategy,
+                List.of(stale), report.generation().retrieval()));
+        error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> h.service.candidate(h.owner, "worker", id,
+                question.questionId(), new CandidateCommand(run.taskId(), 1L, wrong)));
+        var receipt = h.service.candidate(h.owner, "worker", id, question.questionId(), new CandidateCommand(run.taskId(), 1L, report));
+        assertThat(h.service.candidate(h.owner, "worker", id, receipt)).isEqualTo(report);
+        assertThat(repository.generations(h.owner, id, List.of(receipt))).containsExactly(report.generation());
+        error(KnowledgeError.NOT_FOUND, () -> h.service.question(new Caller(h.owner.tenantId(), "other"), id, question.questionId(), null));
+        var manifest = h.service.manifest(h.owner, "worker", id, 1, new ManifestCommand(run.taskId(), opened.profileDigest(), false, List.of(receipt)));
+        // 撤下当前隔离资料后，恢复候选和形成清单都不能沿用旧权限。
+        jdbc.update("UPDATE knowledge_document SET lifecycle='WITHDRAWN' WHERE document_id=?", row.documentId());
+        try {
+            error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> h.service.candidate(h.owner, "worker", id, receipt));
+            error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> h.service.manifest(h.owner, "worker", id, 1,
+                    new ManifestCommand(run.taskId(), opened.profileDigest(), false, List.of(receipt))));
+        } finally { jdbc.update("UPDATE knowledge_document SET lifecycle='ACTIVE' WHERE document_id=?", row.documentId()); }
+        h.central.terminal(run, TaskStatus.FAILED, new Completion(RunProtocol.COMPLETION, id, 1, manifest.manifestDigest()));
+        assertThat(h.service.question(h.owner, id, question.questionId(), null)).isEqualTo(report);
+        assertThat(h.service.detail(h.owner, id).report()).isNotNull();
+        // 故障注入只替换现时权限判定，证明轻量汇总/人工评审不会绕过同一完整身份检查。
+        var denied = new GenerationCitationCheck(retrieval) {
+            @Override public boolean accessible(Caller owner, List<com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference> refs) {
+                assertThat(refs).containsExactly(ref); return false;
+            }
+        };
+        var blocked = new EvaluationRunService(definitions, definitionsService, repository, h.central, json, denied);
+        error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> blocked.detail(h.owner, id));
+        error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> blocked.question(h.owner, id, question.questionId(), null));
+        error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> blocked.resume(h.owner, id,
+                new ResumeCommand(h.central.inspect(h.owner, run.taskId()).orElseThrow().task().revision())));
+        var reviews = new EvaluationDecisionService(decisions, repository, blocked, definitionsService, json);
+        error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> reviews.reviews(h.owner, id));
+        error(KnowledgeError.INPUT_INVALID, () -> GenerationRunRules.report(strategy, emptySuccess(question)));
+    }
+
     private Harness fixture() {
         Caller owner = new Caller("eval-run-" + UUID.randomUUID(), "alice");
         byte[] source = ("评测机制使用不可变修订、当前授权和真实执行结果。" + UUID.randomUUID()).getBytes(StandardCharsets.UTF_8);
@@ -200,7 +283,7 @@ class EvaluationRunIT {
         var dataset = definitionsService.create(owner, "definition", definition);
         var central = new CentralFixture();
         return new Harness(owner, job.documentId(), definition, dataset, central,
-                new EvaluationRunService(definitions, definitionsService, repository, central, json));
+                new EvaluationRunService(definitions, definitionsService, repository, central, json, generations));
     }
     private Run start(Harness h) {
         var view = h.service.start(h.owner, "run", new Start(h.dataset.datasetId(), 1L, 5));
@@ -248,12 +331,12 @@ class EvaluationRunIT {
             var old = tasks.get(id); assertThat(old.task().revision()).isEqualTo(expected);
             var task = new TaskView(id, RunProtocol.KIND, status, expected + 1, 1, resumes, status == TaskStatus.FAILED,
                     status == TaskStatus.FAILED ? "AI_UNAVAILABLE" : null, proof, proof == null ? null : "b".repeat(64), old.task().createdAt(), Instant.now());
-            tasks.put(id, new Observation(task, old.tenantId(), old.ownerId(), old.input(), RunProtocol.RUNTIME, RunProtocol.GRAPH,
+            tasks.put(id, new Observation(task, old.tenantId(), old.ownerId(), old.input(), RunProtocol.RUNTIME, old.graphVersion(),
                     epoch == null ? old.epoch() : epoch, "worker", Instant.now().plusSeconds(60), null));
         }
         static Observation observation(Run run, Caller owner, TaskStatus status, long revision, long epoch, Completion proof) {
             return new Observation(new TaskView(run.taskId(), RunProtocol.KIND, status, revision, 0, 0, false, null, proof, null, Instant.now(), Instant.now()),
-                    owner.tenantId(), owner.userId(), run.input(), RunProtocol.RUNTIME, RunProtocol.GRAPH, epoch, "worker", Instant.now().plusSeconds(60), null);
+                    owner.tenantId(), owner.userId(), run.input(), RunProtocol.RUNTIME, run.graph(), epoch, "worker", Instant.now().plusSeconds(60), null);
         }
     }
 }

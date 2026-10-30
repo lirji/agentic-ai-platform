@@ -53,7 +53,7 @@ public class MySqlEvaluationRunRepository implements EvaluationRunRepository {
         return access(() -> Optional.ofNullable(mapper.get(owner, id, false)).map(row -> row.domain(json)));
     }
     /** 唯一键冲突先回滚再读获胜请求，不能在 rollback-only 事务中伪装成功。 */
-    @Override public Run create(Caller owner, String keyHash, String fingerprint, Start input, String digest) {
+    @Override public Run create(Caller owner, String keyHash, String fingerprint, Start input, String digest, String strategy) {
         try {
             return tx(() -> {
                 var old = mapper.byKey(owner, keyHash);
@@ -63,7 +63,7 @@ public class MySqlEvaluationRunRepository implements EvaluationRunRepository {
                 row.tenantId = owner.tenantId(); row.ownerId = owner.userId();
                 row.keyHash = keyHash; row.requestFingerprint = fingerprint;
                 row.datasetId = input.datasetId(); row.datasetRevision = input.revision();
-                row.definitionDigest = digest; row.topK = input.topK();
+                row.definitionDigest = digest; row.topK = input.topK(); row.retrievalStrategy = strategy;
                 changed(mapper.create(row));
                 return owned(owner, row.runId, false).domain(json);
             });
@@ -71,9 +71,21 @@ public class MySqlEvaluationRunRepository implements EvaluationRunRepository {
             return access(() -> replay(ownedKey(owner, keyHash), fingerprint));
         } catch (DataAccessException unavailable) { throw failure(KnowledgeError.DATABASE_UNAVAILABLE); }
     }
+    /** SQL只投影完整身份，精确清单缺行或缺身份一律拒绝，避免评审旁路。 */
+    @Override public List<GenerationEvidence> generations(Caller owner, String id, List<CandidateReceipt> receipts) {
+        if (receipts.isEmpty()) { return List.of(); }
+        return access(() -> {
+            var rows = mapper.generations(owner, id, receipts);
+            if (rows.size() != receipts.size() || rows.stream().anyMatch(row -> row.body() == null || "null".equals(row.body()))) {
+                throw failure(KnowledgeError.EVALUATION_BINDING_INVALID);
+            }
+            return rows.stream().map(row -> json.stored(row.body(), GenerationEvidence.class)).toList();
+        });
+    }
+
     /** 元数据页不会装载逐题答案。 */
     @Override public List<RunSummary> list(Caller owner, String dataset, String after, int limit) {
-        return access(() -> mapper.list(owner, dataset, after, limit));
+        return access(() -> mapper.list(owner, dataset, after, limit).stream().map(EvaluationRunRow::summary).toList());
     }
 
     /** 即使中央交接响应丢失也保留取消意图；失败的交接重新开放才能完成取消。 */
