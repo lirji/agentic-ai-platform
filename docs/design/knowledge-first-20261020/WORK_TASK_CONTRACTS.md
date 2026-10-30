@@ -35,3 +35,9 @@ PROGRESS payload 使用 stage=RETRIEVING/ANALYZING/VERIFYING/TOOL_READING，可�
 真实 MySQL/HTTP 验证受理幂等、分页、owner/tenant/权限、非法输入、旧问答兼容；真实 PG+中央与受控模型验证阶段恢复、重复完成、取消/接管、撤权、工具拒绝/次数/时限/预算。使用剩余已授权额度验证真实 DeepSeek 研究与助手结果、引用、空证据和重启重放。前端覆盖两入口、范围选择、提交未知结果重用键、任务列表/详情、事件、取消/恢复、报告/草稿与引用，检查桌面及窄屏截图。受控测试不代替真实模型结果。
 
 依据：[原架构](../platform-selection-20261020/BACKEND_ARCHITECTURE.md)、[T01](TASK_CONTRACTS.md)、[研究准备](RESEARCH_READINESS.md)。API 能力核对参考 [Deep Agents customization](https://docs.langchain.com/oss/python/deepagents/customization)，实际工具组装和关闭行为以本机锁定制品及测试为准。
+
+## S11E：版本化研究受理与历史读取
+
+新增`POST /api/v2/tasks`，在原WorkSubmit五字段上必填`retrievalStrategy`（LLAMA_RRF_V1/LLAMA_RERANK_V1）。复用研究/只读助手kind、mode、限制、taskId和幂等键；规范输入为`knowledge-work-input-v2`，策略进入原指纹，图固定knowledge-work-v2。同键换策略或版本409；总开关task.generation-enabled默认false，未就绪不新增任务，公开请求返回TASK_RETRIEVAL_DISABLED（503）；已知taskId仍可走原GET核对未知结果。
+
+原`GET /api/v1/tasks`与`/{id}/request`读取新旧历史。仅新工作请求增加retrievalStrategy，schemaVersion保持实际持久版本；旧记录不增加null字段，不补代次或改写原JSON。列表、详情、事件与控制仍经完整证据现时核验。关闭新受理不关闭历史读取。公开新入口与QA/评测/检索及worker在联合验收后同组启用；能力目录用于展示可选策略，不把持久请求策略当实际执行模式。

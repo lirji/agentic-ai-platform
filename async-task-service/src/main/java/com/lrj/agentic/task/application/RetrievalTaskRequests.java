@@ -20,7 +20,7 @@ public final class RetrievalTaskRequests {
         Set<String> expected = qa ? Set.of("schemaVersion", "conversationId", "turnId", "question", "documentIds", "contextTurnId", "contextTaskId", "contextQuestion", "retrievalStrategy")
                 : Set.of("schemaVersion", "kind", "question", "documentIds", "mode", "retrievalStrategy");
         var actual = new HashSet<String>(); input.fieldNames().forEachRemaining(actual::add); require(actual.equals(expected));
-        require((qa ? "knowledge-qa-input-v2" : "knowledge-work-input-v2").equals(input.path("schemaVersion").asText()));
+        require((qa ? "knowledge-qa-input-v2" : TaskProtocol.WORK_INPUT_V2).equals(input.path("schemaVersion").asText()));
         try { RetrievalStrategy.consumer(input.path("retrievalStrategy").asText()); }
         catch (IllegalArgumentException invalid) { throw new TaskFailure(TaskError.INPUT_INVALID); }
         text(input.path("question"));

@@ -85,6 +85,14 @@ public class TaskService {
                 TaskProtocol.WORK_GRAPH, values.read(values.write(input))));
     }
 
+    /** 新研究受理仍进入原短事务，默认关闭避免任务进入未装配的执行器。 */
+    public View submitGenerationWork(Caller owner, String key, GenerationWorkSubmit command) {
+        var input = WorkRequests.validateGeneration(command);
+        require(generationEnabled, TaskError.RETRIEVAL_DISABLED);
+        return submit(owner, key, new Submit(command.taskId(), input.kind(), TaskProtocol.RUNTIME,
+                TaskProtocol.WORK_GRAPH_V2, values.read(values.write(input))));
+    }
+
     /** 输入只对原所有者开放，问答内部输入不通过本入口暴露。 */
     public WorkInput request(Caller owner, String id) {
         long deadline = TaskKnowledgeVisibility.deadline();
@@ -112,8 +120,12 @@ public class TaskService {
     }
 
     private WorkInput workInput(TaskRow row) {
-        require(TaskProtocol.WORK_GRAPH.equals(row.graphVersion()), TaskError.NOT_FOUND);
-        return values.read(row.inputJson(), WorkInput.class);
+        boolean generation = TaskProtocol.WORK_GRAPH_V2.equals(row.graphVersion());
+        require(generation || TaskProtocol.WORK_GRAPH.equals(row.graphVersion()), TaskError.NOT_FOUND);
+        var input = values.read(row.inputJson(), WorkInput.class);
+        require((generation ? TaskProtocol.WORK_INPUT_V2 : TaskProtocol.WORK_INPUT).equals(input.schemaVersion()), TaskError.NOT_FOUND);
+        require(generation == (input.retrievalStrategy() != null), TaskError.NOT_FOUND);
+        return input;
     }
 
     /** 公共查询在 SQL 中联合过滤所有者和租户，不返回执行内部材料。 */

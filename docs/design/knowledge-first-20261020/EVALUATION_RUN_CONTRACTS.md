@@ -89,3 +89,5 @@ QuestionReport：`questionId,outcome,result,retrieved,metrics,timing,cost,errorC
 - retrieval诊断严格为strategy/mode/degraded/elapsedMs；degraded必须Boolean false，mode只允许与策略相符的RRF/RERANKED或EMPTY。成功题必须有诊断；EMPTY当且仅当references为空。检索完成前失败可为null且references为空；后续生成失败仍保存已完成检索的全部证据和诊断。不得把失败伪装EMPTY或伪精排。指标与原金标匹配规则不变。
 - Knowledge保存候选前核验所有完整引用及原内容/指标约束。恢复候选、提交清单、公开详情/逐题报告、人工评审与基线比较统一核验现时完整代次；同内容重索引也使旧代次不可用，不退回三元组。权限/代次失效沿EVALUATION_BINDING_INVALID处理。摘要读取只批量提取精确候选中的generation，不把百道答案加载到轮询。单次完整引用核验最多20项、总题数仍100。
 - 根图仍只保存逐题不可变收据，已保存成功题恢复不重新检索/调用模型；不把100题的证据累加进Tasks QA五项清单。不新增模型预算。新旧共享夹具须验证旧摘要未漂移、策略/诊断不匹配及缺失身份拒绝。
+
+公开v2受理复用knowledge.retrieval.enabled默认false总开关；关闭后新运行返回KNOWLEDGE_RETRIEVAL_DISABLED（503），已持久同键先按原策略返回回执，仍校验指纹冲突。原v1历史、回执、报告和控制路由继续服务新旧运行，不把历史策略升级。

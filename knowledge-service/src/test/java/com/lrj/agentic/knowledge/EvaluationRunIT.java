@@ -198,6 +198,10 @@ class EvaluationRunIT {
         error(KnowledgeError.IDEMPOTENCY_CONFLICT, () -> h.service.startGeneration(h.owner, "new-run",
                 new StartGeneration(h.dataset.datasetId(), 1L, 5, "LLAMA_RERANK_V1")));
         error(KnowledgeError.IDEMPOTENCY_CONFLICT, () -> h.service.start(h.owner, "new-run", new Start(h.dataset.datasetId(), 1L, 5)));
+        var closed = new EvaluationRunService(definitions, definitionsService, repository, h.central, json, generations, false);
+        assertThat(closed.startGeneration(h.owner, "new-run", command).summary().runId()).isEqualTo(run.summary().runId());
+        error(KnowledgeError.RETRIEVAL_DISABLED, () -> closed.startGeneration(h.owner, "closed-new", command));
+        error(KnowledgeError.NOT_FOUND, () -> closed.receipt(h.owner, "closed-new"));
         h.central.loseSubmitResponse = true;
         var claim = repository.claim(h.owner.tenantId(), "dispatch").orElseThrow();
         error(KnowledgeError.EVALUATION_TASK_UNAVAILABLE, () -> h.service.dispatch(claim));
@@ -256,7 +260,7 @@ class EvaluationRunIT {
                 assertThat(refs).containsExactly(ref); return false;
             }
         };
-        var blocked = new EvaluationRunService(definitions, definitionsService, repository, h.central, json, denied);
+        var blocked = new EvaluationRunService(definitions, definitionsService, repository, h.central, json, denied, true);
         error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> blocked.detail(h.owner, id));
         error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> blocked.question(h.owner, id, question.questionId(), null));
         error(KnowledgeError.EVALUATION_BINDING_INVALID, () -> blocked.resume(h.owner, id,
@@ -283,7 +287,7 @@ class EvaluationRunIT {
         var dataset = definitionsService.create(owner, "definition", definition);
         var central = new CentralFixture();
         return new Harness(owner, job.documentId(), definition, dataset, central,
-                new EvaluationRunService(definitions, definitionsService, repository, central, json, generations));
+                new EvaluationRunService(definitions, definitionsService, repository, central, json, generations, true));
     }
     private Run start(Harness h) {
         var view = h.service.start(h.owner, "run", new Start(h.dataset.datasetId(), 1L, 5));

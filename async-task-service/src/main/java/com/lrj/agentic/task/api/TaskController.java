@@ -34,6 +34,11 @@ public class TaskController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public View submitWork(@AuthenticationPrincipal Jwt jwt, @RequestHeader("Idempotency-Key") String key,
             @Valid @RequestBody WorkSubmit command) { return tasks.submitWork(JwtTrust.caller(jwt), key, command); }
+    /** 独立版本路由冻结检索策略，原v1受理语义保持不变。 */
+    @PostMapping("/api/v2/tasks")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public View submitGenerationWork(@AuthenticationPrincipal Jwt jwt, @RequestHeader("Idempotency-Key") String key,
+            @Valid @RequestBody GenerationWorkSubmit command) { return tasks.submitGenerationWork(JwtTrust.caller(jwt), key, command); }
     /** 列表范围与游标所有权由数据库谓词和应用校验共同约束。 */
     @GetMapping("/api/v1/tasks")
     public WorkPage listWork(@AuthenticationPrincipal Jwt jwt, @RequestParam String kind,

@@ -1,5 +1,24 @@
 package com.lrj.agentic.task;
 
+import com.lrj.agentic.security.IdentityProtocol;
+import com.lrj.agentic.security.JwtTrust;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.io.Resource;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+
 import static org.assertj.core.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +56,58 @@ class TaskPersistenceIT {
     @Autowired JdbcTemplate jdbc;
     @Autowired com.lrj.agentic.task.api.TaskController controller;
     @Autowired org.springframework.context.ApplicationContext context;
+
+    @LocalServerPort int httpPort;
+    @Value("${task.identity.edge-public-key}") Resource httpPublic;
+    @Value("${INTERNAL_PRIVATE_KEY}") Resource httpPrivate;
+
+    @Test void generationWorkPublicApiPreservesStrategyAndOldHistoryBytes() throws Exception {
+        var owner = owner(); String id = UUID.randomUUID().toString();
+        String body = json.writeValueAsString(new GenerationWorkSubmit(id, "RESEARCH", "研究当前资料", List.of(), "REPORT", "LLAMA_RRF_V1"));
+        var created = http("POST", "/api/v2/tasks", owner, "task:write", "gen-work", body);
+        assertThat(created.statusCode()).isEqualTo(202);
+        assertThat(json.readTree(created.body()).path("taskId").asText()).isEqualTo(id);
+        assertThat(http("POST", "/api/v2/tasks", owner, "task:write", "gen-work", body).statusCode()).isEqualTo(202);
+        assertThat(http("POST", "/api/v2/tasks", owner, "task:write", "gen-work", body.replace("LLAMA_RRF_V1", "LLAMA_RERANK_V1")).statusCode()).isEqualTo(409);
+        assertThat(http("POST", "/api/v1/tasks", owner, "task:write", "gen-work",
+                json.writeValueAsString(new WorkSubmit(id, "RESEARCH", "研究当前资料", List.of(), "REPORT"))).statusCode()).isEqualTo(409);
+        var request = json.readTree(http("GET", "/api/v1/tasks/" + id + "/request", owner, "task:read", null, null).body());
+        assertThat(request.path("schemaVersion").asText()).isEqualTo(TaskProtocol.WORK_INPUT_V2);
+        assertThat(request.path("retrievalStrategy").asText()).isEqualTo("LLAMA_RRF_V1");
+        var legacy = tasks.submitWork(owner, "old-work", new WorkSubmit(UUID.randomUUID().toString(), "RESEARCH", "旧输入", List.of(), "REPORT"));
+        assertThat(json.readTree(http("GET", "/api/v1/tasks/" + legacy.taskId() + "/request", owner, "task:read", null, null).body()).has("retrievalStrategy")).isFalse();
+        assertThat(tasks.listWork(owner, "RESEARCH", null, 20).items()).hasSize(2);
+        assertThat(http("GET", "/api/v1/tasks/" + id + "/request", new Caller(owner.tenantId(), "different"), "task:read", null, null).statusCode()).isEqualTo(404);
+        assertThat(http("POST", "/api/v2/tasks", owner, "task:read", "forbidden", body).statusCode()).isEqualTo(403);
+        assertThat(http("POST", "/api/v2/tasks", null, "", "anonymous", body).statusCode()).isEqualTo(401);
+        for (String invalid : List.of(body.replace("LLAMA_RRF_V1", "JAVA_RRF_LEGACY"),
+                body.replace("\"retrievalStrategy\":\"LLAMA_RRF_V1\"", "\"ownerId\":\"forged\""),
+                body.replace("\"研究当前资料\"", "123"), body.replace("{", "{\"question\":\"duplicate\","))) {
+            assertThat(http("POST", "/api/v2/tasks", owner, "task:write", "bad", invalid).statusCode()).as(invalid).isEqualTo(400);
+        }
+        assertThat(tasks.claim(worker(owner, "old-worker"), new Claim(TaskProtocol.RUNTIME, TaskProtocol.WORK_GRAPH)).task().task().taskId()).isEqualTo(legacy.taskId());
+        assertThat(tasks.claim(worker(owner, "new-worker"), new Claim(TaskProtocol.RUNTIME, TaskProtocol.WORK_GRAPH_V2)).task().task().taskId()).isEqualTo(id);
+    }
+
+    private HttpResponse<String> http(String method, String path, Caller owner, String scope, String key, String body) throws Exception {
+        var builder = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + httpPort + path))
+                .timeout(Duration.ofSeconds(10)).header("Content-Type", "application/json");
+        if (owner != null) {
+            var keyPair = new RSAKey.Builder(JwtTrust.publicKey(httpPublic))
+                    .privateKey(JwtTrust.privateKey(httpPrivate)).build();
+            var signer = new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(keyPair)));
+            var now = java.time.Instant.now();
+            var claims = JwtClaimsSet.builder().issuer(IdentityProtocol.INTERNAL_ISSUER)
+                    .audience(List.of(IdentityProtocol.TASK_AUDIENCE)).subject(owner.userId())
+                    .issuedAt(now).expiresAt(now.plusSeconds(30)).claim("tenant_id", owner.tenantId()).claim("scope", scope).build();
+            var jwt = signer.encode(JwtEncoderParameters.from(
+                    JwsHeader.with(SignatureAlgorithm.RS256).build(), claims));
+            builder.header(IdentityProtocol.INTERNAL_HEADER, jwt.getTokenValue());
+        }
+        if (key != null) builder.header("Idempotency-Key", key);
+        return HttpClient.newHttpClient().send(builder.method(method, body == null
+                ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(body)).build(), HttpResponse.BodyHandlers.ofString());
+    }
 
     @Test
     void workSubmissionCanonicalScopeAndGraphIsolation() {

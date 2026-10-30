@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -20,11 +21,13 @@ public class ConversationService {
     private final ConversationValues values;
     private final TaskGateway tasks;
     private final TransactionTemplate tx;
+    private final boolean generationEnabled;
 
     /** 使用短事务和显式身份；不会读取其他领域的业务库。 */
     public ConversationService(ConversationMapper mapper, ConversationValues values, TaskGateway tasks,
-            PlatformTransactionManager manager) {
+            PlatformTransactionManager manager, @Value("${conversation.generation-enabled:false}") boolean generationEnabled) {
         this.mapper = mapper; this.values = values; this.tasks = tasks;
+        this.generationEnabled = generationEnabled;
         tx = new TransactionTemplate(manager);
         tx.setTimeout(5);
     }
@@ -76,6 +79,8 @@ public class ConversationService {
         requireConversation(owner, conversationId);
         var replay = mapper.turnByKey(owner, conversationId, keyHash);
         if (replay != null) { same(replay.requestHash(), requestHash); return values.view(replay); }
+        // 已受理同键仍可恢复；关闭新受理不改写历史，也不能新增分派账本。
+        require(strategy == RetrievalStrategy.LEGACY || generationEnabled, ConversationError.RETRIEVAL_DISABLED);
         TurnRow context = context(owner, conversationId, request, strategy);
         return Objects.requireNonNull(tx.execute(ignored -> {
             var conversation = mapper.lockConversation(owner, conversationId);

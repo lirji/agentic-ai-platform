@@ -49,7 +49,7 @@ public class KnowledgeSecurity {
                                 "/api/v1/knowledge/ingestions/*/retry",
                                 "/api/v1/knowledge/evaluations/datasets",
                                 "/api/v1/knowledge/evaluations/datasets/*/revisions",
-                                "/api/v1/knowledge/evaluations/runs",
+                                "/api/v1/knowledge/evaluations/runs", "/api/v2/knowledge/evaluations/runs",
                                 "/api/v1/knowledge/evaluations/runs/*/cancel",
                                 "/api/v1/knowledge/evaluations/runs/*/resume",
                                 "/api/v1/knowledge/evaluations/runs/*/dispatch",

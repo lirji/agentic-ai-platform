@@ -11,11 +11,11 @@ spring:
             - id: conversations
               uri: ${CONVERSATION_SERVICE_URL:http://127.0.0.1:28088}
               predicates:
-                - Path=/api/v1/conversations,/api/v1/conversations/**
+                - Path=/api/v1/conversations,/api/v1/conversations/**,/api/v2/conversations/*/turns
             - id: tasks
               uri: ${TASK_SERVICE_URL:http://127.0.0.1:28087}
               predicates:
-                - Path=/api/v1/tasks/**
+                - Path=/api/v1/tasks/**,/api/v2/tasks
             - id: knowledge-search-v2
               uri: ${KNOWLEDGE_SERVICE_URL:http://127.0.0.1:28084}
               predicates:

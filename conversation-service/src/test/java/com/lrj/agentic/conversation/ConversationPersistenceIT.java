@@ -1,5 +1,24 @@
 package com.lrj.agentic.conversation;
 
+import com.lrj.agentic.security.IdentityProtocol;
+import com.lrj.agentic.security.JwtTrust;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.io.Resource;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+
 import static org.assertj.core.api.Assertions.*;
 
 import com.lrj.agentic.contract.TaskStatus;
@@ -22,13 +41,70 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /** 真实 MySQL 验证事务/锁/约束；中央协议替身仅用于确定性故障，真实 HTTP 另行验收。 */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
-        "management.server.port=0", "conversation.worker-enabled=false", "spring.main.banner-mode=off"})
+        "management.server.port=0", "conversation.worker-enabled=false", "conversation.generation-enabled=true", "spring.main.banner-mode=off"})
 @Import(ConversationPersistenceIT.Dependencies.class)
 class ConversationPersistenceIT {
     @Autowired ConversationService conversations;
     @Autowired DispatchService dispatch;
     @Autowired JdbcTemplate jdbc;
     @Autowired CentralScenario central;
+
+    @Autowired com.fasterxml.jackson.databind.ObjectMapper json;
+    @Autowired org.springframework.context.ApplicationContext context;
+    @LocalServerPort int httpPort;
+    @Value("${conversation.edge-public-key}") Resource httpPublic;
+    @Value("${INTERNAL_PRIVATE_KEY}") Resource httpPrivate;
+
+    @Test void generationPublicHttpKeepsVersionedStrategyAndClosedGateReplaysOnlyExistingTurns() throws Exception {
+        var owner = owner(); var conversation = conversations.create(owner, "new-http", new Create("HTTP策略"));
+        String path = "/api/v2/conversations/" + conversation.conversationId() + "/turns";
+        var command = new AskGeneration(0L, "新版问题", List.of(), null, "LLAMA_RRF_V1");
+        String body = json.writeValueAsString(command);
+        var accepted = http("POST", path, owner, "conversation:write", "same", body);
+        assertThat(accepted.statusCode()).isEqualTo(202);
+        var turn = json.readValue(accepted.body(), Turn.class);
+        assertThat(turn.retrievalStrategy()).isEqualTo("LLAMA_RRF_V1");
+        assertThat(http("POST", path, owner, "conversation:write", "same", body).body()).isEqualTo(accepted.body());
+        assertThat(http("POST", path, owner, "conversation:write", "same", body.replace("LLAMA_RRF_V1", "LLAMA_RERANK_V1")).statusCode()).isEqualTo(409);
+        assertThat(http("GET", "/api/v1/conversations/" + conversation.conversationId() + "/turns/" + turn.turnId(), owner, "conversation:read", null, null).statusCode()).isEqualTo(200);
+        assertThat(http("POST", path, owner, "conversation:read", "denied", body).statusCode()).isEqualTo(403);
+        assertThat(http("POST", path, null, "", "anonymous", body).statusCode()).isEqualTo(401);
+        assertThat(http("POST", path, new Caller(owner.tenantId(), "foreign"), "conversation:write", "foreign", body).statusCode()).isEqualTo(404);
+        for (String invalid : List.of(body.replace("LLAMA_RRF_V1", "JAVA_RRF_LEGACY"),
+                body.replace("\"retrievalStrategy\":\"LLAMA_RRF_V1\"", "\"ownerId\":\"forged\""),
+                body.replace("\"新版问题\"", "123"), body.replace("{", "{\"question\":\"duplicate\","))) {
+            assertThat(http("POST", path, owner, "conversation:write", "invalid", invalid).statusCode()).isEqualTo(400);
+        }
+        var closed = new ConversationService(context.getBean(com.lrj.agentic.conversation.infrastructure.ConversationMapper.class),
+                context.getBean(ConversationValues.class), context.getBean(TaskGateway.class),
+                context.getBean(org.springframework.transaction.PlatformTransactionManager.class), false);
+        assertThat(closed.askGeneration(owner, conversation.conversationId(), "same", command).turnId()).isEqualTo(turn.turnId());
+        error(ConversationError.RETRIEVAL_DISABLED, () -> closed.askGeneration(owner, conversation.conversationId(), "new",
+                new AskGeneration(1L, "拒绝新受理", List.of(), null, "LLAMA_RRF_V1")));
+        assertThat(conversations.turns(owner, conversation.conversationId(), 0, 20).items()).hasSize(1);
+        var old = closed.ask(owner, conversation.conversationId(), "legacy", new Ask(1L, "旧入口", List.of(), null));
+        assertThat(json.readTree(json.writeValueAsString(old)).has("retrievalStrategy")).isFalse();
+    }
+
+    private HttpResponse<String> http(String method, String path, Caller owner, String scope, String key, String body) throws Exception {
+        var builder = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + httpPort + path))
+                .timeout(Duration.ofSeconds(10)).header("Content-Type", "application/json");
+        if (owner != null) {
+            var keyPair = new RSAKey.Builder(JwtTrust.publicKey(httpPublic))
+                    .privateKey(JwtTrust.privateKey(httpPrivate)).build();
+            var signer = new NimbusJwtEncoder(new ImmutableJWKSet<>(new JWKSet(keyPair)));
+            var now = java.time.Instant.now();
+            var claims = JwtClaimsSet.builder().issuer(IdentityProtocol.INTERNAL_ISSUER)
+                    .audience(List.of(IdentityProtocol.CONVERSATION_AUDIENCE)).subject(owner.userId())
+                    .issuedAt(now).expiresAt(now.plusSeconds(30)).claim("tenant_id", owner.tenantId()).claim("scope", scope).build();
+            var jwt = signer.encode(JwtEncoderParameters.from(
+                    JwsHeader.with(SignatureAlgorithm.RS256).build(), claims));
+            builder.header(IdentityProtocol.INTERNAL_HEADER, jwt.getTokenValue());
+        }
+        if (key != null) builder.header("Idempotency-Key", key);
+        return HttpClient.newHttpClient().send(builder.method(method, body == null
+                ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(body)).build(), HttpResponse.BodyHandlers.ofString());
+    }
 
     @Test
     void generationStrategyIsDurableAndUnknownDispatchReplaysOriginalInput() {

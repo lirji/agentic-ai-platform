@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.StreamReadConstraints;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.cfg.CoercionAction;
+import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
+import com.fasterxml.jackson.databind.type.LogicalType;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +22,14 @@ public class TaskJson {
                         JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
                 .featuresToDisable(MapperFeature.ALLOW_COERCION_OF_SCALARS,
                         DeserializationFeature.ACCEPT_FLOAT_AS_INT)
-                .postConfigurer(mapper -> mapper.getFactory().setStreamReadConstraints(
-                        StreamReadConstraints.builder().maxNestingDepth(32).maxStringLength(65536)
-                                .maxNumberLength(128).build()));
+                .postConfigurer(mapper -> {
+                    mapper.getFactory().setStreamReadConstraints(StreamReadConstraints.builder().maxNestingDepth(32)
+                            .maxStringLength(65536).maxNumberLength(128).build());
+                    // 与会话边界相同，不能把JSON数字/布尔问题强制转换成用户原文。
+                    mapper.coercionConfigFor(LogicalType.Textual)
+                            .setCoercion(CoercionInputShape.Integer, CoercionAction.Fail)
+                            .setCoercion(CoercionInputShape.Float, CoercionAction.Fail)
+                            .setCoercion(CoercionInputShape.Boolean, CoercionAction.Fail);
+                });
     }
 }

@@ -30,7 +30,7 @@
 
 1. 当前基础bea8c02及评测70a33c0已按逻辑单元提交推送；评测CI40978201919三项PASS，继续公共门面装配，S11E保持IN_PROGRESS。
 2. Evaluation v2核心已实现：Knowledge V12策略、画像绑定、逐题完整证据、批量读取/评审批量核验、Tasks版本领取和Python原生图恢复。真实隔离MySQL22项PASS（EvaluationRunIT8/DecisionIT8/TaskIT4/GenerationTaskIT2，显式-Pintegration，.logs/s11e-evaluation-real-integration-retest.log）；Java157单元、Python532通过/53按配置跳过。首次遗漏integration profile的命令不作为集成证据；首次真实集成因非法processor夹具违反CHECK失败，改用有效撤下故障并保留完整代次负例后通过。详细边界见evaluation-evidence.json；公共入口/运行配置仍未启用。
-3. 公共门面逻辑单元已实现并专项PASS，待正常提交推送/CI：Java164单元、5项真实HTTP（默认关闭2/启用1/原评测2）；Python全量549通过/53默认跳过，追加正文读取耗时测试后HTTP专项18通过；Ruff/format110/mypy71通过。金标/契约7份12夹具通过；最后HttpStatus枚举调整后7项Java协议复验通过。Spring构造器装配回归、URN测试读取及代码卫生硬编码已修复；Code Hygiene无阻断，Java格式化器工具限制保留。证据search-http-evidence.json。下一步提交该单元并核对CI，然后新增Tasks研究v2和Conversation/Evaluation v2公开受理；勿提前启用运行开关。真实Python服务↔Java回调闭环尚未验收。HTTP预算沿旧账本且缺配置拒绝启动，每进程1、总量2。
+3. 公共门面逻辑单元6b35d0a已正常提交推送，CI40980734552三项PASS：Java164单元、5项真实HTTP（默认关闭2/启用1/原评测2）；Python全量549通过/53默认跳过，追加正文读取耗时测试后HTTP专项18通过；Ruff/format110/mypy71通过。金标/契约7份12夹具通过；最后HttpStatus枚举调整后7项Java协议复验通过。Spring构造器装配回归、URN测试读取及代码卫生硬编码已修复；Code Hygiene无阻断，Java格式化器工具限制保留。证据search-http-evidence.json。后续公开受理实现已通过当前验证、待提交CI：Tasks /api/v2/tasks、Conversation /api/v2/conversations/{id}/turns、Evaluation /api/v2/knowledge/evaluations/runs，网关路由/受众及默认关闭门禁。研究历史保留旧JSON、只为新输入追加策略。165单元和56项真实HTTP/DB回归PASS，工作跨版本冲突断言与测试导入整理后32项复验PASS；代码卫生无阻断，Java格式化器限制保留。证据public-consumer-evidence.json；新评测启用状态完整HTTP留待联合验证。所有验证命令已结束，无模型调用。下一步提交推送该单元，然后前端四消费者接入与联合运行验收；勿提前启用开关。真实Python服务↔Java回调闭环尚未验收。HTTP预算沿旧账本且缺配置拒绝启动，每进程1、总量2。
 4. 前端搜索/问答/研究/评测一致消费，区分请求策略和实际mode；错误、未知提交、刷新、引用、禁用精排与浏览器检查。
 5. 真实PG/HTTP/数据库/双索引联合恢复、同内容重索引/撤权/跨owner、取消/总容量、两仓摘要/容器smoke/CI和正常合并推main。U04只阻断真实重排质量消融，不妨碍其余机制验收。
 

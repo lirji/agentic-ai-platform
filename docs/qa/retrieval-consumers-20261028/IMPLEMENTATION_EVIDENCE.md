@@ -29,3 +29,10 @@
 - Java复用既有Knowledge→Python签名角色，新门面独立1个HTTP许可；候选回调原语容量不被父请求占用。返回前重新核对完整代次、正文及来源；变化统一409，不外泄远端错误信息或候选原始分数。
 - 实际ASGI、共享金标、真实环回传输、Spring默认关闭/启用HTTP与MySQL拒绝未发布证据均通过；启用测试的Python端为协议替身，尚未完成真实Python服务与Java回调闭环。没有修改当前容器或开关。
 - 此阶段修复了构造器扩展导致的Spring装配回归，保留失败日志；代码卫生仅剩Java格式化器不可用限制，两处数值建议已为协议常量。详见search-http-evidence.json。
+
+## 问答、研究、评测公开受理增量
+
+- 新v2路由复用原服务持久事务、指纹与分派账本，显式冻结策略；QA使用conversation.generation-enabled，研究使用task.generation-enabled，评测沿knowledge.retrieval.enabled，均默认false。QA/评测同键恢复优先于关闭检查，新提交才被门禁拒绝。
+- 研究请求历史共用原读接口，只有新schema携带retrievalStrategy；旧JSON没有额外null策略。中央读取仍先核验完整生成依赖，旧图worker不能领取新工作图。
+- 网关新路由按Conversation/Tasks/Knowledge归属换发受众并清除外来身份头；新增入口沿原write权限。Tasks原JSON配置未拒绝数字转文本的问题已收紧到现有会话规则，不影响合法旧请求。
+- 真实HTTP/DB56项及165单元通过，补充跨版本幂等断言后Tasks19/Conversation13复验通过；评测启用状态的完整公开HTTP受理留待联合运行验证，未冒称全消费者链路已完成。详见public-consumer-evidence.json。

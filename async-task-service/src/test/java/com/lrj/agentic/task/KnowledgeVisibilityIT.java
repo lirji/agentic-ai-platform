@@ -37,6 +37,10 @@ class KnowledgeVisibilityIT {
                 new Claim(TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2)));
         error(TaskError.INPUT_INVALID, () -> tasks.submit(owner, "closed-v2", new Submit(UUID.randomUUID().toString(),
                 TaskProtocol.KIND, TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2, json.createObjectNode())));
+        String blocked = UUID.randomUUID().toString();
+        error(TaskError.RETRIEVAL_DISABLED, () -> tasks.submitGenerationWork(owner, "closed-public", new GenerationWorkSubmit(
+                blocked, "RESEARCH", "新版研究", List.of(), "REPORT", "LLAMA_RRF_V1")));
+        error(TaskError.NOT_FOUND, () -> tasks.get(owner, blocked));
         assertThat(run(owner, false).graphVersion()).isEqualTo(TaskProtocol.GRAPH);
     }
 

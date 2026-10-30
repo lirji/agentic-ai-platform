@@ -19,10 +19,12 @@ import java.util.List;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 /** 评测用例连接定义、短事务账本与中央凭据；网络调用始终在事务外。 */
 @Service
 public class EvaluationRunService {
+    private final boolean generationEnabled;
     private final EvaluationRepository definitions;
     private final EvaluationService evaluations;
     private final EvaluationRunRepository runs;
@@ -32,7 +34,9 @@ public class EvaluationRunService {
 
     /** 固定领域端口，不把框架客户端或 SQL 泄漏到 API。 */
     public EvaluationRunService(EvaluationRepository definitions, EvaluationService evaluations,
-            EvaluationRunRepository runs, EvaluationTaskGateway tasks, EvaluationJson json, GenerationCitationCheck generations) {
+            EvaluationRunRepository runs, EvaluationTaskGateway tasks, EvaluationJson json, GenerationCitationCheck generations,
+            @Value("${knowledge.retrieval.enabled:false}") boolean generationEnabled) {
+        this.generationEnabled = generationEnabled;
         this.definitions = definitions; this.evaluations = evaluations; this.runs = runs; this.tasks = tasks; this.json = json; this.generations = generations;
     }
 
@@ -54,6 +58,10 @@ public class EvaluationRunService {
         if (original.isPresent()) {
             if (!original.get().requestFingerprint().equals(fingerprint)) { throw failure(KnowledgeError.IDEMPOTENCY_CONFLICT); }
             return view(owner, original.get(), false);
+        }
+        // 同键回执已在上方处理；关闭新路径不妨碍恢复既有运行。
+        if (!RetrievalStrategy.LEGACY.code().equals(strategy) && !generationEnabled) {
+            throw failure(KnowledgeError.RETRIEVAL_DISABLED);
         }
         if (!tasks.enabled()) { throw failure(KnowledgeError.EVALUATION_TASK_UNAVAILABLE); }
         var definition = evaluations.detail(owner, input.datasetId(), input.revision());

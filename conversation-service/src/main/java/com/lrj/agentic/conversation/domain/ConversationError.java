@@ -4,6 +4,7 @@ import com.lrj.agentic.contract.ErrorCode;
 
 /** 会话模块复用平台错误协议，提示中不带原问题、密钥或依赖正文。 */
 public enum ConversationError implements ErrorCode {
+    RETRIEVAL_DISABLED("CONVERSATION_RETRIEVAL_DISABLED", "新版检索问答尚未开放，请稍后重试。", 503),
     INPUT_INVALID("CONVERSATION_INPUT_INVALID", "会话请求格式不正确。", 400),
     NOT_FOUND("CONVERSATION_NOT_FOUND", "会话或问题不存在，或当前身份不可见。", 404),
     IDEMPOTENCY_CONFLICT("CONVERSATION_IDEMPOTENCY_CONFLICT", "重复请求内容不一致，请核对原请求。", 409),

@@ -79,4 +79,4 @@
 
 新入口`POST /api/v2/conversations/{id}/turns`在原Ask字段上强制增加`retrievalStrategy`（LLAMA_RRF_V1/LLAMA_RERANK_V1），权限、限制、幂等键作用域与原Q01一致。Conversation V2仅追加retrieval_strategy列，旧记录默认JAVA_RRF_LEGACY；旧v1输入/指纹/中央graph保持原样。新策略与规范Ask在同一受理事务固定并进入指纹，同键不同策略或跨v1/v2复用409。分派从持久行重建knowledge-qa-input-v2和knowledge-qa-v2，不读取全局默认；未知响应仍重放同一taskId、输入和键。
 
-Turn对新问题额外返回retrievalStrategy，旧问题不增加此字段；它只表示请求策略，实际执行模式从Tasks v2结果读取。上下文必须同输入版本家族：新问题只关联成功v2问题，两个新策略之间可以关联；旧问题只关联v1，跨家族CONVERSATION_CONTEXT_INVALID。前文完整生成依赖由worker按Tasks清单协议重验并继承，前端不能把三元组旧引用补成新代次。新入口仅在消费者联合验收后启用，现阶段仅实施持久能力。
+Turn对新问题额外返回retrievalStrategy，旧问题不增加此字段；它只表示请求策略，实际执行模式从Tasks v2结果读取。上下文必须同输入版本家族：新问题只关联成功v2问题，两个新策略之间可以关联；旧问题只关联v1，跨家族CONVERSATION_CONTEXT_INVALID。前文完整生成依赖由worker按Tasks清单协议重验并继承，前端不能把三元组旧引用补成新代次。新入口受conversation.generation-enabled默认false约束，联合验收后同组启用；关闭只阻止新问题，已受理同键仍恢复原回执，旧读写入口不改策略。公开失败码CONVERSATION_RETRIEVAL_DISABLED（503），不新增分派账本。

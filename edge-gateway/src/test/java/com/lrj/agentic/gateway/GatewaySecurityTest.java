@@ -33,6 +33,34 @@ class GatewaySecurityTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test void versionedConsumerRoutesReceiveOnlyTheirOwnAudienceAndNoBrowserIdentityHeaders() {
+        var claims = new java.util.concurrent.atomic.AtomicReference<org.springframework.security.oauth2.jwt.JwtClaimsSet>();
+        org.springframework.security.oauth2.jwt.JwtEncoder encoder = parameters -> {
+            claims.set(parameters.getClaims());
+            return org.springframework.security.oauth2.jwt.Jwt.withTokenValue("internal-signed")
+                    .header("alg", "RS256").claims(c -> c.putAll(parameters.getClaims().getClaims())).build();
+        };
+        var properties = new IdentityProperties("issuer", "audience", "tenant_id", null, null, null);
+        var filter = new InternalIdentityExchange(encoder, properties, new GatewayErrors(new com.fasterxml.jackson.databind.ObjectMapper()));
+        for (var route : java.util.Map.of("/api/v2/tasks", "agentic-ai-tasks", "/api/v1/tasks/id", "agentic-ai-tasks",
+                "/api/v2/conversations/id/turns", "agentic-ai-conversation", "/api/v1/conversations/id", "agentic-ai-conversation",
+                "/api/v2/knowledge/evaluations/runs", "agentic-ai-knowledge").entrySet()) {
+            var external = org.springframework.security.oauth2.jwt.Jwt.withTokenValue("external").header("alg", "RS256")
+                    .subject("alice").claim("tenant_id", "tenant").claim("scope", "task:write").build();
+            var exchange = org.springframework.mock.web.server.MockServerWebExchange.from(
+                    org.springframework.mock.http.server.reactive.MockServerHttpRequest.post(route.getKey())
+                            .header("Authorization", "Bearer external").header("X-Internal-Token", "forged").header("X-User-Id", "victim"))
+                    .mutate().principal(reactor.core.publisher.Mono.just(new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(external))).build();
+            filter.filter(exchange, downstream -> {
+                org.assertj.core.api.Assertions.assertThat(downstream.getRequest().getHeaders().getFirst("X-Internal-Token")).isEqualTo("internal-signed");
+                org.assertj.core.api.Assertions.assertThat(downstream.getRequest().getHeaders()).doesNotContainKeys("Authorization", "X-User-Id");
+                return reactor.core.publisher.Mono.empty();
+            }).block(java.time.Duration.ofSeconds(1));
+            org.assertj.core.api.Assertions.assertThat(claims.get().getAudience()).containsExactly(route.getValue());
+            org.assertj.core.api.Assertions.assertThat(claims.get().getSubject()).isEqualTo("alice");
+        }
+    }
+
     private static KeyPair keys() throws Exception {
         var generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(2048);

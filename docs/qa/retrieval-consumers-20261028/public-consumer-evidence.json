@@ -1,0 +1,137 @@
+{
+  "slice": "S11E",
+  "status": "IN_PROGRESS",
+  "scope": "versioned consumer public acceptance and legacy history compatibility",
+  "baseline": "6b35d0abb4b94fc01d6d3d34e1a226eaf80038fd",
+  "source_inputs": {
+    "async-task-service/src/main/java/com/lrj/agentic/task/api/TaskController.java": "bfc21a62901b5e4d38d1f5b1ad29cd4ed941ea5c1963636e8c2d5188ce998be7",
+    "async-task-service/src/main/java/com/lrj/agentic/task/api/TaskDtos.java": "478274e54e040dc7c8c0e2d1a1bf204070601494d9689a3bee4f867611af285d",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/RetrievalTaskRequests.java": "880dc624b13313d4057c95cb602a436abb6248ae9c3931842af0ada12649f1e5",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskService.java": "0befb00708ddd0bcfc699bc5176bf0340917a0c0bb8faaf4d60666c3c893676a",
+    "async-task-service/src/main/java/com/lrj/agentic/task/application/WorkRequests.java": "22f8a1de28f4830022acb654aaff5e2c05040fbe6077ced7c687778c814bc658",
+    "async-task-service/src/main/java/com/lrj/agentic/task/config/TaskJson.java": "d8bc7dbb2b21c05285124785e34184caac4545078c8ed7279a4a1ef624266f38",
+    "async-task-service/src/main/java/com/lrj/agentic/task/config/TaskSecurity.java": "3a093da040dddee079f3cb249bc2296c847c5ddf3dcfb205c77b3deebd7d53f9",
+    "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskError.java": "42bb62fc51800f84e41bb5783e87e030aef91be8406120121f1503b18c937b22",
+    "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskProtocol.java": "d0130c6e8951dfc4c8cc8068ebd9d252ad50381b786a9deaf65efbb9c09af6fa",
+    "async-task-service/src/main/resources/application.yml": "d729f191e4e3406ec1f9c71ba52fd78d4c5ae55e83d15121f4a41cd3d5f1fa12",
+    "async-task-service/src/test/java/com/lrj/agentic/task/KnowledgeVisibilityIT.java": "f082f0ec16899eabc0c7039cf12dc4d0cd10c2c7ed4fc2a99914e318bc0a95b7",
+    "async-task-service/src/test/java/com/lrj/agentic/task/TaskPersistenceIT.java": "e060858f4d5d535774896e026f3f039f5dca05a8367924038e780c80fd5093f6",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/api/GenerationConversationController.java": "92b7666c883a50edee309000cf505cae8f8fc951a4c989ee9545caea8043dc9d",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/application/ConversationService.java": "a09f1d3423c8274a83c11bd3eea60d9b1b6ccc81158ce781f5bd4ce7d02cd821",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/config/ConversationSecurity.java": "430e8ced8e37e6809f86daaf72290f52866512a2b83267086763733985558b13",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationError.java": "554f8e7453e851d79a4d30571569bc85a8ebf65f3416c397b16d372fa1cc0b78",
+    "conversation-service/src/main/resources/application.yml": "d03cb1e7e2d3be42ba43e0d52b6afcde2cf54abb35d85c3da556155d5bb3b141",
+    "conversation-service/src/test/java/com/lrj/agentic/conversation/ConversationPersistenceIT.java": "d1a5c4985be03414b72b1ef9926cba3eeb6a4e0e76dcec59cd9697c314631cc6",
+    "edge-gateway/src/main/java/com/lrj/agentic/gateway/GatewaySecurity.java": "bc137ee2a8a88290584f0ddbcc64ebf6eddccd26da4bcda4b3b636620873c629",
+    "edge-gateway/src/main/java/com/lrj/agentic/gateway/InternalIdentityExchange.java": "31cd2fc1c87f3defb1c5ebc19529bc002281e6572122e38e3938a83b2c8d3eea",
+    "edge-gateway/src/main/resources/application.yml": "01b7d61517f7a7239afd3653df596ee784db46bcc2df3853de7b879a02ec8c63",
+    "edge-gateway/src/test/java/com/lrj/agentic/gateway/GatewaySecurityTest.java": "3f1c48c3c67a6072f2ceae8472496bc13531e45eb898ab5548a4498a0526d685",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/GenerationEvaluationController.java": "7c1cfe661d7f38e37cfe0b79fd3cdc6aa33cedd2069efc2753ece6f2de762723",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/EvaluationRunService.java": "1af8fcacee665a84a9133897f1422b3de0831ca22b89206c9b5a0ec05f49de15",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/KnowledgeSecurity.java": "728a9b019f94f982faca2ae0b835f7e349d402e08fc770f7760cbb6e73893732",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationDecisionIT.java": "c1edbacaef898b94d4cac4b7194151b39e7228e275b8419e509ad81521987a6b",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationHttpIT.java": "17392e792796b5d391b839eb6195c6780ef86c4db7234f430d211dfbd2c117ed",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/EvaluationRunIT.java": "e2cf81857f2924889ba1aed669955058a697d8d7d255f15ebc16325858fbe9de"
+  },
+  "logs": {
+    ".logs/s11e-public-consumers-integration.log": "70fec0c7f3915ce7c81371f62f97f68dbb05e308e0a8ff27dc712d1af977ccf5",
+    ".logs/s11e-public-consumers-final.log": "37053ac4ed5d00c58972194e037bc6580a16c74993e8451979f4f78c923f5112",
+    ".logs/s11e-public-consumers-hygiene.json": "271ca644668c6ec3750be1147513a7b389a12f77394c2dc7d540b25ffb95c219"
+  },
+  "integration": [
+    {
+      "name": "EvaluationRunIT",
+      "tests": 8,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:43:47.627889+00:00",
+      "sha256": "661345102a45a7b9217311c63b1bc46dddbe0753186f4870d3235b9151450563"
+    },
+    {
+      "name": "EvaluationDecisionIT",
+      "tests": 8,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:43:52.112770+00:00",
+      "sha256": "0415638ae5de57ffd10995ca802cb234d1effd42eabe1163a711d97014ce38e0"
+    },
+    {
+      "name": "EvaluationHttpIT",
+      "tests": 3,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:43:44.300603+00:00",
+      "sha256": "655d5bc66db742b1b58322e80ae42c9b73fadc8deac2148cc6b6aaeb128e7db9"
+    },
+    {
+      "name": "ConversationPersistenceIT",
+      "tests": 13,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:45:25.396160+00:00",
+      "sha256": "0939baf004468f76e79ce2f7e883bb753710aeca09f85a09d318d344cf19c427"
+    },
+    {
+      "name": "TaskPersistenceIT",
+      "tests": 19,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:45:18.599518+00:00",
+      "sha256": "8b5e96a265d14fd19c9b7156d8170dbc597a20c04e045166468b6fcf62a50bc6"
+    },
+    {
+      "name": "KnowledgeVisibilityIT",
+      "tests": 5,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:43:58.544455+00:00",
+      "sha256": "07d069a1a7b6782b7d238c437741f63e6bd89adce04463f30114b2911fcc69c4"
+    }
+  ],
+  "checks": {
+    "java_full_unit": 165,
+    "real_http_database": 56,
+    "subsequent_tasks_conversation_retest": 32,
+    "hygiene": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS; Java formatter not configured",
+    "contracts": "7 documents/12 fixtures PASS"
+  },
+  "commands": [
+    "mvn -q verify -Pintegration -Dit.test=TaskPersistenceIT,KnowledgeVisibilityIT,ConversationPersistenceIT,EvaluationRunIT,EvaluationDecisionIT,EvaluationHttpIT -Dfailsafe.failIfNoSpecifiedTests=false",
+    "mvn -q -pl async-task-service,conversation-service -am verify -Pintegration -Dtest=TaskValuesTest,ConversationJsonTest -Dsurefire.failIfNoSpecifiedTests=false -Dit.test=TaskPersistenceIT,ConversationPersistenceIT -Dfailsafe.failIfNoSpecifiedTests=false",
+    "python3 ci/check_contract_docs.py"
+  ],
+  "review": {
+    "executor": "single executor; no independent reviewer",
+    "corrected_failures": [
+      "new test accessed Claimed/Lease wrapper at wrong depth; compiler caught and corrected"
+    ],
+    "covered": [
+      "QA/work public Spring HTTP signed identities and write scopes",
+      "durable strategy and same-key strategy/version conflicts",
+      "new work history exposes stored strategy; legacy serialized input omits null",
+      "QA/evaluation gate closure permits existing replay but rejects new writes",
+      "Tasks gate disabled leaves no record",
+      "gateway signs correct audience and removes external identity headers",
+      "Tasks rejects numeric/Boolean text coercion per established contract"
+    ],
+    "unchanged": [
+      "all persisted v1 strategy meanings and fingerprints",
+      "existing schema migrations",
+      "running containers and feature activation"
+    ]
+  },
+  "unverified": [
+    "new evaluation public enabled HTTP acceptance in complete joint runtime (positive durable service and default-off HTTP verified separately)",
+    "frontend four-consumer flow",
+    "new native graphs PG + central HTTP restore",
+    "runtime activation/two process capacity/container/browser",
+    "real rerank quality U04"
+  ],
+  "model_calls": 0
+}

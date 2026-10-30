@@ -86,9 +86,27 @@ class EvaluationHttpIT {
         assertThat(request("GET", "/datasets?cursor=malformed", owner, null, null, false).statusCode()).isEqualTo(400);
     }
 
+    @Test void generationAdmissionIsClosedByDefaultAndRequiresOriginalWriteScope() throws Exception {
+        String tenant = "eval-v2-http-" + UUID.randomUUID();
+        String body = json.writeValueAsString(new com.lrj.agentic.knowledge.domain.evaluation.RunModels.StartGeneration(
+                UUID.randomUUID().toString(), 1L, 5, "LLAMA_RRF_V1"));
+        String path = "/api/v2/knowledge/evaluations/runs";
+        var closed = requestAt("POST", path, token(tenant, "alice", "knowledge:write"), "new-v2", body, false);
+        assertThat(closed.statusCode()).isEqualTo(503);
+        assertThat(json.readTree(closed.body()).path("code").asText()).isEqualTo("KNOWLEDGE_RETRIEVAL_DISABLED");
+        assertThat(requestAt("POST", path, token(tenant, "alice", "knowledge:read"), "new-v2", body, false).statusCode()).isEqualTo(403);
+        assertThat(requestAt("POST", path, null, "new-v2", body, false).statusCode()).isEqualTo(401);
+        assertThat(requestAt("POST", path, token(tenant, "alice", "knowledge:write"), "new-v2", body.replace("LLAMA_RRF_V1", "JAVA_RRF_LEGACY"), false).statusCode()).isEqualTo(400);
+    }
+
     private HttpResponse<String> request(String method, String path, String token, String key, String body, boolean chunked)
             throws Exception {
-        var builder = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + EvaluationProtocol.ROOT + path))
+        return requestAt(method, EvaluationProtocol.ROOT + path, token, key, body, chunked);
+    }
+
+    private HttpResponse<String> requestAt(String method, String path, String token, String key, String body, boolean chunked)
+            throws Exception {
+        var builder = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
                 .timeout(Duration.ofSeconds(15)).header("Content-Type", "application/json");
         if (token != null) { builder.header(IdentityProtocol.INTERNAL_HEADER, token); }
         if (key != null) { builder.header("Idempotency-Key", key); }

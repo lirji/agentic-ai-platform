@@ -13,8 +13,17 @@ public final class TaskDtos {
             @NotNull String runtimeVersion, @NotNull String graphVersion, @NotNull JsonNode input) { }
     public record WorkSubmit(@NotNull String taskId, @NotNull String kind, @NotNull String question,
             @NotNull List<String> documentIds, @NotNull String mode) { }
+    /** 新受理强制持久策略，仍复用原研究/只读助手限制。 */
+    public record GenerationWorkSubmit(@NotNull String taskId, @NotNull String kind, @NotNull String question,
+            @NotNull List<String> documentIds, @NotNull String mode, @NotNull String retrievalStrategy) { }
     public record WorkInput(String schemaVersion, String kind, String question, List<String> documentIds,
-            String mode) { }
+            String mode, @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+            String retrievalStrategy) {
+        /** 旧JSON不追加null策略，保证旧指纹与持久输入字节不变。 */
+        public WorkInput(String schemaVersion, String kind, String question, List<String> documentIds, String mode) {
+            this(schemaVersion, kind, question, documentIds, mode, null);
+        }
+    }
     public record WorkItem(View task, WorkInput request) { }
     public record WorkPage(List<WorkItem> items, String nextCursor) { }
     public record Revision(@NotNull @Min(0) Long expectedRevision) { }
