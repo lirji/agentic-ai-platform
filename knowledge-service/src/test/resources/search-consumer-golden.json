@@ -1,0 +1,82 @@
+{
+  "protocol": "knowledge-search-v2",
+  "input": {
+    "schemaVersion": "knowledge-search-input-v2",
+    "query": "核验当前资料",
+    "documentIds": null,
+    "topK": 5,
+    "strategy": "LLAMA_RRF_V1"
+  },
+  "result": {
+    "schemaVersion": "knowledge-search-result-v2",
+    "strategy": "LLAMA_RRF_V1",
+    "mode": "RRF",
+    "degraded": false,
+    "elapsedMs": 1,
+    "hits": [
+      {
+        "rank": 1,
+        "identity": {
+          "documentId": "00000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "00000000-0000-4000-8000-000000000001",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "batchDigest": "1111111111111111111111111111111111111111111111111111111111111111",
+          "textHash": "2ebf1a822035a51933f7a84bdfda9b4dce2f5df6f6681e30ccb0fc4a3deaad38"
+        },
+        "text": "同一正文不能合并不同资料。",
+        "source": {
+          "displayName": "资料a",
+          "locator": "utf8-bytes:0-39"
+        },
+        "rrfScore": 0.032266458495966696,
+        "rerankScore": null,
+        "routes": [
+          "VECTOR",
+          "KEYWORD"
+        ]
+      },
+      {
+        "rank": 2,
+        "identity": {
+          "documentId": "00000000-0000-4000-8000-000000000002",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "00000000-0000-4000-8000-000000000002",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "batchDigest": "2222222222222222222222222222222222222222222222222222222222222222",
+          "textHash": "2ebf1a822035a51933f7a84bdfda9b4dce2f5df6f6681e30ccb0fc4a3deaad38"
+        },
+        "text": "同一正文不能合并不同资料。",
+        "source": {
+          "displayName": "资料b",
+          "locator": "utf8-bytes:0-39"
+        },
+        "rrfScore": 0.032266458495966696,
+        "rerankScore": null,
+        "routes": [
+          "VECTOR",
+          "KEYWORD"
+        ]
+      }
+    ]
+  },
+  "capabilities": {
+    "schemaVersion": "knowledge-retrieval-capabilities-v1",
+    "strategies": [
+      {
+        "strategy": "LLAMA_RRF_V1",
+        "available": true,
+        "reasonCode": null
+      },
+      {
+        "strategy": "LLAMA_RERANK_V1",
+        "available": false,
+        "reasonCode": "RETRIEVAL_RERANK_DISABLED"
+      }
+    ]
+  }
+}

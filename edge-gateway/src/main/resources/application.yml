@@ -16,6 +16,12 @@ spring:
               uri: ${TASK_SERVICE_URL:http://127.0.0.1:28087}
               predicates:
                 - Path=/api/v1/tasks/**
+            - id: knowledge-search-v2
+              uri: ${KNOWLEDGE_SERVICE_URL:http://127.0.0.1:28084}
+              predicates:
+                - Path=/api/v2/knowledge/search
+              metadata:
+                response-timeout: 35000
             - id: knowledge-search
               uri: ${KNOWLEDGE_SERVICE_URL:http://127.0.0.1:28084}
               predicates:

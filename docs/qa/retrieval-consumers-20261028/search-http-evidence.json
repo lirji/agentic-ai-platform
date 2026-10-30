@@ -1,0 +1,124 @@
+{
+  "slice": "S11E",
+  "status": "IN_PROGRESS",
+  "scope": "versioned public search facade PASS; activation/four-consumer joint release pending",
+  "baseline": "70a33c0c145453cb41bdceb089111fecbeeb1c36",
+  "source_inputs": {
+    "ai-runtime/src/agentic_ai/api/app.py": "4e87f33ddc83ab980b61f46a2c135a464bbe57db5b5505209f6cf0c30cd11a38",
+    "ai-runtime/src/agentic_ai/api/retrieval.py": "bd26fc5dacbcb650a2db56bf2072b37493bf5fb77b8f927b404c3dda44a214fe",
+    "ai-runtime/src/agentic_ai/qa/knowledge.py": "ba3e4f7788db4135254292a6e1547b9e55782a9c004dd0c621aba266c7bfd584",
+    "ai-runtime/src/agentic_ai/runtime/retrieval_config.py": "5581ef8095411de581d944fb667075adecd78ad19c65b01e364e4d94f5a44d19",
+    "ai-runtime/tests/test_retrieval_http.py": "235b1b7b1e95a1a2e64a9a2445ef8b117e386f76f543dbe7205f05da02a9f433",
+    "ci/check_contract_docs.py": "dcf61badc19973afa558599f4b5b7b6aa37172d25f47fdd109a8fd1241583a3d",
+    "edge-gateway/src/main/resources/application.yml": "41cb7b76d0e440be72bc75fd4fcd8fa09872dc707c12b90ed9f39f3a6d1041c9",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/ConsumerRetrievalController.java": "c50a265e37efabe5700adab1210b724c82633d858b1fe01c8f82d6b145b91a4b",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/ConsumerKnowledgeSearch.java": "cf1a466f01a784f4958918df42bdf4eaec8fdc4e3f82f55f54b19e11bfc140d8",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/KnowledgeSecurity.java": "9ce786c9d47bd22d6e590def05b45654c1394574e6348642f73447d0d48b12ca",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeError.java": "342fd47c499b77607b106a4a55e8378e18ac3c507e61b88c8a01cf8a00d1f84b",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/retrieval/ConsumerRetrieval.java": "e50ee329262a746f682380361f5401d79b31461a3830fa431c33f468fbdb650a",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/BoundedHttp.java": "2a6943a705ccabcdd70f5527b27325e458f8256fcc216056650490aa63435c3c",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/PythonConsumerRetrieval.java": "5a9c9164900d286cf8cac4784dbdd04316ac058b680a3ba598948c534a65bd15",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/PythonKnowledgeProcessor.java": "3322f687ecf7dca9ea361bddb73b364d509cadfebd6a80e712b42cf09c43fbbd",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/PythonServiceIdentity.java": "8430b3779302672e247dd022ec8a5df360f80d35bf792096b464e8226f6f14cd",
+    "knowledge-service/src/main/resources/application.yml": "1d466289fdc05c2df25290825623e62af97a1e250d597f544192f0660c5563c5",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/ConsumerRetrievalEnabledHttpIT.java": "a948f364e4e36dd1abded29114058f4622554a45d4670d3f3d875872323bbec3",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/ConsumerRetrievalHttpIT.java": "509ebd9f75ff91ad9013229ef5307455bca12e2cde90ed9425a8c4e4bfc8acb4",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/ConsumerRetrievalTest.java": "3bc53fdc59ab482232bc9b70d136470bfa3c03c40efe06896a4ff98b66a771f3",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/PythonConsumerRetrievalTest.java": "7b0879803fe02e5021c3f9de60cf5b8456a7c183af83f670a05b3fdfc6cc27cd",
+    "knowledge-service/src/test/resources/search-consumer-golden.json": "0f05e17e34a5710c3578f256509f269449f076e342dfc25209f196b07307f382"
+  },
+  "logs": {
+    ".logs/s11e-http-assembly-tests.log": "2b6d789a9fe126b2d223d457445fc2d4b9ea5266eba0972282bf54cd306335f2",
+    ".logs/s11e-http-golden.log": "6833a6348a5b437d1f813d49e131c39731f411016ffa6e30cdeae8a98bb00bcf",
+    ".logs/s11e-http-python-all.log": "cb96f2a92b0e8a0dab3b3175af3dab7d9f7b9445d66e09af78dbeb3c70caad87",
+    ".logs/s11e-http-final-focused.log": "d813f1aa8d50161528baf618f053feaeede577ce4f03da3f613040475dcdf32e",
+    ".logs/s11e-http-java-all.log": "1fae79f1650f6ac50f5c370c42d34e710d524fa1b5bbca6923c744a266631c7c",
+    ".logs/s11e-http-java-final-focused.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".logs/s11e-http-hygiene-final.json": "1a3cc4576c09bcda9689b2f049bb99ab436f7a9721ce6565bfb926ee4b215115"
+  },
+  "integration": [
+    {
+      "name": "ConsumerRetrievalHttpIT",
+      "tests": 2,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:34:11.524081+00:00",
+      "sha256": "c21deafdccd8ae36f3e032b1a19b4aa2f2dc2a8ed5dc4b1c7d325ed0e33ed525"
+    },
+    {
+      "name": "ConsumerRetrievalEnabledHttpIT",
+      "tests": 1,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:34:12.222598+00:00",
+      "sha256": "ad00b30ed31030255216678a6b36aea6e744129655a3fefe337b032bcf098339"
+    },
+    {
+      "name": "EvaluationHttpIT",
+      "tests": 2,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "mtime_utc": "2026-10-30T00:34:10.807207+00:00",
+      "sha256": "6515cf13931f4f5b39f9d436a5c69db9097d919099fb3933c517bc7d048898b3"
+    }
+  ],
+  "checks": {
+    "java_full_unit": {
+      "passed": 164
+    },
+    "java_final_protocol_regression": {
+      "passed": 7,
+      "reason": "HttpStatus enum replaces same 200 literal after full verification"
+    },
+    "python_full": {
+      "passed": 549,
+      "skipped": 53,
+      "warnings": 22
+    },
+    "python_final_http": {
+      "passed": 18,
+      "reason": "includes one subsequent slow-body deadline case; production sources unchanged since full run"
+    },
+    "static": "Ruff check/format110 files and mypy71 source files PASS",
+    "contracts": "7 registered contracts / 12 fixtures PASS",
+    "hygiene": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS; Java formatter not configured; two advisory numbers are named protocol size constants"
+  },
+  "commands": [
+    "cd ai-runtime && uv run pytest -q",
+    "cd ai-runtime && uv run ruff check src tests && uv run ruff format --check src tests && uv run mypy src && uv run pytest -q tests/test_retrieval_http.py",
+    "mvn -q verify -Pintegration -Dit.test=ConsumerRetrievalHttpIT,ConsumerRetrievalEnabledHttpIT,EvaluationHttpIT -Dfailsafe.failIfNoSpecifiedTests=false",
+    "mvn -q -pl knowledge-service -am test -Dtest=PythonConsumerRetrievalTest,ConsumerRetrievalTest -Dsurefire.failIfNoSpecifiedTests=false",
+    "python3 ci/check_contract_docs.py"
+  ],
+  "review": {
+    "executor": "single agent; no independent reviewer",
+    "coverage": [
+      "strict versioned input and bounded bodies",
+      "signed owner/scope and safe error mapping",
+      "default-off plus enabled Spring wiring",
+      "callback capacity stays free",
+      "full generation/text/source recheck before public result",
+      "legacy processing/HTTP behavior"
+    ],
+    "corrected_failures": [
+      "transport test read URN issuer as URL; corrected claim reader",
+      "new private constructor made Spring ambiguous; marked original injection constructor",
+      "code hygiene magic HTTP status; replaced with HttpStatus.OK"
+    ]
+  },
+  "environment": {
+    "model_calls": 0,
+    "database": "isolated project test databases only; no new migration",
+    "runtime": "unchanged S11D immutable snapshot; all new flags remain disabled"
+  },
+  "unverified": [
+    "actual Python socket + Java callback unified loop",
+    "public QA/work/evaluation v2 acceptance and frontend",
+    "new graph real PG + central HTTP restore",
+    "combined HTTP+worker capacity/container/browser",
+    "real rerank quality requires U04"
+  ]
+}

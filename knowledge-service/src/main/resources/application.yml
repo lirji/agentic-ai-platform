@@ -77,6 +77,8 @@ knowledge:
     worker-enabled: ${KNOWLEDGE_EVALUATION_WORKER_ENABLED:false}
     worker-tenant: ${KNOWLEDGE_EVALUATION_WORKER_TENANT:}
     poll-seconds: ${KNOWLEDGE_EVALUATION_POLL_SECONDS:2}
+  retrieval:
+    enabled: ${KNOWLEDGE_RETRIEVAL_ENABLED:false}
   runtime:
     enabled: ${KNOWLEDGE_RUNTIME_ENABLED:false}
     public-key: ${KNOWLEDGE_RUNTIME_PUBLIC_KEY:}

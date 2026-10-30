@@ -1,6 +1,6 @@
 # Codex Progress
 
-- 当前任务 `capability-delivery-20261021`：S11A–D已交付，S11E IN_PROGRESS。完整证据、QA/work/evaluation v2核心和Conversation策略持久化已通过相关测试；默认关闭新路由，公共入口/前端及真实PG联合恢复仍待完成。
+- 当前任务 `capability-delivery-20261021`：S11A–D已交付，S11E IN_PROGRESS。完整证据、QA/work/evaluation v2核心、Conversation策略持久化及公共检索门面已通过相关测试；运行新路由默认关闭，其他公开入口/前端及真实PG联合恢复仍待完成。
 - 后端原目录分支 `feat/retrieval-consumers-20261028`；唯一权威状态与下一操作：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。用户已取消本次25%额度保留限制，继续原授权计划；无新增模型预算或生产部署授权。
 - Docker独立历史：[原部署进度](docs/deployment/docker-20261027/PROGRESS_STATE.md)。本阶段验证日志 `.logs/s11e-*`，实现收据 `docs/qa/retrieval-consumers-20261028/`。
 

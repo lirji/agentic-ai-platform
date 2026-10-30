@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DESIGN = ROOT / "docs/design/knowledge-first-20261020"
 REGISTERED_CONTRACTS = {
     "CI_CONTRACTS.md": "ci-v1",
+    "RETRIEVAL_CONTRACTS.md": "knowledge-search-v2",
     "QUALITY_CONTRACTS.md": "quality-v1",
     "EVALUATION_RUN_CONTRACTS.md": "evaluation-run-v1",
     "PROCESSING_CONTRACTS.md": "knowledge-preparation-v1",
@@ -53,7 +54,12 @@ def main() -> None:
             assert generation["prepared"]["schemaVersion"] == "knowledge-generation-preparation-v1"
         if fixture["sourceFixture"] is not None:
             assert (ROOT / fixture["sourceFixture"]).is_file()
-    print("6 registered contracts and 11 shared wire fixture files: PASS")
+    search = json.loads((FIXTURES / "search-consumer-golden.json").read_text())
+    assert search["protocol"] == REGISTERED_CONTRACTS["RETRIEVAL_CONTRACTS.md"]
+    assert search["input"]["schemaVersion"] == "knowledge-search-input-v2"
+    assert search["result"]["schemaVersion"] == "knowledge-search-result-v2"
+    assert search["capabilities"]["schemaVersion"] == "knowledge-retrieval-capabilities-v1"
+    print("7 registered contracts and 12 shared wire fixture files: PASS")
 
 
 if __name__ == "__main__":

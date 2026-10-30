@@ -113,3 +113,13 @@ Tasks的新证据清单仍保存JSON数组，沿V4的0..10长度约束；新追�
 ### 9.4 开放顺序与验收
 
 先交付共享报文/完整核验，再持久策略和版本路由，最后装配公共门面及前端。只有全部对应消费者就绪才开放v2入口；旧入口保留供版本回退。UI未执行前标记请求策略，终态按服务端实际mode展示；不可用精排禁选并说明条件，未知提交沿同一幂等键查回执。联合验收覆盖同输入一致性、旧任务恢复、同内容重索引失效、撤下/跨owner、失败恢复、取消、两进程总容量及公开响应脱敏。真实精排效果仍受U04约束，协议替身只证明机制。
+
+### 9.5 公共检索与能力目录线格式（knowledge-search-v2）
+
+- 新公开`POST /api/v2/knowledge/search`仍要求原knowledge read权限。请求恰为`{schemaVersion:"knowledge-search-input-v2",query,documentIds,topK,strategy}`；strategy必填，documentIds为null（本owner全部）或1..20个不重复UUID，topK为1..20整数，query沿2000字符规则。旧v1路由/响应不变。响应沿9.1公开白名单。
+- Java通过`POST /internal/v2/knowledge/search`调用HTTP进程的同一RetrievalUseCase；内部请求为上述五字段加整数`timeoutMs`（1..30000）。复用Knowledge→AI服务签名issuer/audience/azp和密钥，但要求独立scope `knowledge:retrieve`；tenant/owner只从验签身份取得，不接收请求体身份。Python用K05既有runtime身份回调Java候选/解析。两方向角色不能互换。
+- HTTP正文最多32KiB、实际流量计数，拒绝重复JSON键/未知字段/重复认证头；整条处理最多30秒，包含正文读取，计算期限夹紧到Java剩余timeoutMs；断开取消底层等待，未知模型结果保留预算。每进程单实例用例1许可，入口无等待队列；Java门面不获取候选回调的KnowledgeQueryCapacity。
+- `GET /internal/v2/knowledge/retrieval-capabilities`使用同一knowledge:retrieve身份，只返回`{schemaVersion:"knowledge-retrieval-capabilities-v1",strategies:[{strategy,available,reasonCode}]}`，固定RRF/RERANK顺序。表示当前进程配置/精排预算预检就绪，不承诺后续网络或余额不变；不发送模型请求、不预留额度、不公开账户、端点、模型密钥或余额。未配置精排available=false/reasonCode=RETRIEVAL_RERANK_DISABLED；精排预算预检失败返回稳定原因，不能列为可用。
+- Java公开`GET /api/v2/knowledge/retrieval-capabilities`同一read权限，以消费者总开关及真实内部目录为准；总开关默认关闭，未完成四消费者联合验收前不开放新受理。旧history/read继续有效。新公共错误沿Knowledge唯一目录映射，不能透出Python内部异常。
+
+- 公开错误映射：无总开关→KNOWLEDGE_RETRIEVAL_DISABLED（503），无精排配置→KNOWLEDGE_RETRIEVAL_STRATEGY_UNAVAILABLE（503），预算拒绝→KNOWLEDGE_RETRIEVAL_BUDGET_REJECTED（503），许可已满→KNOWLEDGE_BUSY（429），任何完整证据失效→KNOWLEDGE_RETRIEVAL_EVIDENCE_STALE（409），远端结果不合约→KNOWLEDGE_RETRIEVAL_RESULT_INVALID（502）；其余远端故障统一依赖不可用，不回传原message。

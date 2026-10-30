@@ -1,0 +1,27 @@
+{
+  "status": "COMPLETED",
+  "gate": "PASS",
+  "ref": {
+    "type": "commit",
+    "value": "70a33c0c145453cb41bdceb089111fecbeeb1c36"
+  },
+  "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/40978201919",
+  "checks": [
+    {
+      "name": "documents",
+      "required": true,
+      "result": "PASS"
+    },
+    {
+      "name": "python",
+      "required": true,
+      "result": "PASS"
+    },
+    {
+      "name": "java",
+      "required": true,
+      "result": "PASS"
+    }
+  ],
+  "scope": "S11E evaluation core only; public HTTP changes uncommitted"
+}

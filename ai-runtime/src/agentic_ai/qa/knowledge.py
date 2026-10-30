@@ -74,6 +74,11 @@ class KnowledgeClient:
         cls, endpoint: str, tenant_id: str, owner_id: str, key_path: Path
     ) -> "KnowledgeClient":
         """私钥只从固定配置读取，权限或长度错误时不创建客户端。"""
+        return cls(endpoint, tenant_id, owner_id, cls.load_private_key(key_path))
+
+    @staticmethod
+    def load_private_key(key_path: Path) -> RSAPrivateKey:
+        """进程装配时验证既有K05角色密钥，请求之间只复用密钥而不复用owner状态。"""
         key: object = None
         try:
             if not key_path.is_symlink() and not key_path.stat().st_mode & 0o077:
@@ -85,7 +90,7 @@ class KnowledgeClient:
             key = None
         if not isinstance(key, RSAPrivateKey):
             raise QaError(QaCode.CONFIG_INVALID)
-        return cls(endpoint, tenant_id, owner_id, key)
+        return key
 
     def _token(self) -> str:
         now = int(time.time())

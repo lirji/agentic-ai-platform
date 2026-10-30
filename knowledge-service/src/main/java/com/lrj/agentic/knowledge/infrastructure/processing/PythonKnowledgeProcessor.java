@@ -11,22 +11,10 @@ import com.lrj.agentic.contract.knowledge.Extraction;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
 import com.lrj.agentic.security.Caller;
 import com.lrj.agentic.security.IdentityProtocol;
-import com.lrj.agentic.security.JwtTrust;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.stereotype.Component;
 
 /** 由 Knowledge 使用独立签名身份调用 AI，原用户 JWT 和数据库凭据不传入 Python。 */
@@ -36,21 +24,15 @@ public class PythonKnowledgeProcessor implements KnowledgeProcessor {
     private final ProcessingProperties properties;
     private final ProcessingJson json;
     private final BoundedHttp http;
-    private final JwtEncoder encoder;
+    private final PythonServiceIdentity identity;
 
-    /** 密钥配对在启动时验证，避免直到付费任务才发现配置漂移。 */
-    public PythonKnowledgeProcessor(ProcessingProperties properties, ProcessingJson json, BoundedHttp http)
-            throws IOException {
+    /** 处理与检索共用原签名身份，scope仍由各固定端点分别限定。 */
+    public PythonKnowledgeProcessor(ProcessingProperties properties, ProcessingJson json, BoundedHttp http,
+            PythonServiceIdentity identity) {
         this.properties = properties;
         this.json = json;
         this.http = http;
-        var publicKey = JwtTrust.publicKey(properties.publicKey());
-        var privateKey = JwtTrust.privateKey(properties.privateKey());
-        if (!publicKey.getModulus().equals(privateKey.getModulus())) {
-            throw new IllegalArgumentException("知识处理签名密钥不配对");
-        }
-        encoder = new NimbusJwtEncoder(new ImmutableJWKSet<>(
-                new JWKSet(new RSAKey.Builder(publicKey).privateKey(privateKey).build())));
+        this.identity = identity;
     }
 
     /** 请求绑定原受理身份和版本，返回由 Java 独立验证。 */
@@ -100,15 +82,7 @@ public class PythonKnowledgeProcessor implements KnowledgeProcessor {
     }
 
     private byte[] call(String path, Caller caller, String scope, Object payload) {
-        Instant now = Instant.now();
-        var claims = JwtClaimsSet.builder().issuer(ProcessingProtocol.AI_ISSUER)
-                .audience(List.of(ProcessingProtocol.AI_AUDIENCE)).subject(caller.userId())
-                .issuedAt(now).notBefore(now).expiresAt(now.plusSeconds(IdentityProtocol.INTERNAL_TTL_SECONDS))
-                .claim("azp", ProcessingProtocol.AI_CALLER)
-                .claim(IdentityProtocol.TENANT_CLAIM, caller.tenantId())
-                .claim(IdentityProtocol.SCOPE_CLAIM, scope).build();
-        String token = encoder.encode(JwtEncoderParameters.from(
-                JwsHeader.with(SignatureAlgorithm.RS256).build(), claims)).getTokenValue();
+        String token = identity.token(caller, scope);
         return http.request("POST", properties.aiEndpoint().resolve(path),
                 Map.of(IdentityProtocol.INTERNAL_HEADER, token, "Content-Type", "application/json"),
                 json.write(payload), properties.aiSeconds(), KnowledgeError.PROCESSOR_UNAVAILABLE);
