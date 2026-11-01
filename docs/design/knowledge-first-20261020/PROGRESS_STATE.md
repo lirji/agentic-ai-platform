@@ -1,13 +1,13 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S12C 验收通过，Git/CI交付进行中
+## 当前任务：S12C 已交付，接续 S12D
 
-- 完整任务`capability-delivery-20261021`，51项已批准，parallel=no；用户最新“继续执行任务吧”。S12B已交付，S12C实现及必需验收PASS，整体未完成；S12C交付后同轮接续S12D。
-- 两仓原目录`feat/research-coverage-20261101`，起点后端891c553fcdf9a2e4c64a5f4304afa45431961ef2、前端da4b7d914b4349684d6d1a55cb32870b8429433c；本片尚未提交/推送，无新worktree。后端main工作树仍在~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027，当前干净。
+- 完整任务`capability-delivery-20261021`，51项已批准，parallel=no；用户最新“继续执行任务吧”。S12B已交付，S12C实现、必需验收和Git/CI交付PASS，整体未完成；接续S12D。
+- 两仓原目录`feat/research-coverage-20261101`，起点后端891c553fcdf9a2e4c64a5f4304afa45431961ef2、前端da4b7d914b4349684d6d1a55cb32870b8429433c；本片后端275eeb5fa8f6dcef25ffd6a0fa467d13081dd949、前端e29292b00f1e6f454c5a5b4268916597b71077dc已正常ff合并推origin/main，无新worktree。后端main工作树仍在~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027，当前干净。
 - 实现与契约：[RESEARCH_COVERAGE_CONTRACTS](RESEARCH_COVERAGE_CONTRACTS.md)，v3研究计划/逐项证据/缺口，Tasks行锁持久额度（跨epoch模型3/工具5/检索3），Python受控只读工具与原文验证，React真实选择/报告/引用。受理默认关闭、v1/v2保留；无新表/迁移/依赖或部署。S12D再拆根图阶段。
 - [TEST_RESULT](../../qa/research-coverage-20261101/TEST_RESULT.md)、[REVIEW](../../qa/research-coverage-20261101/REVIEW.md)、validation.json绑定两仓源码/日志/截图。Tasks真实MySQL28、契约11/security10；Python612 passed/83 skipped与真实PG7；前端169单元/旧浏览器9/真实联合2；Docker proxy11条路由PASS。最终联合.logs/s12c-full-joint-final.log及.logs/s11e-joint-8095304605098515968/，完成PG接管、真实发布/索引/HTTP、旧v2、空资料、提交取消、撤下后404。
 - 修复记录：详情有序读取解决本轮权限重验503；开发模式目录429通过既有重试恢复；来源名/引用编号篡改拒绝；PLANNING仅白名单进度可见；Java裸RESEARCH值改WorkKind后契约重测PASS。两仓卫生通过，Java缺少独立格式器保留限制。8张联合截图已查看；旧回归覆盖的3张历史图已移存本片并还原原版本。
-- 下一操作：格式/文档与摘要最终核验、限定路径提交，推任务分支验证CI，按授权正常ff合并推main并核对结果；记录交付后继续S12D。无必要业务决策待用户提供。
+- [交付收据](../../qa/research-coverage-20261101/delivery-result.json)：任务分支CI41290801572/41290827838、main CI41291226506/41291525174全部PASS，分别核对提交SHA。下一操作：归档本交付记录，然后在原目录新建S12D任务分支，冻结根图分阶段恢复增量后实施；不等待再次确认。
 - 运行：最终测试已结束，前端28186既有预览PID49541保留。无在途付费/迁移/部署，原开发/生产容器未更新。两仓.local/.logs/缓存和原Docker工作树保留，无清理。
 - 授权：本地实施验证、按逻辑提交及正常合并推main；无生产部署/清理/子Agent/新增模型额度。Chat/Embedding各1元累计保守预留0.957092/0.781784，本片付费0，旧探针不可重跑。原账户保留40%目标余量不可读，未宣称达成，不把它替代最新继续开发要求。
 - 规范：session-handoff/continue-approved-delivery、Contracts Stage、backend/frontend-implementation、validation、progress/docs、Git/CI；架构建模/持久化/接口/并发安全/容量/发布。既有Runtime漂移按手工专业pass，非机器Gate或独立Agent审查。

@@ -1,0 +1,42 @@
+{
+  "slice": "S12C",
+  "overall": "PASS",
+  "branch": "feat/research-coverage-20261101",
+  "merge": "normal fast-forward",
+  "remote": "origin/main",
+  "ci": [
+    {
+      "repo": "lirji/agentic-ai-platform",
+      "commit": "275eeb5fa8f6dcef25ffd6a0fa467d13081dd949",
+      "runId": 41291226506,
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41291226506",
+      "conclusion": "success",
+      "jobs": {
+        "java": "success",
+        "python": "success",
+        "documents": "success"
+      }
+    },
+    {
+      "repo": "lirji/agentic-ai-platform-web",
+      "commit": "e29292b00f1e6f454c5a5b4268916597b71077dc",
+      "runId": 41291525174,
+      "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41291525174",
+      "conclusion": "success",
+      "jobs": {
+        "web": "success"
+      }
+    }
+  ],
+  "branchCiRuns": [
+    41290801572,
+    41290827838
+  ],
+  "productionDeploy": "NOT_AUTHORIZED_NOT_EXECUTED",
+  "cleanup": "NOT_EXECUTED",
+  "worktrees": {
+    "backend": "existing docker-deployment-20261027 main worktree retained",
+    "frontend": "original project only"
+  },
+  "retained": "Private local configuration, budgets, isolated test evidence and caches; no cleanup authorization"
+}
