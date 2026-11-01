@@ -146,3 +146,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 - S13A身份前置事实：[IDENTITY_READINESS](design/knowledge-first-20261020/IDENTITY_READINESS.md)，对应源摘要[evidence](design/knowledge-first-20261020/evidence/identity-readiness-20261101.json)；仅核实当前网关/React与Auth参考和公开discovery，不表示正式配置或成员授权已完成。
 
 - S13A正式身份：[IDENTITY_CONTRACTS](design/knowledge-first-20261020/IDENTITY_CONTRACTS.md) → Gateway BrowserSecurity/BrowserSessionGuard/PersonalMemberPolicy、React identity/session与HTTP；[Runtime](design/knowledge-first-20261020/IDENTITY_RUNTIME.md) → deploy/identity_local.py和identity_runtime.py；[验收](qa/identity-20261101/TEST_RESULT.md) → 网关专项与真实Casdoor/Knowledge浏览器证据。
+
+- S13B/C：SharingService/SharingMapper/V13、CasdoorSharingMembers、发布权威SQL与双索引过滤对应[C-SHARING](design/knowledge-first-20261020/SHARING_CONTRACTS.md)；React共享设置/共享给我/只读详情/统一消费摘要对应[验收](qa/sharing-20261102/TEST_RESULT.md)。Tasks与Python沿既有最终/恢复证据校验；本片以真实共享ACL补联合验证，没有新增模型或生产部署。

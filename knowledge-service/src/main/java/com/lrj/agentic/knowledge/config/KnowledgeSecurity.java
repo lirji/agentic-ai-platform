@@ -42,6 +42,7 @@ public class KnowledgeSecurity {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/ingestions",
+                                "/api/v1/knowledge/sharing/documents/*/commands",
                                 "/api/v2/knowledge/documents/*/updates",
                                 "/api/v2/knowledge/documents/*/withdrawals",
                                 "/api/v2/knowledge/documents/*/deletions",

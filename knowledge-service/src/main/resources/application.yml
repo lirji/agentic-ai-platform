@@ -49,6 +49,14 @@ mybatis-plus:
   global-config:
     banner: false
 knowledge:
+  sharing:
+    enabled: ${KNOWLEDGE_SHARING_ENABLED:false}
+    issuer: ${KNOWLEDGE_SHARING_ISSUER:}
+    organization: ${KNOWLEDGE_SHARING_ORGANIZATION:}
+    tenant-id: ${KNOWLEDGE_SHARING_TENANT_ID:}
+    client-id: ${KNOWLEDGE_SHARING_CLIENT_ID:}
+    client-secret: ${KNOWLEDGE_SHARING_CLIENT_SECRET:}
+    members: ${KNOWLEDGE_SHARING_MEMBERS:}
   lifecycle:
     create-enabled: ${KNOWLEDGE_LIFECYCLE_CREATE_ENABLED:true}
     generation-enabled: ${KNOWLEDGE_LIFECYCLE_GENERATION_ENABLED:false}

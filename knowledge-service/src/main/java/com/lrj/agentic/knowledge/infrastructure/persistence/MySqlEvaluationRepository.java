@@ -1,5 +1,6 @@
 package com.lrj.agentic.knowledge.infrastructure.persistence;
 
+import com.lrj.agentic.knowledge.infrastructure.sharing.SharedReadAccess;
 import static com.lrj.agentic.knowledge.domain.evaluation.EvaluationModels.*;
 import static com.lrj.agentic.knowledge.infrastructure.persistence.EvaluationRow.*;
 
@@ -31,6 +32,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Repository
 public class MySqlEvaluationRepository implements EvaluationRepository {
     private final EvaluationMapper mapper;
+    private final SharedReadAccess sharing;
     private final EvaluationJson json;
     private final TransactionTemplate transaction;
 
@@ -38,12 +40,17 @@ public class MySqlEvaluationRepository implements EvaluationRepository {
     @Override
     public List<EvidenceOption> publishedEvidence(Caller caller, List<String> chunkIds) {
         EvaluationRules.require(chunkIds != null && chunkIds.size() <= 5);
-        return chunkIds.isEmpty() ? List.of() : access(() -> mapper.gold(caller, chunkIds).stream().map(EvidenceRow::option).toList());
+        if (chunkIds.isEmpty()) return List.of();
+        var own = access(() -> mapper.gold(caller, chunkIds));
+        return (own.size() == chunkIds.size() || !sharing.permitted(caller, List.of()) ? own
+                : access(() -> mapper.gold(caller, chunkIds, true))).stream().map(EvidenceRow::option).toList();
     }
 
     /** 沿用 Knowledge 的隔离级别与有界事务配置。 */
     public MySqlEvaluationRepository(EvaluationMapper mapper, EvaluationJson json, PlatformTransactionManager manager,
-            @Value("${knowledge.transaction-timeout-seconds:5}") int timeout) {
+            @Value("${knowledge.transaction-timeout-seconds:5}") int timeout,
+            SharedReadAccess sharing) {
+        this.sharing = sharing;
         if (timeout < 1 || timeout > 10) { throw new IllegalArgumentException("知识事务期限必须为 1–10 秒"); }
         this.mapper = mapper;
         this.json = json;
@@ -64,6 +71,8 @@ public class MySqlEvaluationRepository implements EvaluationRepository {
             Long expectedRevision, Definition definition) {
         var replay = receipt(caller, keyHash, fingerprint);
         if (replay.isPresent()) { return replay.get(); }
+        // 当前成员检查先于短事务，锁内只复核数据库ACL与发布事实。
+        boolean shared = sharing.permitted(caller, EvaluationRules.documents(definition));
         try {
             return Objects.requireNonNull(transaction.execute(status -> {
                 EvaluationRow current = expectedRevision == null ? null : mapper.dataset(caller, datasetId, true);
@@ -77,7 +86,7 @@ public class MySqlEvaluationRepository implements EvaluationRepository {
                     }
                 }
                 long revision = expectedRevision == null ? 1 : EvaluationRules.positive(expectedRevision + 1);
-                BoundDefinition bound = bind(caller, definition);
+                BoundDefinition bound = bind(caller, definition, shared);
                 String digest = json.digest(bound);
                 Instant now = Instant.now().truncatedTo(ChronoUnit.MICROS);
                 var row = new EvaluationRow(datasetId, caller.tenantId(), caller.userId(), definition.name(),
@@ -101,18 +110,18 @@ public class MySqlEvaluationRepository implements EvaluationRepository {
     }
 
     /** 所有快照都来自本服务权威表；范围最多 100 份、证据最多 1000 个，统一批量查询。 */
-    private BoundDefinition bind(Caller caller, Definition definition) {
+    private BoundDefinition bind(Caller caller, Definition definition, boolean shared) {
         var ids = EvaluationRules.documents(definition);
-        if (!ids.isEmpty() && mapper.lockDocuments(caller, ids).size() != ids.size()) {
+        if (!ids.isEmpty() && mapper.lockDocuments(caller, ids, shared).size() != ids.size()) {
             throw new KnowledgeFailure(KnowledgeError.NOT_FOUND);
         }
-        var documents = bindings(caller, ids);
+        var documents = ids.isEmpty() ? List.<DocumentBinding>of() : mapper.bindings(caller, ids, shared);
         if (documents.size() != ids.size()) {
             throw new KnowledgeFailure(KnowledgeError.EVALUATION_BINDING_INVALID);
         }
         var gold = definition.questions().stream().flatMap(question -> question.evidence().stream()).toList();
         var chunks = gold.stream().map(Gold::chunkId).distinct().sorted().toList();
-        List<EvidenceRow> evidence = chunks.isEmpty() ? List.of() : mapper.gold(caller, chunks);
+        List<EvidenceRow> evidence = chunks.isEmpty() ? List.of() : mapper.gold(caller, chunks, shared);
         var byChunk = evidence.stream().collect(Collectors.toMap(EvidenceRow::chunkId, value -> value));
         for (Gold item : gold) {
             EvidenceRow row = byChunk.get(item.chunkId());
@@ -152,14 +161,17 @@ public class MySqlEvaluationRepository implements EvaluationRepository {
     @Override
     public List<DocumentBinding> bindings(Caller caller, List<String> documentIds) {
         if (documentIds.isEmpty()) { return List.of(); }
-        return access(() -> List.copyOf(mapper.bindings(caller, documentIds)));
+        var own = access(() -> mapper.bindings(caller, documentIds));
+        return List.copyOf(own.size() == documentIds.size() || !sharing.permitted(caller, documentIds) ? own
+                : access(() -> mapper.bindings(caller, documentIds, true)));
     }
 
     /** 引用、检索和评测选择器共用 XML 发布授权片段。 */
     @Override
     public List<EvidenceOption> evidence(Caller caller, String documentId, long version, String afterId, int limit) {
-        return access(() -> mapper.evidence(caller, documentId, version, afterId, limit)
-                .stream().map(EvidenceRow::option).toList());
+        var own = access(() -> mapper.evidence(caller, documentId, version, afterId, limit));
+        return (!own.isEmpty() || !sharing.permitted(caller, List.of(documentId)) ? own
+                : access(() -> mapper.evidence(caller, documentId, version, afterId, limit, true))).stream().map(EvidenceRow::option).toList();
     }
 
     private static Optional<Receipt> replay(CommandRow command, String fingerprint) {

@@ -1,5 +1,6 @@
 package com.lrj.agentic.knowledge.infrastructure.persistence;
 
+import com.lrj.agentic.knowledge.infrastructure.sharing.SharedReadAccess;
 import static com.lrj.agentic.knowledge.domain.evaluation.DecisionModels.*;
 import static com.lrj.agentic.knowledge.domain.evaluation.DecisionProtocol.*;
 import static com.lrj.agentic.knowledge.domain.evaluation.EvaluationModels.*;
@@ -36,13 +37,16 @@ public class MySqlEvaluationDecisionRepository implements EvaluationDecisionRepo
     private final EvaluationDecisionMapper mapper;
     private final EvaluationRunMapper runs;
     private final EvaluationMapper definitions;
+    private final SharedReadAccess sharing;
     private final EvaluationJson json;
     private final TransactionTemplate transaction;
 
     /** 复用Knowledge既有连接池与短事务期限。 */
     public MySqlEvaluationDecisionRepository(EvaluationDecisionMapper mapper, EvaluationRunMapper runs,
             EvaluationMapper definitions, EvaluationJson json, PlatformTransactionManager manager,
-            @Value("${knowledge.transaction-timeout-seconds:5}") int timeout) {
+            @Value("${knowledge.transaction-timeout-seconds:5}") int timeout,
+            SharedReadAccess sharing) {
+        this.sharing = sharing;
         this.mapper = mapper; this.runs = runs; this.definitions = definitions; this.json = json;
         transaction = new TransactionTemplate(manager); transaction.setTimeout(timeout);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
@@ -74,12 +78,13 @@ public class MySqlEvaluationDecisionRepository implements EvaluationDecisionRepo
     /** 加锁后重验资料和报告，CAS冲突不留下孤立审计行或命令回执。 */
     @Override public DecisionReceipt review(Caller owner, String key, String fingerprint, RunView observed,
             RevisionDetail definition, Question question, ReportFact fact, ReviewCommand input) {
+        boolean shared = sharing.permitted(owner, definition.bindings().stream().map(DocumentBinding::documentId).toList());
         return write(owner, key, fingerprint, () -> {
             var locked = lockRun(owner, observed);
             var accepted = command(owner, key);
             if (accepted.isPresent()) { return replay(accepted.get(), fingerprint); }
             checkRun(locked, observed, input.manifestDigest());
-            lockBindings(owner, definition);
+            lockBindings(owner, definition, shared);
             String id = observed.summary().runId();
             var command = ReviewRules.normalize(question, fact, input);
             Long head = mapper.reviewHead(owner, id, input.manifestDigest(), question.questionId());
@@ -110,6 +115,7 @@ public class MySqlEvaluationDecisionRepository implements EvaluationDecisionRepo
     /** 定义→运行→文档的统一锁序，快照基于事务内当前评分，避免评分/选择交错。 */
     @Override public DecisionReceipt select(Caller owner, String key, String fingerprint, RunView observed,
             RevisionDetail definition, Map<String, ReportFact> facts, SelectBaseline input) {
+        boolean shared = sharing.permitted(owner, definition.bindings().stream().map(DocumentBinding::documentId).toList());
         return write(owner, key, fingerprint, () -> {
             String dataset = observed.summary().datasetId(); long revision = observed.summary().datasetRevision();
             if (definitions.dataset(owner, dataset, true) == null) { throw failure(KnowledgeError.NOT_FOUND); }
@@ -117,7 +123,7 @@ public class MySqlEvaluationDecisionRepository implements EvaluationDecisionRepo
             var accepted = command(owner, key);
             if (accepted.isPresent()) { return replay(accepted.get(), fingerprint); }
             checkRun(locked, observed, input.manifestDigest());
-            lockBindings(owner, definition);
+            lockBindings(owner, definition, shared);
             var scores = ReviewRules.summaries(definition.definition(), facts, reviews(owner, input.runId(), input.manifestDigest()), false);
             String reviewDigest = json.digest(ReviewRules.identity(input.manifestDigest(), scores));
             if (!reviewDigest.equals(input.reviewDigest())) { throw conflict(); }
@@ -146,12 +152,12 @@ public class MySqlEvaluationDecisionRepository implements EvaluationDecisionRepo
                 || run.task() == null || run.task().revision() != observed.task().revision()
                 || run.task().result() == null || !manifest.equals(run.task().result().manifestDigest())) { throw conflict(); }
     }
-    private void lockBindings(Caller owner, RevisionDetail definition) {
+    private void lockBindings(Caller owner, RevisionDetail definition, boolean shared) {
         if (definition.definition() == null) { throw failure(KnowledgeError.EVALUATION_BINDING_INVALID); }
         var ids = definition.bindings().stream().map(DocumentBinding::documentId).sorted().toList();
         if (!ids.isEmpty()) {
-            if (definitions.lockDocuments(owner, ids).size() != ids.size()) { throw failure(KnowledgeError.EVALUATION_BINDING_INVALID); }
-            if (!definitions.bindings(owner, ids).equals(definition.bindings())) { throw failure(KnowledgeError.EVALUATION_BINDING_INVALID); }
+            if (definitions.lockDocuments(owner, ids, shared).size() != ids.size()) { throw failure(KnowledgeError.EVALUATION_BINDING_INVALID); }
+            if (!definitions.bindings(owner, ids, shared).equals(definition.bindings())) { throw failure(KnowledgeError.EVALUATION_BINDING_INVALID); }
         }
     }
     private DecisionReceipt write(Caller owner, String key, String fingerprint, Supplier<DecisionReceipt> action) {

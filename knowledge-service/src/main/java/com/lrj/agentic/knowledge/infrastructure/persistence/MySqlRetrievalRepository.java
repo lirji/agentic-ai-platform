@@ -3,9 +3,11 @@ package com.lrj.agentic.knowledge.infrastructure.persistence;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.retrieval.RetrievalRepository;
+import com.lrj.agentic.knowledge.infrastructure.sharing.SharedReadAccess;
 import com.lrj.agentic.security.Caller;
 import java.util.List;
 import org.springframework.dao.DataAccessException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.TransactionException;
 
@@ -13,14 +15,22 @@ import org.springframework.transaction.TransactionException;
 @Repository
 public class MySqlRetrievalRepository implements RetrievalRepository {
     private final RetrievalMapper mapper;
+    private final SharedReadAccess sharing;
+
+    /** 旧隔离验证仍只读取所有者数据，不隐式扩大访问范围。 */
+    public MySqlRetrievalRepository(RetrievalMapper mapper) { this(mapper, null); }
 
     /** 使用已配置的MyBatis连接/语句超时，不在外部HTTP调用期间持有事务。 */
-    public MySqlRetrievalRepository(RetrievalMapper mapper) { this.mapper = mapper; }
+    @Autowired
+    public MySqlRetrievalRepository(RetrievalMapper mapper, SharedReadAccess sharing) { this.mapper = mapper; this.sharing = sharing; }
 
     /** 空候选免查询；非空时由共享发布SQL按可信身份逐项授权。 */
     @Override public List<PublishedChunk> published(Caller caller, List<String> chunkIds) {
         if (chunkIds.isEmpty()) { return List.of(); }
-        try { return List.copyOf(mapper.published(caller, chunkIds)); }
+        try {
+            var own = mapper.published(caller, chunkIds);
+            return List.copyOf(own.size() == chunkIds.size() || sharing == null || !sharing.permitted(caller, List.of()) ? own : mapper.published(caller, chunkIds, true));
+        }
         catch (DataAccessException | TransactionException unavailable) {
             throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);
         }

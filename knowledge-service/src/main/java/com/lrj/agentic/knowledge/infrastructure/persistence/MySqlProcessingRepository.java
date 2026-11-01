@@ -1,5 +1,6 @@
 package com.lrj.agentic.knowledge.infrastructure.persistence;
 
+import com.lrj.agentic.knowledge.infrastructure.sharing.SharedReadAccess;
 import com.lrj.agentic.knowledge.domain.Ingestion;
 import com.lrj.agentic.knowledge.domain.IngestionStatus;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
@@ -36,11 +37,20 @@ public class MySqlProcessingRepository implements ProcessingRepository {
     private final TransactionTemplate transaction;
     private final ProcessingJson json;
     private final LifecycleMapper lifecycle;
+    private final SharedReadAccess sharing;
 
     /** 与受理使用同一事务管理器，但不共享线程或连接上的事务资源。 */
     public MySqlProcessingRepository(ProcessingMapper mapper, KnowledgeMapper knowledge,
             PlatformTransactionManager manager, @Value("${knowledge.transaction-timeout-seconds:5}") int seconds,
             ProcessingJson json, LifecycleMapper lifecycle) {
+        this(mapper, knowledge, manager, seconds, json, lifecycle, null);
+    }
+    /** 正式容器注入当前共享权限适配，历史测试构造仍保持owner范围。 */
+    @org.springframework.beans.factory.annotation.Autowired
+    public MySqlProcessingRepository(ProcessingMapper mapper, KnowledgeMapper knowledge,
+            PlatformTransactionManager manager, @Value("${knowledge.transaction-timeout-seconds:5}") int seconds,
+            ProcessingJson json, LifecycleMapper lifecycle, SharedReadAccess sharing) {
+        this.sharing = sharing;
         this.mapper = mapper;
         this.knowledge = knowledge;
         this.json = json;
@@ -208,19 +218,25 @@ public class MySqlProcessingRepository implements ProcessingRepository {
         if (chunkIds.size() > 2 * ProcessingProtocol.CANDIDATES) {
             throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
         }
-        return access(() -> mapper.published(caller, chunkIds));
+        var own = access(() -> mapper.published(caller, chunkIds));
+        if (own.size() == chunkIds.size() || sharing == null || !sharing.permitted(caller, List.of())) return own;
+        return access(() -> mapper.published(caller, chunkIds, true));
     }
 
     /** 直接引用不依赖搜索服务可用性，但仍由当前发布版本授权。 */
     @Override
     public Optional<PublishedChunk> citation(Caller caller, String documentId, long version, String chunkId) {
-        return access(() -> Optional.ofNullable(mapper.citation(caller, documentId, version, chunkId)));
+        var own = access(() -> Optional.ofNullable(mapper.citation(caller, documentId, version, chunkId)));
+        if (own.isPresent() || sharing == null || !sharing.permitted(caller, List.of(documentId))) return own;
+        return access(() -> Optional.ofNullable(mapper.citation(caller, documentId, version, chunkId, true)));
     }
 
     /** 元数据也复用当前发布谓词，不提供未发布任务的解析结果旁路。 */
     @Override
     public Optional<ProcessingMetadata> metadata(Caller caller, String documentId, long version) {
-        return access(() -> Optional.ofNullable(mapper.metadata(caller, documentId, version)));
+        var own = access(() -> Optional.ofNullable(mapper.metadata(caller, documentId, version)));
+        if (own.isPresent() || sharing == null || !sharing.permitted(caller, List.of(documentId))) return own;
+        return access(() -> Optional.ofNullable(mapper.metadata(caller, documentId, version, true)));
     }
 
     /** 运维计数只使用稳定状态参数。 */

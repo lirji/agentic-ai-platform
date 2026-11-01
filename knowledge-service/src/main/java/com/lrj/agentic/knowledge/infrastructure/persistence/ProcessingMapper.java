@@ -47,13 +47,21 @@ public interface ProcessingMapper {
     int event(@Param("caller") Caller caller, @Param("id") String id, @Param("eventId") String eventId,
             @Param("actor") String actor, @Param("action") String action);
     /** 检索候选仍须通过发布和所有者约束。 */
-    List<PublishedChunk> published(@Param("caller") Caller caller, @Param("ids") List<String> ids);
+    List<PublishedChunk> published(@Param("caller") Caller caller, @Param("ids") List<String> ids, @Param("shared") boolean shared);
+    /** 旧调用保持owner范围；共享入口必须显式携带已核验标志。 */
+    default List<PublishedChunk> published(Caller caller, List<String> ids) { return published(caller, ids, false); }
     /** 引用同样不信任索引正文。 */
     PublishedChunk citation(@Param("caller") Caller caller, @Param("documentId") String documentId,
-            @Param("version") long version, @Param("chunkId") String chunkId);
+            @Param("version") long version, @Param("chunkId") String chunkId, @Param("shared") boolean shared);
+    /** 旧调用保持owner范围；共享入口必须显式携带已核验标志。 */
+    default PublishedChunk citation(Caller caller, String documentId,
+            long version, String chunkId) { return citation(caller, documentId, version, chunkId, false); }
     /** 只读当前可见版本，不读取源对象或暴露存储键。 */
     ProcessingMetadata metadata(@Param("caller") Caller caller, @Param("documentId") String documentId,
-            @Param("version") long version);
+            @Param("version") long version, @Param("shared") boolean shared);
+    /** 旧调用保持owner范围；共享入口必须显式携带已核验标志。 */
+    default ProcessingMetadata metadata(Caller caller, String documentId,
+            long version) { return metadata(caller, documentId, version, false); }
     /** 只用于状态指标聚合。 */
     long count(@Param("status") String status);
 }

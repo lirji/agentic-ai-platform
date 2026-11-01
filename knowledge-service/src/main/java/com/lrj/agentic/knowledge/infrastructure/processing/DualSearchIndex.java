@@ -31,9 +31,17 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
     private final ProcessingProperties properties;
     private final ProcessingJson json;
     private final BoundedHttp http;
+    private final com.lrj.agentic.knowledge.infrastructure.sharing.SharedReadAccess sharing;
 
     /** 客户端与连接限制复用，不按块新建连接池。 */
     public DualSearchIndex(ProcessingProperties properties, ProcessingJson json, BoundedHttp http) {
+        this(properties, json, http, null);
+    }
+    /** 仅正式搜索注入共享范围，索引写入仍保持原owner。 */
+    @org.springframework.beans.factory.annotation.Autowired
+    public DualSearchIndex(ProcessingProperties properties, ProcessingJson json, BoundedHttp http,
+            com.lrj.agentic.knowledge.infrastructure.sharing.SharedReadAccess sharing) {
+        this.sharing = sharing;
         this.properties = properties;
         this.json = json;
         this.http = http;
@@ -156,13 +164,21 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
     private JsonNode searchResults(Sink sink, Caller caller, String query, List<Double> vector,
             List<String> documentIds, int limit, Duration remaining) {
         require(limit >= 1 && limit <= ProcessingProtocol.CANDIDATES);
-        Duration timeout = remaining.compareTo(Duration.ofSeconds(properties.indexSeconds())) < 0
-                ? remaining : Duration.ofSeconds(properties.indexSeconds());
+        long started = System.nanoTime();
         List<Object> filters = new ArrayList<>();
-        Map<String, Object> identity = Map.of("tenantId", caller.tenantId(), "ownerId", caller.userId());
+        List<String> shared = sharing == null ? List.of() : sharing.documents(caller, documentIds);
+        // 当前成员核验也消耗同一请求预算，不能核验后重新给予完整索引超时。
+        Duration available = remaining.minusNanos(System.nanoTime() - started);
+        if (available.isNegative() || available.isZero()) throw new KnowledgeFailure(KnowledgeError.INDEX_UNAVAILABLE);
+        Duration timeout = available.compareTo(Duration.ofSeconds(properties.indexSeconds())) < 0
+                ? available : Duration.ofSeconds(properties.indexSeconds());
+        Map<String, Object> identity = shared.isEmpty() ? Map.of("tenantId", caller.tenantId(), "ownerId", caller.userId()) : Map.of("tenantId", caller.tenantId());
         if (sink == Sink.VECTOR) {
             filters.add(Map.of("key", "processorVersion", "match", Map.of("any", ProcessingProfile.compatibleVersions())));
             identity.forEach((key, value) -> filters.add(Map.of("key", key, "match", Map.of("value", value))));
+            if (!shared.isEmpty()) filters.add(Map.of("should", List.of(
+                    Map.of("key", "ownerId", "match", Map.of("value", caller.userId())),
+                    Map.of("key", "documentId", "match", Map.of("any", shared)))));
             if (!documentIds.isEmpty()) {
                 filters.add(Map.of("key", "documentId", "match", Map.of("any", documentIds)));
             }
@@ -176,6 +192,8 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
             return response.path("result").path("points");
         }
         identity.forEach((key, value) -> filters.add(Map.of("term", Map.of(key, value))));
+        if (!shared.isEmpty()) filters.add(Map.of("bool", Map.of("minimum_should_match", 1, "should", List.of(
+                Map.of("term", Map.of("ownerId", caller.userId())), Map.of("terms", Map.of("documentId", shared))))));
         filters.add(Map.of("terms", Map.of("processorVersion", ProcessingProfile.compatibleVersions())));
         if (!documentIds.isEmpty()) { filters.add(Map.of("terms", Map.of("documentId", documentIds))); }
         JsonNode response = request(sink, "POST", "/" + properties.index() + "/_search",

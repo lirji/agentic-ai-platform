@@ -88,3 +88,5 @@ S11E统一消费者已交付：[验收与限制](qa/retrieval-consumers-20261028
 S12B答案支撑、覆盖和拒答已通过[校准与验收](qa/answer-quality-20261101/TEST_RESULT.md)：五项口径获用户确认，评分解释绑定已保存修订；无在线裁判或新增模型费用。
 
 - [S13A 正式身份契约](design/knowledge-first-20261020/IDENTITY_CONTRACTS.md)：专属组织/客户端、个人空间BFF会话；[本机运行](design/knowledge-first-20261020/IDENTITY_RUNTIME.md)、[验收证据](qa/identity-20261101/TEST_RESULT.md)。
+
+- [S13B/C 指定成员只读共享](design/knowledge-first-20261020/SHARING_CONTRACTS.md)：逐份授权、原键恢复与全链路撤权；[运行说明](design/knowledge-first-20261020/SHARING_RUNTIME.md)、[验收与边界](qa/sharing-20261102/TEST_RESULT.md)。

@@ -223,8 +223,8 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S12C | 研究计划、证据覆盖和缺口结果 | S12B | IMPLEMENT | DONE |
 | S12D | 研究根图分阶段恢复 | S12C | IMPLEMENT | DONE |
 | S13A | 正式登录与可信身份生命周期 | S8A | IMPLEMENT | DONE |
-| S13B | 个人/团队资料共享与撤权 | S13A, S10B | IMPLEMENT | PLANNED |
-| S13C | 撤权贯穿检索、在途与历史结果 | S13B, S11E, S12D | IMPLEMENT | PLANNED |
+| S13B | 个人/团队资料共享与撤权 | S13A, S10B | IMPLEMENT | DONE |
+| S13C | 撤权贯穿检索、在途与历史结果 | S13B, S11E, S12D | IMPLEMENT | DONE |
 | S14A | 问题反馈与运营收件箱 | S8B, S7 | IMPLEMENT | PLANNED |
 | S14B | 候选知识编辑与内容绑定评估 | S14A, S8D, S10B, S13A | IMPLEMENT | PLANNED |
 | S14C | 审核与真实入库发布 | S14B, S13B | IMPLEMENT | PLANNED |
@@ -539,7 +539,9 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-SHARING；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 先冻结角色矩阵及 ACL/ReBAC 承载；跨用户/租户、并发授权/撤权、无权存在性保护；UI 使用真实后端允许动作；不能仅隐藏按钮。
 - **Pass / Runtime：** IMPLEMENT；复用既定身份设施；是否新增授权存储由本项契约确认，不默认复制关闭的 ReBAC。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G10 G18。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G10 G18。
+
+- **验收：** [S13B/C TEST_RESULT](../../qa/sharing-20261102/TEST_RESULT.md)；本地实施/验证通过，Git/CI交付状态见PROGRESS_STATE，不等同运行环境部署。
 
 ### S13C · 撤权贯穿检索、在途与历史结果
 
@@ -549,7 +551,9 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-SHARING、C-RETRIEVAL、C-QA2、C-WORK2；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 撤权发生在召回后/外发前/生成中/恢复前的竞态；历史报告/评测不泄露原文；相关索引状态不绕权威；拒绝原因可安全理解。
 - **Pass / Runtime：** IMPLEMENT；现有组件；隔离身份和受控并发场景。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G10 G08 G18。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G10 G08 G18。
+
+- **验收：** [S13B/C TEST_RESULT](../../qa/sharing-20261102/TEST_RESULT.md)；本地实施/验证通过，Git/CI交付状态见PROGRESS_STATE，不等同运行环境部署。
 
 ### S14A · 问题反馈与运营收件箱
 

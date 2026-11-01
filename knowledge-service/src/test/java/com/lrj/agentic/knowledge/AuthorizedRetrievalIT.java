@@ -243,6 +243,7 @@ class AuthorizedRetrievalIT {
                 "jdbc:mysql://127.0.0.1:1/unavailable?connectTimeout=100&socketTimeout=100", "unavailable", "unavailable");
         var factory = new org.mybatis.spring.SqlSessionFactoryBean(); factory.setDataSource(dataSource);
         factory.setMapperLocations(new org.springframework.core.io.ClassPathResource("mapper/ProcessingMapper.xml"),
+                new org.springframework.core.io.ClassPathResource("mapper/SharingMapper.xml"),
                 new org.springframework.core.io.ClassPathResource("mapper/RetrievalMapper.xml"));
         var session = new org.mybatis.spring.SqlSessionTemplate(factory.getObject());
         var mapper = session.getMapper(com.lrj.agentic.knowledge.infrastructure.persistence.RetrievalMapper.class);

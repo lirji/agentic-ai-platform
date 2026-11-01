@@ -18,7 +18,7 @@ PROCESSES = identity_local.STATE / 'runtime-processes.json'
 PORTS = (28190, 29190, 28194, 29194, 28196)
 
 
-def environment(idle: str) -> dict[str, str]:
+def environment(idle: str, sharing: bool = False) -> dict[str, str]:
     """秘密仅交给子进程；个人成员固定来自已完成的专属登记，不重新创建账号。"""
     value = identity_local.read_private(identity_local.STATE / 'state.json')
     registration = identity_local.read_private(identity_local.STATE / 'registration-result.json')
@@ -39,6 +39,8 @@ def environment(idle: str) -> dict[str, str]:
         'BROWSER_IDENTITY_MEMBERS': ','.join(value['users'][name]['id'] for name in identity_local.USERS[:2]),
         'BROWSER_IDENTITY_MAX_IDLE': idle, 'VITE_IDENTITY_MODE': 'oidc', 'LOCAL_DEV_IDENTITY': '0',
     })
+    import sharing_local
+    env.update(sharing_local.environment(env, sharing))
     node = WEB / '.local/toolchains/node-v24.22.0-darwin-arm64/bin'
     java = Path(env.get('JAVA_HOME', '/usr')) / 'bin'
     env['PATH'] = str(node) + os.pathsep + str(java) + os.pathsep + env['PATH']
@@ -55,7 +57,7 @@ def records() -> dict:
     return identity_local.read_private(PROCESSES) if PROCESSES.exists() else {}
 
 
-def start(idle: str) -> None:
+def start(idle: str, sharing: bool = False) -> None:
     """先检查端口；启动结果逐个落盘，中断后先status/stop核对，不重复启动。"""
     if any(live(item) for item in records().values()):
         raise RuntimeError('已有身份验证进程，请先status核对')
@@ -66,7 +68,7 @@ def start(idle: str) -> None:
     finally:
         for sock in sockets:
             sock.close()
-    env = environment(idle)
+    env = environment(idle, sharing)
     config = {}
     for name, port in [('knowledge-service', 29194), ('edge-gateway', 29190), ('web', None)]:
         if name == 'web':
@@ -94,9 +96,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('action', choices=['start', 'status', 'stop'])
     parser.add_argument('--idle', choices=['15m', '30s'], default='15m')
+    parser.add_argument('--sharing', action='store_true')
     args = parser.parse_args()
     if args.action == 'start':
-        start(args.idle)
+        start(args.idle, args.sharing)
     elif args.action == 'status':
         print(json.dumps({key: {'pid': value['pid'], 'live': live(value)} for key, value in records().items()}))
     else:

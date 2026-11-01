@@ -134,7 +134,8 @@
             AND j.tenant_id = c.tenant_id AND j.owner_id = c.owner_id
         JOIN knowledge_document_revision r ON r.tenant_id = c.tenant_id AND r.owner_id = c.owner_id
             AND r.document_id = c.document_id AND r.content_revision = c.document_version
-        WHERE c.tenant_id = #{caller.tenantId} AND c.owner_id = #{caller.userId}
+        WHERE c.tenant_id = #{caller.tenantId}
+            AND (c.owner_id = #{caller.userId}<if test="shared"> OR <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.SharingMapper.shared"/></if>)
             AND d.lifecycle = 'ACTIVE' AND d.lifecycle_ready = TRUE AND d.published_version = c.document_version
             AND d.published_job_id = j.job_id AND d.published_generation = j.index_generation
             AND j.document_id = c.document_id AND j.document_version = c.document_version AND j.content_hash = r.content_hash

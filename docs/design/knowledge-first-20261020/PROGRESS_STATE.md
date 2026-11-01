@@ -1,16 +1,18 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S13B 共享前置（待业务矩阵；S13A已交付）
+## 当前任务：S13B/C 共享与全链路撤权交付
 
-- 完整capability-delivery-20261021共51项，parallel=no，整体未完成；按原顺序继续。S13A用户决定为local-agentic/agentic-workbench及个人空间；不继承其他项目权限，不迁移旧local-dev资料。
-- S13A产品后端c0ddc0e/前端11f541a已正常ff合并推main；两仓分支CI41310705846/41310730447、main CI41310867623/41310924842精确SHA全部PASS，见[交付收据](../../qa/identity-20261101/delivery-result.json)。本轮文档归档交付现场继续记.local/s13a-product-delivery.json。
-- [C-IDENTITY](IDENTITY_CONTRACTS.md)/[TEST_RESULT](../../qa/identity-20261101/TEST_RESULT.md)/REVIEW/validation.json：Gateway19/Security10/Contracts11、React188、真实Casdoor+MySQL+生产构建浏览器6项、旧协议浏览器3项PASS；4张正式截图已查看。包含CSRF、个人隔离、退出旧cookie、到期恢复、state/code/nonce/未授权成员/回调重放拒绝。Java独立格式器缺失，既有Vite提示保留；无未解决阻断Finding。
-- [IDENTITY_RUNTIME](IDENTITY_RUNTIME.md)：本轮隔离Knowledge28194、Gateway28190、网页http://localhost:28196/，15分钟空闲。PID记录.local/identity/runtime-processes.json，日志.logs/s13a-runtime-*；preview-check已核对页面200/两后端readiness200/匿名session401。测试worker关闭，长期容器未更新；28197回归预览已停止。
-- 当前待决：S13B同组织指定成员只读共享，或具体团队/编辑/管理员矩阵，已异步询问。只读前置草案SHARING_READINESS.md已写；未得到答复不开放共享。当前owner谓词已定位，新授权不能直接替换为浏览器owner输入；S13B/C公开共享须完整撤权链路验收。
-- 下一步：完成S13A归档Git后在原目录进入S13B任务分支；读取用户矩阵答复，冻结C-SHARING及所属存储/契约，再实施验证。无答复时保留待决，不默认把测试账号当团队成员或赋予编辑权限。
-- Git/保留：两仓原目录feat/identity-readiness-20261101；无新worktree。已有Docker main工作树保留；.local身份/运行凭据、预算、.logs证据及用户.idea不清理。S13B草案单独留待本片，不混入S13A产品提交。
-- 授权：本地实施验证及正常提交合并推main；无生产部署/强推/清理/子Agent。Chat/Embedding累计保守预留0.957092/0.781784元保持，本片付费0，旧探针不重跑。
-- 规范：session-handoff/continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、validation、progress、Git/CI；架构建模/接口/并发安全/发布及个人网关/React配套。现有Runtime漂移用手工专业pass，不称机器Gate或独立人员审查。
+- 完整任务capability-delivery-20261021共51项，parallel=no，整体未完成。用户2026-11-02确认同组织指定成员只读；owner逐份授权/撤回，reader不编辑/转授；无团队或运营管理员。S13A和Docker原部署已交付，未被本片更新。
+- 当前清单：①恢复及矩阵DONE；②[C-SHARING](SHARING_CONTRACTS.md)DONE；③授权/目录/API/UI及消费路径DONE；④必要验证PASS；⑤文档已同步，提交/分支CI/正常合并推main进行中。S13B/C产品实施DONE，交付尚未完成，不要求用户再说继续。
+- 当前两仓原目录feat/knowledge-sharing-20261101；后端基线6ec2aff，前端a394f58，全部本片改动尚未提交。后端原Docker main工作树保留，无新worktree。
+- 实现：Knowledge V13共享修订/ACL/不可变命令回执，Casdoor当前成员只读适配；短事务CAS/审计，原key恢复；统一可读摘要、检索/引用/评测权威SQL与索引预过滤。React共享设置、共享给我、只读详情、所有消费选择器及准确私有/共享文案。公开共享默认关闭。
+- 证据：[TEST_RESULT](../../qa/sharing-20261102/TEST_RESULT.md)、[REVIEW](../../qa/sharing-20261102/REVIEW.md)。48个必要Java集成最终通过（首次全跑1个故障夹具漏SQL失败，补装配后8项复验PASS）；Java140单元；Python620通过/97默认跳过；前端192单元、真实共享浏览器1、旧浏览器17。真实Tasks/PG联合覆盖共享QA/研究/评测、历史404/报告抑制、恢复无新调用、生成中拒绝交付、精排外发前撤权。最后历史事件断言也已通过，日志.logs/s13c-events-joint-final.log；本轮测试全部结束。
+- 代码卫生：后端COMPLETE_WITH_LIMITATIONS（Java无独立格式器，命名常量/事务建议人工复核），前端COMPLETE；格式、类型、静态、构建、12注册契约文档验证均PASS。5张共享截图实际核对，18张本轮回归图归档前端当前QA，原历史图已恢复。
+- Runtime：[SHARING_RUNTIME](SHARING_RUNTIME.md)，新增显式--sharing，仅同次OIDC配置派生，不复制第二成员目录。V13仅隔离test库；不得改写。无prepare/up、IAM写、开发/生产迁移或付费调用。Casdoor当前三账号只读核对与两成员准入已复验，脱敏日志.logs/s13c-casdoor-readonly.log。
+- 下一片S14A运营反馈的权限范围尚未确认，已异步询问“资料owner处理自己资料反馈”或“指定组织运营成员”。此选择决定其他人的反馈/审批可见性，不能从S13B只读矩阵推定。完成S13B/C交付后按答复冻结C-OPERATIONS，未答复时仅做不依赖角色的只读核对。
+- 运行/保留：本轮Java/Python/浏览器服务随测试结束回收；前端28206预览exec87576/PID29033保留.local/sharing-dist。原28086Docker及28196身份预览、原main工作树、两仓.local凭据/账本、.logs与用户.idea保留；没有删除/清理。
+- 授权：已批准计划的本地实施、验证、按完整逻辑提交/正常合并/推main；无生产部署/强推/清理/子Agent。原Chat/Embedding保守累计0.957092/0.781784元保持，各1元上限，本片付费0。
+- 规范：session-handoff/continue-approved-delivery、backend/frontend-implementation、validation、runtime、progress、Git/CI；架构业务建模/持久化/接口/并发安全/容量/发布。沿既有手工专业pass，不冒称工程Runtime机器Gate或独立Agent审查。
 
 ### S12D 已交付
 

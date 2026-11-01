@@ -60,7 +60,8 @@
             #{row.datasetId}, #{row.revision}, #{row.definitionDigest}, #{row.createdAt})
     </insert>
     <select id="lockDocuments" resultType="string">
-        SELECT document_id FROM knowledge_document WHERE <include refid="owned"/> AND document_id IN
+        SELECT d.document_id FROM knowledge_document d WHERE d.tenant_id=#{caller.tenantId}
+            AND (d.owner_id=#{caller.userId}<if test="shared"> OR <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.SharingMapper.shared"/></if>) AND d.document_id IN
         <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
         ORDER BY document_id FOR SHARE
     </select>
