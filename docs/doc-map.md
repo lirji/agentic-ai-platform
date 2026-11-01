@@ -1,5 +1,7 @@
 # 文档来源映射
 
+2026-11-01 Docker正式身份增量：`deploy/docker/`对应[运行手册](../deploy/docker/README.md)及[当前部署记录](deployment/docker-identity-20261101/PROGRESS_STATE.md)。候选使用两仓固定提交；OIDC回调、代理、worker租户与镜像模式保持一致，历史工作区快照说明仅适用于旧部署。
+
 2026-10-27 本机 Docker 增量：`deploy/docker/` 对应 [运行手册](../deploy/docker/README.md) 与 [部署记录](deployment/docker-20261027/PROGRESS_STATE.md)。源码来源为用户明确指定的双仓当前工作树快照，包含未提交 S10E 后端；仅部署文件进入本次 Git 交付，业务实施进度不因此完成。
 
 同步日期：2026-10-21。

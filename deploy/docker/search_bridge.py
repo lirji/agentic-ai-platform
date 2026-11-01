@@ -1,6 +1,7 @@
-"""只把同机两套既有搜索端口映射到应用 loopback，不接受客户端指定目标。"""
+"""固定搜索与正式IAM端口映射到应用loopback，不接受客户端指定目标。"""
 
 import asyncio
+import os
 import signal
 from contextlib import suppress
 
@@ -8,6 +9,9 @@ TARGETS = (
     (26333, "agentic-ai-search-qdrant-1", 6333),
     (29200, "agentic-ai-search-elasticsearch-1", 9200),
 )
+if os.environ.get("IDENTITY_MODE", "local") == "oidc":
+    # issuer必须与浏览器一致，因此只转发固定本机Casdoor，不改令牌issuer。
+    TARGETS += ((18090, "auth-governance-casdoor", 8000),)
 MAX_CONNECTIONS = 32
 BUFFER_BYTES = 65536
 CONNECTION_SECONDS = 30
@@ -55,7 +59,7 @@ async def forward(reader, writer, host, port):
 
 
 async def main():
-    """只绑定共享容器网络的 loopback；两个转发端口不会发布到宿主或局域网。"""
+    """仅绑定共享网络loopback；转发端口不会发布到宿主或局域网。"""
     stop = asyncio.Event()
     for value in (signal.SIGTERM, signal.SIGINT):
         asyncio.get_running_loop().add_signal_handler(value, stop.set)
@@ -67,7 +71,9 @@ async def main():
                 await forward(reader, writer, host, port)
 
             servers.append(
-                await asyncio.start_server(accept, "127.0.0.1", local_port, limit=BUFFER_BYTES)
+                await asyncio.start_server(
+                    accept, "127.0.0.1", local_port, limit=BUFFER_BYTES
+                )
             )
         print("SEARCH_BRIDGE_READY", flush=True)
         await stop.wait()

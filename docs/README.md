@@ -1,6 +1,6 @@
 # 项目文档
 
-本机 Docker 应用：[运行手册](../deploy/docker/README.md)、[本次部署进度](deployment/docker-20261027/PROGRESS_STATE.md)。部署状态与下述业务实施进度分别记录。
+本机 Docker 应用：[运行手册](../deploy/docker/README.md)、[本次部署进度](deployment/docker-identity-20261101/PROGRESS_STATE.md)。部署状态与下述业务实施进度分别记录。
 
 当前任务：在[20 项差距](../.engineering/exploration/CAPABILITY_GAPS.md)基础上交付[完整任务拆分和实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)，共 11 批、51 项任务。方案已交付，用户随后要求开始实施，目前从 S8 质量闭环推进；当前状态见唯一 [PROGRESS_STATE](design/knowledge-first-20261020/PROGRESS_STATE.md)。
 

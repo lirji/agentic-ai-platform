@@ -71,8 +71,9 @@ services:
     network_mode: service:gateway
     depends_on: {gateway: {condition: service_healthy}}
     entrypoint: [python, /app/search_bridge.py]
+    environment: {IDENTITY_MODE: '${IDENTITY_MODE:-local}'}
     healthcheck:
-      test: [CMD, python, -c, 'import socket; [socket.create_connection(("127.0.0.1", p), 2).close() for p in (26333,29200)]']
+      test: [CMD, python, -c, 'import os,socket; ports=[26333,29200]+([18090] if os.environ.get("IDENTITY_MODE")=="oidc" else []); [socket.create_connection(("127.0.0.1", p), 2).close() for p in ports]']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -175,14 +176,14 @@ services:
     build:
       context: ${BUILD_CONTEXT}
       dockerfile: ${DOCKER_FILES}/Web.Dockerfile
-      args: {SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}', NODE_IMAGE: '${NODE_IMAGE}'}
+      args: {SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}', NODE_IMAGE: '${NODE_IMAGE}', IDENTITY_MODE: '${IDENTITY_MODE:-local}'}
     mem_limit: 512m
     cpus: 1
     network_mode: service:gateway
     depends_on: {conversations: {condition: service_healthy}}
     volumes: ['${RUNTIME_DIR}/web:/run/agentic:ro']
     healthcheck:
-      test: [CMD, node, -e, 'fetch("http://127.0.0.1:28086/api/local-session", {headers:{"X-Workbench-Request":"1"}}).then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))']
+      test: [CMD, node, -e, 'const oidc=process.env.VITE_IDENTITY_MODE==="oidc"; fetch("http://127.0.0.1:28086"+(oidc?"/api/v1/session":"/api/local-session"), {headers:{"X-Workbench-Request":"1"}}).then(r=>{if(r.status!==(oidc?401:200))process.exit(1)}).catch(()=>process.exit(1))']
       interval: 15s
       timeout: 5s
       retries: 10

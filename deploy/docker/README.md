@@ -2,7 +2,9 @@
 
 此入口将已有 Gateway、Knowledge、Tasks、Conversations、AI HTTP、LiteLLM、问答 worker 和 React 工作台作为 8 个独立容器运行，另有 1 个仅转发本机搜索端口的容器。复用 `dev-infra` 的 MySQL 8.4、MinIO、PostgreSQL 16，以及现有 `agentic-ai-search` 的 Qdrant/ES；不创建或管理共享数据库容器、网络和卷。
 
-工作台：<http://127.0.0.1:28086>；网关：<http://127.0.0.1:28080>。沿用固定 `workbench-user/local-dev` 本地测试身份、原数据库/桶/索引与两个累计模型预算。前端提供构建后的 `dist`，复用原同源身份桥；不属于生产身份接入方案。S10E 已完成后端与前端查重、原请求恢复和真实浏览器验收；本机运行快照 `52c4cd0088b45e33`，证据见[本片验收](../../docs/qa/document-dedup-20261027/TEST_RESULT.md)。部署初版记录仍作为历史保留。
+正式登录入口：<http://localhost:28086>；网关仅绑定本机28080。OIDC模式复用现有Casdoor（localhost:18090，容器DNS auth-governance-casdoor:8000）和已登记的local-agentic个人空间。账号由本机0600文件`.local/identity/ACCESS.md`提供，密钥只注入Gateway。旧local-dev数据保留原归属，不自动转成正式用户资料。
+
+本轮部署状态和验收以[Docker正式登录进度](../../docs/deployment/docker-identity-20261101/PROGRESS_STATE.md)为准。`--identity-mode local`保留原127.0.0.1测试身份入口兼容模式，不与正式模式混用。
 
 ## 前提与构建
 
@@ -12,11 +14,16 @@
 python3 deploy/docker/runtime.py prepare \
   --backend /absolute/path/agentic-ai-platform \
   --frontend /absolute/path/agentic-ai-platform-web \
-  --parsing --pdf --docx --structured-profile STRUCTURE_V3
+  --parsing --pdf --docx --structured-profile STRUCTURE_V3 \
+  --identity-mode oidc --committed-only
 python3 deploy/docker/runtime.py build --backend /absolute/path/agentic-ai-platform
 ```
 
-`prepare` 从实际工作树复制 Git 跟踪文件和非忽略的新文件，因此包含尚未提交的代码。快照位于后端 `.local/docker-runtime/releases/<源码摘要>/context`；`manifest.json` 保存两仓基线提交、逐文件 SHA-256 与未提交属性。Maven 只在此副本运行，不覆盖活动的宿主 JAR。原 `.local/` 中配置生成派生副本；两个预算文件直接挂载原文件，不复制或重置额度。快照拒绝符号链接。
+正式模式先用`python3 deploy/docker/identity_callback.py --management /path/to/existing/management-client.json`给专属应用追加精确28086回调，保留28196回调；不改其他应用或重新生成账号。后续核对/恢复Docker回调使用此工具；旧`identity_local.py --apply`严格检查单回调基线，不应用于已追加Docker回调的应用。
+
+`--committed-only`仅归档两仓HEAD，排除其他任务的工作区改动。快照位于`.local/docker-runtime/releases/<摘要>/context`，manifest记录提交、逐文件SHA-256与模式/解析开关；这些开关也参与摘要，避免不同身份构建共用镜像标签。Compose/Dockerfile同样从快照执行。省略该参数仍可用于明确的工作区联调，但不作为正式部署来源。Maven在快照构建，不覆盖宿主JAR；镜像由Compose导出Bake并加载到本机，不推镜像仓库。
+
+原`.local/`配置生成派生副本；两个预算文件挂载原文件，不复制或重置额度。OIDC模式网页不挂载测试签名私钥，后台worker仅在派生配置中绑定local-agentic；原宿主配置不变。`current.json`表示当前准备的候选版本，部署成功与否必须核对容器和DEPLOYMENT_RESULT，不能仅以prepare结果判断。
 
 ## 切换与验证
 
@@ -25,10 +32,10 @@ python3 deploy/docker/runtime.py build --backend /absolute/path/agentic-ai-platf
 ```sh
 python3 deploy/docker/runtime.py up --backend /absolute/path/agentic-ai-platform
 python3 deploy/docker/runtime.py status --backend /absolute/path/agentic-ai-platform
-python3 deploy/docker/runtime.py smoke --backend /absolute/path/agentic-ai-platform
+# local模式可使用runtime.py smoke；OIDC模式使用真实浏览器登录只读验收。
 ```
 
-`up` 接受当前快照的成功构建记录，等待真实 health/readiness，240 秒内未就绪返回失败。`smoke` 只读页面、资料、会话、任务和评测列表，不上传、不做向量查询、不调用付费模型。容器可运行不等于未完成业务已通过功能验收。
+`up` 接受当前快照的成功构建记录，等待真实 health/readiness，240 秒内未就绪返回失败。正式浏览器验收检查两个普通账号、匿名/未授权拒绝、Cookie/CSRF、退出及业务列表；不上传、不检索、不调用付费模型。容器可运行不等于未完成业务已通过功能验收。
 
 ## 配置与资源
 
@@ -42,11 +49,11 @@ python3 deploy/docker/runtime.py smoke --backend /absolute/path/agentic-ai-platf
 | 开关 | 生命周期读取原 lifecycle.json；解析/PDF/DOCX/profile 使用 prepare 显式参数，默认关闭新格式受理 |
 | 资源 | Java 384 MiB 堆；Knowledge 1 GiB（含解析子进程），其余 Java 768 MiB；AI 768 MiB、proxy/worker 各 1 GiB、Web 512 MiB、搜索转发 96 MiB；有界 CPU、只读根目录和独立临时目录 |
 | 重启 | unless-stopped，40 秒正常退出期限；共享网络需整体升级/重建，不支持独立横向扩容 |
-| 健康 | Java readiness（包含真实双索引/桶依赖）、AI live、LiteLLM 认证 models、worker 配置/PG/预算、Web 本地会话；模型生成质量不属于健康检查 |
+| 健康 | Java readiness（包含真实双索引/桶依赖）、AI live、LiteLLM 认证 models、worker 配置/PG/预算、Web 正式匿名session=401（local模式为本地会话200）；模型生成质量不属于健康检查 |
 
-搜索转发不解析 HTTP、不读取认证材料，只能连接上述固定目标；最多 32 条连接，每方向 64 KiB 分段并等待背压，连接建立 3 秒/总时长 30 秒。该适配仅服务同一台 Docker Desktop 上的已有依赖，不用于远程明文传输。
+搜索转发不解析 HTTP、不读取认证材料，只能连接上述固定目标，OIDC模式追加18090→auth-governance-casdoor:8000；最多 32 条连接，每方向 64 KiB 分段并等待背压，连接建立 3 秒/总时长 30 秒。该适配仅服务同一台 Docker Desktop 上的已有依赖，不用于远程明文传输。
 
-不要单独重建 gateway 后保留旧网络命名空间中的其他容器。升级先 `stop`，再整体 `docker compose ... up -d --force-recreate --wait`；显式指定 `.local/docker-runtime/compose.env` 和本目录 compose.yaml。固定身份入口仅适用于本机。
+不要单独重建 gateway 后保留旧网络命名空间中的其他容器。升级先 `stop`，再整体 `docker compose ... up -d --force-recreate --wait`；显式指定 `.local/docker-runtime/compose.env` 和本目录 compose.yaml。两种入口均只适用于本机。
 
 ## 停止与恢复
 
@@ -58,8 +65,8 @@ docker compose --env-file /absolute/path/agentic-ai-platform/.local/docker-runti
 
 普通停止不删除容器、卷、网络、密钥、恢复状态或预算。不要在 Docker 应用运行时执行旧 `local.py start`；它不识别 Docker 内部端口，可能产生重复 worker。
 
-含 V11 的快照首次启动会把 Knowledge 从 V10 升为 V11，增加仅 ACTIVE 内容参与的唯一性。V11 前必须停止旧 writer；迁移后不能直接启动不支持 V11 的旧 JAR。配置故障优先修复并重启相同 V11 镜像；数据库逆向恢复不在默认停止/回滚中执行。原备份只证明保存成功，不代表恢复演练通过。
+本轮已有追加迁移为Knowledge V11→V12、Tasks V4→V5、Conversations V1→V3。切换前正常停旧应用，保存三开发库SQL备份和原字段摘要；切换后校验版本、旧字段摘要与预算文件。迁移后不能直接重启不支持新schema的旧writer；配置问题优先修复同一新schema版本。不自动逆向恢复数据；备份成功不代表恢复演练通过。
 
 现行聊天程序要求价格在 7 天内核验；过期需实际核实后按原规则更新，不能仅改日期绕过。缺配置、账本或余额会关闭 worker，不能自动建新账本。
 
-本次结果见 [部署记录](../../docs/deployment/docker-20261027/PROGRESS_STATE.md)。日志、私密备份和快照保存在后端 `.logs/docker-deployment-20261027/`、`.local/docker-deployment-20261027/`、`.local/docker-runtime/`；仍用于恢复时必须保留。
+历史部署记录保留在[20261027部署](../../docs/deployment/docker-20261027/PROGRESS_STATE.md)。本轮日志/私密备份位于`.logs/docker-identity-20261101/`、`.local/docker-identity-20261101/`；源码/镜像收据在`.local/docker-runtime/`。无清理授权时保留这些恢复材料。
