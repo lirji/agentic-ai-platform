@@ -5,7 +5,7 @@
     "S13C"
   ],
   "status": "PASS",
-  "delivery": "PENDING",
+  "delivery": "PASS",
   "scope": "real-db-index-http-tasks-pg-and-browser; protocol model ports only",
   "paidCalls": 0,
   "deploymentExecuted": false,
@@ -75,7 +75,8 @@
     ".logs/s13c-code-hygiene-final.log": "496be5365ee9bf32718c155c33999e03f96a581027efbd25e94a040eae997b9f",
     ".logs/s13c-doc-contracts.log": "b84ffe57789b04d3f4ec39bd97ce3e105f5969ec38395783e063d1e5f39a12fd",
     ".logs/s13c-joint-13758045025645574489/consumers.log": "f71c59edf35054ee57c4709e1c3d0a29e9615d24c69580e30236ad3709fc3918",
-    ".logs/s13b-browser-10229499330609422357/browser.log": "2fb542f7ba43f662f91f26fd1ed9858bbff1e9cdd338b7386aaf8f21d8f7a830"
+    ".logs/s13b-browser-10229499330609422357/browser.log": "2fb542f7ba43f662f91f26fd1ed9858bbff1e9cdd338b7386aaf8f21d8f7a830",
+    ".logs/s13bc-test-task-state.txt": "90b52b2f335e3ecc912f80c8111b8a08d856e134bd05d37da4fc0377218746f2"
   },
   "frontendEvidence": {
     ".logs/s13c-final-unit.log": "44bb09d67639a56fddb58355fcded7fbd35037dc1e98d4dcec78ecd97232312f",
@@ -134,5 +135,6 @@
     "History task contract is 404 on revoked evidence, not 200/null",
     "Fault-injection mapper fixture now loads shared SQL include",
     "Old browser fixture registers sharing capabilities disabled"
-  ]
+  ],
+  "deliveryReceipt": "delivery-result.json"
 }

@@ -1,6 +1,6 @@
 # S13B/C 指定成员只读共享验收
 
-结论：功能、全链路撤权及代码卫生复核通过；Git/CI结果见validation.json与交付收据。完整51项计划未完成，本片不代表生产部署。
+结论：功能、全链路撤权及代码卫生复核通过；两仓产品提交已正常ff合并推main，分支/main CI全部PASS；见[交付收据](delivery-result.json)。完整51项计划未完成，本片不代表生产部署。
 
 范围：[C-SHARING](../../design/knowledge-first-20261020/SHARING_CONTRACTS.md)、[运行说明](../../design/knowledge-first-20261020/SHARING_RUNTIME.md)。用户2026-11-02选择同组织指定成员只读，所有者逐份授权/撤回；接收者不编辑或转授。
 
@@ -19,3 +19,5 @@
 浏览器会话由测试夹具提供，API真实走隔离Java/MySQL；Node只在服务端签测试请求。另已只读核对真实Casdoor按稳定userId访问，原S13A正式登录证据沿用。本片没有创建账户、复制真实用户数据或付费模型请求。
 
 V13只应用隔离test库，不改写迁移历史。开发/生产数据库与运行容器未迁移或更新；测试随机租户/回执/日志保留，不清空数据重测。已知限制与整改见[REVIEW](REVIEW.md)；日志/源码/截图摘要见[validation.json](validation.json)。
+
+保留状态：5个本轮隔离联合测试租户中，失败尝试留1条租约已过期的RUNNING测试行，无活跃租约或worker；状态记录`.logs/s13bc-test-task-state.txt`。没有删除或重发，后续清理须明确范围。

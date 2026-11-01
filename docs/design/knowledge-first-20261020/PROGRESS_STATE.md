@@ -1,16 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S13B/C 共享与全链路撤权交付
+## 当前任务：S13B/C 已交付；S14A 运营权限待明确
 
 - 完整任务capability-delivery-20261021共51项，parallel=no，整体未完成。用户2026-11-02确认同组织指定成员只读；owner逐份授权/撤回，reader不编辑/转授；无团队或运营管理员。S13A和Docker原部署已交付，未被本片更新。
-- 当前清单：①恢复及矩阵DONE；②[C-SHARING](SHARING_CONTRACTS.md)DONE；③授权/目录/API/UI及消费路径DONE；④必要验证PASS；⑤文档已同步，提交/分支CI/正常合并推main进行中。S13B/C产品实施DONE，交付尚未完成，不要求用户再说继续。
-- 当前两仓原目录feat/knowledge-sharing-20261101；后端基线6ec2aff，前端a394f58，全部本片改动尚未提交。后端原Docker main工作树保留，无新worktree。
+- 当前清单：①恢复及矩阵DONE；②[C-SHARING](SHARING_CONTRACTS.md)DONE；③授权/目录/API/UI及消费路径DONE；④必要验证PASS；⑤文档与产品Git/CI交付PASS。S13B/C已交付；完整计划未完成。
+- 两仓原目录feat/knowledge-sharing-20261101；后端80cd247、前端6da97b8已正常ff合并推origin/main。分支CI41328517516/41328520845、main CI41328683147/41328735735全部精确SHA PASS；见[交付收据](../../qa/sharing-20261102/delivery-result.json)。当前只归档本收据与进度，归档后的精确HEAD/CI状态保存.local/s13bc-archive-delivery.json，不递归写自身提交hash。后端原Docker main工作树保留，无新worktree。
 - 实现：Knowledge V13共享修订/ACL/不可变命令回执，Casdoor当前成员只读适配；短事务CAS/审计，原key恢复；统一可读摘要、检索/引用/评测权威SQL与索引预过滤。React共享设置、共享给我、只读详情、所有消费选择器及准确私有/共享文案。公开共享默认关闭。
 - 证据：[TEST_RESULT](../../qa/sharing-20261102/TEST_RESULT.md)、[REVIEW](../../qa/sharing-20261102/REVIEW.md)。48个必要Java集成最终通过（首次全跑1个故障夹具漏SQL失败，补装配后8项复验PASS）；Java140单元；Python620通过/97默认跳过；前端192单元、真实共享浏览器1、旧浏览器17。真实Tasks/PG联合覆盖共享QA/研究/评测、历史404/报告抑制、恢复无新调用、生成中拒绝交付、精排外发前撤权。最后历史事件断言也已通过，日志.logs/s13c-events-joint-final.log；本轮测试全部结束。
 - 代码卫生：后端COMPLETE_WITH_LIMITATIONS（Java无独立格式器，命名常量/事务建议人工复核），前端COMPLETE；格式、类型、静态、构建、12注册契约文档验证均PASS。5张共享截图实际核对，18张本轮回归图归档前端当前QA，原历史图已恢复。
 - Runtime：[SHARING_RUNTIME](SHARING_RUNTIME.md)，新增显式--sharing，仅同次OIDC配置派生，不复制第二成员目录。V13仅隔离test库；不得改写。无prepare/up、IAM写、开发/生产迁移或付费调用。Casdoor当前三账号只读核对与两成员准入已复验，脱敏日志.logs/s13c-casdoor-readonly.log。
 - 下一片S14A运营反馈的权限范围尚未确认，已异步询问“资料owner处理自己资料反馈”或“指定组织运营成员”。此选择决定其他人的反馈/审批可见性，不能从S13B只读矩阵推定。完成S13B/C交付后按答复冻结C-OPERATIONS，未答复时仅做不依赖角色的只读核对。
-- 运行/保留：本轮Java/Python/浏览器服务随测试结束回收；前端28206预览exec87576/PID29033保留.local/sharing-dist。原28086Docker及28196身份预览、原main工作树、两仓.local凭据/账本、.logs与用户.idea保留；没有删除/清理。
+- 运行/保留：本轮Java/Python/浏览器服务随测试结束回收；前端28206预览exec87576/PID29033保留.local/sharing-dist。原28086Docker及28196身份预览、原main工作树、两仓.local凭据/账本、.logs与用户.idea保留；没有删除/清理。5个本轮隔离测试租户中保留1条失败尝试的过期RUNNING行，无活跃租约；记录.logs/s13bc-test-task-state.txt，不自动重发或清空。
 - 授权：已批准计划的本地实施、验证、按完整逻辑提交/正常合并/推main；无生产部署/强推/清理/子Agent。原Chat/Embedding保守累计0.957092/0.781784元保持，各1元上限，本片付费0。
 - 规范：session-handoff/continue-approved-delivery、backend/frontend-implementation、validation、runtime、progress、Git/CI；架构业务建模/持久化/接口/并发安全/容量/发布。沿既有手工专业pass，不冒称工程Runtime机器Gate或独立Agent审查。
 
