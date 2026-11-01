@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "delivery-result-v1",
+  "slice": "S12D",
+  "status": "PASS",
+  "authorization": "User standing normal commit/merge/push grant; no deployment",
+  "repositories": [
+    {
+      "repository": "backend",
+      "commit": "a29bf0d9153c58b8619fa6aaace9e69f1b79d845",
+      "branch": "feat/research-stage-recovery-20261101",
+      "mainPush": "PASS",
+      "remoteMain": "a29bf0d9153c58b8619fa6aaace9e69f1b79d845",
+      "branchCI": {
+        "id": 41293703524,
+        "status": "PASS"
+      },
+      "mainCI": {
+        "id": 41294071764,
+        "status": "PASS",
+        "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41294071764"
+      }
+    },
+    {
+      "repository": "frontend",
+      "commit": "847555970abd5a003bc2f0a177f424216bf284d6",
+      "branch": "feat/research-stage-recovery-20261101",
+      "mainPush": "PASS",
+      "remoteMain": "847555970abd5a003bc2f0a177f424216bf284d6",
+      "branchCI": {
+        "id": 41293708775,
+        "status": "PASS"
+      },
+      "mainCI": {
+        "id": 41294073626,
+        "status": "PASS",
+        "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41294073626"
+      }
+    }
+  ],
+  "validation": "validation.json",
+  "cleanup": "No new worktree or deletion; .local/.logs/cache and existing main worktree retained"
+}

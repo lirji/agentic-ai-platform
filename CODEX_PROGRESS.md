@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务capability-delivery-20261021：S12C已交付，正在S12D分阶段恢复；整个51项任务未完成。
-- 两仓原目录分支feat/research-stage-recovery-20261101，起点后端31ad204/前端c324985；S12D实现与必需验证通过，证据文档及Git/CI交付进行中；接续S13A身份配置核对。
-- 唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。按其中下一操作继续；预算/数据/旧版本和既有授权全部保持。
+- 当前任务capability-delivery-20261021：S12D已实现、验收并合并推main；完整51项计划未完成，接续S13A。
+- 本片后端a29bf0d/前端8475559，任务分支及main CI全部PASS；两仓原目录feat/research-stage-recovery-20261101，交付记录归档后进入S13A。
+- 唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。U03真实身份范围已异步询问；其余授权、原预算和数据边界保持。
 
 ## 前期可行性任务记录
 

@@ -1,15 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S12D 分阶段恢复（VERIFIED，Git交付待完成）
+## 当前任务：S12D 已交付，接续S13A
 
 - 完整任务capability-delivery-20261021：51项已批准，parallel=no；用户持续授权继续，整体未完成。
-- 两仓原目录分支feat/research-stage-recovery-20261101，起点后端31ad204/前端c324985；本片仍未提交，无新工作树。后端原main工作树保留。
-- [恢复契约](RESEARCH_RECOVERY_CONTRACTS.md)：显式v4受理/输入/根图，结果复用v3；retrieve/plan/analyze/verify同步确认；默认关闭、不扩大预算/租约，不启用内部saver/子Agent/shell。
-- 已验证：Tasks真实MySQL29、契约11、security10；网关8；新根图6、真实PG最终12（含旧v1三项）及v3七项；前端179、旧浏览器3、真实联合浏览器3、Docker无外网代理13条路由PASS。真实联合.logs/s12d-full-joint-r2.log、.logs/s11e-joint-17660250053019201289/；恢复输入栅栏追加后6单元/12PG通过。最新Java协议常量修正后.logs/s12d-java-final.log通过。
-- 审查修正：恢复输入须匹配中央冻结输入；计划模型无工具字段/禁止工具响应；SSE历史状态整批只刷新一次，解决权限重验503；事件协议复用常量。10张真实联合截图均查看，3张旧浏览器截图保留；卫生无阻断，Java独立格式器缺失和缓存枚举重叠提示保留。
-- 当前：最终Python620/96默认跳过、证据文档/两仓源码摘要校验PASS（32后端/12前端源文件、14文档296链接）；下一步完成本片提交、分支CI、正常ff合并推main及CI，随后S13A既定IAM接入核对。已发现本机auth-platform/Casdoor实例，尚未确认本项目应用/组织/角色与回调配置，已向用户异步询问U03身份范围；答复前不写IAM或冻结真实成员权限。
-- 运行：前端28186既有预览PID49541保留，日志前端.logs/s12b-preview.log；无新付费/迁移/部署。S12C归档main CI41291728478/41291759613均PASS；.local/.logs/原Docker工作树不清理。
-- 授权：本地实施验证、按任务提交及正常合并推main；不含生产部署/强推/清理/子Agent。Chat/Embedding各1元，累计保守预留0.957092/0.781784保持，本片付费0，旧探针不可重跑。
+- S12D实现/必需验收/分支和main CI全部PASS。后端a29bf0d9153c58b8619fa6aaace9e69f1b79d845、前端847555970abd5a003bc2f0a177f424216bf284d6已正常ff合并推main；两仓原目录分支feat/research-stage-recovery-20261101，无新worktree。
+- [恢复契约](RESEARCH_RECOVERY_CONTRACTS.md)：v4显式受理/输入/根图，结果复用v3；retrieve/plan/analyze/verify同步确认；默认关闭，不扩大预算/租约，不启用内部saver/子Agent/shell。
+- [TEST_RESULT](../../qa/research-recovery-20261101/TEST_RESULT.md)、REVIEW/validation.json：Tasks真实MySQL29、契约11/security10，网关8；Python620通过/96默认跳过、6根图/12真实PG（含旧v1三项）及v3七项；前端179、旧浏览器3、真实联合浏览器3、Docker代理13。10联合截图已查看，3回归截图保留；32后端/12前端源文件摘要。Java独立格式器缺失与旧工具提示如实记录，无阻断Finding。
+- 修复历史：恢复输入匹配中央；计划端口无工具；SSE历史状态整批仅刷新一次，解决权限重验503；事件语义常量统一。真实联合.logs/s12d-full-joint-r2.log及.logs/s11e-joint-17660250053019201289/；最终Java/Python/PG日志见validation。
+- [交付收据](../../qa/research-recovery-20261101/delivery-result.json)：分支CI41293703524/41293708775、main CI41294071764/41294073626均精确SHA PASS。当前仅交付记录归档待提交，随后在原目录新建S13A分支。
+- S13A前置只读核对已完成：本机Casdoor公开discovery可达、auth-platform参考存在，但未找到本项目组织/客户端登记证据；当前前端仍是本地会话。U03身份范围已异步询问，答复前不写IAM或冻结真实成员权限。草稿.local/s13a-identity-readiness.md；下一步保存可审阅前置报告并按用户答复冻结C-IDENTITY。
+- 运行：测试已结束；前端28186既有预览PID49541、日志前端.logs/s12b-preview.log保留。无付费/迁移/部署。原Docker main工作树、.local凭据/预算、.logs证据及.idea用户文件保留；缓存可在无需复现且获清理授权后处理，本轮未清理。
+- 授权：本地实施验证、按任务提交及正常合并推main；不含生产部署/强推/清理/子Agent。Chat/Embedding各1元，累计保守预留0.957092/0.781784保持，本片付费0，旧探针不可重跑。账户40%余量旧目标未核实，不替代最新开发要求。
 - 规范：session-handoff/continue-approved-delivery、Contracts Stage、backend/frontend-implementation、validation、progress/docs、Git/CI；架构建模/持久化/接口/并发安全/容量/发布。既有Runtime漂移沿手工专业pass，不冒称机器Gate或独立Agent审查。
 
 ### S12C 已交付
