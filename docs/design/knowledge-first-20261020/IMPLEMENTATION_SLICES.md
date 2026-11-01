@@ -225,7 +225,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S13A | 正式登录与可信身份生命周期 | S8A | IMPLEMENT | DONE |
 | S13B | 个人/团队资料共享与撤权 | S13A, S10B | IMPLEMENT | DONE |
 | S13C | 撤权贯穿检索、在途与历史结果 | S13B, S11E, S12D | IMPLEMENT | DONE |
-| S14A | 问题反馈与运营收件箱 | S8B, S7 | IMPLEMENT | PLANNED |
+| S14A | 问题反馈与运营收件箱 | S8B, S7 | IMPLEMENT | VERIFYING |
 | S14B | 候选知识编辑与内容绑定评估 | S14A, S8D, S10B, S13A | IMPLEMENT | PLANNED |
 | S14C | 审核与真实入库发布 | S14B, S13B | IMPLEMENT | PLANNED |
 | S14D | 发布后探测与补偿版本 | S14C, S8D, S10C | IMPLEMENT | PLANNED |
@@ -563,7 +563,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-OPERATIONS；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 幂等、真实任务/文档引用校验、租户隔离；普通用户不能看运营全量；未知提交可查询；反馈不直接改知识正文。
 - **Pass / Runtime：** IMPLEMENT；现有 Knowledge MySQL；无模型调用。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G09 G18。
+- **状态 / 并行 / 对应缺口：** VERIFYING；parallel=no；G09 G18。本地实现及真实DB/Tasks/HTTP通过，最终浏览器/截图复核通过，Git/CI待收尾；C-OPERATIONS已冻结为资料所有者收件箱。
 
 ### S14B · 候选知识编辑与内容绑定评估
 

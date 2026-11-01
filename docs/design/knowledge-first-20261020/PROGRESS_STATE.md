@@ -1,11 +1,22 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S13B/C及回执恢复补修已交付；S14A权限待明确
+## 当前任务：S14A 所有者处理反馈（实施中）
+
+- 用户2026-11-02答复“自行处理”：资料所有者查看自己资料的反馈、编辑候选并审批发布修正；不新增组织运营管理员，不允许共享接收者编辑/转授。继续原capability-delivery-20261021共51项，parallel=no，整体未完成。
+- 计划：①冻结C-OPERATIONS反馈与权限契约；②S14A真实反馈持久化、引用/任务关联校验、所有者收件箱和本人记录；③验证/审查/正常Git交付；④接S14B候选编辑与内容绑定评估、S14C审批真实发布、S14D发布核验/补偿版本。每片独立完成后连续推进。
+- 当前①契约/②实现完成，③验证交付进行中。两仓feat/knowledge-feedback-20261102，基线后端da068c4/前端3e032d2。Knowledge真实DB/HTTP共7项含实际Tasks/浏览器联合PASS（.logs/s14a-joint-final.log）；Tasks专项1项PASS；前端202单元及最终12定向/格式/类型/静态/构建PASS。最后补回列表筛选/分页保留与截图过渡等待，最终构建浏览器复验PASS（.logs/s14a-browser-final.log），5张截图已实看。当前本地验收/审查PASS，待正常Git/CI交付。
+- Review：任务证明隔离用途、完整实际引用、当前ACL、原key恢复、私有taskId隐去均通过；短事务/唯一键/范围索引复核。代码卫生首轮发现测试启动循环吞连接异常，已保留错误类型并复验PASS_WITH_LIMITATIONS（Java无独立格式器）；前端文本扫描PASS，PNG单独实看。首轮TXT定位夹具为空及次轮按钮文案断言失败已保留日志。Runtime显式开关/默认关闭/配置检查PASS，未部署。
+- 关键边界：每条反馈只指向一份资料及选中证据；提交者明确填写将发送的内容，不默认复制整段私有问答/研究正文。绑定任务由Tasks权威校验，不跨库读取。所有者收件箱不等于可读提交者的私有任务；查看和修改仍按tenant+owner范围。
+- 验收：幂等与未知提交恢复；真实资料/任务引用、过期或撤权拒绝；本人记录/owner收件箱/第三人隔离；反馈不直接改知识正文；真实HTTP/DB与浏览器桌面/窄屏验证。
+- 授权/规范：沿原本地实施、必要测试、独立分支正常提交/合并/推main授权；无生产部署、强推、清理、子Agent、新付费预算。使用continue-approved-delivery、bounded contracts/backend/frontend/validation/progress/Git pass；架构业务建模、持久化、接口、并发安全、容量、发布治理。原Chat/Embedding累计0.957092/0.781784元保留，本片不发付费调用。
+- 运行/保留：28206旧共享预览及28086Docker/28196身份预览保留；两仓.local凭据/账本、.logs、原main工作树和用户.idea保留。28216反馈预览使用.local/feedback-dist（session78095）；最终浏览器联测已结束，日志.logs/s14a-browser-final.log；临时Tasks已正常退出。保留测试V14和全部随机租户记录。
+
+### S13B/C 已交付（历史）
 
 - 完整任务capability-delivery-20261021共51项，parallel=no，整体未完成。用户2026-11-02确认同组织指定成员只读；owner逐份授权/撤回，reader不编辑/转授；无团队或运营管理员。S13A和Docker原部署已交付，未被本片更新。
 - 当前清单：①恢复及矩阵DONE；②[C-SHARING](SHARING_CONTRACTS.md)DONE；③授权/目录/API/UI及消费路径DONE；④必要验证PASS；⑤文档与产品Git/CI交付PASS。S13B/C已交付；完整计划未完成。
 - 两仓原目录feat/knowledge-sharing-20261101；后端80cd247、前端6da97b8已正常ff合并推origin/main。分支CI41328517516/41328520845、main CI41328683147/41328735735全部精确SHA PASS；见[交付收据](../../qa/sharing-20261102/delivery-result.json)。本次产品及补修收据均已确认；最后收据/恢复入口归档的精确HEAD与CI保存.local/s13bc-archive-delivery.json，不递归写自身提交hash。后端原Docker main工作树保留，无新worktree。
-- 收尾发现并立即整改：前端SharingPanel在功能关闭时隐藏整个面板，access读取失败也遮住原键查询按钮。服务端原回执GET仍可用，因此补UI只读恢复路径（不读目录/不发新命令）。原产品交付记录保留；该后续修复8项定向单元/格式/类型/静态/构建PASS，最终构建真实浏览器复验PASS（.logs/s13c-recovery-browser-final.log）；前端cbe1088已正常ff合并推main，分支CI 41329703941/main CI 41329938057均精确SHA PASS（196项单元）。源码/截图/日志摘要已同步，修复已交付。S14角色仍待用户回复。
+- 收尾发现并立即整改：前端SharingPanel在功能关闭时隐藏整个面板，access读取失败也遮住原键查询按钮。服务端原回执GET仍可用，因此补UI只读恢复路径（不读目录/不发新命令）。原产品交付记录保留；该后续修复8项定向单元/格式/类型/静态/构建PASS，最终构建真实浏览器复验PASS（.logs/s13c-recovery-browser-final.log）；前端cbe1088已正常ff合并推main，分支CI 41329703941/main CI 41329938057均精确SHA PASS（196项单元）。源码/截图/日志摘要已同步，修复已交付。S14角色现已按上方用户答复解除阻塞。
 - 实现：Knowledge V13共享修订/ACL/不可变命令回执，Casdoor当前成员只读适配；短事务CAS/审计，原key恢复；统一可读摘要、检索/引用/评测权威SQL与索引预过滤。React共享设置、共享给我、只读详情、所有消费选择器及准确私有/共享文案。公开共享默认关闭。
 - 证据：[TEST_RESULT](../../qa/sharing-20261102/TEST_RESULT.md)、[REVIEW](../../qa/sharing-20261102/REVIEW.md)。48个必要Java集成最终通过（首次全跑1个故障夹具漏SQL失败，补装配后8项复验PASS）；Java140单元；Python620通过/97默认跳过；前端196单元、真实共享浏览器1、旧浏览器17。真实Tasks/PG联合覆盖共享QA/研究/评测、历史404/报告抑制、恢复无新调用、生成中拒绝交付、精排外发前撤权。最后历史事件断言也已通过，日志.logs/s13c-events-joint-final.log；本轮测试全部结束。
 - 代码卫生：后端COMPLETE_WITH_LIMITATIONS（Java无独立格式器，命名常量/事务建议人工复核），前端COMPLETE；格式、类型、静态、构建、12注册契约文档验证均PASS。5张共享截图实际核对，18张本轮回归图归档前端当前QA，原历史图已恢复。

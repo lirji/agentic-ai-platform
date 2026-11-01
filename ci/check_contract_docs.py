@@ -9,6 +9,7 @@ REGISTERED_CONTRACTS = {
     "CI_CONTRACTS.md": "ci-v1",
     "IDENTITY_CONTRACTS.md": "identity-session-v1",
     "SHARING_CONTRACTS.md": "sharing-v1",
+    "OPERATIONS_CONTRACTS.md": "operations-feedback-v1",
     "RETRIEVAL_CONTRACTS.md": "knowledge-search-v2",
     "QUALITY_CONTRACTS.md": "quality-v1",
     "EVALUATION_RUN_CONTRACTS.md": "evaluation-run-v1",

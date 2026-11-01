@@ -45,7 +45,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 /** 真实 MySQL 的锁、事务与约束验证；每例使用新租户，不清理或覆盖旧数据。 */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"management.server.port=0", "spring.main.banner-mode=off", "task.generation-enabled=true", "task.contextual-qa-enabled=true"})
+        properties = {"management.server.port=0", "spring.main.banner-mode=off", "task.generation-enabled=true", "task.contextual-qa-enabled=true", "task.feedback-enabled=true"})
 @org.springframework.context.annotation.Import(CitationTestConfiguration.class)
 class TaskPersistenceIT {
     @Autowired CitationTestConfiguration.ControlledCitations citations;
@@ -487,7 +487,7 @@ class TaskPersistenceIT {
     }
 
 
-    @Test void generationManifestIsDurableMonotonicAndNeverUsesLegacyAuthorization() {
+    @Test void generationManifestIsDurableMonotonicAndNeverUsesLegacyAuthorization() throws Exception {
         var owner = owner(); String id = UUID.randomUUID().toString();
         var input = json.createObjectNode().put("schemaVersion", "knowledge-qa-input-v2")
                 .put("conversationId", UUID.randomUUID().toString()).put("turnId", UUID.randomUUID().toString())
@@ -501,6 +501,9 @@ class TaskPersistenceIT {
         var lease = tasks.claim(worker, new Claim(TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V2)).task();
         var ref = new com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference(UUID.randomUUID().toString(), 1, 2,
                 UUID.randomUUID().toString(), "text-v1", "a".repeat(64), "b".repeat(64), "c".repeat(64));
+        var proofService=context.getBean(com.lrj.agentic.task.application.TaskFeedbackProof.class);
+        var proofRequest=new com.lrj.agentic.contract.knowledge.FeedbackProtocol.ProofRequest(ref);
+        error(TaskError.NOT_FOUND, () -> proofService.issue(owner,id,proofRequest));
         var registration = new GenerationEvidence(lease.epoch(), "full", "knowledge-evidence-v2", List.of(ref));
         var receipt = tasks.generationEvidence(worker, id, registration);
         assertThat(tasks.generationEvidence(worker, id, registration)).isEqualTo(receipt);
@@ -533,12 +536,26 @@ class TaskPersistenceIT {
         result.putArray("retrieval").addObject().put("strategy", "LLAMA_RRF_V1").put("mode", "RRF")
                 .put("degraded", false).put("elapsedMs", 1);
         tasks.complete(worker, id, new Complete(lease.epoch(), "complete", result));
+        // 证明只覆盖最终实际引用，不把用于检索的隐藏依赖包装为用户答案证据。
+        var proof=proofService.issue(owner,id,proofRequest).proof();
+        var claims=com.nimbusds.jwt.SignedJWT.parse(proof).getJWTClaimsSet();
+        assertThat(claims.getAudience()).containsExactly(com.lrj.agentic.contract.knowledge.FeedbackProtocol.AUDIENCE);
+        assertThat(claims.getStringClaim("task_id")).isEqualTo(id);
+        assertThat(claims.getStringClaim("reference_digest")).isEqualTo(com.lrj.agentic.contract.knowledge.FeedbackProtocol.digest(ref));
+        assertThat(claims.getExpirationTime().getTime()-claims.getIssueTime().getTime()).isEqualTo(60000);
+        error(TaskError.NOT_FOUND, () -> proofService.issue(owner,id,new com.lrj.agentic.contract.knowledge.FeedbackProtocol.ProofRequest(hiddenDependency)));
+        error(TaskError.NOT_FOUND, () -> proofService.issue(new Caller(owner.tenantId(),"stranger"),id,proofRequest));
+        var proofBody=json.writeValueAsString(proofRequest);
+        assertThat(http("POST","/api/v1/tasks/"+id+"/feedback-proof",owner,"task:read",null,proofBody).statusCode()).isEqualTo(200);
+        assertThat(http("POST","/api/v1/tasks/"+id+"/feedback-proof",owner,"task:write",null,proofBody).statusCode()).isEqualTo(403);
+        assertThat(http("POST","/api/v1/tasks/"+id+"/feedback-proof",owner,"task:read",null,proofBody.replace("{", "{\"forged\":true,")).statusCode()).isEqualTo(400);
         var inherited = tasks.generationManifest(worker, id);
         assertThat(inherited.references()).containsExactlyInAnyOrder(ref, hiddenDependency);
         assertThat(inherited.evidenceDigest()).isEqualTo(com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.digest(inherited.references()));
         error(TaskError.NOT_FOUND, () -> tasks.generationManifest(worker(owner(), "other-tenant"), id));
         // 即使最终只引用第一项，前文使用过的第二项失效也不能再被追问继承。
         citations.generationResponse = refs -> !refs.contains(hiddenDependency);
+        error(TaskError.NOT_FOUND, () -> proofService.issue(owner,id,proofRequest));
         error(TaskError.NOT_FOUND, () -> tasks.generationManifest(worker, id));
         error(TaskError.NOT_FOUND, () -> tasks.get(owner, id));
     }

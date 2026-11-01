@@ -323,3 +323,5 @@ K07新增 `POST /api/v2/knowledge/documents/{id}/withdrawals` 与 `/deletions`�
 显式POST `/api/v4/tasks`、GET `/api/v4/tasks/capabilities`，新增Tasks环境键`TASK_RESEARCH_STAGED_ENABLED=false`，仍需generation/research开关。关闭仅阻止新v4受理；worker按持久graphVersion处理旧v1/v2/v3及新v4，恢复沿既有PG中央凭据。
 
 新图retrieve→plan→analyze→verify将计划单独确认，不改旧图。回退先关闭v4受理，保留支持v4的Tasks/worker读写在途和历史任务；不能把v4行交给旧图。无schema/依赖变化，未运行部署；同源代理13条路由在既有Node候选镜像中只读挂载验证。完整[契约](../docs/design/knowledge-first-20261020/RESEARCH_RECOVERY_CONTRACTS.md)与[验收](../docs/qa/research-recovery-20261101/TEST_RESULT.md)。
+
+S14A反馈及任务引用证明开关、关闭行为与隔离测试见[资料反馈运行说明](../docs/design/knowledge-first-20261020/OPERATIONS_RUNTIME.md)。当前运行实例未随本片更新。

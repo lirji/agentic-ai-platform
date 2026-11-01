@@ -43,6 +43,8 @@ public enum KnowledgeError implements ErrorCode {
     SHARING_MEMBER_UNAVAILABLE("KNOWLEDGE_SHARING_MEMBER_UNAVAILABLE", "成员状态暂不可用，请稍后重试。", 503),
     SHARING_REVISION_CONFLICT("KNOWLEDGE_SHARING_REVISION_CONFLICT", "共享设置已变化，请核对最新权限后重新提交。", 409),
     SHARING_LIMIT_EXCEEDED("KNOWLEDGE_SHARING_LIMIT_EXCEEDED", "共享范围超过当前上限，请缩小范围。", 409),
+    FEEDBACK_DISABLED("KNOWLEDGE_FEEDBACK_DISABLED", "资料反馈尚未启用。", 503),
+    FEEDBACK_PROOF_INVALID("KNOWLEDGE_FEEDBACK_PROOF_INVALID", "任务关联证明已失效，请重新核对后提交。", 400),
     BUSY("KNOWLEDGE_BUSY", "知识服务当前繁忙，请稍后重试。", 429);
 
     private final String code;

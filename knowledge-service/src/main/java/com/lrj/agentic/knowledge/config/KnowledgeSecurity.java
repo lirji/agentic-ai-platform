@@ -57,7 +57,7 @@ public class KnowledgeSecurity {
                                 "/api/v1/knowledge/evaluations/runs/*/questions/*/reviews",
                                 "/api/v1/knowledge/evaluations/datasets/*/revisions/*/baseline")
                         .hasAuthority("SCOPE_" + IdentityProtocol.WRITE_SCOPE)
-                        .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/search", "/api/v2/knowledge/search", "/api/v2/knowledge/citations/resolve")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/knowledge/search", "/api/v2/knowledge/search", "/api/v2/knowledge/citations/resolve", "/api/v1/knowledge/feedback")
                         .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)
                         .requestMatchers(HttpMethod.GET, "/api/v1/knowledge/**", "/api/v2/knowledge/**")
                         .hasAuthority("SCOPE_" + IdentityProtocol.READ_SCOPE)
