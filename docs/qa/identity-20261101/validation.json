@@ -1,0 +1,82 @@
+{
+  "slice": "S13A",
+  "status": "PASS",
+  "backendBase": "59239f2c794270782d8a8e0708feb02e602882d9",
+  "frontendBase": "8ebc5fa329b049d3606a1d2245fa4e2c754a4997",
+  "sources": {
+    "backend": {
+      "ci/check_contract_docs.py": "b98088ede134f0a187bf7bc5b6dc6df6b15c36322b5d6203e89968c896de38ec",
+      "deploy/identity_local.py": "d5fd509965831e057cfa590ad4763ca9ada82be21bdda2f20138e3791fad6ad5",
+      "deploy/identity_runtime.py": "3f3251871ab80763260a1a09a309975429873ee7bcbd38d5d7ef9a04721c0b3f",
+      "edge-gateway/pom.xml": "31da6692682321ab1bdd68284e3d28fef52d9e6047a55f7c83503914e797a2dd",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/BrowserIdentityClient.java": "2eaae2c9a4c60f1b107bd67c372db7f79477fb93b86a12af3c4c8616944f6c32",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/BrowserIdentityFailure.java": "467b3be6235bba6478f2d7395170e590d1aea863a2f0d7ca8464780d7f12a02d",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/BrowserIdentityProperties.java": "201b29c62030d14728458aa1e4a7b7972a63d3b59980543b7cbbf312555c737b",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/BrowserSecurity.java": "3f769a9373715578da5eeefe2d6db0d36f4f9b8c50d04e6f30c8b8b7d45b1fa2",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/BrowserSessionController.java": "c60b8e502df75373165c40f0d038c6737b295c684c362bbaf2714888eda648e1",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/BrowserSessionGuard.java": "150fade61c0f1e7c6089ead3483d8b62c2b05b7aafe203475c430101494f45bd",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/GatewaySecurity.java": "2ec6c8aef3a41bc7f10c366fb248258f8a420e97412ad1f7983a2b0ec117769c",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/InternalIdentityExchange.java": "2573578784568d50aefae514f56471275ffc4532f35760e548fc0c58aa33c6a7",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/PersonalMemberPolicy.java": "ac99541a91f1ee7343940e97f230ad16d047e43332163c0fc50d883e3a462737",
+      "edge-gateway/src/main/java/com/lrj/agentic/gateway/WorkspaceIdentity.java": "82defebd4e396da0ccba587c66ddf2ffcba3293a3695f49b4cb96653c523ad68",
+      "edge-gateway/src/main/resources/application.yml": "234565e1ee0b53e30b42a460b7f67ca505a89ac6283f8973b47620483b97ad7f",
+      "edge-gateway/src/test/java/com/lrj/agentic/gateway/BrowserIdentityTest.java": "4511f8574b9905cae34b31ae7197bf8e4767c4cbc1aacd22d8b9da151f1bb476",
+      "edge-gateway/src/test/java/com/lrj/agentic/gateway/BrowserSessionGuardTest.java": "99727dad2bfa2a8f265358ae89b65f6e7f5f615553002a3f2b8c8a5f1bba6529",
+      "platform-contracts/src/main/java/com/lrj/agentic/contract/PlatformError.java": "bdf70a1a0ac5eb32776af375b03bf529a932d0757ea8c20efd20c0182580e66e"
+    },
+    "frontend": {
+      "src/app/App.module.css": "a21dde32f441c5a7a146e1eb4fa70adf16d53f421ee71a5456e24717cd4e702e",
+      "src/app/App.tsx": "9dd81fa09bc80b0b6ff969766d19a7f249ff319c049a3c3ac62249d8ea685664",
+      "src/features/chat/stream.ts": "c711949304a063642b292f4a6aa941ea0b1db9cd69c6c3a67d5fb6bc1f4ac32f",
+      "src/features/identity/http.test.ts": "a89d383eba6f8a4435452fd1204040f9b38d3db280b6f95d4cc2f42df205747b",
+      "src/features/identity/session.test.ts": "a3c505109bee654e2c2d717d06a0201db50fd3b79807c1b100aeb900fe87876b",
+      "src/features/identity/session.ts": "51fa12d9e808f4247427618499e723dc83727dd749e020f51fdf7ae1daca7f9f",
+      "src/shared/api/errors.ts": "a46c407115264125e6bfadd0caf1e76569d66594dd63d5f3072588427ec12612",
+      "src/shared/api/http.ts": "4074f4abce7e2d24640ac3eb612b9cbf183dc091dfd47057c77d1376eefd7308",
+      "tests/identity-real.spec.ts": "e8d4336baebfd970fedae34142c8cd7b42131a69ede5efe71d643c80e84c5a5f",
+      "vite.config.ts": "17a15cf172dbb50e303a98d6eb869d5c82882465a2a5ac9b55d6eab1ce72b68c"
+    }
+  },
+  "logs": {
+    ".logs/s13a-backend-verified-r2.log": "c00fc44f1225e8473619207dbee9e9d8b5986d1d8f91d43540231e61445882e8",
+    ".logs/s13a-gateway-final-r3.log": "7569a60e6166ded9cdb796913d3307cdf6c1f99d1f735694308248a3edd71791",
+    ".logs/s13a-hygiene-verified.log": "de1346ab5561fbc3e4ccc602000239df729217a94cb7cbe6a15a0aaa448a421d",
+    ".logs/s13a-contract-docs-verified.log": "162799065a29dfd525cd7e9b7ed8e489148dea355eb2f7f298212e03ffba79e1",
+    ".logs/s13a-runtime-start.log": "209ad7342878fb5885c7ccdb2712b597c3ccb7de85b2d91042164084a4842901",
+    "../agentic-ai-platform-web/.logs/s13a-browser-final.log": "afef10a177735e192a79ef789898feec4308a7b84ea818323ef66de6713d8ffd",
+    "../agentic-ai-platform-web/.logs/s13a-web-final-unit.log": "df82f37ba330e44a6d09d8b233745c61d2c4ad80b2c7e96dc9218a459ac37615",
+    "../agentic-ai-platform-web/.logs/s13a-local-browser-final.log": "0905583b9213fdf0e7899360983f2d1e14fa2e8663ce93665d54eed9c267f7bd",
+    "../agentic-ai-platform-web/.logs/s13a-web-format-final.log": "1d66faad74f5e8709353f7288592866bd3a9095da1174a916e7aa632949971e2",
+    "../agentic-ai-platform-web/.logs/s13a-web-lint-verified.log": "050c69da23536758722729aeda55a8d0fb9d557495ef6d33d70873a3b64a71c1",
+    "../agentic-ai-platform-web/.logs/s13a-web-types-verified.log": "8366207267355d3e3d5bf3bf6e8c94c5f93f6078c34f08973fa2b38cdda6cc92",
+    "../agentic-ai-platform-web/.logs/s13a-web-build-final.log": "4c49856faefe0eadc0663268548f1e535443922d980f7de00f21cc3925cc3cd3",
+    "../agentic-ai-platform-web/.logs/s13a-oidc-build-final.log": "2575b81c78a921292a4b59964a44c3ab44686ebc6c4c2f42cfa0cf26e04f0ab1",
+    "../agentic-ai-platform-web/.logs/s13a-hygiene.log": "4dcea2e423e314b6a9c7e0cf75f0d9fccbbf088a3b80385fa3dd6654687b5bd9"
+  },
+  "screenshots": {
+    "docs/qa/identity-20261101/workspace-mobile.png": "ea52d8b6dda5289c17c3f1ed9029455b000df6b01d9cfd3f7a8326c35a4b393b",
+    "docs/qa/identity-20261101/login-desktop.png": "08f965b245c1732a1a10e9b9785bab2fb4daad30630a4f4dbaba3870f9f5bb47",
+    "docs/qa/identity-20261101/workspace-desktop.png": "dc10d9df11efce02a245b2a0772140752b7de3260e1180fdf6a6a12d438367dc",
+    "docs/qa/identity-20261101/logout-mobile.png": "91bc81ab06a111a9fed1d5d8b811c7de595a42c2e38e6644d7a06e3bf2ba05ae"
+  },
+  "checks": {
+    "gateway": 19,
+    "security": 10,
+    "contracts": 11,
+    "frontendUnits": 188,
+    "realOidcBrowser": 6,
+    "legacyBrowser": 3,
+    "screenshotsInspected": 4,
+    "paidCalls": 0,
+    "localLinks": 264,
+    "secretScan": "PASS",
+    "dependencyAuthorization": "C-IDENTITY oauth2-client; existing BOM"
+  },
+  "limits": [
+    "Single-agent separate review/validation passes",
+    "Java formatter absent",
+    "No production deploy or model calls",
+    "Provider failure and disabled/deleted checks use controlled protocol responses",
+    "Legacy full workbench environment mismatch retained in TEST_RESULT"
+  ]
+}

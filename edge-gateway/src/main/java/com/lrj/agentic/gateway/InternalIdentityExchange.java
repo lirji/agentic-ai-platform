@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class InternalIdentityExchange implements GlobalFilter, Ordered {
     private static final List<String> UNTRUSTED_HEADERS = List.of(HttpHeaders.AUTHORIZATION,
-            IdentityProtocol.INTERNAL_HEADER, "X-Service-Token", "X-Tenant-Id", "X-User-Id", "X-Api-Key");
+            HttpHeaders.COOKIE, "X-AGENTIC-XSRF", IdentityProtocol.INTERNAL_HEADER, "X-Service-Token", "X-Tenant-Id", "X-User-Id", "X-Api-Key");
     private final JwtEncoder encoder;
     private final IdentityProperties properties;
     private final GatewayErrors errors;
@@ -38,19 +38,23 @@ public class InternalIdentityExchange implements GlobalFilter, Ordered {
     /** Reactive 代理使用新 header 容器，避免原请求只读头导致身份清除失败。 */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return exchange.getPrincipal().filter(JwtAuthenticationToken.class::isInstance)
-                .cast(JwtAuthenticationToken.class)
-                .flatMap(authentication -> {
+        WorkspaceIdentity browser = exchange.getAttribute(WorkspaceIdentity.ATTRIBUTE);
+        Mono<WorkspaceIdentity> identity = browser != null ? Mono.just(browser)
+                : exchange.getPrincipal().ofType(JwtAuthenticationToken.class).map(authentication -> {
                     var jwt = authentication.getToken();
+                    String scope = jwt.getClaimAsString(IdentityProtocol.SCOPE_CLAIM);
+                    return new WorkspaceIdentity(jwt.getClaimAsString(properties.tenantClaim()), jwt.getSubject(),
+                            jwt.getSubject(), "local", scope == null || scope.isBlank() ? List.of() : List.of(scope.split(" +")));
+                });
+        return identity.flatMap(verified -> {
                     Instant now = Instant.now();
                     var claims = JwtClaimsSet.builder().issuer(IdentityProtocol.INTERNAL_ISSUER)
                             .audience(List.of(audience(exchange.getRequest().getPath().value())))
-                            .subject(jwt.getSubject())
+                            .subject(verified.userId())
                             .issuedAt(now).expiresAt(now.plusSeconds(IdentityProtocol.INTERNAL_TTL_SECONDS))
-                            .claim(IdentityProtocol.TENANT_CLAIM, jwt.getClaimAsString(properties.tenantClaim()))
+                            .claim(IdentityProtocol.TENANT_CLAIM, verified.tenantId())
                             .claim(IdentityProtocol.SCOPE_CLAIM,
-                                    jwt.getClaimAsString(IdentityProtocol.SCOPE_CLAIM) == null
-                                            ? "" : jwt.getClaimAsString(IdentityProtocol.SCOPE_CLAIM))
+                                    String.join(" ", verified.scopes()))
                             .build();
                     String token = encoder.encode(JwtEncoderParameters.from(
                             JwsHeader.with(SignatureAlgorithm.RS256).build(), claims)).getTokenValue();

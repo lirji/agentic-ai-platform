@@ -1,10 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S13A身份前置核对已交付，等待U03业务输入
+## 当前任务：S13A 正式登录（验证PASS，Git/CI交付中）
 
-- 已开始S13A：[IDENTITY_READINESS](IDENTITY_READINESS.md)及源证据已保存；C-IDENTITY尚未冻结，产品未实现。当前后端原目录分支feat/identity-readiness-20261101，起点60da76d；前端仍在S12D分支8ebc5fa，无未提交产品修改。
-- 下一步由用户选择本项目新专属组织/客户端，或指定复用组织/成员/角色；已通过异步问题询问，未作默认选择。答复前只读核对与文档已完成，不写IAM或赋予成员权限；不能宣称正式登录通过。
-- 前置文档7份/256本地链接/7源码摘要与仅文档范围校验PASS；Git交付现场以.local/s13a-delivery.json和当前Git为准。后续具体顺序：实际登记/成员与租户映射→冻结C-IDENTITY会话与scope契约→前后端实施→真实登录/过期/退出/隔离验收。已有51项计划和持续授权保持，无需重新询问继续。
+- 用户最新决定：按原顺序；local-agentic组织、agentic-workbench客户端，先个人空间。不继承其他项目成员/管理权限，不迁移旧local-dev资料。
+- 完整capability-delivery-20261021共51项，parallel=no，整体未完成。后端原目录feat/identity-readiness-20261101起点59239f2，前端同名分支起点8ebc5fa；无新worktree。
+- 已实现：[C-IDENTITY](IDENTITY_CONTRACTS.md)，Spring OIDC授权码+PKCE、服务器会话/CSRF/固定回调、每次成员复核、内部JWT、React登录退出/过期导航恢复与缓存草稿隔离。专属IAM登记已完成，私密收据.local/identity/registration-result.json，不重复创建。
+- 验收：[TEST_RESULT](../../qa/identity-20261101/TEST_RESULT.md)、REVIEW、validation.json；Gateway19/Security10/Contracts11、React188、真实Casdoor+MySQL+生产构建浏览器6项及4截图已通过/查看。最终代码卫生以冻结契约中的oauth2-client依赖授权运行；Java独立格式器缺失如实保留。旧local协议浏览器3项PASS，Git/CI正在收尾。
+- 清单①登记核对②冻结契约③两端实现④真实登录/隔离/退出/到期/回调拒绝⑤审查/证据已完成；⑥正常Git/CI待完成，然后继续S13B前置角色/成员核对。不能把身份前置旧收据.local/s13a-delivery.json当产品交付收据。
+- 运行：[IDENTITY_RUNTIME](IDENTITY_RUNTIME.md)，本轮隔离Knowledge28194、Gateway28190、网页28196；PID记录.local/identity/runtime-processes.json，日志.logs/s13a-runtime-*。30秒空闲仅验收配置，模型worker关闭，旧长期容器未更新。28197是本轮旧模式浏览器回归预览。
+- 授权：本地实施验证及正常提交合并推main；无生产部署/强推/清理/子Agent。Chat/Embedding累计保守预留0.957092/0.781784元保持，本片付费0，旧探针不重跑。
+- 规范：session-handoff/continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、validation、progress、Git/CI；架构建模/接口/并发安全/发布及个人网关/React配套。现有Runtime漂移用专业手工pass，不称机器Gate或独立人员审查。
+- 恢复下一步：核对实际未提交文件及最后测试/CI；提交当前验证版本，分支CI通过后正常ff合并推main并核对精确SHA。随后按原顺序处理S13B明确角色矩阵与成员来源，不要求再次确认S13A。
 
 ### S12D 已交付
 

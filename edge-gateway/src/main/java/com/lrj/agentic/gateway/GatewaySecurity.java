@@ -41,6 +41,7 @@ public class GatewaySecurity {
     }
 
     @Bean
+    @org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "gateway.browser.enabled", havingValue = "false", matchIfMissing = true)
     SecurityWebFilterChain gatewaySecurityChain(ServerHttpSecurity http, GatewayErrors errors) {
         return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)

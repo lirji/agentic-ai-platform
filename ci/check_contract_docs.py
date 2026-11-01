@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DESIGN = ROOT / "docs/design/knowledge-first-20261020"
 REGISTERED_CONTRACTS = {
     "CI_CONTRACTS.md": "ci-v1",
+    "IDENTITY_CONTRACTS.md": "identity-session-v1",
     "RETRIEVAL_CONTRACTS.md": "knowledge-search-v2",
     "QUALITY_CONTRACTS.md": "quality-v1",
     "EVALUATION_RUN_CONTRACTS.md": "evaluation-run-v1",
@@ -71,7 +72,7 @@ def main() -> None:
     assert research["input"]["schemaVersion"] == "knowledge-work-input-v3"
     assert research["result"]["schemaVersion"] == "knowledge-work-result-v3"
     assert research["result"]["content"]["schemaVersion"] == "research-report-v1"
-    print("10 registered contracts and 14 shared wire fixture files: PASS")
+    print("11 registered contracts and 14 shared wire fixture files: PASS")
 
 
 if __name__ == "__main__":

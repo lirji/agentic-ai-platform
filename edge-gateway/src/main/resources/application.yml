@@ -51,6 +51,17 @@ server:
     connection-timeout: 5s
     idle-timeout: 75s
 gateway:
+  browser:
+    enabled: ${BROWSER_IDENTITY_ENABLED:false}
+    issuer: ${BROWSER_IDENTITY_ISSUER:}
+    origin: ${BROWSER_IDENTITY_ORIGIN:}
+    client-id: ${BROWSER_IDENTITY_CLIENT_ID:}
+    client-secret: ${BROWSER_IDENTITY_CLIENT_SECRET:}
+    organization: ${BROWSER_IDENTITY_ORGANIZATION:}
+    tenant-id: ${BROWSER_IDENTITY_TENANT:}
+    members: ${BROWSER_IDENTITY_MEMBERS:}
+    max-sessions: ${BROWSER_IDENTITY_MAX_SESSIONS:1000}
+    max-idle: ${BROWSER_IDENTITY_MAX_IDLE:15m}
   identity:
     issuer: ${IAM_ISSUER}
     audience: ${IAM_AUDIENCE}

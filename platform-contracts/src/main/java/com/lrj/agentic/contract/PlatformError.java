@@ -4,6 +4,7 @@ package com.lrj.agentic.contract;
 public enum PlatformError implements ErrorCode {
     AUTH_REQUIRED("AUTH_REQUIRED", "请提供有效的身份凭证。", 401),
     AUTH_FORBIDDEN("AUTH_FORBIDDEN", "当前身份没有执行此操作的权限。", 403),
+    AUTH_UNAVAILABLE("AUTH_UNAVAILABLE", "身份服务暂时不可用，请稍后重试。", 503),
     INTERNAL_ERROR("INTERNAL_ERROR", "服务处理失败，请稍后重试。", 500);
 
     private final String code;

@@ -48,4 +48,4 @@ S8A 已形成 [QUALITY_CONTRACTS](QUALITY_CONTRACTS.md) 与 [QUALITY_ACCEPTANCE]
 
 S11A已将C-RETRIEVAL/C-RERANK的内部原语、排名、模型失败/预算与消费者兼容边界冻结于[RETRIEVAL_CONTRACTS](RETRIEVAL_CONTRACTS.md)，产品验收仍按[RT矩阵](RETRIEVAL_ACCEPTANCE.md)分片完成。U04未满足不表示真实Reranker已启用，S11D仍须核实提供方条件；S11E另固化公共响应与任务策略字段。
 
-S13A已完成[身份接入前置核对](IDENTITY_READINESS.md)；U03组织/成员范围仍待用户决定，C-IDENTITY未冻结，不能将既有WMS的登记或角色继承给知识工作台。
+S13A的U03已确认专属组织/客户端及个人空间，[C-IDENTITY](IDENTITY_CONTRACTS.md)已冻结并完成功能验收；不继承其他项目成员/角色。S13B的共享角色矩阵仍需明确，不能把个人准入名单自动变成团队权限。
