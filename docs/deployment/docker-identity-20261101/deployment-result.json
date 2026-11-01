@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "observedAt": "2026-11-01T14:52:10.863561+00:00",
+  "environment": "local Docker Desktop desktop-linux",
+  "project": "agentic-ai-app",
+  "origin": "http://localhost:28086",
+  "release": "aaec73cb5cfc0fff",
+  "sourceFingerprint": "aaec73cb5cfc0fff92b0ef2a588bfc6b52c364af1828e2f6f0cae2f9d1b9cf50",
+  "commits": {
+    "backend": "682d8cdb4b0e24e1338f982d50bfb40763c1dcfa",
+    "frontend": "a394f583024049b7e0d2b458fdbeabd68e47a0ec"
+  },
+  "includesUncommitted": false,
+  "containers": [
+    {
+      "service": "agentic-ai-app-gateway-1",
+      "image": "agentic-ai/edge-gateway:aaec73cb5cfc0fff",
+      "imageId": "sha256:a966eec399772b27c905e3ccde721e0d96d04ca21fae51eba010619b0a0a5c01",
+      "containerId": "bd425dc0d29e283c4552b06dc3859e820e96f7453fe5dd2de5399cdfd9c8f2fd",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-web-1",
+      "image": "agentic-ai/web:aaec73cb5cfc0fff",
+      "imageId": "sha256:fab8fa5f162c878363900d392c93a56056a2f7143d10f7ada4ff7e1aa73a679b",
+      "containerId": "2cf9af1f124324e390cb27484406d177cfb3fdd8779b00960b9be1e9aaf0844d",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-knowledge-1",
+      "image": "agentic-ai/knowledge-service:aaec73cb5cfc0fff",
+      "imageId": "sha256:bdcc334c5a30247804497dfd1756ebad910e02e27de1257e379a2037e544e409",
+      "containerId": "2f756a64b3d707754f49bbb6723bf91a59030a3e90881806b27975982e6eeb5c",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-tasks-1",
+      "image": "agentic-ai/async-task-service:aaec73cb5cfc0fff",
+      "imageId": "sha256:de0ee13d86b8ff2819c09a02e92f7762aaa14e42a0a8050c20dd0581b8df8bf4",
+      "containerId": "edd5c28aadc8e649f37ef88f92c9e29529e158551d29303276fb77fdd1fade0f",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-conversations-1",
+      "image": "agentic-ai/conversation-service:aaec73cb5cfc0fff",
+      "imageId": "sha256:e43112565929b605677efaaa46d7d4b5c969851f89e6f4b1c065db4092716ab6",
+      "containerId": "5e6fff33e3faa842a01d260581ec75372512a13e04f65e9af9c8e511fb5b6c0d",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-ai-1",
+      "image": "agentic-ai/ai-runtime:aaec73cb5cfc0fff",
+      "imageId": "sha256:0570525f77dfc6fe60915c74933f78c19ad75e853f028fd9d2120e462921c2ba",
+      "containerId": "8568c83f77aaf631fc236790140aa61c1ac971775445e4e4945a9c3749842b35",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-qa-worker-1",
+      "image": "agentic-ai/ai-runtime:aaec73cb5cfc0fff",
+      "imageId": "sha256:0570525f77dfc6fe60915c74933f78c19ad75e853f028fd9d2120e462921c2ba",
+      "containerId": "7ca46d5497e1a6a4a164394710d43ed9af1b54edf13319b1bdb393e7ad90a636",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-model-proxy-1",
+      "image": "agentic-ai/model-proxy:aaec73cb5cfc0fff",
+      "imageId": "sha256:93df2c8bce3e14a6afab76a9efca065aae0350e05313f7558723c80bfbb31b11",
+      "containerId": "f73c7dc62a102eb853f964f6c2a708d300786bf20ec2748f5ffc630c27a05737",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-search-bridge-1",
+      "image": "agentic-ai/ai-runtime:aaec73cb5cfc0fff",
+      "imageId": "sha256:0570525f77dfc6fe60915c74933f78c19ad75e853f028fd9d2120e462921c2ba",
+      "containerId": "6a3c9b2940799e4fca837d0280ba60691d0016c6af7b81411a8db685903c8106",
+      "health": "healthy",
+      "restarts": 0
+    }
+  ],
+  "schemaVersions": {
+    "agentic_knowledge": "12",
+    "agentic_tasks": "5",
+    "agentic_conversations": "3"
+  },
+  "oldBusinessFieldsUnchanged": true,
+  "oldBusinessTables": 23,
+  "budgetsUnchanged": true,
+  "paidModelCalls": 0,
+  "browser": "PASS",
+  "ci": {
+    "commit": "682d8cdb4b0e24e1338f982d50bfb40763c1dcfa",
+    "branchRun": {
+      "headSha": "682d8cdb4b0e24e1338f982d50bfb40763c1dcfa",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41314134393"
+    },
+    "jobs": [
+      {
+        "name": "python",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "documents",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "java",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "mainRun": {
+      "conclusion": "success",
+      "headSha": "682d8cdb4b0e24e1338f982d50bfb40763c1dcfa",
+      "status": "completed",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41314310124"
+    }
+  },
+  "rollback": "NOT_NEEDED; after migration use compatible new-schema artifact, no reverse restore performed"
+}

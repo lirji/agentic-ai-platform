@@ -1,6 +1,6 @@
 # 本机 Docker 应用运行
 
-此入口将已有 Gateway、Knowledge、Tasks、Conversations、AI HTTP、LiteLLM、问答 worker 和 React 工作台作为 8 个独立容器运行，另有 1 个仅转发本机搜索端口的容器。复用 `dev-infra` 的 MySQL 8.4、MinIO、PostgreSQL 16，以及现有 `agentic-ai-search` 的 Qdrant/ES；不创建或管理共享数据库容器、网络和卷。
+此入口将已有 Gateway、Knowledge、Tasks、Conversations、AI HTTP、LiteLLM、问答 worker 和 React 工作台作为 8 个独立容器运行，另有 1 个转发固定搜索/IAM端口的容器。复用 `dev-infra` 的 MySQL 8.4、MinIO、PostgreSQL 16，以及现有 `agentic-ai-search` 的 Qdrant/ES；不创建或管理共享数据库容器、网络和卷。
 
 正式登录入口：<http://localhost:28086>；网关仅绑定本机28080。OIDC模式复用现有Casdoor（localhost:18090，容器DNS auth-governance-casdoor:8000）和已登记的local-agentic个人空间。账号由本机0600文件`.local/identity/ACCESS.md`提供，密钥只注入Gateway。旧local-dev数据保留原归属，不自动转成正式用户资料。
 
@@ -27,7 +27,7 @@ python3 deploy/docker/runtime.py build --backend /absolute/path/agentic-ai-platf
 
 ## 切换与验证
 
-先完成对应源码的必要检查，再核对当前本地租户的在途任务。首次从宿主进程切换时，在原目录依次执行 `node deploy/local.mjs stop`（前端）、`python3 deploy/local.py stop-qa`、`stop-chat`、`stop`、`stop-ai`（后端），正常退出后备份项目开发数据库。不要让新旧 Knowledge writer 同时运行。
+先完成对应源码的必要检查，再核对当前本地租户的在途任务。已观察到12GiB Docker VM在旧应用与完整镜像检查并行时耗尽内存/swap；出现此情况应先正常停止本项目应用释放资源，再构建，保留共享基础设施。首次从宿主进程切换时，在原目录依次执行 `node deploy/local.mjs stop`（前端）、`python3 deploy/local.py stop-qa`、`stop-chat`、`stop`、`stop-ai`（后端），正常退出后备份项目开发数据库。不要让新旧 Knowledge writer 同时运行。
 
 ```sh
 python3 deploy/docker/runtime.py up --backend /absolute/path/agentic-ai-platform
@@ -36,6 +36,8 @@ python3 deploy/docker/runtime.py status --backend /absolute/path/agentic-ai-plat
 ```
 
 `up` 接受当前快照的成功构建记录，等待真实 health/readiness，240 秒内未就绪返回失败。正式浏览器验收检查两个普通账号、匿名/未授权拒绝、Cookie/CSRF、退出及业务列表；不上传、不检索、不调用付费模型。容器可运行不等于未完成业务已通过功能验收。
+
+本轮可复验入口：在后端目录用Node 24执行`node deploy/docker/tests/identity-browser-smoke.mjs`，复用相邻前端的Playwright、既有私密身份及`.local/docker-identity-20261101/legacy-document.json`（切换前记录的旧租户资料ID）。结果与无凭据截图写入本轮部署目录；不保存trace，不做业务写入。
 
 ## 配置与资源
 

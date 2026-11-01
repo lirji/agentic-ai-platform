@@ -1,6 +1,6 @@
 # Codex Progress
 
-- 当前优先任务：docker-identity-20261101，用户已明确要求部署到本机Docker。权威入口：[部署进度](docs/deployment/docker-identity-20261101/PROGRESS_STATE.md)。开发任务及S13B待决状态继续保留在下方入口。
+- 当前Docker部署任务docker-identity-20261101已完成：9容器healthy，入口http://localhost:28086/；权威入口：[部署进度](docs/deployment/docker-identity-20261101/PROGRESS_STATE.md)。原能力交付及S13B待决状态保留在下方。
 
 - 当前任务capability-delivery-20261021：S13A正式登录已交付；后端c0ddc0e/前端11f541a已正常合并推main，分支/main CI全部PASS。完整51项未完成。
 - 当前继续S13B共享前置；角色矩阵已异步询问，未得答复不开放权限。唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。

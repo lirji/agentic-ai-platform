@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "databases": [
+    {
+      "database": "agentic_conversations",
+      "bytes": 21111,
+      "sha256": "ca688b48adc00118c40648cfe7ec8dd5f1f94e1f37b120373aaa66740d337460"
+    },
+    {
+      "database": "agentic_knowledge",
+      "bytes": 488436,
+      "sha256": "7456dedfbd6fddfe37e96451bc93c7a7211a42f1ffde14f2d1cad9a6be8b76c5"
+    },
+    {
+      "database": "agentic_tasks",
+      "bytes": 844276,
+      "sha256": "5317a56a246b777123bef648b523a756fe09755190dc7e843571ce4a19014e97"
+    }
+  ],
+  "businessTables": 23,
+  "businessRows": 2714,
+  "restoreRehearsal": "NOT_PERFORMED"
+}

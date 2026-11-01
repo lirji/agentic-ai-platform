@@ -1,5 +1,7 @@
 # S13A 本机正式身份验证入口
 
+本文件描述S13A隔离验证运行；当前完整应用已部署到Docker，使用http://localhost:28086/，见[Docker运行手册](../../../deploy/docker/README.md)及[部署证据](../../deployment/docker-identity-20261101/deployment-result.json)。原28196验证入口保留，两个精确回调均已登记。
+
 本入口使用专属Casdoor组织/客户端和真实服务器会话，复用已有Knowledge测试数据库与桶；模型worker全部关闭。它用于身份与个人资料隔离验收，尚不是完整业务生产部署。旧容器与开发身份模式不自动切换。
 
 1. 登记：`python3 deploy/identity_local.py`输出不含秘密的精确计划；`--apply --management <已有0600管理配置路径>`仅创建缺失的专属对象。同名安全配置冲突拒绝，密码不重置；已成功登记无需重跑。
