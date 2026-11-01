@@ -1,6 +1,6 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S13A身份前置核对完成，等待U03业务输入
+## 当前任务：S13A身份前置核对已交付，等待U03业务输入
 
 - 已开始S13A：[IDENTITY_READINESS](IDENTITY_READINESS.md)及源证据已保存；C-IDENTITY尚未冻结，产品未实现。当前后端原目录分支feat/identity-readiness-20261101，起点60da76d；前端仍在S12D分支8ebc5fa，无未提交产品修改。
 - 下一步由用户选择本项目新专属组织/客户端，或指定复用组织/成员/角色；已通过异步问题询问，未作默认选择。答复前只读核对与文档已完成，不写IAM或赋予成员权限；不能宣称正式登录通过。
@@ -13,7 +13,7 @@
 - [恢复契约](RESEARCH_RECOVERY_CONTRACTS.md)：v4显式受理/输入/根图，结果复用v3；retrieve/plan/analyze/verify同步确认；默认关闭，不扩大预算/租约，不启用内部saver/子Agent/shell。
 - [TEST_RESULT](../../qa/research-recovery-20261101/TEST_RESULT.md)、REVIEW/validation.json：Tasks真实MySQL29、契约11/security10，网关8；Python620通过/96默认跳过、6根图/12真实PG（含旧v1三项）及v3七项；前端179、旧浏览器3、真实联合浏览器3、Docker代理13。10联合截图已查看，3回归截图保留；32后端/12前端源文件摘要。Java独立格式器缺失与旧工具提示如实记录，无阻断Finding。
 - 修复历史：恢复输入匹配中央；计划端口无工具；SSE历史状态整批仅刷新一次，解决权限重验503；事件语义常量统一。真实联合.logs/s12d-full-joint-r2.log及.logs/s11e-joint-17660250053019201289/；最终Java/Python/PG日志见validation。
-- [交付收据](../../qa/research-recovery-20261101/delivery-result.json)：分支CI41293703524/41293708775、main CI41294071764/41294073626均精确SHA PASS。交付归档后端60da76d/前端8ebc5fa已正常ff合并推main；归档CI仍待核对，产品精确main CI已PASS。
+- [交付收据](../../qa/research-recovery-20261101/delivery-result.json)：分支CI41293703524/41293708775、main CI41294071764/41294073626均精确SHA PASS。交付归档后端60da76d/前端8ebc5fa已正常ff合并推main；归档main CI41294516380/41294517374均PASS；产品精确main CI也已PASS。
 - S13A前置只读核对已完成：本机Casdoor公开discovery可达、auth-platform参考存在，但未找到本项目组织/客户端登记证据；当前前端仍是本地会话。U03身份范围已异步询问，答复前不写IAM或冻结真实成员权限。前置报告已保存为IDENTITY_READINESS.md；按用户答复冻结C-IDENTITY。
 - 运行：测试已结束；前端28186既有预览PID49541、日志前端.logs/s12b-preview.log保留。无付费/迁移/部署。原Docker main工作树、.local凭据/预算、.logs证据及.idea用户文件保留；缓存可在无需复现且获清理授权后处理，本轮未清理。
 - 授权：本地实施验证、按任务提交及正常合并推main；不含生产部署/强推/清理/子Agent。Chat/Embedding各1元，累计保守预留0.957092/0.781784保持，本片付费0，旧探针不可重跑。账户40%余量旧目标未核实，不替代最新开发要求。
