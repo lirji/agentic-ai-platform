@@ -1,6 +1,6 @@
 # Codex Progress
 
-- 当前任务`capability-delivery-20261021`：S12A受控追问已实现、审查与验收PASS，正在两仓Git/CI交付；51项完整计划未完成，随后S12B。
+- 当前任务`capability-delivery-20261021`：S12A受控追问已实现、审查与验收PASS，两仓产品已正常合并推main且CI通过；51项完整计划未完成，接续S12B。
 - 两仓原目录`feat/contextual-qa-20261030`；唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。最新证据`docs/qa/contextual-qa-20261030/TEST_RESULT.md`与validation.json。
 - 真实小样本已完成，不得重发：chat预留0.957092元/Embedding0.781784元，原各1元。无新增预算/生产部署/清理；预览进程已退出，原镜像未替换。
 
