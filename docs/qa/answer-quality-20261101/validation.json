@@ -1,0 +1,69 @@
+{
+  "slice": "S12B",
+  "overall": "PASS",
+  "humanCalibration": {
+    "date": "2026-11-01",
+    "confirmation": "认可五项",
+    "scope": "five criteria only; Codex authored synthetic examples and other applicable grades"
+  },
+  "backendSourceSha256": {
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/AnswerQualityCalibrationIT.java": "5d251eb087d0871923179ce1c71214a38e65042feaaa34ba3150ff179266b27e",
+    "knowledge-service/src/test/resources/answer-quality-calibration.json": "f9d3d704b68f9785102b7bd226945ab413f44bca65da9278ffdaa7978d28c6ba"
+  },
+  "frontendSourceSha256": {
+    "src/features/quality/ReviewOutcome.tsx": "4c149576a049c01cc6a8b13b1fa501f89ae20dd30b694a0e47ec5e69da72bd27",
+    "src/features/quality/ReviewPanel.tsx": "4cba94ed640827f6c7dc7962a733275da96d1fb18eb4fd5b99b351bef950b400",
+    "src/features/quality/decision-messages.ts": "4dfbbf7b688c9cfbd842babde5b739cfd7d5b027e9142001c717e020e57f4c40",
+    "src/features/quality/review-outcome.test.tsx": "2171b2653c698109816192abea97a8f627519f090c1b095c810f03c52ee5163b",
+    "src/features/quality/review-outcome.ts": "bfd044539e6dc713573e5037e7118f8b429b7689d64db87f8adc512d4926a092",
+    "tests/answer-quality-contract.spec.ts": "620429207298f18e6c42b7fa206249f2849592dbfc45b58e1d8a2f4fb9020471",
+    "tests/answer-quality-real.spec.ts": "fdf9d9cd0b01e8d243d8f7d6b1401063e883fc06e570f30ae8fbbbd7bd6a801c"
+  },
+  "checks": {
+    "frontendUnits": 147,
+    "frontendFormatLintTypesBuild": "PASS",
+    "mysqlIntegration": 9,
+    "newCalibratedCases": 5,
+    "protocolBrowser": 1,
+    "realMysqlHttpBrowser": 1,
+    "screenshotsInspected": 10,
+    "paidModelCalls": 0
+  },
+  "logs": {
+    ".logs/s12b-calibration-final.log": "2e71fcbda36734d4deb1f2bb3a44187d379170a0725dcc70695616bb367cbc0a",
+    ".logs/s12b-calibration-13338031860308415131/browser.log": "cbe243b644ebf257529ac2680db1439d575127b791930f259c1ea5080294a202",
+    "../agentic-ai-platform-web/.logs/s12b-final-verified.log": "ebcd6428b892f3f5f7a94be76732213615d554a58e3af112e1eb4f3c7f34d186",
+    "../agentic-ai-platform-web/.logs/s12b-real-test-static.log": "0272fe1575e512aeb31058dd4c2fc6c5cae7a4f7a3f35e192af47a80201a3329",
+    "../agentic-ai-platform-web/.logs/s12b-contract-final.log": "a06a79d37286315458c517705844df34f06ac65f3afb18399767c1497921d5fe"
+  },
+  "screenshots": {
+    "docs/qa/answer-quality-20261101/real-screenshots/AQ01-1440.png": "191764bb3384963d0ece39c8504602ddc0ea8d2574904ae01d7af93b02983e7c",
+    "docs/qa/answer-quality-20261101/real-screenshots/AQ02-414.png": "18cfe5cb115757732f15dda7ccfa8ef471cca6eb34ef77da7e4ae46c183cd5b4",
+    "docs/qa/answer-quality-20261101/real-screenshots/AQ03-1440.png": "204ba2672ae4851da4c8668c890cec8a9d641ccfbaaae7e067e683e9309f2262",
+    "docs/qa/answer-quality-20261101/real-screenshots/AQ04-1440.png": "fe01789536019180df61c4d56d30bc62d0357ec82f3d729fb3b731c67d61b229",
+    "docs/qa/answer-quality-20261101/real-screenshots/AQ05-1440.png": "c82797e30c528a0d3c2418adc1119e4e0c6ef71b60020cafe415b2763e158020",
+    "docs/qa/answer-quality-20261101/real-screenshots/citation-drawer.png": "e63b28d51231adcbee22e2ab1e013997cc0d79e855bdee94b8eb16b97d1a3ecd",
+    "docs/qa/answer-quality-20261101/real-screenshots/comparison-1440.png": "b00da2af59809a7b19614ecd211f15bbe0f35f63069b1e2fc247e57fff930c51",
+    "docs/qa/answer-quality-20261101/real-screenshots/review-history-414.png": "bdfd833cb342bef3f3f852b268f46e1ae1c39832fc6ac32f7321fd14a21260a8",
+    "docs/qa/answer-quality-20261101/screenshots/saved-review-1440.png": "8399182fa58cb1ae8bfa74f7339e3b9f8f6913355d7bdec9547ef5a61699e4b7",
+    "docs/qa/answer-quality-20261101/screenshots/saved-review-414.png": "b0ee86399c691359122a1f3fe5cedd9ec69326b0d8377a1965fe938ea7e5fb15"
+  },
+  "boundaries": [
+    "Only central task observation is a test double; actual MySQL repositories, HTTP scores/baseline/comparison and source reads used.",
+    "Fixed answers and synthetic vectors are not model or search quality measurements.",
+    "Online judge disabled, unreviewed/unknown is never pass; default path incurs no model cost.",
+    "Comparison snapshot captured before browser edits; AQ02 later revisions 2 and 3 preserved and final FAIL shown.",
+    "No backend product/schema/runtime changes, deployment or budget resets."
+  ],
+  "failedAttempts": [
+    "Initial test used unavailable Mockito and incorrect Evidence type; replaced with existing Spring test bean and correct model.",
+    "Fixture all-failed manifest rejected; corrected to existing success-prefix/first-failure protocol.",
+    "Semantic refusal incorrectly modeled as NO_EVIDENCE; corrected fixture to nonempty irrelevant evidence with ANSWERED and separate refusal grade.",
+    "Protocol browser transition/duplicate-option locator failures corrected with bounded poll and aria-controls."
+  ],
+  "limitations": [
+    "No online judge/production answer-quality guarantee.",
+    "Existing Java formatter absent; reviewed repository convention and diff hygiene.",
+    "Existing Vite native-loader and chunk-size warnings retained."
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "slice": "S12B",
+  "status": "COMPLETED",
+  "implemented": "Saved E03 assessment explanation; known failure and unreviewed coexist; drafts do not change saved conclusions",
+  "sourceSha256": {
+    "src/features/quality/ReviewOutcome.tsx": "4c149576a049c01cc6a8b13b1fa501f89ae20dd30b694a0e47ec5e69da72bd27",
+    "src/features/quality/ReviewPanel.tsx": "4cba94ed640827f6c7dc7962a733275da96d1fb18eb4fd5b99b351bef950b400",
+    "src/features/quality/decision-messages.ts": "4dfbbf7b688c9cfbd842babde5b739cfd7d5b027e9142001c717e020e57f4c40",
+    "src/features/quality/review-outcome.test.tsx": "2171b2653c698109816192abea97a8f627519f090c1b095c810f03c52ee5163b",
+    "src/features/quality/review-outcome.ts": "bfd044539e6dc713573e5037e7118f8b429b7689d64db87f8adc512d4926a092",
+    "tests/answer-quality-contract.spec.ts": "620429207298f18e6c42b7fa206249f2849592dbfc45b58e1d8a2f4fb9020471",
+    "tests/answer-quality-real.spec.ts": "fdf9d9cd0b01e8d243d8f7d6b1401063e883fc06e570f30ae8fbbbd7bd6a801c"
+  },
+  "checks": {
+    "frontendUnit": 147,
+    "newComponentTests": 4,
+    "formatLintTypesBuild": "PASS",
+    "browserProtocol": "PASS (1 test; desktop 1440 + narrow 414 screenshots viewed)",
+    "existingRealMysqlE03": "PASS (8 tests)"
+  },
+  "calibration": "Five criteria explicitly confirmed by user 2026-11-01; canonical fixture in knowledge-service/src/test/resources/answer-quality-calibration.json",
+  "unverified": [],
+  "failedAttempts": [
+    "Browser resize assertion ran before responsive transition settled; use bounded expect.poll",
+    "Ant Select duplicate options during exit transition; scope by aria-controls, no relaxed result expectation"
+  ],
+  "logs": {
+    "../agentic-ai-platform-web/.logs/s12b-narrow.log": "8fff579de9defc62ebd374412153829602908c8a1db0549ef73a25daa9ad8649",
+    "../agentic-ai-platform-web/.logs/s12b-final-web.log": "261243b9f90317e9d98294005d3de12062a7ac58692a68386db433d71a51bc62",
+    "../agentic-ai-platform-web/.logs/s12b-browser-verified.log": "20a93ad023fbfb95bf9c107fb7a80a06d4e73fa2ba51496892e9494cb80af671",
+    ".logs/s12b-existing-review-mysql.log": "f5465ba7d3324af0efeba94fc13c6b620490e6f4f55a499d580a57ceb02f9d3c"
+  },
+  "paidModelCalls": 0,
+  "finalValidation": "validation.json"
+}

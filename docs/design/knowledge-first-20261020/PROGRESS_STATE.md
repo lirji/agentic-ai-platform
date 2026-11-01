@@ -1,16 +1,24 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S12A 已交付，接续 S12B
+## 当前任务：S12B 答案支撑、覆盖与拒答评测（DONE，Git/CI交付中）
 
-- 任务`capability-delivery-20261021`，51项已批准，parallel=no；S12A实现与必需验收PASS，完整计划未完成。下一片S12B答案支撑、覆盖与拒答评测，按原计划继续。
-- 两仓原目录任务分支`feat/contextual-qa-20261030`，后端起点b097420、前端31315b8；核心41564e6已推且CI41003248811成功。完整后端18d66a7、前端52ca7d3已正常fast-forward并推main。分支CI41267832644/41267863013、main CI41268597688/41268628560均PASS，收据delivery-result.json；原目录与既有Docker工作树均干净。
-- 本片六项清单均已实现并验收：C-QA2共享金标；Conversation V3/Tasks v3；Python独立v3图与恢复；前端能力/冻结提交/实际查询；真实DB/PG/HTTP/浏览器与真实小样本；文档/审查。产品提交分支/main CI均通过；仅文档收据归档继续沿本任务分支提交。
-- 证据：[TEST_RESULT](../../qa/contextual-qa-20261030/TEST_RESULT.md)、REVIEW.md、validation.json；后端核心39项源码摘要一致。最终Java169、Python590/75默认跳过、Ruff121/mypy74、前端143/格式/ESLint/类型/构建PASS；真实MySQL/HTTP41、PG接管6、生产协议浏览器3、旧回归14、真实联合浏览器1、容器9路由smoke PASS。前端8张截图恢复后逐张复核。
-- 真实deepseek-flash改写/text-embedding-v4召回：9份合成资料3题，2改善/1不变/0退化/0改写失败；3次chat/5次Embedding，无新答案生成。chat保守预留0.957092元、余0.042908元，Embedding预留0.781784元，原各1元上限不变；非提供方账单。私有结果与归档/账本一致，恢复新增调用0，不得重跑已完成付费探针。
-- 关键边界：同owner/会话/范围完整证据家族v2/v3前文；前文全部依赖加当前最多10，禁止截断依赖；历史答案最多2000码点只解指代；预算/配置/权限/取消硬失败。旧图与旧接口保持兼容，新受理默认关闭。
-- 授权：沿原计划本地实施/验证、完整逻辑提交、正常合并推main；无子Agent、强推、清理或生产部署。正常Docker重启已有授权；无共享配置调整/恢复出厂授权。仅Conversation隔离测试库迁移V3。
-- 限制：Java既有格式器缺失；Deep Agents saver、Vite未来native loader/包大小警告；真实质量仅资料组召回样本，不代表答案质量。U04真实精排仍无账号/预算授权。全局Runtime漂移继续采用手工专业pass，不改全局技能。
-- 下一步：S12B复用E03评审，补全评审解释/指南、固定校准样本、真实持久验证。已通过异步问题请求五项人工校准，尚未收到结论；继续不依赖反馈的实施，不能把Agent标注冒充用户校准。生产运行容器保持原快照。
+- 完整任务`capability-delivery-20261021`，51项已批准，parallel=no；整体未完成。S12B实现和必需验收PASS，正常交付后接续S12C。
+- 两仓原目录分支`feat/answer-quality-20261101`，后端起点7ad8d4659db52213bade145f545075f140af744f，前端起点628b4b6de0fedfc772da0a8eb3df6e8a73ccdc35。本片尚未提交；后端仅校准测试/夹具/文档，前端已保存评分解释及相应验证。无schema、产品后端或Runtime改动。
+- 用户于2026-11-01明确“认可五项”，人工校准阻塞已解除。固定夹具`knowledge-service/src/test/resources/answer-quality-calibration.json`；原calibration-draft仅历史保留。额外维度与合成样本由Codex补齐，不冒称用户认可生产质量。
+- [TEST_RESULT](../../qa/answer-quality-20261101/TEST_RESULT.md)、[REVIEW](../../qa/answer-quality-20261101/REVIEW.md)、validation.json绑定当前两仓源码/日志/10截图。真实MySQL9项（五样本HTTP校准+既有E03八项）、真实浏览器1、协议浏览器1、前端147单元/格式/静态/类型/构建全部PASS；10截图实际查看。已保存值与草稿隔离，失败/未评审不能通过。
+- 本片执行清单①已有契约/真实M04反例②评分解释③用户五项校准④真实持久/API/页面⑤独立验收/文档均DONE；⑥正常提交/分支CI/合并推main待完成。无阻断Finding。Java格式器缺失、Vite既有警告保留。
+- 失败记录：测试缺少Mockito/类型错误、非法全失败清单、语义拒答混用空召回协议均已按现有契约修正；旧日志保留。AQ04保留不含餐补事实的实际引用，拒答独立评审。没有为过测试放宽产品规则。
+- 运行：前端28186预览（exec2083、PID49541、前端.logs/s12b-preview.log）保留；本轮测试全部结束，无在途付费/迁移/部署。最终日志后端.logs/s12b-calibration-final.log及.logs/s12b-calibration-13338031860308415131/browser.log；前端.logs/s12b-{final-verified,real-test-static,contract-final}.log。
+- 授权：本地实施验证、按任务提交及正常合并推main；无子Agent/强推/清理/生产部署。沿用户架构规范业务建模、持久化、接口、并发安全、容量与发布章节。既有Runtime漂移沿手工专业pass，不宣称机器Gate。
+- 预算：原chat/Embedding各1元，保守累计预留0.957092/0.781784元，非账单。S12B新增调用0，在线裁判未启用；S12A探针不可重跑，U04无新预算授权。
+- 下一步：验证文档/暂存范围，提交两仓S12B，分支CI通过后正常fast-forward合并推main；然后读取C-WORK2并实施S12C研究计划/证据覆盖/缺口，不重复询问继续。
+
+### S12A 已完成与交付
+
+- 产品后端18d66a7/前端52ca7d3与文档归档7ad8d46/628b4b6均已正常fast-forward合并推main，远程头已核对。产品分支CI41267832644/41267863013、main CI41268597688/41268628560及归档main CI41268793111/41268794768均PASS。
+- [TEST_RESULT](../../qa/contextual-qa-20261030/TEST_RESULT.md)、REVIEW.md、validation.json、delivery-result.json。Java169/Python590（75默认跳过）/前端143；MySQL/HTTP41、PG6、协议浏览器3、旧浏览器14、真实联合浏览器1、容器9路由通过；8截图已复核。
+- 9份合成资料3题真实改写/召回：2改善/1不变/0退化/0改写失败，3次chat/5次Embedding，未新生成答案；不代表生产答案质量。仅隔离Conversation测试库迁移V3，新受理默认关闭，原运行容器未更新。
+- 同owner/会话/范围完整证据前文、全部依赖上限10、历史答案2000码点；预算/配置/权限/取消硬失败。Java格式器缺失、旧saver/Vite/包大小警告保留。
 
 ### S11E 已完成与证据
 
@@ -23,7 +31,7 @@
 ### 当前运行与保留项
 
 - 原9应用容器全部healthy（本轮用户询问部署进度时已实时复核），仍S11D快照01a95560586ee526；两搜索容器已按原配置恢复。候选后台01e494b1d3e59376、web ba449282a95548d2只用于验证。没有新部署或开发库迁移，测试库Knowledge V12/Tasks V5/Conversation V3。
-- 2026-11-01恢复进程核对：此前28186/28187预览进程已退出；无进行中的重启/模型任务，既有截图与日志保留。最终检查已结束，Python/Java/前端日志为.logs/s12a-final-{python,java}.log及前端.logs/s12a-final-web.log，无本轮运行中测试。S11E证据在后端docs/qa/retrieval-consumers-20261028及前端docs/qa/retrieval-consumers-20261030，日志.logs/s11e-*。
+- S12A收尾时进程核对：当时28186/28187预览进程已退出，当前S12B预览见顶部；无进行中的重启/模型任务，既有截图与日志保留。最终检查已结束，Python/Java/前端日志为.logs/s12a-final-{python,java}.log及前端.logs/s12a-final-web.log，无本轮运行中测试。S11E证据在后端docs/qa/retrieval-consumers-20261028及前端docs/qa/retrieval-consumers-20261030，日志.logs/s11e-*。
 - 原任务/预算/.local/.logs/缓存及Docker main工作树全部保留，不清理、不重复付费探针。Java格式化器缺失、Deep Agents既有saver警告、前端包大小与U04真实质量限制不隐瞒。
 - 采用规范：用户AGENTS约定；架构建模、持久化、接口、并发安全、容量和发布章节；现有个人栈兼容约束；Contracts、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery/ci-cd-gate。
 

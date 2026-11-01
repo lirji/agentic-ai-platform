@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务`capability-delivery-20261021`：S12A受控追问已实现、审查与验收PASS，两仓产品已正常合并推main且CI通过；51项完整计划未完成，接续S12B。
-- 两仓原目录`feat/contextual-qa-20261030`；唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。最新证据`docs/qa/contextual-qa-20261030/TEST_RESULT.md`与validation.json。
-- 真实小样本已完成，不得重发：chat预留0.957092元/Embedding0.781784元，原各1元。无新增预算/生产部署/清理；预览进程已退出，原镜像未替换。
+- 当前任务`capability-delivery-20261021`：S12B已实现、用户五项校准确认、全部必需验收PASS；两仓正常Git/CI交付待完成，完整51项计划未完成。
+- 两仓原目录`feat/answer-quality-20261101`，起点后端7ad8d46/前端628b4b6，本片改动未提交。唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。交付后继续S12C。
+- 前端28186预览保留；测试均已结束。chat/Embedding原各1元，累计预留0.957092/0.781784元，不重跑已完成探针。无生产部署或清理。
 
 ## 前期可行性任务记录
 

@@ -82,3 +82,5 @@ S11C原生LlamaIndex一次融合：[验收](qa/llama-retrieval-20261028/TEST_RES
 S11D独立精排与预算：[验收](qa/rerank-budget-20261028/TEST_RESULT.md)、[审查](qa/rerank-budget-20261028/REVIEW.md)。协议/失败/持久预算及实际知识服务链路通过，提供方为明确HTTP替身；U04真实模型条件保留，未新增真实模型费用。
 
 S11E统一消费者已交付：[验收与限制](qa/retrieval-consumers-20261028/TEST_RESULT.md)。[接入前核对](design/knowledge-first-20261020/RETRIEVAL_CONSUMER_READINESS.md)保留为历史设计依据。S12A受控追问已通过[本片验收](qa/contextual-qa-20261030/TEST_RESULT.md)，真实模型3题召回对照2改善/1不变；不是生产答案质量承诺，Git与运行状态见权威进度。
+
+S12B答案支撑、覆盖和拒答已通过[校准与验收](qa/answer-quality-20261101/TEST_RESULT.md)：五项口径获用户确认，评分解释绑定已保存修订；无在线裁判或新增模型费用。

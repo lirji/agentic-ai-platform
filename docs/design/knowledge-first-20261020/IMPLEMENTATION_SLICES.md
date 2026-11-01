@@ -219,7 +219,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S11D | 独立模型 Reranker 与预算/失败策略 | S11C, S8D | IMPLEMENT | DONE（协议；U04真实条件待满足） |
 | S11E | 搜索、问答和研究共用检索策略 | S11D, S10F | IMPLEMENT | DONE |
 | S12A | 追问指代与受控上下文 | S11E | IMPLEMENT | DONE |
-| S12B | 答案支撑、覆盖与拒答评测 | S12A, S8D | IMPLEMENT | PLANNED |
+| S12B | 答案支撑、覆盖与拒答评测 | S12A, S8D | IMPLEMENT | DONE |
 | S12C | 研究计划、证据覆盖和缺口结果 | S12B | IMPLEMENT | PLANNED |
 | S12D | 研究根图分阶段恢复 | S12C | IMPLEMENT | PLANNED |
 | S13A | 正式登录与可信身份生命周期 | S8A | IMPLEMENT | PLANNED |
@@ -499,7 +499,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-QA2、C-EVAL；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 合法引用但错答、冲突资料、注入、无答案/部分答案用例；人工标注校准；裁判失败不算通过；默认策略有界且成本可测；不宣称绝对事实保证。
 - **Pass / Runtime：** IMPLEMENT；复用现有图/模型适配；在线裁判仅在预算和收益验证后启用。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G01 G08 G18。
+- **状态 / 并行 / 对应缺口：** DONE（用户已认可五项校准；真实MySQL/HTTP/浏览器及[本片验收](../../qa/answer-quality-20261101/TEST_RESULT.md)通过；Git状态见PROGRESS_STATE）；parallel=no；G01 G08 G18。
 
 ### S12C · 研究计划、证据覆盖和缺口结果
 
