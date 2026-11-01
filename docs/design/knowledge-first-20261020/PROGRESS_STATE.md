@@ -1,17 +1,17 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S12B 答案支撑、覆盖与拒答评测（DONE，Git/CI交付中）
+## 当前任务：S12B 答案支撑、覆盖与拒答评测（DONE，已合并推main）
 
-- 完整任务`capability-delivery-20261021`，51项已批准，parallel=no；整体未完成。S12B实现和必需验收PASS，正常交付后接续S12C。
-- 两仓原目录分支`feat/answer-quality-20261101`，后端起点7ad8d4659db52213bade145f545075f140af744f，前端起点628b4b6de0fedfc772da0a8eb3df6e8a73ccdc35。本片尚未提交；后端仅校准测试/夹具/文档，前端已保存评分解释及相应验证。无schema、产品后端或Runtime改动。
+- 完整任务`capability-delivery-20261021`，51项已批准，parallel=no；整体未完成。S12B实现和必需验收PASS，两仓交付与CI已PASS，接续S12C。
+- 两仓原目录分支`feat/answer-quality-20261101`，后端起点7ad8d4659db52213bade145f545075f140af744f，前端起点628b4b6de0fedfc772da0a8eb3df6e8a73ccdc35。本片后端81ada761/前端028bab65已正常fast-forward合并推origin/main；后端仅校准测试/夹具/文档，前端已保存评分解释及相应验证。无schema、产品后端或Runtime改动。
 - 用户于2026-11-01明确“认可五项”，人工校准阻塞已解除。固定夹具`knowledge-service/src/test/resources/answer-quality-calibration.json`；原calibration-draft仅历史保留。额外维度与合成样本由Codex补齐，不冒称用户认可生产质量。
 - [TEST_RESULT](../../qa/answer-quality-20261101/TEST_RESULT.md)、[REVIEW](../../qa/answer-quality-20261101/REVIEW.md)、validation.json绑定当前两仓源码/日志/10截图。真实MySQL9项（五样本HTTP校准+既有E03八项）、真实浏览器1、协议浏览器1、前端147单元/格式/静态/类型/构建全部PASS；10截图实际查看。已保存值与草稿隔离，失败/未评审不能通过。
-- 本片执行清单①已有契约/真实M04反例②评分解释③用户五项校准④真实持久/API/页面⑤独立验收/文档均DONE；⑥正常提交/分支CI/合并推main待完成。无阻断Finding。Java格式器缺失、Vite既有警告保留。
+- 本片执行清单①已有契约/真实M04反例②评分解释③用户五项校准④真实持久/API/页面⑤独立验收/文档均DONE；⑥正常提交/分支CI/合并推main均DONE；分支CI41271503315/41271504995及main CI41271660470/41271660916全部PASS，见delivery-result.json。无阻断Finding。Java格式器缺失、Vite既有警告保留。
 - 失败记录：测试缺少Mockito/类型错误、非法全失败清单、语义拒答混用空召回协议均已按现有契约修正；旧日志保留。AQ04保留不含餐补事实的实际引用，拒答独立评审。没有为过测试放宽产品规则。
 - 运行：前端28186预览（exec2083、PID49541、前端.logs/s12b-preview.log）保留；本轮测试全部结束，无在途付费/迁移/部署。最终日志后端.logs/s12b-calibration-final.log及.logs/s12b-calibration-13338031860308415131/browser.log；前端.logs/s12b-{final-verified,real-test-static,contract-final}.log。
 - 授权：本地实施验证、按任务提交及正常合并推main；无子Agent/强推/清理/生产部署。沿用户架构规范业务建模、持久化、接口、并发安全、容量与发布章节。既有Runtime漂移沿手工专业pass，不宣称机器Gate。
 - 预算：原chat/Embedding各1元，保守累计预留0.957092/0.781784元，非账单。S12B新增调用0，在线裁判未启用；S12A探针不可重跑，U04无新预算授权。
-- 下一步：验证文档/暂存范围，提交两仓S12B，分支CI通过后正常fast-forward合并推main；然后读取C-WORK2并实施S12C研究计划/证据覆盖/缺口，不重复询问继续。
+- 下一步：归档本片收据后新任务分支继续S12C；已定位现有C-WORK2待冻结、WorkPipeline与GenerationWorkPipeline、Tasks WorkRequests及前端WorkResult。保留旧图/旧输入输出，先补齐版本化契约和任务级调用预算，再实施/验收，不重复询问继续。
 
 ### S12A 已完成与交付
 
