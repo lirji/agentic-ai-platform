@@ -16,6 +16,8 @@ Sha256 = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
 class QaStage(StrEnum):
     """问答与研究共享的中央进度词汇；阶段不代替任务终态。"""
 
+    PLANNING = "PLANNING"
+    RESEARCH_ALLOWANCE = "RESEARCH_ALLOWANCE"
     RETRIEVING = "RETRIEVING"
     GENERATING = "GENERATING"
     ANALYZING = "ANALYZING"
@@ -93,6 +95,7 @@ class TaskLease(WireModel):
         "knowledge-qa-v2",
         "knowledge-qa-v3",
         "knowledge-work-v2",
+        "knowledge-work-v3",
         "knowledge-evaluation-v2",
     ]
     epoch: int = Field(ge=0)

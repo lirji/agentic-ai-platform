@@ -26,6 +26,7 @@ from agentic_ai.tasks.models import (
     TaskLease,
     TaskView,
 )
+from agentic_ai.tasks.research import ResearchAllowanceReceipt, ResearchCall, ResearchUsage
 
 M = TypeVar("M", bound=BaseModel)
 HTTP_SECONDS = 5
@@ -160,6 +161,8 @@ class CentralTaskClient:
                             raise TaskRuntimeError(
                                 TaskRuntimeCode.LEASE_LOST
                                 if code == "TASK_LEASE_LOST"
+                                else TaskRuntimeCode.RESEARCH_LIMIT
+                                if code == "TASK_RESEARCH_LIMIT"
                                 else TaskRuntimeCode.CONFLICT
                             )
                         if response.status_code >= 500:
@@ -185,6 +188,31 @@ class CentralTaskClient:
     async def inspect(self, task_id: str) -> TaskLease:
         """未知操作结果先查询中央事实，不盲目重做。"""
         return await self._request("GET", self._path(task_id), TaskLease)
+
+    async def reserve_research(
+        self, task_id: str, epoch: int, operation_key: str, kind: ResearchCall
+    ) -> ResearchAllowanceReceipt:
+        """只有收到绑定本次操作的持久凭据后才可调用模型/工具，不自动重试。"""
+        receipt = await self._request(
+            "POST",
+            self._path(task_id, "/research-allowance"),
+            ResearchAllowanceReceipt,
+            {"epoch": epoch, "operationKey": operation_key, "kind": kind.value},
+        )
+        if (receipt.task_id, receipt.epoch, receipt.operation_key, receipt.kind) != (
+            task_id,
+            epoch,
+            operation_key,
+            kind,
+        ):
+            raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID)
+        return receipt
+
+    async def research_usage(self, task_id: str, epoch: int) -> ResearchUsage:
+        """从中央读取跨epoch计数，不能按当前内存调用数重建。"""
+        return await self._request(
+            "GET", self._path(task_id, f"/research-allowance?epoch={epoch}"), ResearchUsage
+        )
 
     async def generation_manifest(self, task_id: str) -> "GenerationManifest":
         """上下文继承中央完整清单，服务端按原owner重新核验当前权限。"""

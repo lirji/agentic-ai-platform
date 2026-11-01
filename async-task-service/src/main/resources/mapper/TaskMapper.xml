@@ -57,6 +57,10 @@
     <select id="eventByKey" resultType="com.lrj.agentic.task.infrastructure.EventRow">
         SELECT task_id,sequence,operation_key,payload_sha256,type,payload_json,created_at FROM ai_task_event WHERE task_id=#{id} AND operation_key=#{key}
     </select>
+    <select id="researchReservations" resultType="com.lrj.agentic.task.infrastructure.EventRow">
+        SELECT task_id,sequence,operation_key,payload_sha256,type,payload_json,created_at
+        FROM ai_task_event WHERE task_id=#{id} AND operation_key LIKE 'b:%' ORDER BY sequence LIMIT #{limit}
+    </select>
     <select id="events" resultType="com.lrj.agentic.task.infrastructure.EventRow">
         SELECT task_id,sequence,operation_key,payload_sha256,type,payload_json,created_at FROM ai_task_event WHERE task_id=#{id} AND sequence&gt;#{after} ORDER BY sequence LIMIT #{limit}
     </select>

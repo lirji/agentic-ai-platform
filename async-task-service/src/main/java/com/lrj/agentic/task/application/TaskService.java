@@ -24,19 +24,21 @@ public class TaskService {
     private final TaskKnowledgeVisibility visibility;
     private final boolean generationEnabled;
     private final boolean contextualEnabled;
+    private final boolean researchEnabled;
 
     /** 单独限制事务时长；显式传递身份，避免复用线程泄漏主体。 */
     public TaskService(TaskMapper mapper, TaskValues values, PlatformTransactionManager manager,
             @Value("${task.lease-seconds:60}") int leaseSeconds, TaskKnowledgeEvidence evidence,
             TaskKnowledgeVisibility visibility, @Value("${task.generation-enabled:false}") boolean generationEnabled,
-            @Value("${task.contextual-qa-enabled:false}") boolean contextualEnabled) {
+            @Value("${task.contextual-qa-enabled:false}") boolean contextualEnabled,
+            @Value("${task.research-enabled:false}") boolean researchEnabled) {
         if (leaseSeconds < 5 || leaseSeconds > 60) { throw new IllegalArgumentException("任务租约配置无效"); }
         this.mapper = mapper; this.values = values; this.leaseSeconds = leaseSeconds;
         this.tx = new TransactionTemplate(manager);
         this.tx.setTimeout(5);
         this.evidence = evidence; this.visibility = visibility;
         this.generationEnabled = generationEnabled;
-        this.contextualEnabled = contextualEnabled;
+        this.contextualEnabled = contextualEnabled; this.researchEnabled = researchEnabled;
     }
 
     /** 唯一约束争用必须先回滚败方事务，再读取已经提交的同键结果。 */
@@ -66,6 +68,7 @@ public class TaskService {
         if (existing != null) { return replay(existing, digest); }
         // v3开关只控制新受理；同键重放和已持久任务的领取必须可以完成在途交接。
         require(!TaskProtocol.GRAPH_V3.equals(command.graphVersion()) || generationEnabled && contextualEnabled, TaskError.INPUT_INVALID);
+        require(!TaskProtocol.WORK_GRAPH_V3.equals(command.graphVersion()) || generationEnabled && researchEnabled, TaskError.RESEARCH_DISABLED);
         try {
             return tx.execute(ignored -> {
                 var row = new TaskRow(command.taskId(), owner.tenantId(), owner.userId(), key, digest,
@@ -98,6 +101,17 @@ public class TaskService {
                 TaskProtocol.WORK_GRAPH_V2, values.read(values.write(input))));
     }
 
+    /** 计划研究使用新图；同键重放沿原受理流程，关闭开关只拒绝新任务。 */
+    public View submitResearchWork(Caller owner, String key, GenerationWorkSubmit command) {
+        var input = WorkRequests.validateResearch(command);
+        return submit(owner, key, new Submit(command.taskId(), input.kind(), TaskProtocol.RUNTIME,
+                TaskProtocol.WORK_GRAPH_V3, values.read(values.write(input))));
+    }
+    /** 能力信息不读取数据正文，不将可受理解释为执行成功。 */
+    public ResearchCapabilities researchCapabilities() {
+        return new ResearchCapabilities(TaskProtocol.RESEARCH_CAPABILITIES, generationEnabled && researchEnabled);
+    }
+
     /** 输入只对原所有者开放，问答内部输入不通过本入口暴露。 */
     public WorkInput request(Caller owner, String id) {
         long deadline = TaskKnowledgeVisibility.deadline();
@@ -125,10 +139,11 @@ public class TaskService {
     }
 
     private WorkInput workInput(TaskRow row) {
-        boolean generation = TaskProtocol.WORK_GRAPH_V2.equals(row.graphVersion());
+        boolean research = TaskProtocol.WORK_GRAPH_V3.equals(row.graphVersion());
+        boolean generation = research || TaskProtocol.WORK_GRAPH_V2.equals(row.graphVersion());
         require(generation || TaskProtocol.WORK_GRAPH.equals(row.graphVersion()), TaskError.NOT_FOUND);
         var input = values.read(row.inputJson(), WorkInput.class);
-        require((generation ? TaskProtocol.WORK_INPUT_V2 : TaskProtocol.WORK_INPUT).equals(input.schemaVersion()), TaskError.NOT_FOUND);
+        require((research ? TaskProtocol.WORK_INPUT_V3 : generation ? TaskProtocol.WORK_INPUT_V2 : TaskProtocol.WORK_INPUT).equals(input.schemaVersion()), TaskError.NOT_FOUND);
         require(generation == (input.retrievalStrategy() != null), TaskError.NOT_FOUND);
         return input;
     }
@@ -208,6 +223,65 @@ public class TaskService {
         });
     }
 
+    /** 同任务行锁裁决最后额度；外部调用发生在事务之外，失败预留不返还。 */
+    public ResearchAllowanceReceipt reserveResearch(Caller worker, String id, ResearchAllowance command) {
+        require(command != null && command.epoch() != null && command.epoch() > 0, TaskError.INPUT_INVALID);
+        TaskValues.key(command.operationKey()); var call = ResearchCall.parse(command.kind());
+        return tx.execute(ignored -> {
+            var row = researchActive(worker, id, command.epoch());
+            var existing = mapper.eventByKey(row.taskId(), ResearchCall.KEY_PREFIX + command.operationKey());
+            if (existing != null) {
+                var receipt = researchReceipt(existing);
+                require(receipt.epoch() == command.epoch() && receipt.kind().equals(call.code()), TaskError.CONFLICT);
+                return receipt;
+            }
+            var reservations = researchReservations(row);
+            var used = researchUsage(reservations);
+            require(call != ResearchCall.INITIAL_SEARCH || reservations.stream().noneMatch(
+                    receipt -> ResearchCall.INITIAL_SEARCH.code().equals(receipt.kind())), TaskError.RESEARCH_LIMIT);
+            require(call != ResearchCall.SEARCH_TOOL || reservations.stream().filter(
+                    receipt -> ResearchCall.SEARCH_TOOL.code().equals(receipt.kind())).count() < ResearchCall.MAX_EXTRA_SEARCHES,
+                    TaskError.RESEARCH_LIMIT);
+            var next = new ResearchUsage(used.modelCalls() + call.models(), used.toolCalls() + call.tools(),
+                    used.searchCalls() + call.searches());
+            require(next.modelCalls() <= ResearchCall.MAX_MODELS && next.toolCalls() <= ResearchCall.MAX_TOOLS
+                    && next.searchCalls() <= ResearchCall.MAX_SEARCHES, TaskError.RESEARCH_LIMIT);
+            var receipt = new ResearchAllowanceReceipt(id, command.epoch(), command.operationKey(), call.code(), next);
+            append(row, ResearchCall.KEY_PREFIX + command.operationKey(), "PROGRESS",
+                    values.write(Map.of("stage", ResearchCall.STAGE, "reservation", receipt)), false);
+            return receipt;
+        });
+    }
+    /** 读取持久累计值，不能用当前epoch或成功工具记录重建额度。 */
+    public ResearchUsage researchUsage(Caller worker, String id, long epoch) {
+        return tx.execute(ignored -> researchUsage(researchReservations(researchActive(worker, id, epoch))));
+    }
+    private TaskRow researchActive(Caller worker, String id, long epoch) {
+        var row = active(worker, id, epoch);
+        require(TaskProtocol.WORK_GRAPH_V3.equals(row.graphVersion()) && WorkKind.RESEARCH.code().equals(row.kind()),
+                TaskError.INPUT_INVALID);
+        return row;
+    }
+    private ResearchAllowanceReceipt researchReceipt(EventRow row) {
+        var payload = values.read(row.payloadJson());
+        require(ResearchCall.STAGE.equals(payload.path("stage").asText()), TaskError.INPUT_INVALID);
+        return values.read(values.write(payload.path("reservation")), ResearchAllowanceReceipt.class);
+    }
+    private java.util.List<ResearchAllowanceReceipt> researchReservations(TaskRow row) {
+        var records = mapper.researchReservations(row.taskId(), ResearchCall.MAX_RESERVATIONS + 1);
+        require(records.size() <= ResearchCall.MAX_RESERVATIONS, TaskError.INPUT_INVALID);
+        return records.stream().map(this::researchReceipt).toList();
+    }
+    private ResearchUsage researchUsage(java.util.List<ResearchAllowanceReceipt> receipts) {
+        int models = 0, tools = 0, searches = 0;
+        for (var receipt : receipts) {
+            var kind = ResearchCall.parse(receipt.kind()); models += kind.models(); tools += kind.tools(); searches += kind.searches();
+        }
+        require(models <= ResearchCall.MAX_MODELS && tools <= ResearchCall.MAX_TOOLS && searches <= ResearchCall.MAX_SEARCHES,
+                TaskError.INPUT_INVALID);
+        return new ResearchUsage(models, tools, searches);
+    }
+
     /** 新正文之前登记依赖；任务行锁与原租约栅栏同一次事务裁决。 */
     public EvidenceReceipt evidence(Caller worker, String id, Evidence command) {
         return tx.execute(ignored -> evidence.register(active(worker, id, command.epoch()), command));
@@ -255,6 +329,11 @@ public class TaskService {
             }
             assertActive(row, worker, command.epoch());
             if (!TaskProtocol.EVALUATION_KIND.equals(row.kind())) { evidence.validateResult(row, command.result()); }
+            if (TaskProtocol.WORK_GRAPH_V3.equals(row.graphVersion())) {
+                // 计数来自同一任务锁内的持久预留，worker不能自报较小额度或用新epoch清零。
+                var reported = ResearchKnowledgeResults.usage(command.result().path("content"));
+                require(reported.equals(researchUsage(researchReservations(row))), TaskError.INPUT_INVALID);
+            }
             terminal(row, TaskStatus.SUCCEEDED, result, digest, command.operationKey(), null, false);
             var updated = mapper.read(row.tenantId(), row.taskId());
             append(updated, "w:" + command.operationKey(), TaskProtocol.STATUS_EVENT,
@@ -421,10 +500,10 @@ public class TaskService {
     }
     private void versions(String runtime, String graph) {
         // 公共消费者联合验收前不接受或领取新图，关闭开关不改写历史任务。
-        require(TaskProtocol.GRAPH_V3.equals(graph) || !TaskProtocol.generationGraph(graph) || generationEnabled, TaskError.INPUT_INVALID);
+        require(TaskProtocol.GRAPH_V3.equals(graph) || TaskProtocol.WORK_GRAPH_V3.equals(graph) || !TaskProtocol.generationGraph(graph) || generationEnabled, TaskError.INPUT_INVALID);
         require(TaskProtocol.RUNTIME.equals(runtime)
                 && (TaskProtocol.GRAPH.equals(graph) || TaskProtocol.WORK_GRAPH.equals(graph)
-                    || TaskProtocol.EVALUATION_GRAPH.equals(graph) || TaskProtocol.EVALUATION_GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V3.equals(graph) || TaskProtocol.WORK_GRAPH_V2.equals(graph)), TaskError.INPUT_INVALID);
+                    || TaskProtocol.EVALUATION_GRAPH.equals(graph) || TaskProtocol.EVALUATION_GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V3.equals(graph) || TaskProtocol.WORK_GRAPH_V2.equals(graph) || TaskProtocol.WORK_GRAPH_V3.equals(graph)), TaskError.INPUT_INVALID);
     }
     private static void changed(int count) { require(count == 1, TaskError.CONFLICT); }
     private static void require(boolean valid, TaskError code) {

@@ -311,3 +311,9 @@ K07新增 `POST /api/v2/knowledge/documents/{id}/withdrawals` 与 `/deletions`�
 后端已实现Conversation V3追加`knowledge_turn.query_policy`，旧行默认`ORIGINAL_V1`，新v3输入固定`CONTEXT_REWRITE_V1`；旧JSON及请求指纹保持。只对隔离测试库应用了V3，当前开发库/运行容器尚未升级。新增`GET /api/v2/conversations/capabilities`与`POST /api/v3/conversations/{id}/turns`，本增量的网关/网页接入仍在后续实施中。
 
 配置`CONVERSATION_CONTEXTUAL_QUERY_ENABLED=false`、`TASK_CONTEXTUAL_QA_ENABLED=false`与worker的`contextual_qa_enabled=false`均默认关闭，需配套原generation/retrieval能力。回退先关闭新受理，保留理解v3持久行的Conversation writer及worker处理在途任务；不能把新问题降级分派为旧图，也不能删除迁移、重置账本或以代码回退冒充数据回退。完整配置和验证边界见[C-QA2](../docs/design/knowledge-first-20261020/CONTEXTUAL_QA_CONTRACTS.md)。
+
+## S12C 分问题研究（默认关闭）
+
+`TASK_RESEARCH_ENABLED=false`为Tasks新受理默认值，还需`TASK_GENERATION_ENABLED=true`；只控制新受理，已持久v3可以继续处理与读取。worker沿既有retrieval能力装配研究图，轮询时仍按任务原graphVersion执行。公开POST `/api/v3/tasks`、GET `/api/v3/tasks/capabilities`通过网关/同源代理映射Tasks受众；列表和控制仍沿v1。完整[C-WORK2](../docs/design/knowledge-first-20261020/RESEARCH_COVERAGE_CONTRACTS.md)与[验证边界](../docs/qa/research-coverage-20261101/TEST_RESULT.md)。
+
+本片无新迁移/依赖/镜像构建或部署；容器验证只复用既有Node候选镜像、只读挂载当前前端产物和代理配置做11条公开路由测试。回退先关闭新受理，保留可理解v3的Tasks和worker完成在途任务及历史读取；不要把v3行降级交给旧图。调用次数按任务跨epoch累计，未知结果预留不返还；金额账本仍沿原授权，不是新增共享费用系统。

@@ -220,7 +220,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S11E | 搜索、问答和研究共用检索策略 | S11D, S10F | IMPLEMENT | DONE |
 | S12A | 追问指代与受控上下文 | S11E | IMPLEMENT | DONE |
 | S12B | 答案支撑、覆盖与拒答评测 | S12A, S8D | IMPLEMENT | DONE |
-| S12C | 研究计划、证据覆盖和缺口结果 | S12B | IMPLEMENT | PLANNED |
+| S12C | 研究计划、证据覆盖和缺口结果 | S12B | IMPLEMENT | DONE |
 | S12D | 研究根图分阶段恢复 | S12C | IMPLEMENT | PLANNED |
 | S13A | 正式登录与可信身份生命周期 | S8A | IMPLEMENT | PLANNED |
 | S13B | 个人/团队资料共享与撤权 | S13A, S10B | IMPLEMENT | PLANNED |
@@ -509,7 +509,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-WORK2；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 未支持结论不能伪造引用；总模型/工具/搜索预算覆盖整个任务；计划不升级工具权限；空证据和目标无法完成有明确结果。
 - **Pass / Runtime：** IMPLEMENT；现有 Deep Agents；不默认加子 Agent 或 shell。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G12 G18。
+- **状态 / 并行 / 对应缺口：** DONE（[真实联合验收](../../qa/research-coverage-20261101/TEST_RESULT.md)通过；Git/CI见进度）；parallel=no；G12 G18。
 
 ### S12D · 研究根图分阶段恢复
 

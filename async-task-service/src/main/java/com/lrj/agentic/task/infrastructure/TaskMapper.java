@@ -22,6 +22,8 @@ public interface TaskMapper extends BaseMapper<TaskRow> {
     int advanceEvent(@Param("id") String id);
     int append(@Param("row") EventRow row);
     EventRow eventByKey(@Param("id") String id, @Param("key") String key);
+    /** 专用额度事件有界读取；普通w:事件不能伪装预留。 */
+    List<EventRow> researchReservations(@Param("id") String id, @Param("limit") int limit);
     List<EventRow> events(@Param("id") String id, @Param("after") long after, @Param("limit") int limit);
     int terminal(@Param("id") String id, @Param("status") String status, @Param("result") String result,
             @Param("sha") String sha, @Param("key") String key, @Param("error") String error,

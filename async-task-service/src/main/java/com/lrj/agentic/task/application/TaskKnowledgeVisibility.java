@@ -73,7 +73,7 @@ public class TaskKnowledgeVisibility {
         var fields = new HashSet<String>(); payload.fieldNames().forEachRemaining(fields::add);
         String stage = payload.path("stage").textValue();
         if (fields.equals(Set.of("stage"))) {
-            return Set.of("RETRIEVING", "GENERATING", "VERIFYING", "ANALYZING").contains(stage);
+            return Set.of("RETRIEVING", "GENERATING", "VERIFYING", "ANALYZING", "PLANNING").contains(stage);
         }
         return "TOOL_READING".equals(stage) && fields.equals(Set.of("stage", "tool", "hitCount"))
                 && payload.path("tool").isTextual()

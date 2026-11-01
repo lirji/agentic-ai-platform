@@ -49,7 +49,7 @@ public class GatewaySecurity {
                 .authorizeExchange(auth -> auth
                         .pathMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
                         .pathMatchers("/api/v1/knowledge/**", "/api/v2/knowledge/**", "/api/v1/tasks/**",
-                                "/api/v1/conversations", "/api/v1/conversations/**", "/api/v2/tasks", "/api/v2/conversations/**", "/api/v3/conversations/*/turns").authenticated()
+                                "/api/v1/conversations", "/api/v1/conversations/**", "/api/v2/tasks", "/api/v3/tasks", "/api/v3/tasks/capabilities", "/api/v2/conversations/**", "/api/v3/conversations/*/turns").authenticated()
                         .anyExchange().denyAll())
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> { })
                         .authenticationEntryPoint((exchange, failure) ->

@@ -136,3 +136,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 2026-11-01 S12A交付同步：前端Composer/intent/query/TurnCard、网关受众/路由、本地身份桥/容器代理与真实联合测试对应C-QA2，当前两仓源码摘要、浏览器/容器/预算证据见[完整验收](qa/contextual-qa-20261030/TEST_RESULT.md)和[validation](qa/contextual-qa-20261030/validation.json)。同步范围：后端b097420/前端31315b8之后本片提交与工作树；真实小样本已完成，部署未执行；当时下一片S12B尚未实现。
 
 2026-11-01 S12B：前端ReviewOutcome/review-outcome与decision-messages对应既有E03四维度；后端AnswerQualityCalibrationIT及answer-quality-calibration.json验证五项已确认口径的真实评分、引用与比较。产品协议/schema未变，[验收与摘要](qa/answer-quality-20261101/TEST_RESULT.md)。
+
+2026-11-01 S12C：Tasks ResearchCall/ResearchKnowledgeResults与任务行锁额度、Python research_models/research_pipeline、前端research/ResearchReport/CreateWork/WorkPage对应[C-WORK2](design/knowledge-first-20261020/RESEARCH_COVERAGE_CONTRACTS.md)。完整代次引用、三端18组负例、真实MySQL/PG/双索引/HTTP/浏览器及默认关闭的路由验证见[验收](qa/research-coverage-20261101/TEST_RESULT.md)；金额预算不重置，分阶段恢复留待S12D。

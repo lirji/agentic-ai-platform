@@ -86,6 +86,7 @@ class WorkPipeline:
     """每次领取构造独享执行器，租户、用户和知识范围由中央 Lease 固定。"""
 
     input_fields = tuple(WorkGraphInput.__annotations__)
+    analysis_prompt = SYSTEM_PROMPT
 
     def __init__(
         self,
@@ -212,6 +213,24 @@ class WorkPipeline:
         selected = self.merge([], hits)
         return {"evidence": [hit.model_dump(mode="json", by_alias=True) for hit in selected]}
 
+    async def prepare_analysis(self, hits: list[KnowledgeHit], tools: list[Any]) -> None:
+        """旧图无需计划前置；新研究在同一白名单工具和总额度内扩展。"""
+
+    async def before_tool(self, name: str) -> None:
+        """旧图保留现有限额；新研究在此持久预留后才执行工具。"""
+
+    def analysis_context(self, hits: list[KnowledgeHit]) -> dict[str, object]:
+        """用户目标、模式与证据为模型输入，身份和权限不来自模型。"""
+        return {
+            "question": self.request.question,
+            "mode": self.request.mode.value,
+            "evidence": self.visible(hits),
+        }
+
+    def parse_draft(self, reply: str) -> dict[str, JsonValue]:
+        """旧图严格保留原内容模型；新图使用独立版本校验。"""
+        return WorkDraft.model_validate_json(reply).model_dump(mode="json", by_alias=True)
+
     async def analyze(self, state: WorkGraphState) -> dict[str, object]:
         """有界 Deep Agents 阶段；中途退出只恢复上个根图快照，费用仍累计。"""
         hits = self.evidence(state)
@@ -253,6 +272,7 @@ class WorkPipeline:
                 if searches >= MAX_SEARCH_CALLS:
                     raise QaError(QaCode.INPUT_REJECTED)
                 await guard()
+                await self.before_tool("search_knowledge")
                 searches += 1
                 found = await retrieve_evidence(
                     AuthorizedRetriever(self.knowledge, tuple(self.request.document_ids)), query
@@ -271,6 +291,7 @@ class WorkPipeline:
                 index = int(citation_id) - 1
                 if not 0 <= index < len(hits):
                     raise QaError(QaCode.INPUT_REJECTED)
+                await self.before_tool("read_evidence")
                 await record("read_evidence", 1)
                 return json.dumps(self.visible(hits)[index], ensure_ascii=False)
 
@@ -282,6 +303,7 @@ class WorkPipeline:
                 excluded_tools=frozenset({"read_file"}),
             ),
         )
+        await self.prepare_analysis(hits, [search_knowledge, read_evidence])
         backend = StateBackend()
         agent = create_deep_agent(
             model=GuardedToolModel(
@@ -290,7 +312,7 @@ class WorkPipeline:
                 operation_id=f"work:{self.binding.task.task_id}:{self.binding.epoch}",
             ),
             tools=[search_knowledge, read_evidence],
-            system_prompt=SYSTEM_PROMPT,
+            system_prompt=self.analysis_prompt,
             middleware=[
                 FilesystemMiddleware(
                     backend=backend,
@@ -310,11 +332,7 @@ class WorkPipeline:
                     {
                         "role": "user",
                         "content": json.dumps(
-                            {
-                                "question": self.request.question,
-                                "mode": self.request.mode.value,
-                                "evidence": self.visible(hits),
-                            },
+                            self.analysis_context(hits),
                             ensure_ascii=False,
                         ),
                     }
@@ -331,12 +349,12 @@ class WorkPipeline:
                 or not isinstance(reply.content, str)
             ):
                 raise ValueError
-            draft = WorkDraft.model_validate_json(reply.content)
+            draft = self.parse_draft(reply.content)
         except (ValidationError, ValueError, KeyError, TypeError):
             raise QaError(QaCode.ANSWER_INVALID) from None
         return {
             "evidence": [hit.model_dump(mode="json", by_alias=True) for hit in hits],
-            "draft": draft.model_dump(mode="json", by_alias=True),
+            "draft": draft,
             "toolCalls": [record.model_dump(mode="json", by_alias=True) for record in records],
         }
 

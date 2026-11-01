@@ -1,0 +1,314 @@
+{
+  "input": {
+    "schemaVersion": "knowledge-work-input-v3",
+    "kind": "RESEARCH",
+    "mode": "REPORT",
+    "question": "分析助手的边界",
+    "documentIds": [],
+    "retrievalStrategy": "LLAMA_RRF_V1"
+  },
+  "result": {
+    "schemaVersion": "knowledge-work-result-v3",
+    "strategy": "LLAMA_RRF_V1",
+    "content": {
+      "title": "资料范围与缺口",
+      "coverage": [
+        {
+          "questionId": "Q1",
+          "status": "EVIDENCE_FOUND",
+          "answer": "同正文也不能跨资料合并。[1]",
+          "evidence": [
+            {
+              "citationId": "1",
+              "quote": "同一正文不能合并不同资料。"
+            }
+          ],
+          "gap": ""
+        },
+        {
+          "questionId": "Q2",
+          "status": "GAP",
+          "answer": "",
+          "evidence": [],
+          "gap": "资料没有餐补标准。"
+        }
+      ],
+      "summary": "资料说明相同正文仍区分资料[1]；餐补标准仍缺失。",
+      "schemaVersion": "research-report-v1",
+      "kind": "RESEARCH",
+      "mode": "REPORT",
+      "plan": [
+        {
+          "id": "Q1",
+          "question": "同正文如何处理？"
+        },
+        {
+          "id": "Q2",
+          "question": "餐补标准？"
+        }
+      ],
+      "outcome": "PARTIAL",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "00000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "source": {
+            "displayName": "资料a",
+            "locator": "utf8-bytes:0-39"
+          }
+        }
+      ],
+      "toolCalls": [],
+      "usage": {
+        "modelCalls": 2,
+        "toolCalls": 0,
+        "searchCalls": 1
+      }
+    },
+    "references": [
+      {
+        "documentId": "00000000-0000-4000-8000-000000000001",
+        "version": 1,
+        "indexGeneration": 1,
+        "jobId": "00000000-0000-4000-8000-000000000001",
+        "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+        "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "batchDigest": "1111111111111111111111111111111111111111111111111111111111111111",
+        "textHash": "2ebf1a822035a51933f7a84bdfda9b4dce2f5df6f6681e30ccb0fc4a3deaad38"
+      }
+    ],
+    "retrieval": [
+      {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 0
+      }
+    ]
+  },
+  "empty": {
+    "schemaVersion": "knowledge-work-result-v3",
+    "strategy": "LLAMA_RRF_V1",
+    "content": {
+      "title": "资料不足",
+      "coverage": [
+        {
+          "questionId": "Q1",
+          "status": "GAP",
+          "answer": "",
+          "evidence": [],
+          "gap": "当前知识范围没有可引用的已发布资料，无法完成该问题。"
+        }
+      ],
+      "summary": "资料不足，尚未生成研究结论。请补充资料或调整范围。",
+      "schemaVersion": "research-report-v1",
+      "kind": "RESEARCH",
+      "mode": "REPORT",
+      "plan": [
+        {
+          "id": "Q1",
+          "question": "当前资料能否支持用户的研究目标？"
+        }
+      ],
+      "outcome": "INSUFFICIENT",
+      "citations": [],
+      "toolCalls": [],
+      "usage": {
+        "modelCalls": 0,
+        "toolCalls": 0,
+        "searchCalls": 1
+      }
+    },
+    "references": [],
+    "retrieval": [
+      {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "EMPTY",
+        "degraded": false,
+        "elapsedMs": 0
+      }
+    ]
+  },
+  "invalidResults": [
+    {
+      "name": "unknown-content",
+      "path": [
+        "content",
+        "scope"
+      ],
+      "value": "admin"
+    },
+    {
+      "name": "reordered-plan",
+      "path": [
+        "content",
+        "plan",
+        0,
+        "id"
+      ],
+      "value": "Q2"
+    },
+    {
+      "name": "missing-coverage",
+      "path": [
+        "content",
+        "coverage"
+      ],
+      "value": [
+        {
+          "questionId": "Q1",
+          "status": "EVIDENCE_FOUND",
+          "answer": "同正文也不能跨资料合并。[1]",
+          "evidence": [
+            {
+              "citationId": "1",
+              "quote": "同一正文不能合并不同资料。"
+            }
+          ],
+          "gap": ""
+        }
+      ]
+    },
+    {
+      "name": "fake-outcome",
+      "path": [
+        "content",
+        "outcome"
+      ],
+      "value": "EVIDENCE_FOUND"
+    },
+    {
+      "name": "gap-answer",
+      "path": [
+        "content",
+        "coverage",
+        1,
+        "answer"
+      ],
+      "value": "无依据结论"
+    },
+    {
+      "name": "gap-missing",
+      "path": [
+        "content",
+        "coverage",
+        1,
+        "gap"
+      ],
+      "value": ""
+    },
+    {
+      "name": "missing-evidence",
+      "path": [
+        "content",
+        "coverage",
+        0,
+        "evidence"
+      ],
+      "value": []
+    },
+    {
+      "name": "unknown-citation",
+      "path": [
+        "content",
+        "coverage",
+        0,
+        "answer"
+      ],
+      "value": "结论[9]"
+    },
+    {
+      "name": "summary-new-source",
+      "path": [
+        "content",
+        "summary"
+      ],
+      "value": "新结论[2]"
+    },
+    {
+      "name": "unknown-tools",
+      "path": [
+        "content",
+        "toolCalls"
+      ],
+      "value": [
+        {
+          "name": "shell",
+          "hitCount": 1
+        }
+      ]
+    },
+    {
+      "name": "bool-budget",
+      "path": [
+        "content",
+        "usage",
+        "modelCalls"
+      ],
+      "value": true
+    },
+    {
+      "name": "budget-overflow",
+      "path": [
+        "content",
+        "usage",
+        "modelCalls"
+      ],
+      "value": 4
+    },
+    {
+      "name": "no-plan-cost",
+      "path": [
+        "content",
+        "usage",
+        "modelCalls"
+      ],
+      "value": 1
+    },
+    {
+      "name": "reference-mismatch",
+      "path": [
+        "references",
+        0,
+        "chunkId"
+      ],
+      "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    },
+    {
+      "name": "strategy-mismatch",
+      "path": [
+        "strategy"
+      ],
+      "value": "LLAMA_RERANK_V1"
+    },
+    {
+      "name": "blank-question",
+      "path": [
+        "content",
+        "plan",
+        0,
+        "question"
+      ],
+      "value": " "
+    },
+    {
+      "name": "unknown-coverage-field",
+      "path": [
+        "content",
+        "coverage",
+        0,
+        "verified"
+      ],
+      "value": true
+    },
+    {
+      "name": "wrong-version",
+      "path": [
+        "schemaVersion"
+      ],
+      "value": "knowledge-work-result-v2"
+    }
+  ]
+}

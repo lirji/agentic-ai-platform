@@ -9,6 +9,13 @@ import java.util.HashSet;
 /** 事务前冻结输入；排序只规范知识范围，不改写用户问题。 */
 public final class WorkRequests {
     private WorkRequests() { }
+    /** 新研究计划必须显式版本化，助手继续沿原图执行。 */
+    public static WorkInput validateResearch(GenerationWorkSubmit command) {
+        var original = validateGeneration(command);
+        if (!WorkKind.RESEARCH.code().equals(original.kind())) { throw new TaskFailure(TaskError.INPUT_INVALID); }
+        return new WorkInput(TaskProtocol.WORK_INPUT_V3, original.kind(), original.question(), original.documentIds(),
+                original.mode(), original.retrievalStrategy());
+    }
     /** 新路径只增加显式策略，不能借版本入口扩大工具能力或知识范围。 */
     public static WorkInput validateGeneration(GenerationWorkSubmit command) {
         if (command == null) { throw new TaskFailure(TaskError.INPUT_INVALID); }

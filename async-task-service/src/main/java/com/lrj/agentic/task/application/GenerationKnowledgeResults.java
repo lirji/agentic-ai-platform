@@ -5,6 +5,7 @@ import com.lrj.agentic.contract.knowledge.GenerationCitationProtocol;
 import com.lrj.agentic.contract.knowledge.RetrievalStrategy;
 import com.lrj.agentic.contract.knowledge.GenerationCitationProtocol.Reference;
 import com.lrj.agentic.task.domain.TaskProtocol;
+import com.lrj.agentic.task.domain.WorkKind;
 import java.util.*;
 
 /** 新结果包住既有内容语义，完整引用不能降为旧三元组权限证明。 */
@@ -17,17 +18,27 @@ public final class GenerationKnowledgeResults {
             require(TaskProtocol.KIND.equals(kind));
             return ContextualKnowledgeResults.references(result, input);
         }
+        if (TaskProtocol.WORK_GRAPH_V3.equals(graph)) {
+            require(WorkKind.RESEARCH.code().equals(kind));
+            return references(kind, result, input.path("retrievalStrategy").asText(), true);
+        }
         return references(kind, result, input.path("retrievalStrategy").asText());
     }
 
     /** 复用v1内容校验，再核对策略、实际诊断与完整引用的一一对应。 */
     public static List<Reference> references(String kind, JsonNode result, String strategy) {
+        return references(kind, result, strategy, false);
+    }
+
+    /** 新旧内容各按自己的协议验证，共享完整代次与实际检索证明，避免降级为三元组授权。 */
+    private static List<Reference> references(String kind, JsonNode result, String strategy, boolean research) {
         fields(result, Set.of("schemaVersion", "strategy", "content", "references", "retrieval"));
-        require((TaskProtocol.KIND.equals(kind) ? "knowledge-qa-result-v2" : "knowledge-work-result-v2")
+        require((research ? "knowledge-work-result-v3" : TaskProtocol.KIND.equals(kind) ? "knowledge-qa-result-v2" : "knowledge-work-result-v2")
                 .equals(result.path("schemaVersion").asText()));
         var requested = RetrievalStrategy.consumer(strategy);
         require(strategy.equals(result.path("strategy").asText()));
-        var old = KnowledgeResults.references(kind, result.get("content"));
+        var old = research ? ResearchKnowledgeResults.references(result.get("content"))
+                : KnowledgeResults.references(kind, result.get("content"));
         var refs = result.path("references"); require(refs.isArray() && refs.size() == old.size());
         var complete = new ArrayList<Reference>();
         for (JsonNode item : refs) {
@@ -54,6 +65,7 @@ public final class GenerationKnowledgeResults {
             observed |= !"EMPTY".equals(mode);
         }
         require(old.isEmpty() || observed);
+        if (research) { ResearchKnowledgeResults.retrieval(result.get("content"), retrieval.size(), observed); }
         return normalized;
     }
     private static void fields(JsonNode node, Set<String> expected) {

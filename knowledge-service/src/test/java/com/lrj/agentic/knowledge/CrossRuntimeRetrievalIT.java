@@ -163,6 +163,10 @@ class CrossRuntimeRetrievalIT {
         runConsumerTest("test_contextual_full_joint.py", true);
     }
 
+    @Test void researchCoverageUsesRealPublishedEvidenceAndPersistentAllowance() throws Exception {
+        runConsumerTest("test_research_full_joint.py", false);
+    }
+
     /** 两个纵向验收共用真实发布入口；模型端口仅在Python测试中显式替换。 */
     private void runConsumerTest(String test, boolean contextual) throws Exception {
         var fixture = json.createObjectNode().put("knowledgeEndpoint", "http://127.0.0.1:" + port)
@@ -184,6 +188,7 @@ class CrossRuntimeRetrievalIT {
                 .redirectOutput(runtime.directory.resolve("consumers.log").toFile());
         builder.environment().put("AGENTIC_EVALUATION_FULL_IT", input.toString());
         if (contextual) builder.environment().put("AGENTIC_CONTEXTUAL_JOINT_IT", "1");
+        if ("test_research_full_joint.py".equals(test)) builder.environment().put("AGENTIC_RESEARCH_JOINT_IT", "1");
         builder.environment().put("LANGSMITH_TRACING", "false");
         builder.environment().put("LANGCHAIN_TRACING_V2", "false");
         Process process = builder.start();

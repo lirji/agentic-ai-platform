@@ -14,6 +14,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from agentic_ai.tasks.client import MAX_RESPONSE_BYTES, CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.models import TaskStatus
+from agentic_ai.tasks.research import ResearchCall, ResearchUsage
 
 
 @pytest.fixture(scope="module")
@@ -84,6 +85,7 @@ def test_claim_uses_short_lived_tenant_bound_worker_identity(worker_key):
     [
         (409, b'{"code":"TASK_LEASE_LOST"}', TaskRuntimeCode.LEASE_LOST),
         (409, b'{"code":"TASK_CONFLICT"}', TaskRuntimeCode.CONFLICT),
+        (409, b'{"code":"TASK_RESEARCH_LIMIT"}', TaskRuntimeCode.RESEARCH_LIMIT),
         (409, b"[]", TaskRuntimeCode.PROTOCOL_INVALID),
         (200, b'{"task":null,"unexpected":1}', TaskRuntimeCode.PROTOCOL_INVALID),
         (200, b'{"task":', TaskRuntimeCode.PROTOCOL_INVALID),
@@ -180,3 +182,45 @@ def test_task_status_wire_codes_match_central_java_contract():
     central_codes = dict(re.findall(r'([A-Z_]+)\("([A-Z_]+)"\)', source))
     assert central_codes
     assert {state.name: state.value for state in TaskStatus} == central_codes
+
+
+@pytest.mark.parametrize("changed", [None, "taskId", "epoch", "operationKey", "kind"])
+def test_research_allowance_receipt_is_bound_to_exact_call(worker_key, changed):
+    async def scenario():
+        task_id = str(uuid4())
+
+        def handle(request):
+            assert request.url.path == f"/internal/v1/task-worker/{task_id}/research-allowance"
+            if request.method == "GET":
+                assert request.url.params["epoch"] == "2"
+                return httpx.Response(200, json={"modelCalls": 1, "toolCalls": 0, "searchCalls": 0})
+            body = json.loads(request.content)
+            assert body == {"epoch": 2, "operationKey": "plan", "kind": "MODEL"}
+            receipt = {
+                "taskId": task_id,
+                **body,
+                "usage": {"modelCalls": 1, "toolCalls": 0, "searchCalls": 0},
+            }
+            if changed:
+                receipt[changed] = {
+                    "taskId": str(uuid4()),
+                    "epoch": 3,
+                    "operationKey": "another",
+                    "kind": "READ_TOOL",
+                }[changed]
+            return httpx.Response(200, json=receipt)
+
+        api = client(worker_key, handle)
+        try:
+            if changed:
+                with pytest.raises(TaskRuntimeError) as rejected:
+                    await api.reserve_research(task_id, 2, "plan", ResearchCall.MODEL)
+                assert rejected.value.code == TaskRuntimeCode.PROTOCOL_INVALID
+            else:
+                receipt = await api.reserve_research(task_id, 2, "plan", ResearchCall.MODEL)
+                assert receipt.usage == await api.research_usage(task_id, 2)
+                assert receipt.usage == ResearchUsage(model_calls=1, tool_calls=0, search_calls=0)
+        finally:
+            await api.aclose()
+
+    asyncio.run(scenario())

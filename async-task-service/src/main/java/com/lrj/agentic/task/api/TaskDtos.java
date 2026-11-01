@@ -26,6 +26,14 @@ public final class TaskDtos {
     }
     public record WorkItem(View task, WorkInput request) { }
     public record WorkPage(List<WorkItem> items, String nextCursor) { }
+    /** 研究能力只描述受理状态，不声称执行或质量通过。 */
+    public record ResearchCapabilities(String schemaVersion, boolean enabled) { }
+    /** 额度操作只接受调用种类；额度和身份由中央决定。 */
+    public record ResearchAllowance(@NotNull @Min(1) Long epoch, @NotNull String operationKey,
+            @NotNull String kind) { }
+    public record ResearchUsage(int modelCalls, int toolCalls, int searchCalls) { }
+    public record ResearchAllowanceReceipt(String taskId, long epoch, String operationKey,
+            String kind, ResearchUsage usage) { }
     public record Revision(@NotNull @Min(0) Long expectedRevision) { }
     public record Claim(@NotNull String runtimeVersion, @NotNull String graphVersion) { }
     public record Epoch(@NotNull @Min(1) Long epoch) { }

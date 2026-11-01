@@ -62,6 +62,8 @@ try {
     ['POST', '/api/v2/knowledge/citations/resolve'],
     ['POST', '/api/v2/knowledge/evaluations/runs'],
     ['POST', '/api/v2/tasks'],
+    ['POST', '/api/v3/tasks'],
+    ['GET', '/api/v3/tasks/capabilities'],
     ['POST', '/api/v2/conversations/11111111-1111-4111-8111-111111111111/turns'],
     ['GET', '/api/v2/conversations/capabilities'],
     ['POST', '/api/v3/conversations/11111111-1111-4111-8111-111111111111/turns'],

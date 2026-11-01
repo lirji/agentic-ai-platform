@@ -39,6 +39,14 @@ public class TaskController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public View submitGenerationWork(@AuthenticationPrincipal Jwt jwt, @RequestHeader("Idempotency-Key") String key,
             @Valid @RequestBody GenerationWorkSubmit command) { return tasks.submitGenerationWork(JwtTrust.caller(jwt), key, command); }
+    /** 版本化计划研究不改变v1/v2及助手受理。 */
+    @PostMapping("/api/v3/tasks")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public View submitResearchWork(@AuthenticationPrincipal Jwt jwt, @RequestHeader("Idempotency-Key") String key,
+            @Valid @RequestBody GenerationWorkSubmit command) { return tasks.submitResearchWork(JwtTrust.caller(jwt), key, command); }
+    /** 前端据实际开关决定是否提供新研究方式。 */
+    @GetMapping("/api/v3/tasks/capabilities")
+    public ResearchCapabilities researchCapabilities() { return tasks.researchCapabilities(); }
     /** 列表范围与游标所有权由数据库谓词和应用校验共同约束。 */
     @GetMapping("/api/v1/tasks")
     public WorkPage listWork(@AuthenticationPrincipal Jwt jwt, @RequestParam String kind,
@@ -121,6 +129,14 @@ public class TaskController {
     @PostMapping("/internal/v1/tasks/{id}/knowledge-evidence")
     public EvidenceReceipt evidence(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
             @Valid @RequestBody Evidence command) { return tasks.evidence(JwtTrust.caller(jwt), id, command); }
+    /** 研究外部调用前先持久预留，不能用本地计数绕过恢复后的上限。 */
+    @PostMapping("/internal/v1/task-worker/{id}/research-allowance")
+    public ResearchAllowanceReceipt reserveResearch(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
+            @Valid @RequestBody ResearchAllowance command) { return tasks.reserveResearch(JwtTrust.caller(jwt), id, command); }
+    /** 最终报告读取同一权威额度，不由模型自报消耗。 */
+    @GetMapping("/internal/v1/task-worker/{id}/research-allowance")
+    public ResearchUsage researchUsage(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
+            @RequestParam long epoch) { return tasks.researchUsage(JwtTrust.caller(jwt), id, epoch); }
     /** 中央凭据决定哪些 PG 快照允许恢复。 */
     @PostMapping("/internal/v1/task-worker/{id}/checkpoint")
     public Receipt checkpoint(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,

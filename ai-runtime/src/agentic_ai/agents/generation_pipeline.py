@@ -14,6 +14,7 @@ from agentic_ai.agents.pipeline import WorkGraphInput, WorkGraphOutput, WorkGrap
 from agentic_ai.qa.errors import QaCode, QaError
 from agentic_ai.qa.models import KnowledgeHit
 from agentic_ai.retrieval.consumer import RetrievalUseCase
+from agentic_ai.retrieval.models import RetrievalStrategy
 from agentic_ai.retrieval.retriever import CandidatePort
 from agentic_ai.retrieval.task_evidence import GenerationEvidenceRegistration, GenerationKnowledge
 from agentic_ai.retrieval.task_models import WORK_GRAPH_V2, GenerationResult, generation_input
@@ -39,6 +40,7 @@ class GenerationWorkPipeline(WorkPipeline):
     """不改变旧图版本，撤权和同内容重索引都按完整代次判定。"""
 
     input_fields = (*WorkPipeline.input_fields, "retrievalStrategy")
+    graph_version = WORK_GRAPH_V2
 
     def __init__(
         self,
@@ -48,9 +50,9 @@ class GenerationWorkPipeline(WorkPipeline):
         chat: ToolChatPort,
         use_case: RetrievalUseCase,
     ) -> None:
-        if binding.graph_version != WORK_GRAPH_V2:
+        if binding.graph_version != self.graph_version:
             raise QaError(QaCode.INPUT_REJECTED)
-        request, self.strategy = generation_input(binding.input, qa=False)
+        request, self.strategy = self.request_input(binding.input)
         self.generation = GenerationKnowledge(
             use_case, candidates, self.strategy, request.document_ids, MAX_EVIDENCE
         )
@@ -59,9 +61,16 @@ class GenerationWorkPipeline(WorkPipeline):
             central, binding, MAX_EVIDENCE, self.generation
         )
 
+    def request_input(self, value: object) -> tuple[WorkInput, RetrievalStrategy]:
+        """原v2输入规则保持独立，新图必须显式覆盖版本解析。"""
+        request, strategy = generation_input(value, qa=False)
+        if not isinstance(request, WorkInput):
+            raise QaError(QaCode.INPUT_REJECTED)
+        return request, strategy
+
     def parse_input(self, value: object) -> WorkInput:
         """严格校验新输入，再适配原内容规则；持久binding保持v2原样。"""
-        request, strategy = generation_input(value, qa=False)
+        request, strategy = self.request_input(value)
         if not isinstance(request, WorkInput) or strategy != self.strategy:
             raise QaError(QaCode.INPUT_REJECTED)
         return request

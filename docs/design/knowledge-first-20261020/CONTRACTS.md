@@ -12,6 +12,8 @@ S2 的 Python P01/P02 与 S3 的领取、持久准备、双索引发布及检索
 
 S10A在[生命周期契约](LIFECYCLE_CONTRACTS.md)冻结`knowledge-lifecycle-v1`：K07管理读写位于`/api/v2/knowledge`，K08为受限内部引用检查，P05为绑定索引代次的准备封装；旧K01–K06/P01/P04形状不变。S10B已实现更新/版本历史、K08、P05及历史正文保护，见[S10B验收](../../qa/document-update-20261026/TEST_RESULT.md)；撤下/删除和重索引仍待S10C/D，不把完整设计范围当作已实现。
 
+S12C 的研究增量见 [RESEARCH_COVERAGE_CONTRACTS](RESEARCH_COVERAGE_CONTRACTS.md)：显式v3受理、独立根图、任务持久调用额度、逐问题证据与缺口。旧研究/助手契约保留，分阶段恢复由S12D继续。
+
 ## 1. 通用约定
 
 - 基础业务 API 使用 `/api/v1` 命名空间，由本项目网关路由；生命周期K07新管理模型显式使用`/api/v2/knowledge`，不静默改变严格v1消费者。迁入旧 schema 时明确版本及适配映射，原项目文件只作固定参考，不能双向竞争维护。
