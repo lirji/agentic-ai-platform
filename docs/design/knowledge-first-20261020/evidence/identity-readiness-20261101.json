@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "identity-readiness-evidence-v1",
+  "slice": "S13A",
+  "status": "WAITING_U03",
+  "productImplementation": "NOT_STARTED",
+  "backendBase": "60da76d80a20c599e890db31ea06722ff91c166d",
+  "frontendBase": "8ebc5fa329b049d3606a1d2245fa4e2c754a4997",
+  "authReference": "763ca23e0f0cc521b5f605375ab999198cf001db",
+  "sources": [
+    {
+      "repository": "backend",
+      "path": "edge-gateway/src/main/java/com/lrj/agentic/gateway/GatewaySecurity.java",
+      "sha256": "f782a9e7ae2a3810249af4ad30496d250afa928c660381b3748ef5408f30d92c"
+    },
+    {
+      "repository": "backend",
+      "path": "edge-gateway/src/main/java/com/lrj/agentic/gateway/InternalIdentityExchange.java",
+      "sha256": "326cc8c4e01a5989108eb8573d6dd842d54b5427819fd3dd8d05b0ca8b9c1577"
+    },
+    {
+      "repository": "backend",
+      "path": "platform-security/src/main/java/com/lrj/agentic/security/JwtTrust.java",
+      "sha256": "3d12b09c0d17dfeb1095b4b02c05e92beca5358806ec52b50ad57e5b409c80c7"
+    },
+    {
+      "repository": "backend",
+      "path": "edge-gateway/src/main/resources/application.yml",
+      "sha256": "267acd60009faa1f237dbeff7aa3eb70a1c75429f2fa7f41b24f2e42bccb995f"
+    },
+    {
+      "repository": "frontend",
+      "path": "src/app/App.tsx",
+      "sha256": "b2a97d930617f9ad29928a7418800acf1aa2792ceb3b4d66c544dcfb1c2f6646"
+    },
+    {
+      "repository": "frontend",
+      "path": "src/shared/api/http.ts",
+      "sha256": "f4ad27fbe37a6f792db73846bb8c3041f7d00d0aafec4136c1817d434173c2cc"
+    },
+    {
+      "repository": "auth-reference",
+      "path": "docs/design/wms-auth-integration/CONTRACTS.md",
+      "sha256": "b54e4bcaa70d62ca844a7667dffecd935c2302a550aca6cce4cdfd0cd0067240"
+    }
+  ],
+  "publicDiscovery": {
+    "checkedOn": "2026-11-01",
+    "issuer": "http://localhost:18090",
+    "authorizationEndpoint": "http://localhost:18090/login/oauth/authorize",
+    "tokenEndpoint": "http://localhost:18090/api/login/oauth/access_token",
+    "jwksUri": "http://localhost:18090/.well-known/jwks",
+    "endSessionEndpoint": "http://localhost:18090/api/logout",
+    "codeChallengeMethods": [
+      "S256"
+    ],
+    "authenticatedRequest": false
+  },
+  "sideEffects": {
+    "identityWrites": 0,
+    "businessWrites": 0,
+    "deployments": 0,
+    "paidModelCalls": 0
+  },
+  "unresolved": [
+    "Application organization and membership/role ownership (U03)",
+    "Real callback/client registration and logout/session semantics remain to freeze"
+  ],
+  "documentValidation": {
+    "status": "PASS",
+    "documents": 7,
+    "localLinks": 256,
+    "sourceFingerprints": 7,
+    "productCodeChanges": 0,
+    "changedPaths": [
+      "CODEX_PROGRESS.md",
+      "docs/README.md",
+      "docs/design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md",
+      "docs/design/knowledge-first-20261020/IDENTITY_READINESS.md",
+      "docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md",
+      "docs/design/knowledge-first-20261020/PROGRESS_STATE.md",
+      "docs/design/knowledge-first-20261020/evidence/identity-readiness-20261101.json",
+      "docs/doc-map.md"
+    ]
+  }
+}

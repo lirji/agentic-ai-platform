@@ -140,3 +140,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 2026-11-01 S12C：Tasks ResearchCall/ResearchKnowledgeResults与任务行锁额度、Python research_models/research_pipeline、前端research/ResearchReport/CreateWork/WorkPage对应[C-WORK2](design/knowledge-first-20261020/RESEARCH_COVERAGE_CONTRACTS.md)。完整代次引用、三端18组负例、真实MySQL/PG/双索引/HTTP/浏览器及默认关闭的路由验证见[验收](qa/research-coverage-20261101/TEST_RESULT.md)；金额预算不重置，分阶段恢复留待S12D。
 
 2026-11-01 S12D：StagedResearchPipeline、Tasks v4受理/ResearchResumeStage、前端recovery/Progress及公开路由对应[恢复契约](design/knowledge-first-20261020/RESEARCH_RECOVERY_CONTRACTS.md)。真正PG确认阶段、未确认模型重跑累计次数和浏览器恢复位置见[验收](qa/research-recovery-20261101/TEST_RESULT.md)；不启用内部子图检查点或新调度器。
+
+- S13A身份前置事实：[IDENTITY_READINESS](design/knowledge-first-20261020/IDENTITY_READINESS.md)，对应源摘要[evidence](design/knowledge-first-20261020/evidence/identity-readiness-20261101.json)；仅核实当前网关/React与Auth参考和公开discovery，不表示正式配置或成员授权已完成。

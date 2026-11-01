@@ -47,3 +47,5 @@ schemaVersion、运行/处理版本、正文/结构/结果摘要和权限上下�
 S8A 已形成 [QUALITY_CONTRACTS](QUALITY_CONTRACTS.md) 与 [QUALITY_ACCEPTANCE](QUALITY_ACCEPTANCE.md)。E01 的公共定义/修订/标注接口可供 S8B 实施；评测指标、执行与报告唯一归属已明确。E02/E03 内部运行/终态凭据和比较传输 DTO 在 S8C/D 开始前补齐，不能将整组接口视为已实现。首批资料采用用户选择的项目架构/操作文档。
 
 S11A已将C-RETRIEVAL/C-RERANK的内部原语、排名、模型失败/预算与消费者兼容边界冻结于[RETRIEVAL_CONTRACTS](RETRIEVAL_CONTRACTS.md)，产品验收仍按[RT矩阵](RETRIEVAL_ACCEPTANCE.md)分片完成。U04未满足不表示真实Reranker已启用，S11D仍须核实提供方条件；S11E另固化公共响应与任务策略字段。
+
+S13A已完成[身份接入前置核对](IDENTITY_READINESS.md)；U03组织/成员范围仍待用户决定，C-IDENTITY未冻结，不能将既有WMS的登记或角色继承给知识工作台。

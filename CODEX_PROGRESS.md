@@ -1,7 +1,7 @@
 # Codex Progress
 
-- 当前任务capability-delivery-20261021：S12D已实现、验收并合并推main；完整51项计划未完成，接续S13A。
-- 本片后端a29bf0d/前端8475559，任务分支及main CI全部PASS；两仓原目录feat/research-stage-recovery-20261101，交付记录归档后进入S13A。
+- 当前任务capability-delivery-20261021：S12D已交付；S13A前置核对完成，等待U03身份范围。完整51项计划未完成。
+- S12D产品a29bf0d/8475559及归档60da76d/8ebc5fa已合并推main；后端当前feat/identity-readiness-20261101，身份前置文档已验证，交付现场见.local/s13a-delivery.json；产品未实现。
 - 唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。U03真实身份范围已异步询问；其余授权、原预算和数据边界保持。
 
 ## 前期可行性任务记录
