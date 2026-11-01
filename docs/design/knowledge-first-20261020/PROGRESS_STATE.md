@@ -1,15 +1,14 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S14A 所有者处理反馈（实施中）
+## 当前任务：S14A 已交付，继续 S14B
 
-- 用户2026-11-02答复“自行处理”：资料所有者查看自己资料的反馈、编辑候选并审批发布修正；不新增组织运营管理员，不允许共享接收者编辑/转授。继续原capability-delivery-20261021共51项，parallel=no，整体未完成。
-- 计划：①冻结C-OPERATIONS反馈与权限契约；②S14A真实反馈持久化、引用/任务关联校验、所有者收件箱和本人记录；③验证/审查/正常Git交付；④接S14B候选编辑与内容绑定评估、S14C审批真实发布、S14D发布核验/补偿版本。每片独立完成后连续推进。
-- 当前①契约/②实现完成，③验证交付进行中。两仓feat/knowledge-feedback-20261102，基线后端da068c4/前端3e032d2。Knowledge真实DB/HTTP共7项含实际Tasks/浏览器联合PASS（.logs/s14a-joint-final.log）；Tasks专项1项PASS；前端202单元及最终12定向/格式/类型/静态/构建PASS。最后补回列表筛选/分页保留与截图过渡等待，最终构建浏览器复验PASS（.logs/s14a-browser-final.log），5张截图已实看。当前本地验收/审查PASS，待正常Git/CI交付。
-- Review：任务证明隔离用途、完整实际引用、当前ACL、原key恢复、私有taskId隐去均通过；短事务/唯一键/范围索引复核。代码卫生首轮发现测试启动循环吞连接异常，已保留错误类型并复验PASS_WITH_LIMITATIONS（Java无独立格式器）；前端文本扫描PASS，PNG单独实看。首轮TXT定位夹具为空及次轮按钮文案断言失败已保留日志。Runtime显式开关/默认关闭/配置检查PASS，未部署。
-- 关键边界：每条反馈只指向一份资料及选中证据；提交者明确填写将发送的内容，不默认复制整段私有问答/研究正文。绑定任务由Tasks权威校验，不跨库读取。所有者收件箱不等于可读提交者的私有任务；查看和修改仍按tenant+owner范围。
-- 验收：幂等与未知提交恢复；真实资料/任务引用、过期或撤权拒绝；本人记录/owner收件箱/第三人隔离；反馈不直接改知识正文；真实HTTP/DB与浏览器桌面/窄屏验证。
-- 授权/规范：沿原本地实施、必要测试、独立分支正常提交/合并/推main授权；无生产部署、强推、清理、子Agent、新付费预算。使用continue-approved-delivery、bounded contracts/backend/frontend/validation/progress/Git pass；架构业务建模、持久化、接口、并发安全、容量、发布治理。原Chat/Embedding累计0.957092/0.781784元保留，本片不发付费调用。
-- 运行/保留：28206旧共享预览及28086Docker/28196身份预览保留；两仓.local凭据/账本、.logs、原main工作树和用户.idea保留。28216反馈预览使用.local/feedback-dist（session78095）；最终浏览器联测已结束，日志.logs/s14a-browser-final.log；临时Tasks已正常退出。保留测试V14和全部随机租户记录。
+- 用户2026-11-02授权“自行处理”，本轮按既有资料所有权采用owner处理反馈与编辑/审批修正，不新增组织运营管理员。沿capability-delivery-20261021共51项，parallel=no，整体未完成；下一片S14B候选编辑与内容绑定评估，其后S14C真实审批发布、S14D精确探测/补偿。
+- S14A契约、实现、验证、审查与产品Git交付DONE。后端009f141/前端5f597b2已正常ff合并推main；分支CI41363910246/41363911648和main CI41364091686/41364105004全部精确SHA PASS，见[交付收据](../../qa/feedback-20261102/delivery-result.json)。当前feat/knowledge-feedback-20261102仅归档收据/状态；归档精确HEAD和CI写.local/s14a-archive-delivery.json，避免递归记录自身hash。
+- 验证：[TEST_RESULT](../../qa/feedback-20261102/TEST_RESULT.md)、[REVIEW](../../qa/feedback-20261102/REVIEW.md)。真实Knowledge DB/HTTP7项（含实际Tasks联合）和Tasks专项1项PASS；前端202单元，最终12定向/格式/类型/静态/构建/真实浏览器及5张截图实看PASS。原键未知恢复、当前权限/完整引用、严格协议、收发隔离、私有taskId隐去、撤权后保留记录均有证据。
+- 失败已修：TXT夹具定位为空、测试按钮文案错误、截图过渡时机、测试启动连接错误吞掉；日志保留。后端代码卫生COMPLETE_WITH_LIMITATIONS（无独立Java格式器，短事务/常量人工复核），前端COMPLETE（PNG单独实看，文本全部扫描）。无新模型/中间件/依赖。
+- 运行与边界：所有本片测试已结束，临时Tasks已正常退出。28216反馈预览使用.local/feedback-dist（session78095）；原28086Docker、28196身份、28206共享预览保持，未部署。测试库V14与随机tenant记录保留，不删除数据；两仓.local凭据/预算/.logs/.idea和原main工作树保留。
+- 授权/规范：本地有界设计实现/验证、独立任务分支正常提交/合并/推main持续授权；无生产部署、强推、清理、子Agent、新付费预算。Chat/Embedding原累计0.957092/0.781784元不变，本片付费调用0。采用continue-approved-delivery、contracts/backend/frontend/runtime/validation/progress/Git/CI；架构建模、持久化、接口、并发安全、容量和发布治理。
+- 恢复下一步：先核对归档提交/CI及两仓状态，随后原目录新建S14B任务分支。候选不能把requiredText或旧资料评估当质量通过；需绑定当前候选内容/真实统一质量运行且编辑后失效。只读调查笔记.local/s14a-next-slice-notes.md不是冻结契约；先完成有界设计，再落地，不引入第二套评测/调度系统。
 
 ### S13B/C 已交付（历史）
 

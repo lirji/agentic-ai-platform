@@ -50,4 +50,4 @@ S11A已将C-RETRIEVAL/C-RERANK的内部原语、排名、模型失败/预算与�
 
 S13A的U03已确认专属组织/客户端及个人空间，[C-IDENTITY](IDENTITY_CONTRACTS.md)已冻结并完成功能验收；不继承其他项目成员/角色。S13B于2026-11-02确认指定同组织成员只读；准入名单不等于共享，必须owner逐份授权，见[C-SHARING](SHARING_CONTRACTS.md)。
 
-S14A于2026-11-02确认资料所有者自行处理；反馈子契约已冻结[C-OPERATIONS](OPERATIONS_CONTRACTS.md)，不转交整段私有正文、不新增运营管理员。
+S14A于2026-11-02获授权自行处理，采用资料所有者处理；反馈子契约已冻结[C-OPERATIONS](OPERATIONS_CONTRACTS.md)，不转交整段私有正文、不新增运营管理员。

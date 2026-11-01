@@ -1,7 +1,7 @@
 {
   "slice": "S14A",
   "status": "LOCAL_PASS",
-  "gitCiGate": "PENDING",
+  "gitCiGate": "PASS",
   "sources": {
     "backend": {
       "async-task-service/src/main/java/com/lrj/agentic/task/api/TaskFeedbackController.java": "b74fe189f097f9df16b7249ed5cfe7841a54c5ff883f6673d53a55ff87aefb3f",
@@ -71,5 +71,9 @@
     "docs/qa/feedback-20261102/screenshots/owner-inbox.png": "74d4f0881393b5506c643732e5bcb9d5ba69a71ec071b3f1dc92a1b24c069cef",
     "docs/qa/feedback-20261102/screenshots/feedback-form.png": "28319273b0deb4d383285bad5bb636eaa40dcf3cfbda902a5727a1369f634a99"
   },
-  "paidCalls": 0
+  "paidCalls": 0,
+  "deliveredRevisions": {
+    "backend": "009f14125220c612e906c81ef42dcd95074043e2",
+    "frontend": "5f597b23d952aed13c265c60b57318d44ab96c3d"
+  }
 }

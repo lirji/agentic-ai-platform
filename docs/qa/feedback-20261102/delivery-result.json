@@ -1,0 +1,99 @@
+{
+  "slice": "S14A",
+  "status": "DELIVERED",
+  "method": "task branch -> normal fast-forward merge -> push main",
+  "productionDeployment": false,
+  "branchCi": {
+    "backend": {
+      "conclusion": "success",
+      "headSha": "009f14125220c612e906c81ef42dcd95074043e2",
+      "jobs": [
+        {
+          "name": "documents",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41363910246/job/125019917613"
+        },
+        {
+          "name": "python",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41363910246/job/125019917823"
+        },
+        {
+          "name": "java",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41363910246/job/125019917887"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41363910246"
+    },
+    "frontend": {
+      "conclusion": "success",
+      "headSha": "5f597b23d952aed13c265c60b57318d44ab96c3d",
+      "jobs": [
+        {
+          "name": "web",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41363911648/job/125019921915"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41363911648"
+    }
+  },
+  "mainCi": {
+    "backend": {
+      "conclusion": "success",
+      "headSha": "009f14125220c612e906c81ef42dcd95074043e2",
+      "jobs": [
+        {
+          "name": "documents",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41364091686/job/125020463814"
+        },
+        {
+          "name": "java",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41364091686/job/125020463955"
+        },
+        {
+          "name": "python",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41364091686/job/125020463956"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41364091686"
+    },
+    "frontend": {
+      "conclusion": "success",
+      "headSha": "5f597b23d952aed13c265c60b57318d44ab96c3d",
+      "jobs": [
+        {
+          "name": "web",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41364105004/job/125020504573"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41364105004"
+    }
+  },
+  "retained": [
+    "existing Docker main worktree",
+    ".local credentials/budgets",
+    ".logs",
+    "test V14 and random tenants",
+    "existing runtime previews",
+    "feedback preview 28216"
+  ],
+  "next": "S14B candidate editing and content-bound evaluation"
+}

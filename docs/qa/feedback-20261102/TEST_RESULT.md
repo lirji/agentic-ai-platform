@@ -1,6 +1,6 @@
 # S14A 资料反馈验证
 
-本地必需验收 PASS。Git/CI 精确提交门禁另见 delivery-result.json（交付后登记）。当前源码摘要见 validation.json；S14B/C/D尚未实现，不把本片写成完整运营闭环。
+本地必需验收 PASS。产品分支/main精确提交CI全部PASS，见[交付收据](delivery-result.json)。当前源码摘要见 validation.json；S14B/C/D尚未实现，不把本片写成完整运营闭环。
 
 | 验收 | 方法与实际结果 | 证据 |
 | --- | --- | --- |
