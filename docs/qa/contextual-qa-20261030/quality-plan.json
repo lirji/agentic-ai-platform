@@ -1,0 +1,127 @@
+{
+  "scope": "synthetic existing published corpus; real deepseek-flash rewrite and text-embedding-v4 retrieval; not production answer-quality acceptance",
+  "documentIds": [
+    "010988ca-4c2e-4fa4-bcd3-601e75b0b437",
+    "22497363-3bb4-41ce-b5c9-20a4ed11d4ec",
+    "2ac0e7b1-3b23-4f56-8d51-d2a75a0ded35",
+    "4e3d7f03-f070-4ee4-872f-c73284f92ac8",
+    "a1349243-9b4d-476e-aca6-667be4ad91a1",
+    "aa371638-6816-44ac-a5e4-eb3085495ad5",
+    "ab3d5d8d-0910-43b1-833f-2dda9bc9d121",
+    "e29ddb19-46e5-426d-ba26-7e2e6f1aaaa2",
+    "f76f053b-48d3-4e2a-a3bd-2229d929d794"
+  ],
+  "corpus": [
+    {
+      "documentId": "010988ca-4c2e-4fa4-bcd3-601e75b0b437",
+      "displayName": "知识资料处理指引",
+      "publishedRevision": 1,
+      "publishedGeneration": 1,
+      "contentHash": "882c3d95fb89205978392ef8c31cc6be75f3671ec65c4b257e484380def6f43b"
+    },
+    {
+      "documentId": "22497363-3bb4-41ce-b5c9-20a4ed11d4ec",
+      "displayName": "S9D长章节界面验收",
+      "publishedRevision": 1,
+      "publishedGeneration": 1,
+      "contentHash": "ef940f2550a6482128ee5f14969dc913c582e07498079284d676edaff9506662"
+    },
+    {
+      "documentId": "2ac0e7b1-3b23-4f56-8d51-d2a75a0ded35",
+      "displayName": "S9D相邻页界面验收",
+      "publishedRevision": 1,
+      "publishedGeneration": 1,
+      "contentHash": "468f79d9d638ecbd34d59d752f919965cec3e95fdc6421988ffffea352d0ff74"
+    },
+    {
+      "documentId": "4e3d7f03-f070-4ee4-872f-c73284f92ac8",
+      "displayName": "更新发布验收 · 当前版",
+      "publishedRevision": 3,
+      "publishedGeneration": 3,
+      "contentHash": "fc8205dc7a79b9350c7a30c4146cf39eecf18df8711f16fd7420fde2e9281b14"
+    },
+    {
+      "documentId": "a1349243-9b4d-476e-aca6-667be4ad91a1",
+      "displayName": "知识库可靠性说明",
+      "publishedRevision": 1,
+      "publishedGeneration": 1,
+      "contentHash": "e0c70b02ac6c1105caaa216e1d994dfa55c53b6e47ae5ed777d91e14e675e1b2"
+    },
+    {
+      "documentId": "aa371638-6816-44ac-a5e4-eb3085495ad5",
+      "displayName": "重索引验收 · 失败PDF新稿",
+      "publishedRevision": 1,
+      "publishedGeneration": 4,
+      "contentHash": "d9e7ca53389ecf7718a2c96ccd0310d3686063c0d4f3e69730c1928503f80335"
+    },
+    {
+      "documentId": "ab3d5d8d-0910-43b1-833f-2dda9bc9d121",
+      "displayName": "DOCX段落与合并表格验收",
+      "publishedRevision": 1,
+      "publishedGeneration": 1,
+      "contentHash": "407bf69c7fc221189b3a658b8b8a61bdfe5b6bd75ce4fc0270df2d6fe2fdaca0"
+    },
+    {
+      "documentId": "e29ddb19-46e5-426d-ba26-7e2e6f1aaaa2",
+      "displayName": "知识资料处理指引",
+      "publishedRevision": 1,
+      "publishedGeneration": 1,
+      "contentHash": "014be3b004c57af1295431b232c98a31ea4f991a72e6fb6bb1aaf549d97a5137"
+    },
+    {
+      "documentId": "f76f053b-48d3-4e2a-a3bd-2229d929d794",
+      "displayName": "PDF页级来源验收",
+      "publishedRevision": 1,
+      "publishedGeneration": 1,
+      "contentHash": "1471561d350b30380fd601f536e934bce8756cbd7c885e1df651ad56340e903c"
+    }
+  ],
+  "metrics": "Recall@3 over prelabelled document groups; first relevant reciprocal rank. Any decrease=DEGRADED, else any increase=IMPROVED, else UNCHANGED. Rewrite FALLBACK counted separately as failure. No output generation in this retrieval comparison.",
+  "cases": [
+    {
+      "id": "pronoun",
+      "question": "它失败后如何避免重复工作？",
+      "context": {
+        "question": "知识资料处理指引说明了什么？",
+        "answer": "资料处理先保存准备结果，再写入向量索引与全文索引，两边成功后才发布。失败重试复用准备结果和已经成功的索引。"
+      },
+      "relevantGroups": [
+        [
+          "010988ca-4c2e-4fa4-bcd3-601e75b0b437",
+          "e29ddb19-46e5-426d-ba26-7e2e6f1aaaa2"
+        ]
+      ]
+    },
+    {
+      "id": "self-contained",
+      "question": "资料处理失败时如何复用已经成功的索引？",
+      "context": {
+        "question": "知识资料处理指引说明了什么？",
+        "answer": "资料处理先保存准备结果，再写入向量索引与全文索引，两边成功后才发布。失败重试复用准备结果和已经成功的索引。"
+      },
+      "relevantGroups": [
+        [
+          "010988ca-4c2e-4fa4-bcd3-601e75b0b437",
+          "e29ddb19-46e5-426d-ba26-7e2e6f1aaaa2"
+        ]
+      ]
+    },
+    {
+      "id": "cross-document",
+      "question": "前者怎样恢复，后者何时发布？",
+      "context": {
+        "question": "知识库可靠性说明和知识资料处理指引分别说明什么？",
+        "answer": "前者说明任务持久化、重启恢复和原提交重放；后者说明双索引均成功后才发布。"
+      },
+      "relevantGroups": [
+        [
+          "a1349243-9b4d-476e-aca6-667be4ad91a1"
+        ],
+        [
+          "010988ca-4c2e-4fa4-bcd3-601e75b0b437",
+          "e29ddb19-46e5-426d-ba26-7e2e6f1aaaa2"
+        ]
+      ]
+    }
+  ]
+}

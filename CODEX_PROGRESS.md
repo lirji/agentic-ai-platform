@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务`capability-delivery-20261021`：S11E已验收、合并并推送；正在S12A追问指代/受控上下文，完整51项计划未完成。
-- 两仓原目录任务分支`feat/contextual-qa-20261030`；唯一权威恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。本片契约/金标/Python模型及Java受理校验正在实施与验证；仅Conversation隔离测试库已迁移V3，未部署。
-- 原运行镜像未替换，授权Docker重启及恢复已完成；没有新模型预算、生产部署或清理授权。S11E证据/日志继续保留。
+- 当前任务`capability-delivery-20261021`：S12A受控追问已实现、审查与验收PASS，正在两仓Git/CI交付；51项完整计划未完成，随后S12B。
+- 两仓原目录`feat/contextual-qa-20261030`；唯一恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。最新证据`docs/qa/contextual-qa-20261030/TEST_RESULT.md`与validation.json。
+- 真实小样本已完成，不得重发：chat预留0.957092元/Embedding0.781784元，原各1元。无新增预算/生产部署/清理；预览进程已退出，原镜像未替换。
 
 ## 前期可行性任务记录
 

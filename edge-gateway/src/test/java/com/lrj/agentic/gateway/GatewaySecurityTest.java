@@ -44,6 +44,7 @@ class GatewaySecurityTest {
         var filter = new InternalIdentityExchange(encoder, properties, new GatewayErrors(new com.fasterxml.jackson.databind.ObjectMapper()));
         for (var route : java.util.Map.of("/api/v2/tasks", "agentic-ai-tasks", "/api/v1/tasks/id", "agentic-ai-tasks",
                 "/api/v2/conversations/id/turns", "agentic-ai-conversation", "/api/v1/conversations/id", "agentic-ai-conversation",
+                "/api/v2/conversations/capabilities", "agentic-ai-conversation", "/api/v3/conversations/id/turns", "agentic-ai-conversation",
                 "/api/v2/knowledge/evaluations/runs", "agentic-ai-knowledge").entrySet()) {
             var external = org.springframework.security.oauth2.jwt.Jwt.withTokenValue("external").header("alg", "RS256")
                     .subject("alice").claim("tenant_id", "tenant").claim("scope", "task:write").build();

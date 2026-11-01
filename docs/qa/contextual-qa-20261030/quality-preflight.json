@@ -1,0 +1,12 @@
+{
+  "chatPerCaseUpperCny": [
+    "0.022376",
+    "0.022448",
+    "0.022304"
+  ],
+  "chatTotalUpperCny": "0.067128",
+  "embeddingTotalUpperCny": "0.138288",
+  "chatBeforeCny": "0.889964",
+  "embeddingBeforeCny": "0.731784",
+  "chatMaxOutputTokens": 1024
+}

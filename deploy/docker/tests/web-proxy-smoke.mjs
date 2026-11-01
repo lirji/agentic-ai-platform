@@ -63,6 +63,8 @@ try {
     ['POST', '/api/v2/knowledge/evaluations/runs'],
     ['POST', '/api/v2/tasks'],
     ['POST', '/api/v2/conversations/11111111-1111-4111-8111-111111111111/turns'],
+    ['GET', '/api/v2/conversations/capabilities'],
+    ['POST', '/api/v3/conversations/11111111-1111-4111-8111-111111111111/turns'],
     ['GET', '/api/v1/tasks'],
   ];
   for (const [method, path] of routes) {

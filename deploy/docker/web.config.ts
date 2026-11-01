@@ -13,7 +13,7 @@ export default defineConfig({
     proxy: Object.fromEntries(
       [
         '/api/v2/knowledge', '/api/v1/knowledge',
-        '/api/v2/conversations', '/api/v1/conversations',
+        '/api/v3/conversations', '/api/v2/conversations', '/api/v1/conversations',
         '/api/v2/tasks', '/api/v1/tasks',
       ].map(
         (path) => [path, {

@@ -156,6 +156,15 @@ class CrossRuntimeRetrievalIT {
     }
 
     @Test void fourConsumersUseSamePublishedEvidenceAndEvaluationPersistsThroughRealHttpAndPostgres() throws Exception {
+        runConsumerTest("test_evaluation_full_joint.py", false);
+    }
+
+    @Test void contextualConversationPersistsAndResolvesRealCurrentEvidence() throws Exception {
+        runConsumerTest("test_contextual_full_joint.py", true);
+    }
+
+    /** 两个纵向验收共用真实发布入口；模型端口仅在Python测试中显式替换。 */
+    private void runConsumerTest(String test, boolean contextual) throws Exception {
         var fixture = json.createObjectNode().put("knowledgeEndpoint", "http://127.0.0.1:" + port)
                 .put("taskPort", TASK_PORT).put("tenant", EVALUATION_OWNER.tenantId()).put("owner", EVALUATION_OWNER.userId());
         var documents = fixture.putArray("documents");
@@ -170,10 +179,11 @@ class CrossRuntimeRetrievalIT {
         Files.writeString(input, fixture.toString());
         Path root = runtime.directory.getParent().getParent();
         var builder = new ProcessBuilder(root.resolve("ai-runtime/.venv/bin/python").toString(), "-m", "pytest",
-                "tests/test_evaluation_full_joint.py", "-q");
+                "tests/" + test, "-q");
         builder.directory(root.resolve("ai-runtime").toFile()).redirectErrorStream(true)
                 .redirectOutput(runtime.directory.resolve("consumers.log").toFile());
         builder.environment().put("AGENTIC_EVALUATION_FULL_IT", input.toString());
+        if (contextual) builder.environment().put("AGENTIC_CONTEXTUAL_JOINT_IT", "1");
         builder.environment().put("LANGSMITH_TRACING", "false");
         builder.environment().put("LANGCHAIN_TRACING_V2", "false");
         Process process = builder.start();

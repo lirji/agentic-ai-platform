@@ -1,0 +1,295 @@
+{
+  "status": "COMPLETED",
+  "preflight": {
+    "chatPerCaseUpperCny": [
+      "0.022376",
+      "0.022448",
+      "0.022304"
+    ],
+    "chatTotalUpperCny": "0.067128",
+    "embeddingTotalUpperCny": "0.138288",
+    "chatBeforeCny": "0.889964",
+    "embeddingBeforeCny": "0.731784",
+    "chatMaxOutputTokens": 1024
+  },
+  "cases": [
+    {
+      "id": "pronoun",
+      "stage": "DONE",
+      "query": {
+        "originalQuestion": "它失败后如何避免重复工作？",
+        "retrievalQuestion": "知识资料处理失败后如何避免重复工作？",
+        "mode": "REWRITTEN",
+        "fallbackReason": null,
+        "contextTruncated": false
+      },
+      "original": {
+        "recallAt3": 0.0,
+        "reciprocalRank": 0,
+        "references": [
+          {
+            "documentId": "22497363-3bb4-41ce-b5c9-20a4ed11d4ec",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "f2c7d8ff-22a8-4073-9240-057baec50688",
+            "processorVersion": "docx-v3-poi6.0.0-structure512-overlap64-ctx256-embedding-v4-1024",
+            "chunkId": "9aba95606f55d4852470de1e273c9d1090dcf90e6081b08bd987a9bfb30a10ca",
+            "batchDigest": "39732b12864d60b4474b575f57f1d9a6e57d60eaf2674402e1fa5fea73da9f9b",
+            "textHash": "2350ea185a53fb64414d9b66f7aa908107267bef047f504d195cc9267a10042e"
+          },
+          {
+            "documentId": "a1349243-9b4d-476e-aca6-667be4ad91a1",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "c93e4ee9-f11c-4098-b33d-bccab94f0db4",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "868dc355d2c85e5daaf389a7af9876a41c14422aac6e9a9c48b24c79632cfcde",
+            "batchDigest": "12b9e445b7352f9657131b322ebd7aaeb57cf7b0223baf5dd410ab5b89c2b931",
+            "textHash": "ddd766f5a7070f89e6e84bcf80e70f173447ea1b87b900c648249c1e6d3c153f"
+          },
+          {
+            "documentId": "aa371638-6816-44ac-a5e4-eb3085495ad5",
+            "version": 1,
+            "indexGeneration": 4,
+            "jobId": "13e8376e-5ccf-487e-8536-f59b09084baa",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "db5e909afec2f4ed89d2608a68fd7753cbe6554b1fb9f26a71b78f4d374fd29f",
+            "batchDigest": "d9a6139b87cde555be02c140b73610b91e3ed2bb31fd6e5ea7c5b1b0a139c1cd",
+            "textHash": "668dfd7934f4b77b73e53b5efd1db4c9e4715e5650e2b41faf1f1a9b84c6250f"
+          }
+        ],
+        "elapsedMs": 2467
+      },
+      "rewritten": {
+        "recallAt3": 1.0,
+        "reciprocalRank": 1.0,
+        "references": [
+          {
+            "documentId": "010988ca-4c2e-4fa4-bcd3-601e75b0b437",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "d388027e-3753-4753-a6ba-55cd6fe1dbdc",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "9bde51ae3ceb861b6db869e155bb8343541cc4029fcb03c61049bd9391d3414e",
+            "batchDigest": "199213486c93d4901635083e57a5a42d3e6a8a7f0db268815531ffe15824ea76",
+            "textHash": "57f25d428ef4deea21a3a5d4d1094f921e4de17b57505eb04f8481fac0996db7"
+          },
+          {
+            "documentId": "e29ddb19-46e5-426d-ba26-7e2e6f1aaaa2",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "e8f2d4ef-24e5-49f0-8d79-0b5a63940eff",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "9ec8f03f6cd45d32b11e933f01a871e53c6395cef0fa9ef77f39329d57540d50",
+            "batchDigest": "c72c8b55f17281b1872023a9eb6d101d8b7ca8faa2fb67095f523a2915ac0518",
+            "textHash": "59bb4dd2f64bf87448d03cb2bf19c2442b588a3be754e515ef56547ed57f8ea8"
+          },
+          {
+            "documentId": "a1349243-9b4d-476e-aca6-667be4ad91a1",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "c93e4ee9-f11c-4098-b33d-bccab94f0db4",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "868dc355d2c85e5daaf389a7af9876a41c14422aac6e9a9c48b24c79632cfcde",
+            "batchDigest": "12b9e445b7352f9657131b322ebd7aaeb57cf7b0223baf5dd410ab5b89c2b931",
+            "textHash": "ddd766f5a7070f89e6e84bcf80e70f173447ea1b87b900c648249c1e6d3c153f"
+          }
+        ],
+        "elapsedMs": 804
+      },
+      "comparison": "IMPROVED"
+    },
+    {
+      "id": "self-contained",
+      "stage": "DONE",
+      "query": {
+        "originalQuestion": "资料处理失败时如何复用已经成功的索引？",
+        "retrievalQuestion": "资料处理失败时如何复用已经成功的索引？",
+        "mode": "ORIGINAL",
+        "fallbackReason": null,
+        "contextTruncated": false
+      },
+      "original": {
+        "recallAt3": 1.0,
+        "reciprocalRank": 1.0,
+        "references": [
+          {
+            "documentId": "e29ddb19-46e5-426d-ba26-7e2e6f1aaaa2",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "e8f2d4ef-24e5-49f0-8d79-0b5a63940eff",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "9ec8f03f6cd45d32b11e933f01a871e53c6395cef0fa9ef77f39329d57540d50",
+            "batchDigest": "c72c8b55f17281b1872023a9eb6d101d8b7ca8faa2fb67095f523a2915ac0518",
+            "textHash": "59bb4dd2f64bf87448d03cb2bf19c2442b588a3be754e515ef56547ed57f8ea8"
+          },
+          {
+            "documentId": "a1349243-9b4d-476e-aca6-667be4ad91a1",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "c93e4ee9-f11c-4098-b33d-bccab94f0db4",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "868dc355d2c85e5daaf389a7af9876a41c14422aac6e9a9c48b24c79632cfcde",
+            "batchDigest": "12b9e445b7352f9657131b322ebd7aaeb57cf7b0223baf5dd410ab5b89c2b931",
+            "textHash": "ddd766f5a7070f89e6e84bcf80e70f173447ea1b87b900c648249c1e6d3c153f"
+          },
+          {
+            "documentId": "010988ca-4c2e-4fa4-bcd3-601e75b0b437",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "d388027e-3753-4753-a6ba-55cd6fe1dbdc",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "9bde51ae3ceb861b6db869e155bb8343541cc4029fcb03c61049bd9391d3414e",
+            "batchDigest": "199213486c93d4901635083e57a5a42d3e6a8a7f0db268815531ffe15824ea76",
+            "textHash": "57f25d428ef4deea21a3a5d4d1094f921e4de17b57505eb04f8481fac0996db7"
+          }
+        ],
+        "elapsedMs": 2479
+      },
+      "identicalQueryReused": true,
+      "rewritten": {
+        "recallAt3": 1.0,
+        "reciprocalRank": 1.0,
+        "references": [
+          {
+            "documentId": "e29ddb19-46e5-426d-ba26-7e2e6f1aaaa2",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "e8f2d4ef-24e5-49f0-8d79-0b5a63940eff",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "9ec8f03f6cd45d32b11e933f01a871e53c6395cef0fa9ef77f39329d57540d50",
+            "batchDigest": "c72c8b55f17281b1872023a9eb6d101d8b7ca8faa2fb67095f523a2915ac0518",
+            "textHash": "59bb4dd2f64bf87448d03cb2bf19c2442b588a3be754e515ef56547ed57f8ea8"
+          },
+          {
+            "documentId": "a1349243-9b4d-476e-aca6-667be4ad91a1",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "c93e4ee9-f11c-4098-b33d-bccab94f0db4",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "868dc355d2c85e5daaf389a7af9876a41c14422aac6e9a9c48b24c79632cfcde",
+            "batchDigest": "12b9e445b7352f9657131b322ebd7aaeb57cf7b0223baf5dd410ab5b89c2b931",
+            "textHash": "ddd766f5a7070f89e6e84bcf80e70f173447ea1b87b900c648249c1e6d3c153f"
+          },
+          {
+            "documentId": "010988ca-4c2e-4fa4-bcd3-601e75b0b437",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "d388027e-3753-4753-a6ba-55cd6fe1dbdc",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "9bde51ae3ceb861b6db869e155bb8343541cc4029fcb03c61049bd9391d3414e",
+            "batchDigest": "199213486c93d4901635083e57a5a42d3e6a8a7f0db268815531ffe15824ea76",
+            "textHash": "57f25d428ef4deea21a3a5d4d1094f921e4de17b57505eb04f8481fac0996db7"
+          }
+        ],
+        "elapsedMs": 2479
+      },
+      "comparison": "UNCHANGED"
+    },
+    {
+      "id": "cross-document",
+      "stage": "DONE",
+      "query": {
+        "originalQuestion": "前者怎样恢复，后者何时发布？",
+        "retrievalQuestion": "知识库可靠性说明怎样恢复，知识资料处理指引何时发布？",
+        "mode": "REWRITTEN",
+        "fallbackReason": null,
+        "contextTruncated": false
+      },
+      "original": {
+        "recallAt3": 0.5,
+        "reciprocalRank": 0.5,
+        "references": [
+          {
+            "documentId": "4e3d7f03-f070-4ee4-872f-c73284f92ac8",
+            "version": 3,
+            "indexGeneration": 3,
+            "jobId": "581dbc75-bec9-4f8e-b6e4-7230daf03ea4",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "5aa8cad1a79950ee7ce5d69490e38ce905c0c06cb73d673b39f7b649fceeebf0",
+            "batchDigest": "56e0cb484a427647fb1bd0a9fff464369efce60ef6260be7a5279e4c1c526264",
+            "textHash": "fc8205dc7a79b9350c7a30c4146cf39eecf18df8711f16fd7420fde2e9281b14"
+          },
+          {
+            "documentId": "a1349243-9b4d-476e-aca6-667be4ad91a1",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "c93e4ee9-f11c-4098-b33d-bccab94f0db4",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "868dc355d2c85e5daaf389a7af9876a41c14422aac6e9a9c48b24c79632cfcde",
+            "batchDigest": "12b9e445b7352f9657131b322ebd7aaeb57cf7b0223baf5dd410ab5b89c2b931",
+            "textHash": "ddd766f5a7070f89e6e84bcf80e70f173447ea1b87b900c648249c1e6d3c153f"
+          },
+          {
+            "documentId": "aa371638-6816-44ac-a5e4-eb3085495ad5",
+            "version": 1,
+            "indexGeneration": 4,
+            "jobId": "13e8376e-5ccf-487e-8536-f59b09084baa",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "db5e909afec2f4ed89d2608a68fd7753cbe6554b1fb9f26a71b78f4d374fd29f",
+            "batchDigest": "d9a6139b87cde555be02c140b73610b91e3ed2bb31fd6e5ea7c5b1b0a139c1cd",
+            "textHash": "668dfd7934f4b77b73e53b5efd1db4c9e4715e5650e2b41faf1f1a9b84c6250f"
+          }
+        ],
+        "elapsedMs": 876
+      },
+      "rewritten": {
+        "recallAt3": 1.0,
+        "reciprocalRank": 1.0,
+        "references": [
+          {
+            "documentId": "a1349243-9b4d-476e-aca6-667be4ad91a1",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "c93e4ee9-f11c-4098-b33d-bccab94f0db4",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "868dc355d2c85e5daaf389a7af9876a41c14422aac6e9a9c48b24c79632cfcde",
+            "batchDigest": "12b9e445b7352f9657131b322ebd7aaeb57cf7b0223baf5dd410ab5b89c2b931",
+            "textHash": "ddd766f5a7070f89e6e84bcf80e70f173447ea1b87b900c648249c1e6d3c153f"
+          },
+          {
+            "documentId": "e29ddb19-46e5-426d-ba26-7e2e6f1aaaa2",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "e8f2d4ef-24e5-49f0-8d79-0b5a63940eff",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "9ec8f03f6cd45d32b11e933f01a871e53c6395cef0fa9ef77f39329d57540d50",
+            "batchDigest": "c72c8b55f17281b1872023a9eb6d101d8b7ca8faa2fb67095f523a2915ac0518",
+            "textHash": "59bb4dd2f64bf87448d03cb2bf19c2442b588a3be754e515ef56547ed57f8ea8"
+          },
+          {
+            "documentId": "010988ca-4c2e-4fa4-bcd3-601e75b0b437",
+            "version": 1,
+            "indexGeneration": 1,
+            "jobId": "d388027e-3753-4753-a6ba-55cd6fe1dbdc",
+            "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+            "chunkId": "9bde51ae3ceb861b6db869e155bb8343541cc4029fcb03c61049bd9391d3414e",
+            "batchDigest": "199213486c93d4901635083e57a5a42d3e6a8a7f0db268815531ffe15824ea76",
+            "textHash": "57f25d428ef4deea21a3a5d4d1094f921e4de17b57505eb04f8481fac0996db7"
+          }
+        ],
+        "elapsedMs": 807
+      },
+      "comparison": "IMPROVED"
+    }
+  ],
+  "scope": "synthetic existing published corpus; real deepseek-flash rewrite and text-embedding-v4 retrieval; not production answer-quality acceptance",
+  "chatAfterCny": "0.957092",
+  "embeddingAfterCny": "0.781784",
+  "counts": {
+    "IMPROVED": 2,
+    "UNCHANGED": 1,
+    "DEGRADED": 0
+  },
+  "rewriteFailures": 0,
+  "paidCalls": {
+    "chat": 3,
+    "embedding": 5
+  },
+  "limitations": [
+    "仅9份既有合成发布资料、3个问题；资料组级Recall@3与首相关倒数排名，不等于块级nDCG或答案质量。",
+    "跨文档改写将前者/后者替换为资料标题，句式仍略生硬；本次召回改善不保证所有指代语义改善。",
+    "没有新生成回答；真实持久链路采用协议模型，实际模型调用仅验证改写与召回。",
+    "两本1元累计额度保持不变；预留并非提供方账单。"
+  ]
+}

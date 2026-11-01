@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "markdownFiles": [
+    "CODEX_PROGRESS.md",
+    "README.md",
+    "docs/README.md",
+    "docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md",
+    "docs/design/knowledge-first-20261020/PROGRESS_STATE.md",
+    "docs/doc-map.md",
+    "docs/qa/contextual-qa-20261030/REVIEW.md",
+    "docs/qa/contextual-qa-20261030/TEST_RESULT.md",
+    "../agentic-ai-platform-web/CODEX_PROGRESS.md",
+    "../agentic-ai-platform-web/docs/qa/contextual-qa-20261030/TEST_RESULT.md"
+  ],
+  "sourceFingerprints": "PASS",
+  "secrets": "reviewed staged scope: no credentials/ledgers/private run state; test fixture IDs only"
+}

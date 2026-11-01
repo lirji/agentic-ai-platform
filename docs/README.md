@@ -43,7 +43,7 @@
 | [会话与交接契约](design/knowledge-first-20261020/CONVERSATION_CONTRACTS.md) | Q01–Q03 原问题、上下文、交接、查询；T01 owner 委托读取扩展 | S5C 冻结并验证；模型问答由后续 S5D 验收 |
 | [S5C 验证结果](qa/knowledge-conversations-20261021/TEST_RESULT.md) | 45 项 Java、40 项真实 HTTP、重启/依赖故障和 Python 恢复回归 | 历史 S5C 会话/交接验收通过，该批无付费调用 |
 | [问答执行契约](design/knowledge-first-20261020/QA_EXECUTION_CONTRACTS.md) | K05、原生问答图、引用/事件、累计预算与 worker | S5D 冻结；deepseek-flash 已批准并实测 |
-| [追问与检索问题契约](design/knowledge-first-20261020/CONTEXTUAL_QA_CONTRACTS.md) | C-QA2、独立v3图、查询改写与完整依赖 | S12A契约增量；产品实现/质量验证以进度为准 |
+| [追问与检索问题契约](design/knowledge-first-20261020/CONTEXTUAL_QA_CONTRACTS.md) | C-QA2、独立v3图、查询改写与完整依赖 | S12A已验收；[验收证据](qa/contextual-qa-20261030/TEST_RESULT.md)，运行容器未切换 |
 | [S5D 验证结果](qa/knowledge-qa-execution-20261021/TEST_RESULT.md) | 263 项 Python、真实知识读取与 PG/Tasks/合成模型恢复 | PASS；真实模型、问答/引用、预算重启已验证 |
 | S5E 前端 `docs/qa/s5e/TEST_RESULT.md` | 会话/提问/任务/流式/引用、真实Q/T、无付费浏览器与视觉验收 | 独立前端仓库验收通过；不替代真实模型效果 |
 | [研究与只读助手准备](design/knowledge-first-20261020/RESEARCH_READINESS.md) | Deep Agents 默认工具、文本适配与工具循环、根图恢复和研究契约缺口 | 历史准备分析；R02/A01 与 S6/S7 已另行冻结并验收 |
@@ -81,4 +81,4 @@ S11C原生LlamaIndex一次融合：[验收](qa/llama-retrieval-20261028/TEST_RES
 
 S11D独立精排与预算：[验收](qa/rerank-budget-20261028/TEST_RESULT.md)、[审查](qa/rerank-budget-20261028/REVIEW.md)。协议/失败/持久预算及实际知识服务链路通过，提供方为明确HTTP替身；U04真实模型条件保留，未新增真实模型费用。
 
-S11E统一消费者处于接入前核对：[影响与恢复入口](design/knowledge-first-20261020/RETRIEVAL_CONSUMER_READINESS.md)。已定位旧任务、证据清单、跨进程容量与UI兼容约束；公共/任务契约待冻结，产品尚未切换。
+S11E统一消费者已交付：[验收与限制](qa/retrieval-consumers-20261028/TEST_RESULT.md)。[接入前核对](design/knowledge-first-20261020/RETRIEVAL_CONSUMER_READINESS.md)保留为历史设计依据。S12A受控追问已通过[本片验收](qa/contextual-qa-20261030/TEST_RESULT.md)，真实模型3题召回对照2改善/1不变；不是生产答案质量承诺，Git与运行状态见权威进度。

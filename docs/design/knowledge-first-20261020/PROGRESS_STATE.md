@@ -1,16 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S12A 追问指代与受控上下文（IN_PROGRESS）
+## 当前任务：S12A 验收通过，正在 Git/CI 交付
 
-- 任务`capability-delivery-20261021`，51项已批准，parallel=no；S11E已验收并交付，完整计划未完成。继续已批准顺序，不等再次“继续”。
-- 原目录两仓均已建立`feat/contextual-qa-20261030`，后端起点b0974202f1c7597366699ea767d115b4c03b8b6d，前端起点31315b849be914522558fc1fa5084cd70d24136f；此前实现与归档均正常合并推送main。后端归档CI40997189482三项PASS；S11E主实现main CI40996629920、前端main CI40996825273 PASS。
-- 本片清单：①C-QA2契约/共享金标；②Conversation V3与Tasks v3输入/结果；③Python独立v3图/有界改写/恢复；④前端能力/冻结提交/实际查询；⑤真实DB/PG/HTTP/浏览器及有预算的小样本对照；⑥文档/审查/CI/正常Git交付。
-- 后端核心已实现并验证：C-QA2/共享金标、Conversation V3受理/可靠分派、Tasks v3输入/结果/历史绑定、Python独立v3图/有界改写/worker。旧解析和v1/v2图兼容；尚未接前端与网关/代理，不能宣布整片可用。
-- 关键决定：完整证据家族v2/v3可作一个指定前文；同owner/会话/范围，历史全部依赖+当前去重最多10，不截断依赖；历史答案仅作指代数据且最多2000码点。超时/无效模型输出才回退原问题，预算/配置/权限/取消不能回退吞掉。
-- 授权沿原计划本地实施/验证、任务分支完整逻辑提交、验证后正常合并推main；无子Agent、强推、清理或生产部署。Docker正常重启已获明确授权并完成，无需再确认相同行动；不包含共享资源配置调整或恢复出厂。
-- 模型：Embedding/chat各1元累计不变；聊天账本保守预留0.889964元，剩余0.110036元（非账单），本片新增付费调用0。先做机制测试，真实探针逐次预估；不足不得提高额度。U04真实精排仍无账号/预算授权。
-- 验证：Java169单元、Python590通过/74默认跳过、Ruff120文件/mypy74源码；真实MySQL/HTTP41项、真实PG接管6项均PASS。改写后/检索后/生成后/完整快照接管不重复已确认调用，前文失权和取消阻断后续操作。模型/Knowledge正文为协议替身；仅Conversation隔离测试库迁移V3。证据`docs/qa/contextual-qa-20261030/backend-evidence.json`；日志`.logs/s12a-*`，失败试验与修正原因已记录。代码卫生WITH_LIMITATIONS（既有Java格式器缺失，5条误报已审）。
-- 当前无运行中的构建、迁移或测试。后端核心准备按已授权完整逻辑单元提交；前端仍仅进度文件变动。下一步：页面能力/冻结原策略与路由/实际查询诊断，网关/本地与容器代理公开路径，真实接口浏览器与原预算内质量对照，最后S12A完整审查/CI/合并推送。保留全局Runtime漂移的手工专业pass，不改全局技能。
+- 任务`capability-delivery-20261021`，51项已批准，parallel=no；S12A实现与必需验收PASS，完整计划未完成。下一片S12B答案支撑、覆盖与拒答评测，按原计划继续。
+- 两仓原目录任务分支`feat/contextual-qa-20261030`，后端起点b097420、前端31315b8；核心41564e6已推且CI41003248811成功。当前页面/路由/联合测试/验收文档待提交，验证通过后正常合并推main；后端main在既有Docker工作树中，须核对干净再fast-forward。
+- 本片六项清单均已实现并验收：C-QA2共享金标；Conversation V3/Tasks v3；Python独立v3图与恢复；前端能力/冻结提交/实际查询；真实DB/PG/HTTP/浏览器与真实小样本；文档/审查。交付CI仍待最新提交，不能宣称main已更新。
+- 证据：[TEST_RESULT](../../qa/contextual-qa-20261030/TEST_RESULT.md)、REVIEW.md、validation.json；后端核心39项源码摘要一致。最终Java169、Python590/75默认跳过、Ruff121/mypy74、前端143/格式/ESLint/类型/构建PASS；真实MySQL/HTTP41、PG接管6、生产协议浏览器3、旧回归14、真实联合浏览器1、容器9路由smoke PASS。前端8张截图恢复后逐张复核。
+- 真实deepseek-flash改写/text-embedding-v4召回：9份合成资料3题，2改善/1不变/0退化/0改写失败；3次chat/5次Embedding，无新答案生成。chat保守预留0.957092元、余0.042908元，Embedding预留0.781784元，原各1元上限不变；非提供方账单。私有结果与归档/账本一致，恢复新增调用0，不得重跑已完成付费探针。
+- 关键边界：同owner/会话/范围完整证据家族v2/v3前文；前文全部依赖加当前最多10，禁止截断依赖；历史答案最多2000码点只解指代；预算/配置/权限/取消硬失败。旧图与旧接口保持兼容，新受理默认关闭。
+- 授权：沿原计划本地实施/验证、完整逻辑提交、正常合并推main；无子Agent、强推、清理或生产部署。正常Docker重启已有授权；无共享配置调整/恢复出厂授权。仅Conversation隔离测试库迁移V3。
+- 限制：Java既有格式器缺失；Deep Agents saver、Vite未来native loader/包大小警告；真实质量仅资料组召回样本，不代表答案质量。U04真实精排仍无账号/预算授权。全局Runtime漂移继续采用手工专业pass，不改全局技能。
+- 下一步：提交两仓本片改动→分支CI→正常合并推main→核对main CI及收据→进入S12B契约/实现；生产运行容器保持原快照。
 
 ### S11E 已完成与证据
 
@@ -23,7 +23,7 @@
 ### 当前运行与保留项
 
 - 原9应用容器全部healthy（本轮用户询问部署进度时已实时复核），仍S11D快照01a95560586ee526；两搜索容器已按原配置恢复。候选后台01e494b1d3e59376、web ba449282a95548d2只用于验证。没有新部署或开发库迁移，测试库Knowledge V12/Tasks V5/Conversation V3。
-- 前端28186开发预览（exec43308）、28187生产预览（exec49095）保留；无进行中的构建/重启/模型任务。S11E证据在后端docs/qa/retrieval-consumers-20261028及前端docs/qa/retrieval-consumers-20261030，日志.logs/s11e-*。
+- 2026-11-01恢复进程核对：此前28186/28187预览进程已退出；无进行中的重启/模型任务，既有截图与日志保留。最终检查已结束，Python/Java/前端日志为.logs/s12a-final-{python,java}.log及前端.logs/s12a-final-web.log，无本轮运行中测试。S11E证据在后端docs/qa/retrieval-consumers-20261028及前端docs/qa/retrieval-consumers-20261030，日志.logs/s11e-*。
 - 原任务/预算/.local/.logs/缓存及Docker main工作树全部保留，不清理、不重复付费探针。Java格式化器缺失、Deep Agents既有saver警告、前端包大小与U04真实质量限制不隐瞒。
 - 采用规范：用户AGENTS约定；架构建模、持久化、接口、并发安全、容量和发布章节；现有个人栈兼容约束；Contracts、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery/ci-cd-gate。
 
