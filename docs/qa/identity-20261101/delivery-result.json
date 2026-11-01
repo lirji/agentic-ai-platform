@@ -1,0 +1,83 @@
+{
+  "slice": "S13A",
+  "status": "PASS",
+  "mode": "normal-fast-forward",
+  "productionDeployed": false,
+  "paidCalls": 0,
+  "repositories": {
+    "backend": {
+      "branch": "feat/identity-readiness-20261101",
+      "commit": "c0ddc0e80063b154543cae6890ce7b830efaef95",
+      "remoteMainContainsCommit": true,
+      "ci": {
+        "branch": {
+          "status": "PASS",
+          "headSha": "c0ddc0e80063b154543cae6890ce7b830efaef95",
+          "jobs": [
+            {
+              "name": "java",
+              "conclusion": "success"
+            },
+            {
+              "name": "python",
+              "conclusion": "success"
+            },
+            {
+              "name": "documents",
+              "conclusion": "success"
+            }
+          ],
+          "runId": 41310705846
+        },
+        "main": {
+          "status": "PASS",
+          "headSha": "c0ddc0e80063b154543cae6890ce7b830efaef95",
+          "jobs": [
+            {
+              "name": "python",
+              "conclusion": "success"
+            },
+            {
+              "name": "documents",
+              "conclusion": "success"
+            },
+            {
+              "name": "java",
+              "conclusion": "success"
+            }
+          ],
+          "runId": 41310867623
+        }
+      }
+    },
+    "frontend": {
+      "branch": "feat/identity-readiness-20261101",
+      "commit": "11f541adee224cf58afc4feefcb4e7d0c518f1cd",
+      "remoteMainContainsCommit": true,
+      "ci": {
+        "branch": {
+          "status": "PASS",
+          "headSha": "11f541adee224cf58afc4feefcb4e7d0c518f1cd",
+          "jobs": [
+            {
+              "name": "web",
+              "conclusion": "success"
+            }
+          ],
+          "runId": 41310730447
+        },
+        "main": {
+          "status": "PASS",
+          "headSha": "11f541adee224cf58afc4feefcb4e7d0c518f1cd",
+          "jobs": [
+            {
+              "name": "web",
+              "conclusion": "success"
+            }
+          ],
+          "runId": 41310924842
+        }
+      }
+    }
+  }
+}

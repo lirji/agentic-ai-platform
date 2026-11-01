@@ -1,6 +1,6 @@
 # S13A 正式登录验收
 
-2026-11-01。功能验收PASS，交付状态另见后续delivery-result.json。契约identity-session-v1，真实Casdoor、Gateway、Knowledge/MySQL/对象存储及React生产构建。无模型调用、原业务数据迁移或生产部署。
+2026-11-01。功能验收/分支CI/main CI均PASS，已正常合并推main；精确提交与收据见delivery-result.json。契约identity-session-v1，真实Casdoor、Gateway、Knowledge/MySQL/对象存储及React生产构建。无模型调用、原业务数据迁移或生产部署。
 
 | 验收 | 结果与证据 |
 | --- | --- |

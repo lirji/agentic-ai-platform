@@ -1,16 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S13A 正式登录（验证PASS，Git/CI交付中）
+## 当前任务：S13B 共享前置（待业务矩阵；S13A已交付）
 
-- 用户最新决定：按原顺序；local-agentic组织、agentic-workbench客户端，先个人空间。不继承其他项目成员/管理权限，不迁移旧local-dev资料。
-- 完整capability-delivery-20261021共51项，parallel=no，整体未完成。后端原目录feat/identity-readiness-20261101起点59239f2，前端同名分支起点8ebc5fa；无新worktree。
-- 已实现：[C-IDENTITY](IDENTITY_CONTRACTS.md)，Spring OIDC授权码+PKCE、服务器会话/CSRF/固定回调、每次成员复核、内部JWT、React登录退出/过期导航恢复与缓存草稿隔离。专属IAM登记已完成，私密收据.local/identity/registration-result.json，不重复创建。
-- 验收：[TEST_RESULT](../../qa/identity-20261101/TEST_RESULT.md)、REVIEW、validation.json；Gateway19/Security10/Contracts11、React188、真实Casdoor+MySQL+生产构建浏览器6项及4截图已通过/查看。最终代码卫生以冻结契约中的oauth2-client依赖授权运行；Java独立格式器缺失如实保留。旧local协议浏览器3项PASS，Git/CI正在收尾。
-- 清单①登记核对②冻结契约③两端实现④真实登录/隔离/退出/到期/回调拒绝⑤审查/证据已完成；⑥正常Git/CI待完成，然后继续S13B前置角色/成员核对。不能把身份前置旧收据.local/s13a-delivery.json当产品交付收据。
-- 运行：[IDENTITY_RUNTIME](IDENTITY_RUNTIME.md)，本轮隔离Knowledge28194、Gateway28190、网页28196；PID记录.local/identity/runtime-processes.json，日志.logs/s13a-runtime-*。30秒空闲仅验收配置，模型worker关闭，旧长期容器未更新。28197是本轮旧模式浏览器回归预览。
+- 完整capability-delivery-20261021共51项，parallel=no，整体未完成；按原顺序继续。S13A用户决定为local-agentic/agentic-workbench及个人空间；不继承其他项目权限，不迁移旧local-dev资料。
+- S13A产品后端c0ddc0e/前端11f541a已正常ff合并推main；两仓分支CI41310705846/41310730447、main CI41310867623/41310924842精确SHA全部PASS，见[交付收据](../../qa/identity-20261101/delivery-result.json)。本轮文档归档交付现场继续记.local/s13a-product-delivery.json。
+- [C-IDENTITY](IDENTITY_CONTRACTS.md)/[TEST_RESULT](../../qa/identity-20261101/TEST_RESULT.md)/REVIEW/validation.json：Gateway19/Security10/Contracts11、React188、真实Casdoor+MySQL+生产构建浏览器6项、旧协议浏览器3项PASS；4张正式截图已查看。包含CSRF、个人隔离、退出旧cookie、到期恢复、state/code/nonce/未授权成员/回调重放拒绝。Java独立格式器缺失，既有Vite提示保留；无未解决阻断Finding。
+- [IDENTITY_RUNTIME](IDENTITY_RUNTIME.md)：本轮隔离Knowledge28194、Gateway28190、网页http://localhost:28196/，15分钟空闲。PID记录.local/identity/runtime-processes.json，日志.logs/s13a-runtime-*；preview-check已核对页面200/两后端readiness200/匿名session401。测试worker关闭，长期容器未更新；28197回归预览已停止。
+- 当前待决：S13B同组织指定成员只读共享，或具体团队/编辑/管理员矩阵，已异步询问。只读前置草案SHARING_READINESS.md已写；未得到答复不开放共享。当前owner谓词已定位，新授权不能直接替换为浏览器owner输入；S13B/C公开共享须完整撤权链路验收。
+- 下一步：完成S13A归档Git后在原目录进入S13B任务分支；读取用户矩阵答复，冻结C-SHARING及所属存储/契约，再实施验证。无答复时保留待决，不默认把测试账号当团队成员或赋予编辑权限。
+- Git/保留：两仓原目录feat/identity-readiness-20261101；无新worktree。已有Docker main工作树保留；.local身份/运行凭据、预算、.logs证据及用户.idea不清理。S13B草案单独留待本片，不混入S13A产品提交。
 - 授权：本地实施验证及正常提交合并推main；无生产部署/强推/清理/子Agent。Chat/Embedding累计保守预留0.957092/0.781784元保持，本片付费0，旧探针不重跑。
-- 规范：session-handoff/continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、validation、progress、Git/CI；架构建模/接口/并发安全/发布及个人网关/React配套。现有Runtime漂移用专业手工pass，不称机器Gate或独立人员审查。
-- 恢复下一步：核对实际未提交文件及最后测试/CI；提交当前验证版本，分支CI通过后正常ff合并推main并核对精确SHA。随后按原顺序处理S13B明确角色矩阵与成员来源，不要求再次确认S13A。
+- 规范：session-handoff/continue-approved-delivery、backend/frontend-implementation、runtime-and-deploy、validation、progress、Git/CI；架构建模/接口/并发安全/发布及个人网关/React配套。现有Runtime漂移用手工专业pass，不称机器Gate或独立人员审查。
 
 ### S12D 已交付
 

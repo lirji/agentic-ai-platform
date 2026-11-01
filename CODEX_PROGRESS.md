@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务capability-delivery-20261021：S12D已交付；S13A正式登录实现与功能验证PASS，Git/CI交付进行中；完整51项未完成。
-- 两仓原目录feat/identity-readiness-20261101；专属IAM登记已存在，不重复创建。当前产品改动/证据待提交，旧.local/s13a-delivery.json仅前置文档收据。
-- 唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；验收docs/qa/identity-20261101/；运行入口同设计目录IDENTITY_RUNTIME.md。完成本片交付后接S13B前置核对。
+- 当前任务capability-delivery-20261021：S13A正式登录已交付；后端c0ddc0e/前端11f541a已正常合并推main，分支/main CI全部PASS。完整51项未完成。
+- 当前继续S13B共享前置；角色矩阵已异步询问，未得答复不开放权限。唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+- S13A验收/收据：docs/qa/identity-20261101/；预览http://localhost:28196/，运行入口IDENTITY_RUNTIME.md。归档现场.local/s13a-product-delivery.json；旧s13a-delivery.json仅历史前置文档。
 
 ## 前期可行性任务记录
 
