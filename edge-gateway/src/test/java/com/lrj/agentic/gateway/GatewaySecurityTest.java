@@ -42,11 +42,18 @@ class GatewaySecurityTest {
         };
         var properties = new IdentityProperties("issuer", "audience", "tenant_id", null, null, null);
         var filter = new InternalIdentityExchange(encoder, properties, new GatewayErrors(new com.fasterxml.jackson.databind.ObjectMapper()));
-        for (var route : java.util.Map.of("/api/v2/tasks", "agentic-ai-tasks", "/api/v1/tasks/id", "agentic-ai-tasks",
-                "/api/v3/tasks", "agentic-ai-tasks", "/api/v3/tasks/capabilities", "agentic-ai-tasks",
-                "/api/v2/conversations/id/turns", "agentic-ai-conversation", "/api/v1/conversations/id", "agentic-ai-conversation",
-                "/api/v2/conversations/capabilities", "agentic-ai-conversation", "/api/v3/conversations/id/turns", "agentic-ai-conversation",
-                "/api/v2/knowledge/evaluations/runs", "agentic-ai-knowledge").entrySet()) {
+        for (var route : java.util.Map.ofEntries(
+                java.util.Map.entry("/api/v2/tasks", "agentic-ai-tasks"),
+                java.util.Map.entry("/api/v1/tasks/id", "agentic-ai-tasks"),
+                java.util.Map.entry("/api/v3/tasks", "agentic-ai-tasks"),
+                java.util.Map.entry("/api/v3/tasks/capabilities", "agentic-ai-tasks"),
+                java.util.Map.entry("/api/v4/tasks", "agentic-ai-tasks"),
+                java.util.Map.entry("/api/v4/tasks/capabilities", "agentic-ai-tasks"),
+                java.util.Map.entry("/api/v2/conversations/id/turns", "agentic-ai-conversation"),
+                java.util.Map.entry("/api/v1/conversations/id", "agentic-ai-conversation"),
+                java.util.Map.entry("/api/v2/conversations/capabilities", "agentic-ai-conversation"),
+                java.util.Map.entry("/api/v3/conversations/id/turns", "agentic-ai-conversation"),
+                java.util.Map.entry("/api/v2/knowledge/evaluations/runs", "agentic-ai-knowledge")).entrySet()) {
             var external = org.springframework.security.oauth2.jwt.Jwt.withTokenValue("external").header("alg", "RS256")
                     .subject("alice").claim("tenant_id", "tenant").claim("scope", "task:write").build();
             var exchange = org.springframework.mock.web.server.MockServerWebExchange.from(

@@ -317,3 +317,9 @@ K07新增 `POST /api/v2/knowledge/documents/{id}/withdrawals` 与 `/deletions`�
 `TASK_RESEARCH_ENABLED=false`为Tasks新受理默认值，还需`TASK_GENERATION_ENABLED=true`；只控制新受理，已持久v3可以继续处理与读取。worker沿既有retrieval能力装配研究图，轮询时仍按任务原graphVersion执行。公开POST `/api/v3/tasks`、GET `/api/v3/tasks/capabilities`通过网关/同源代理映射Tasks受众；列表和控制仍沿v1。完整[C-WORK2](../docs/design/knowledge-first-20261020/RESEARCH_COVERAGE_CONTRACTS.md)与[验证边界](../docs/qa/research-coverage-20261101/TEST_RESULT.md)。
 
 本片无新迁移/依赖/镜像构建或部署；容器验证只复用既有Node候选镜像、只读挂载当前前端产物和代理配置做11条公开路由测试。回退先关闭新受理，保留可理解v3的Tasks和worker完成在途任务及历史读取；不要把v3行降级交给旧图。调用次数按任务跨epoch累计，未知结果预留不返还；金额账本仍沿原授权，不是新增共享费用系统。
+
+## S12D 分阶段研究（默认关闭）
+
+显式POST `/api/v4/tasks`、GET `/api/v4/tasks/capabilities`，新增Tasks环境键`TASK_RESEARCH_STAGED_ENABLED=false`，仍需generation/research开关。关闭仅阻止新v4受理；worker按持久graphVersion处理旧v1/v2/v3及新v4，恢复沿既有PG中央凭据。
+
+新图retrieve→plan→analyze→verify将计划单独确认，不改旧图。回退先关闭v4受理，保留支持v4的Tasks/worker读写在途和历史任务；不能把v4行交给旧图。无schema/依赖变化，未运行部署；同源代理13条路由在既有Node候选镜像中只读挂载验证。完整[契约](../docs/design/knowledge-first-20261020/RESEARCH_RECOVERY_CONTRACTS.md)与[验收](../docs/qa/research-recovery-20261101/TEST_RESULT.md)。

@@ -221,7 +221,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S12A | 追问指代与受控上下文 | S11E | IMPLEMENT | DONE |
 | S12B | 答案支撑、覆盖与拒答评测 | S12A, S8D | IMPLEMENT | DONE |
 | S12C | 研究计划、证据覆盖和缺口结果 | S12B | IMPLEMENT | DONE |
-| S12D | 研究根图分阶段恢复 | S12C | IMPLEMENT | PLANNED |
+| S12D | 研究根图分阶段恢复 | S12C | IMPLEMENT | DONE |
 | S13A | 正式登录与可信身份生命周期 | S8A | IMPLEMENT | PLANNED |
 | S13B | 个人/团队资料共享与撤权 | S13A, S10B | IMPLEMENT | PLANNED |
 | S13C | 撤权贯穿检索、在途与历史结果 | S13B, S11E, S12D | IMPLEMENT | PLANNED |
@@ -519,7 +519,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-WORK2、现行 T01/CHECKPOINT 恢复协议；多 worker 容量契约由后续 S16 冻结，本项复用已有 fencing。迁移仍归 Tasks Owner。
 - **可观察验收：** 真实 PG/中央失租/取消/阶段提交未知结果；旧 work-v1 按旧语义恢复；只读工具与正文权限复核；重复模型费用可见；不打开未验证内部 saver。
 - **Pass / Runtime：** IMPLEMENT；现有 PG/Tasks；无需第二个调度器。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G12 G13 G18。
+- **状态 / 并行 / 对应缺口：** DONE（[验收](../../qa/research-recovery-20261101/TEST_RESULT.md)PASS；Git/CI交付由PROGRESS_STATE单独记录）；parallel=no；G12 G13 G18。
 
 ### S13A · 正式登录与可信身份生命周期
 

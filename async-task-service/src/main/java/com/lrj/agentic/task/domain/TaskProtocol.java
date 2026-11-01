@@ -31,7 +31,9 @@ public final class TaskProtocol {
     public static final int MAX_PAGE = 20;
     public static final String GRAPH = "knowledge-qa-v1";
     public static final String STATUS_EVENT = "STATUS";
-    public static final Set<String> WORKER_EVENTS = Set.of("PROGRESS", "TEXT_DELTA");
+    public static final String PROGRESS_EVENT = "PROGRESS";
+    public static final String TEXT_DELTA_EVENT = "TEXT_DELTA";
+    public static final Set<String> WORKER_EVENTS = Set.of(PROGRESS_EVENT, TEXT_DELTA_EVENT);
     public static final Set<String> FAILURES = Set.of(
             "AI_UNAVAILABLE", "BUDGET_EXCEEDED", "INPUT_REJECTED", "EXECUTION_FAILED");
     public static final String EXECUTION_FAILED = "EXECUTION_FAILED";
@@ -46,6 +48,12 @@ public final class TaskProtocol {
     public static final String INPUT_V3 = "knowledge-qa-input-v3";
     public static final String RESULT_V3 = "knowledge-qa-result-v3";
     public static final int MAX_CONTEXTUAL_DEPENDENCIES = 10;
+    public static final String WORK_INPUT_V4 = "knowledge-work-input-v4";
+    public static final String WORK_GRAPH_V4 = "knowledge-work-v4";
+    /** 新旧研究共享报告和预算规则，执行仍按各自根图。 */
+    public static boolean researchGraph(String graph) {
+        return WORK_GRAPH_V3.equals(graph) || WORK_GRAPH_V4.equals(graph);
+    }
     public static final String WORK_INPUT_V3 = "knowledge-work-input-v3";
     public static final String WORK_GRAPH_V3 = "knowledge-work-v3";
     public static final String RESEARCH_CAPABILITIES = "research-capabilities-v1";
@@ -56,7 +64,7 @@ public final class TaskProtocol {
     public static final String EVIDENCE_V1 = "knowledge-evidence-v1";
     /** 仅用于已持久任务的证据版本判断；受理版本仍由独立入口控制。 */
     public static boolean generationGraph(String graph) {
-        return Set.of(GRAPH_V2, GRAPH_V3, WORK_GRAPH_V2, WORK_GRAPH_V3, EVALUATION_GRAPH_V2).contains(graph);
+        return Set.of(GRAPH_V2, GRAPH_V3, WORK_GRAPH_V2, WORK_GRAPH_V3, WORK_GRAPH_V4, EVALUATION_GRAPH_V2).contains(graph);
     }
     private TaskProtocol() { }
 }

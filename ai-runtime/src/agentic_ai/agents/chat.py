@@ -91,16 +91,20 @@ class ToolChatClient:
         """预算先持久预留；网络失败、无效响应或取消均不退款或重发。"""
         if (
             not 1 <= len(messages) <= 16
-            or {tool["function"]["name"] for tool in tools} != ALLOWED_TOOLS
+            or tools
+            and {tool["function"]["name"] for tool in tools} != ALLOWED_TOOLS
         ):
             raise QaError(QaCode.INPUT_REJECTED)
         body = json.dumps(
             {
                 "model": self.config.route,
                 "messages": messages,
-                "tools": tools,
-                "tool_choice": "auto",
-                "parallel_tool_calls": False,
+                # 计划阶段显式不提供工具；其他调用仍要求完整的原只读白名单。
+                **(
+                    {"tools": tools, "tool_choice": "auto", "parallel_tool_calls": False}
+                    if tools
+                    else {}
+                ),
                 "stream": False,
                 "n": 1,
                 "max_tokens": self.config.max_tokens,
@@ -142,6 +146,8 @@ class ToolChatClient:
                 ):
                     raise ValueError
                 calls = message.get("tool_calls") or []
+                if calls and not tools:
+                    raise ValueError
                 logging.getLogger("agentic_ai.agents.chat").info(
                     json.dumps(
                         {

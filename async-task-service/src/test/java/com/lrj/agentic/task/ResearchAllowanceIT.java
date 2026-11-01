@@ -28,7 +28,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 /** 真实MySQL/HTTP校验全任务额度，隔离租户不清理历史；无模型、索引或生产环境写入。 */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {"management.server.port=0", "spring.main.banner-mode=off",
-                "task.generation-enabled=true", "task.research-enabled=true"})
+                "task.generation-enabled=true", "task.research-enabled=true", "task.research-staged-enabled=true"})
 @org.springframework.context.annotation.Import(CitationTestConfiguration.class)
 class ResearchAllowanceIT {
     @Autowired TaskService tasks;
@@ -49,13 +49,38 @@ class ResearchAllowanceIT {
         var created = tasks.submitResearchWork(owner, "admit", command);
         assertThat(tasks.request(owner, created.taskId()).schemaVersion()).isEqualTo(TaskProtocol.WORK_INPUT_V3);
         error(TaskError.CONFLICT, () -> tasks.submitGenerationWork(owner, "admit", command));
-        var closed = new TaskService(mapper, values, manager, 60, evidence, visibility, false, false, false);
+        var closed = new TaskService(mapper, values, manager, 60, evidence, visibility, false, false, false, false);
         assertThat(closed.researchCapabilities().enabled()).isFalse();
         assertThat(closed.submitResearchWork(owner, "admit", command)).isEqualTo(created);
         error(TaskError.RESEARCH_DISABLED, () -> closed.submitResearchWork(owner, "new", command()));
         assertThat(closed.claim(worker(owner), claim()).task().task().taskId()).isEqualTo(created.taskId());
         error(TaskError.INPUT_INVALID, () -> tasks.submitResearchWork(owner, "assistant",
                 new GenerationWorkSubmit(UUID.randomUUID().toString(), "READONLY_ASSISTANT", "解释", List.of(), "EXPLAIN", "LLAMA_RRF_V1")));
+    }
+
+    @Test void stagedAdmissionHasIndependentVersionAndGateAndSafeResumeProgress() throws Exception {
+        var owner = owner(); var command = command();
+        assertThat(http("POST", "/api/v4/tasks", owner, false, "task:read", "staged", command).statusCode()).isEqualTo(403);
+        assertThat(http("POST", "/api/v4/tasks", owner, false, "task:write", "staged", command).statusCode()).isEqualTo(202);
+        assertThat(http("GET", "/api/v4/tasks/capabilities", owner, false, "task:read", null, null).statusCode()).isEqualTo(200);
+        assertThat(tasks.request(owner, command.taskId()).schemaVersion()).isEqualTo(TaskProtocol.WORK_INPUT_V4);
+        error(TaskError.CONFLICT, () -> tasks.submitResearchWork(owner, "staged", command));
+        var closed = new TaskService(mapper, values, manager, 60, evidence, visibility, false, false, false, false);
+        assertThat(closed.stagedResearchCapabilities().enabled()).isFalse();
+        assertThat(closed.submitStagedResearchWork(owner, "staged", command).taskId()).isEqualTo(command.taskId());
+        error(TaskError.RESEARCH_DISABLED, () -> closed.submitStagedResearchWork(owner, "new", command()));
+        var run = closed.claim(worker(owner), new Claim(TaskProtocol.RUNTIME, TaskProtocol.WORK_GRAPH_V4)).task();
+        assertThat(run.graphVersion()).isEqualTo(TaskProtocol.WORK_GRAPH_V4);
+        reserve(worker(owner), run, "model", "MODEL");
+        var progress = json.createObjectNode().put("stage", ResearchResumeStage.EVENT).put("nextStage", "ANALYZING");
+        progress.set("usage", json.valueToTree(new ResearchUsage(1, 0, 0)));
+        tasks.append(worker(owner), command.taskId(), new Append(run.epoch(), "resuming", "PROGRESS", progress));
+        tasks.append(worker(owner), command.taskId(), new Append(run.epoch(), "extra", "PROGRESS", progress.deepCopy().put("text", "canary")));
+        tasks.append(worker(owner), command.taskId(), new Append(run.epoch(), "unknown", "PROGRESS", progress.deepCopy().put("nextStage", "SHELL")));
+        var overspent = progress.deepCopy(); overspent.withObject("/usage").put("modelCalls", 4);
+        tasks.append(worker(owner), command.taskId(), new Append(run.epoch(), "overspent", "PROGRESS", overspent));
+        assertThat(tasks.events(owner, command.taskId(), 0, 100).events().stream()
+                .filter(event -> "PROGRESS".equals(event.type())).map(event -> event.payload()).toList()).containsExactly(progress);
     }
 
     @Test void reservationReplayAndLastModelSlotRaceAreAtomic() throws Exception {

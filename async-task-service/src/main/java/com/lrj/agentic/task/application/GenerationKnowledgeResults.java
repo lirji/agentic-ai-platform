@@ -18,7 +18,7 @@ public final class GenerationKnowledgeResults {
             require(TaskProtocol.KIND.equals(kind));
             return ContextualKnowledgeResults.references(result, input);
         }
-        if (TaskProtocol.WORK_GRAPH_V3.equals(graph)) {
+        if (TaskProtocol.researchGraph(graph)) {
             require(WorkKind.RESEARCH.code().equals(kind));
             return references(kind, result, input.path("retrievalStrategy").asText(), true);
         }

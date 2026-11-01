@@ -45,7 +45,7 @@ public class TaskKnowledgeVisibility {
     /** 事件必须按产生时的清单判断；旧无清单正文永不重放。 */
     public boolean visibleEvent(Caller owner, TaskRow task, EventRow event, long deadline, Set<String> checked) {
         time(deadline);
-        if ("TEXT_DELTA".equals(event.type())) {
+        if (TaskProtocol.TEXT_DELTA_EVENT.equals(event.type())) {
             var manifest = mapper.eventEvidence(task.taskId(), event.sequence());
             if (manifest == null) { return false; }
             if (TaskProtocol.generationGraph(task.graphVersion())) {
@@ -65,13 +65,19 @@ public class TaskKnowledgeVisibility {
         if ("CHECKPOINT".equals(event.type())) { return false; }
         if (TaskProtocol.STATUS_EVENT.equals(event.type())) { return true; }
         // 未知进度载荷可能夹带旧正文；仅交付正式闭集阶段及安全计数。
-        if ("PROGRESS".equals(event.type())) { return safeProgress(values.read(event.payloadJson())); }
+        if (TaskProtocol.PROGRESS_EVENT.equals(event.type())) { return safeProgress(values.read(event.payloadJson()), task.graphVersion()); }
         return false;
     }
-    private boolean safeProgress(JsonNode payload) {
+    private boolean safeProgress(JsonNode payload, String graph) {
         if (!payload.isObject() || !payload.path("stage").isTextual()) { return false; }
         var fields = new HashSet<String>(); payload.fieldNames().forEachRemaining(fields::add);
         String stage = payload.path("stage").textValue();
+        if (ResearchResumeStage.EVENT.equals(stage)) {
+            if (!TaskProtocol.WORK_GRAPH_V4.equals(graph) || !fields.equals(Set.of("stage", "nextStage", "usage"))
+                    || !payload.path("nextStage").isTextual() || !ResearchResumeStage.known(payload.path("nextStage").textValue())) return false;
+            try { ResearchKnowledgeResults.usage(payload); return true; }
+            catch (IllegalArgumentException invalid) { return false; }
+        }
         if (fields.equals(Set.of("stage"))) {
             return Set.of("RETRIEVING", "GENERATING", "VERIFYING", "ANALYZING", "PLANNING").contains(stage);
         }

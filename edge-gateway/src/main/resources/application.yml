@@ -15,7 +15,7 @@ spring:
             - id: tasks
               uri: ${TASK_SERVICE_URL:http://127.0.0.1:28087}
               predicates:
-                - Path=/api/v1/tasks/**,/api/v2/tasks,/api/v3/tasks,/api/v3/tasks/capabilities
+                - Path=/api/v1/tasks/**,/api/v2/tasks,/api/v3/tasks,/api/v3/tasks/capabilities,/api/v4/tasks,/api/v4/tasks/capabilities
             - id: knowledge-search-v2
               uri: ${KNOWLEDGE_SERVICE_URL:http://127.0.0.1:28084}
               predicates:

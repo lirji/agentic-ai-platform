@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务`capability-delivery-20261021`：S12C实现与必需验收PASS，Git/CI已PASS；接续S12D，完整51项计划未完成。
-- 两仓`feat/research-coverage-20261101`；产品后端275eeb5/前端e29292b已合并推main，当前仅归档交付收据。权威恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
-- 证据：[S12C验收](docs/qa/research-coverage-20261101/TEST_RESULT.md)。最终联合PASS，原503已修，目录429通过真实重试恢复。无运行中测试/付费/部署；28186预览保留。具体命令、授权和待办见权威入口。
+- 当前任务capability-delivery-20261021：S12C已交付，正在S12D分阶段恢复；整个51项任务未完成。
+- 两仓原目录分支feat/research-stage-recovery-20261101，起点后端31ad204/前端c324985；S12D实现与必需验证通过，证据文档及Git/CI交付进行中；接续S13A身份配置核对。
+- 唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。按其中下一操作继续；预算/数据/旧版本和既有授权全部保持。
 
 ## 前期可行性任务记录
 

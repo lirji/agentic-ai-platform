@@ -47,6 +47,14 @@ public class TaskController {
     /** 前端据实际开关决定是否提供新研究方式。 */
     @GetMapping("/api/v3/tasks/capabilities")
     public ResearchCapabilities researchCapabilities() { return tasks.researchCapabilities(); }
+    /** 分阶段研究使用独立版本，避免改变旧任务恢复语义。 */
+    @PostMapping("/api/v4/tasks")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public View submitStagedResearchWork(@AuthenticationPrincipal Jwt jwt, @RequestHeader("Idempotency-Key") String key,
+            @Valid @RequestBody GenerationWorkSubmit command) { return tasks.submitStagedResearchWork(JwtTrust.caller(jwt), key, command); }
+    /** 返回真实受理能力，不代表执行完成。 */
+    @GetMapping("/api/v4/tasks/capabilities")
+    public ResearchCapabilities stagedResearchCapabilities() { return tasks.stagedResearchCapabilities(); }
     /** 列表范围与游标所有权由数据库谓词和应用校验共同约束。 */
     @GetMapping("/api/v1/tasks")
     public WorkPage listWork(@AuthenticationPrincipal Jwt jwt, @RequestParam String kind,

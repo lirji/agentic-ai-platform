@@ -21,6 +21,7 @@ from agentic_ai.agents.models import WORK_EXECUTION_SECONDS, WORK_GRAPH
 from agentic_ai.agents.pipeline import WorkPipeline
 from agentic_ai.agents.research_models import RESEARCH_GRAPH
 from agentic_ai.agents.research_pipeline import ResearchPipeline
+from agentic_ai.agents.staged_research_pipeline import STAGED_RESEARCH_GRAPH, StagedResearchPipeline
 from agentic_ai.evaluation.client import EvaluationClient, EvaluationPort
 from agentic_ai.evaluation.generation_pipeline import GenerationEvaluationPipeline
 from agentic_ai.evaluation.models import (
@@ -178,14 +179,22 @@ async def execute_qa_task(
     """异常先核对中央；取消/完成赢得竞争后不再报告覆盖它的失败。"""
     try:
         pipeline: QaPipeline | WorkPipeline | EvaluationPipeline
-        if binding.graph_version in (QA_GRAPH_V2, QA_GRAPH_V3, WORK_GRAPH_V2, RESEARCH_GRAPH):
+        if binding.graph_version in (
+            QA_GRAPH_V2,
+            QA_GRAPH_V3,
+            WORK_GRAPH_V2,
+            RESEARCH_GRAPH,
+            STAGED_RESEARCH_GRAPH,
+        ):
             if retrieval is None or candidates is None:
                 raise QaError(QaCode.CONFIG_INVALID)
-            if binding.graph_version in (WORK_GRAPH_V2, RESEARCH_GRAPH):
+            if binding.graph_version in (WORK_GRAPH_V2, RESEARCH_GRAPH, STAGED_RESEARCH_GRAPH):
                 if tool_chat is None:
                     raise QaError(QaCode.CONFIG_INVALID)
                 work_type = (
-                    ResearchPipeline
+                    StagedResearchPipeline
+                    if binding.graph_version == STAGED_RESEARCH_GRAPH
+                    else ResearchPipeline
                     if binding.graph_version == RESEARCH_GRAPH
                     else GenerationWorkPipeline
                 )
@@ -368,7 +377,11 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
             graph_versions = (
                 ("knowledge-qa-v1", WORK_GRAPH)
                 + ((EVALUATION_GRAPH,) if config.evaluation_private_key is not None else ())
-                + ((QA_GRAPH_V2, WORK_GRAPH_V2, RESEARCH_GRAPH) if retrieval is not None else ())
+                + (
+                    (QA_GRAPH_V2, WORK_GRAPH_V2, RESEARCH_GRAPH, STAGED_RESEARCH_GRAPH)
+                    if retrieval is not None
+                    else ()
+                )
                 + ((QA_GRAPH_V3,) if config.contextual_qa_enabled else ())
                 + (
                     (EVALUATION_GRAPH_V2,)
@@ -394,6 +407,7 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                             QA_GRAPH_V3,
                             WORK_GRAPH_V2,
                             RESEARCH_GRAPH,
+                            STAGED_RESEARCH_GRAPH,
                             EVALUATION_GRAPH_V2,
                         )
                         else KnowledgeClient

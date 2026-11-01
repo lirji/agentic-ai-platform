@@ -52,8 +52,14 @@ def joint():
         TASK_PORT=str(value["taskPort"]),
         TASK_MANAGEMENT_PORT="0",
         TASK_GENERATION_ENABLED="true",
+        TASK_RESEARCH_STAGED_ENABLED="true",
         TASK_RESEARCH_ENABLED=(
-            "true" if os.environ.get("AGENTIC_RESEARCH_JOINT_IT") == "1" else "false"
+            "true"
+            if (
+                os.environ.get("AGENTIC_RESEARCH_JOINT_IT") == "1"
+                or os.environ.get("AGENTIC_STAGED_RESEARCH_JOINT_IT") == "1"
+            )
+            else "false"
         ),
         TASK_CONTEXTUAL_QA_ENABLED=(
             "true" if os.environ.get("AGENTIC_CONTEXTUAL_JOINT_IT") == "1" else "false"

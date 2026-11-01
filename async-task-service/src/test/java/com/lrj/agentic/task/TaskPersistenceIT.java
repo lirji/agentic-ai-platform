@@ -141,7 +141,7 @@ class TaskPersistenceIT {
         var closed = new TaskService(context.getBean(com.lrj.agentic.task.infrastructure.TaskMapper.class), values,
                 context.getBean(org.springframework.transaction.PlatformTransactionManager.class), 60,
                 context.getBean(com.lrj.agentic.task.application.TaskKnowledgeEvidence.class),
-                context.getBean(com.lrj.agentic.task.application.TaskKnowledgeVisibility.class), false, false, false);
+                context.getBean(com.lrj.agentic.task.application.TaskKnowledgeVisibility.class), false, false, false, false);
         assertThat(closed.submit(owner, "frozen", command)).isEqualTo(accepted);
         error(TaskError.INPUT_INVALID, () -> closed.submit(owner, "new", new Submit(UUID.randomUUID().toString(),
                 TaskProtocol.KIND, TaskProtocol.RUNTIME, TaskProtocol.GRAPH_V3, golden.path("input"))));

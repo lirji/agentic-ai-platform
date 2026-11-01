@@ -16,6 +16,19 @@ class ResearchCall(StrEnum):
     READ_TOOL = "READ_TOOL"
 
 
+class ResearchResumeStage(StrEnum):
+    """由已确认根快照确定下一阶段，不是模型自报进度。"""
+
+    RETRIEVING = "RETRIEVING"
+    PLANNING = "PLANNING"
+    ANALYZING = "ANALYZING"
+    VERIFYING = "VERIFYING"
+    SUBMITTING = "SUBMITTING"
+
+
+RESEARCH_RESUMING = "RESEARCH_RESUMING"
+
+
 class ResearchUsage(WireModel):
     """全任务额度，不随epoch、阶段或显式恢复重新分配。"""
 

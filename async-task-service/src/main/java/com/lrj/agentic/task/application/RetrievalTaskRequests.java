@@ -16,7 +16,7 @@ public final class RetrievalTaskRequests {
     public static void validate(Submit command) {
         var input = command.input();
         boolean contextual = TaskProtocol.GRAPH_V3.equals(command.graphVersion());
-        boolean research = TaskProtocol.WORK_GRAPH_V3.equals(command.graphVersion());
+        boolean research = TaskProtocol.researchGraph(command.graphVersion());
         boolean qa = contextual || TaskProtocol.GRAPH_V2.equals(command.graphVersion());
         require(qa || research || TaskProtocol.WORK_GRAPH_V2.equals(command.graphVersion()));
         require(input != null && input.isObject());
@@ -25,7 +25,7 @@ public final class RetrievalTaskRequests {
                 : qa ? Set.of("schemaVersion", "conversationId", "turnId", "question", "documentIds", "contextTurnId", "contextTaskId", "contextQuestion", "retrievalStrategy")
                 : Set.of("schemaVersion", "kind", "question", "documentIds", "mode", "retrievalStrategy");
         var actual = new HashSet<String>(); input.fieldNames().forEachRemaining(actual::add); require(actual.equals(expected));
-        require((contextual ? TaskProtocol.INPUT_V3 : qa ? "knowledge-qa-input-v2" : research ? TaskProtocol.WORK_INPUT_V3 : TaskProtocol.WORK_INPUT_V2).equals(input.path("schemaVersion").asText()));
+        require((contextual ? TaskProtocol.INPUT_V3 : qa ? "knowledge-qa-input-v2" : research ? (TaskProtocol.WORK_GRAPH_V4.equals(command.graphVersion()) ? TaskProtocol.WORK_INPUT_V4 : TaskProtocol.WORK_INPUT_V3) : TaskProtocol.WORK_INPUT_V2).equals(input.path("schemaVersion").asText()));
         if (contextual) require(QueryPolicy.CONTEXTUAL.code().equals(input.path("queryPolicy").asText()));
         try { RetrievalStrategy.consumer(input.path("retrievalStrategy").asText()); }
         catch (IllegalArgumentException invalid) { throw new TaskFailure(TaskError.INPUT_INVALID); }

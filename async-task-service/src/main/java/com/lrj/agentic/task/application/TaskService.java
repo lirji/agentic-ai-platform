@@ -25,20 +25,22 @@ public class TaskService {
     private final boolean generationEnabled;
     private final boolean contextualEnabled;
     private final boolean researchEnabled;
+    private final boolean researchStagedEnabled;
 
     /** 单独限制事务时长；显式传递身份，避免复用线程泄漏主体。 */
     public TaskService(TaskMapper mapper, TaskValues values, PlatformTransactionManager manager,
             @Value("${task.lease-seconds:60}") int leaseSeconds, TaskKnowledgeEvidence evidence,
             TaskKnowledgeVisibility visibility, @Value("${task.generation-enabled:false}") boolean generationEnabled,
             @Value("${task.contextual-qa-enabled:false}") boolean contextualEnabled,
-            @Value("${task.research-enabled:false}") boolean researchEnabled) {
+            @Value("${task.research-enabled:false}") boolean researchEnabled,
+            @Value("${task.research-staged-enabled:false}") boolean researchStagedEnabled) {
         if (leaseSeconds < 5 || leaseSeconds > 60) { throw new IllegalArgumentException("任务租约配置无效"); }
         this.mapper = mapper; this.values = values; this.leaseSeconds = leaseSeconds;
         this.tx = new TransactionTemplate(manager);
         this.tx.setTimeout(5);
         this.evidence = evidence; this.visibility = visibility;
         this.generationEnabled = generationEnabled;
-        this.contextualEnabled = contextualEnabled; this.researchEnabled = researchEnabled;
+        this.contextualEnabled = contextualEnabled; this.researchEnabled = researchEnabled; this.researchStagedEnabled = researchStagedEnabled;
     }
 
     /** 唯一约束争用必须先回滚败方事务，再读取已经提交的同键结果。 */
@@ -68,7 +70,8 @@ public class TaskService {
         if (existing != null) { return replay(existing, digest); }
         // v3开关只控制新受理；同键重放和已持久任务的领取必须可以完成在途交接。
         require(!TaskProtocol.GRAPH_V3.equals(command.graphVersion()) || generationEnabled && contextualEnabled, TaskError.INPUT_INVALID);
-        require(!TaskProtocol.WORK_GRAPH_V3.equals(command.graphVersion()) || generationEnabled && researchEnabled, TaskError.RESEARCH_DISABLED);
+        require(!TaskProtocol.researchGraph(command.graphVersion()) || generationEnabled && researchEnabled, TaskError.RESEARCH_DISABLED);
+        require(!TaskProtocol.WORK_GRAPH_V4.equals(command.graphVersion()) || researchStagedEnabled, TaskError.RESEARCH_DISABLED);
         try {
             return tx.execute(ignored -> {
                 var row = new TaskRow(command.taskId(), owner.tenantId(), owner.userId(), key, digest,
@@ -107,6 +110,18 @@ public class TaskService {
         return submit(owner, key, new Submit(command.taskId(), input.kind(), TaskProtocol.RUNTIME,
                 TaskProtocol.WORK_GRAPH_V3, values.read(values.write(input))));
     }
+    /** 显式v4入口冻结新根图，配置切换不会改变旧幂等键的版本。 */
+    public View submitStagedResearchWork(Caller owner, String key, GenerationWorkSubmit command) {
+        var original = WorkRequests.validateResearch(command);
+        var input = new WorkInput(TaskProtocol.WORK_INPUT_V4, original.kind(), original.question(),
+                original.documentIds(), original.mode(), original.retrievalStrategy());
+        return submit(owner, key, new Submit(command.taskId(), input.kind(), TaskProtocol.RUNTIME,
+                TaskProtocol.WORK_GRAPH_V4, values.read(values.write(input))));
+    }
+    /** 独立受理开关不决定既有v4任务能否恢复。 */
+    public ResearchCapabilities stagedResearchCapabilities() {
+        return new ResearchCapabilities(TaskProtocol.RESEARCH_CAPABILITIES, generationEnabled && researchEnabled && researchStagedEnabled);
+    }
     /** 能力信息不读取数据正文，不将可受理解释为执行成功。 */
     public ResearchCapabilities researchCapabilities() {
         return new ResearchCapabilities(TaskProtocol.RESEARCH_CAPABILITIES, generationEnabled && researchEnabled);
@@ -139,11 +154,11 @@ public class TaskService {
     }
 
     private WorkInput workInput(TaskRow row) {
-        boolean research = TaskProtocol.WORK_GRAPH_V3.equals(row.graphVersion());
+        boolean research = TaskProtocol.researchGraph(row.graphVersion());
         boolean generation = research || TaskProtocol.WORK_GRAPH_V2.equals(row.graphVersion());
         require(generation || TaskProtocol.WORK_GRAPH.equals(row.graphVersion()), TaskError.NOT_FOUND);
         var input = values.read(row.inputJson(), WorkInput.class);
-        require((research ? TaskProtocol.WORK_INPUT_V3 : generation ? TaskProtocol.WORK_INPUT_V2 : TaskProtocol.WORK_INPUT).equals(input.schemaVersion()), TaskError.NOT_FOUND);
+        require((research ? (TaskProtocol.WORK_GRAPH_V4.equals(row.graphVersion()) ? TaskProtocol.WORK_INPUT_V4 : TaskProtocol.WORK_INPUT_V3) : generation ? TaskProtocol.WORK_INPUT_V2 : TaskProtocol.WORK_INPUT).equals(input.schemaVersion()), TaskError.NOT_FOUND);
         require(generation == (input.retrievalStrategy() != null), TaskError.NOT_FOUND);
         return input;
     }
@@ -218,7 +233,7 @@ public class TaskService {
             var row = active(worker, id, command.epoch());
             var before = mapper.eventByKey(row.taskId(), "w:" + command.operationKey());
             var appended = append(row, "w:" + command.operationKey(), command.type(), payload, false);
-            if (before == null && "TEXT_DELTA".equals(command.type())) { evidence.bind(row, appended); }
+            if (before == null && TaskProtocol.TEXT_DELTA_EVENT.equals(command.type())) { evidence.bind(row, appended); }
             return event(appended);
         });
     }
@@ -247,7 +262,7 @@ public class TaskService {
             require(next.modelCalls() <= ResearchCall.MAX_MODELS && next.toolCalls() <= ResearchCall.MAX_TOOLS
                     && next.searchCalls() <= ResearchCall.MAX_SEARCHES, TaskError.RESEARCH_LIMIT);
             var receipt = new ResearchAllowanceReceipt(id, command.epoch(), command.operationKey(), call.code(), next);
-            append(row, ResearchCall.KEY_PREFIX + command.operationKey(), "PROGRESS",
+            append(row, ResearchCall.KEY_PREFIX + command.operationKey(), TaskProtocol.PROGRESS_EVENT,
                     values.write(Map.of("stage", ResearchCall.STAGE, "reservation", receipt)), false);
             return receipt;
         });
@@ -258,7 +273,7 @@ public class TaskService {
     }
     private TaskRow researchActive(Caller worker, String id, long epoch) {
         var row = active(worker, id, epoch);
-        require(TaskProtocol.WORK_GRAPH_V3.equals(row.graphVersion()) && WorkKind.RESEARCH.code().equals(row.kind()),
+        require(TaskProtocol.researchGraph(row.graphVersion()) && WorkKind.RESEARCH.code().equals(row.kind()),
                 TaskError.INPUT_INVALID);
         return row;
     }
@@ -329,7 +344,7 @@ public class TaskService {
             }
             assertActive(row, worker, command.epoch());
             if (!TaskProtocol.EVALUATION_KIND.equals(row.kind())) { evidence.validateResult(row, command.result()); }
-            if (TaskProtocol.WORK_GRAPH_V3.equals(row.graphVersion())) {
+            if (TaskProtocol.researchGraph(row.graphVersion())) {
                 // 计数来自同一任务锁内的持久预留，worker不能自报较小额度或用新epoch清零。
                 var reported = ResearchKnowledgeResults.usage(command.result().path("content"));
                 require(reported.equals(researchUsage(researchReservations(row))), TaskError.INPUT_INVALID);
@@ -500,10 +515,10 @@ public class TaskService {
     }
     private void versions(String runtime, String graph) {
         // 公共消费者联合验收前不接受或领取新图，关闭开关不改写历史任务。
-        require(TaskProtocol.GRAPH_V3.equals(graph) || TaskProtocol.WORK_GRAPH_V3.equals(graph) || !TaskProtocol.generationGraph(graph) || generationEnabled, TaskError.INPUT_INVALID);
+        require(TaskProtocol.GRAPH_V3.equals(graph) || TaskProtocol.researchGraph(graph) || !TaskProtocol.generationGraph(graph) || generationEnabled, TaskError.INPUT_INVALID);
         require(TaskProtocol.RUNTIME.equals(runtime)
                 && (TaskProtocol.GRAPH.equals(graph) || TaskProtocol.WORK_GRAPH.equals(graph)
-                    || TaskProtocol.EVALUATION_GRAPH.equals(graph) || TaskProtocol.EVALUATION_GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V3.equals(graph) || TaskProtocol.WORK_GRAPH_V2.equals(graph) || TaskProtocol.WORK_GRAPH_V3.equals(graph)), TaskError.INPUT_INVALID);
+                    || TaskProtocol.EVALUATION_GRAPH.equals(graph) || TaskProtocol.EVALUATION_GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V2.equals(graph) || TaskProtocol.GRAPH_V3.equals(graph) || TaskProtocol.WORK_GRAPH_V2.equals(graph) || TaskProtocol.researchGraph(graph)), TaskError.INPUT_INVALID);
     }
     private static void changed(int count) { require(count == 1, TaskError.CONFLICT); }
     private static void require(boolean valid, TaskError code) {

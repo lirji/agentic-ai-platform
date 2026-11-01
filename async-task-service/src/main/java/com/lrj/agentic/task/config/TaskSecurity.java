@@ -55,8 +55,8 @@ public class TaskSecurity {
             @Value("${task.identity.edge-public-key}") Resource key) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/tasks/**", "/api/v3/tasks/capabilities").hasAuthority("SCOPE_" + TaskProtocol.READ)
-                .requestMatchers(HttpMethod.POST, "/api/v1/tasks", "/api/v2/tasks", "/api/v3/tasks", "/api/v1/tasks/*/cancel", "/api/v1/tasks/*/resume")
+                .requestMatchers(HttpMethod.GET, "/api/v1/tasks/**", "/api/v3/tasks/capabilities", "/api/v4/tasks/capabilities").hasAuthority("SCOPE_" + TaskProtocol.READ)
+                .requestMatchers(HttpMethod.POST, "/api/v1/tasks", "/api/v2/tasks", "/api/v3/tasks", "/api/v4/tasks", "/api/v1/tasks/*/cancel", "/api/v1/tasks/*/resume")
                 .hasAuthority("SCOPE_" + TaskProtocol.WRITE).anyRequest().denyAll());
         return base(http, json, decoder(key, IdentityProtocol.INTERNAL_ISSUER, null)).build();
     }

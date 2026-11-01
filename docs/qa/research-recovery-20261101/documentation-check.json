@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "markdown": 14,
+  "localLinks": 296,
+  "secretPatternScan": "PASS: changed text only",
+  "diffHygiene": "PASS"
+}

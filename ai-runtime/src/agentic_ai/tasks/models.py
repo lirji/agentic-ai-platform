@@ -96,6 +96,7 @@ class TaskLease(WireModel):
         "knowledge-qa-v3",
         "knowledge-work-v2",
         "knowledge-work-v3",
+        "knowledge-work-v4",
         "knowledge-evaluation-v2",
     ]
     epoch: int = Field(ge=0)

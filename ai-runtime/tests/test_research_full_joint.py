@@ -14,6 +14,7 @@ from test_evaluation_full_joint import joint as joint  # noqa: F401
 from test_work_pipeline import ToolsChat
 
 from agentic_ai.agents.research_pipeline import ResearchPipeline
+from agentic_ai.agents.staged_research_pipeline import StagedResearchPipeline
 from agentic_ai.qa.worker import execute_qa_task
 from agentic_ai.tasks.checkpointer import FencedPostgresSaver
 from agentic_ai.tasks.models import TaskStatus
@@ -66,7 +67,7 @@ class ResearchChat:
         return AIMessage(content=json.dumps(value, ensure_ascii=False))
 
 
-async def submit(run, *, legacy=False):
+async def submit(run, *, legacy=False, staged=False):
     task_id = str(uuid4())
     command = {
         "taskId": task_id,
@@ -76,7 +77,7 @@ async def submit(run, *, legacy=False):
         "mode": "REPORT",
         "retrievalStrategy": STRATEGY,
     }
-    route = "/api/v2/tasks" if legacy else "/api/v3/tasks"
+    route = "/api/v2/tasks" if legacy else "/api/v4/tasks" if staged else "/api/v3/tasks"
     result = await run.request("POST", route, body=command, key=task_id, task=True, status=202)
     assert (
         await run.request("POST", route, body=command, key=task_id, task=True, status=202)
@@ -85,20 +86,25 @@ async def submit(run, *, legacy=False):
     return task_id
 
 
-async def execute(run, task_id, chat, *, legacy=False, restore=False):
+async def execute(run, task_id, chat, *, legacy=False, restore=False, staged=False):
     central, lease = await run.client(
-        "knowledge-work-v2" if legacy else "knowledge-work-v3", task_id
+        "knowledge-work-v2" if legacy else "knowledge-work-v4" if staged else "knowledge-work-v3",
+        task_id,
     )
     candidates = await run.candidates()
     if restore:
         store = await run.stack.enter_async_context(PostgresCheckpoints.open(run.checkpoints))
         saver = FencedPostgresSaver(lease, central, store)
-        pipeline = ResearchPipeline(lease, central, candidates, chat, run.use_case)
-        graph = pipeline.build(saver, interrupt_before=["verify"])
+        pipeline = (StagedResearchPipeline if staged else ResearchPipeline)(
+            lease, central, candidates, chat, run.use_case
+        )
+        graph = pipeline.build(saver, interrupt_before=["analyze" if staged else "verify"])
         await graph.ainvoke(lease.input, saver.config, durability="sync")
         assert (await graph.aget_state(saver.config)).values["plan"]["items"][0]["id"] == "Q1"
         await run.expire(task_id)
-        central, lease = await run.client("knowledge-work-v3", task_id)
+        central, lease = await run.client(
+            "knowledge-work-v4" if staged else "knowledge-work-v3", task_id
+        )
     result = await execute_qa_task(
         lease,
         central,

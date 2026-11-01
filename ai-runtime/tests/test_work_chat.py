@@ -113,3 +113,48 @@ def test_unknown_response_is_not_retried_and_budget_exhaustion_prevents_wire(tmp
         await client.aclose()
 
     asyncio.run(scenario())
+
+
+@pytest.mark.parametrize("unsolicited_tool", [False, True])
+def test_plan_only_wire_omits_tools_and_rejects_unsolicited_calls(tmp_path, unsolicited_tool):
+    async def scenario():
+        config = config_at(tmp_path)
+        ledger_at(config)
+        calls = []
+
+        def respond(request):
+            calls.append(request)
+            body = json.loads(request.content)
+            assert not {"tools", "tool_choice", "parallel_tool_calls"} & body.keys()
+            response = reply()
+            if unsolicited_tool:
+                response = reply(
+                    finish_reason="tool_calls",
+                    message={
+                        "role": "assistant",
+                        "tool_calls": [
+                            {
+                                "id": "read",
+                                "type": "function",
+                                "function": {
+                                    "name": "read_evidence",
+                                    "arguments": '{"citation_id":"1"}',
+                                },
+                            }
+                        ],
+                    },
+                )
+            return httpx.Response(200, json=response)
+
+        client = ToolChatClient(config, ChatBudget(config), transport=httpx.MockTransport(respond))
+        try:
+            if unsolicited_tool:
+                with pytest.raises(QaError):
+                    await client.complete(MESSAGE, [], "plan-only")
+            else:
+                assert (await client.complete(MESSAGE, [], "plan-only")).content == "合成结果"
+            assert len(calls) == len(read_ledger(config)["calls"]) == 1
+        finally:
+            await client.aclose()
+
+    asyncio.run(scenario())

@@ -1,6 +1,20 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S12C 已交付，接续 S12D
+## 当前任务：S12D 分阶段恢复（VERIFIED，Git交付待完成）
+
+- 完整任务capability-delivery-20261021：51项已批准，parallel=no；用户持续授权继续，整体未完成。
+- 两仓原目录分支feat/research-stage-recovery-20261101，起点后端31ad204/前端c324985；本片仍未提交，无新工作树。后端原main工作树保留。
+- [恢复契约](RESEARCH_RECOVERY_CONTRACTS.md)：显式v4受理/输入/根图，结果复用v3；retrieve/plan/analyze/verify同步确认；默认关闭、不扩大预算/租约，不启用内部saver/子Agent/shell。
+- 已验证：Tasks真实MySQL29、契约11、security10；网关8；新根图6、真实PG最终12（含旧v1三项）及v3七项；前端179、旧浏览器3、真实联合浏览器3、Docker无外网代理13条路由PASS。真实联合.logs/s12d-full-joint-r2.log、.logs/s11e-joint-17660250053019201289/；恢复输入栅栏追加后6单元/12PG通过。最新Java协议常量修正后.logs/s12d-java-final.log通过。
+- 审查修正：恢复输入须匹配中央冻结输入；计划模型无工具字段/禁止工具响应；SSE历史状态整批只刷新一次，解决权限重验503；事件协议复用常量。10张真实联合截图均查看，3张旧浏览器截图保留；卫生无阻断，Java独立格式器缺失和缓存枚举重叠提示保留。
+- 当前：最终Python620/96默认跳过、证据文档/两仓源码摘要校验PASS（32后端/12前端源文件、14文档296链接）；下一步完成本片提交、分支CI、正常ff合并推main及CI，随后S13A既定IAM接入核对。已发现本机auth-platform/Casdoor实例，尚未确认本项目应用/组织/角色与回调配置，已向用户异步询问U03身份范围；答复前不写IAM或冻结真实成员权限。
+- 运行：前端28186既有预览PID49541保留，日志前端.logs/s12b-preview.log；无新付费/迁移/部署。S12C归档main CI41291728478/41291759613均PASS；.local/.logs/原Docker工作树不清理。
+- 授权：本地实施验证、按任务提交及正常合并推main；不含生产部署/强推/清理/子Agent。Chat/Embedding各1元，累计保守预留0.957092/0.781784保持，本片付费0，旧探针不可重跑。
+- 规范：session-handoff/continue-approved-delivery、Contracts Stage、backend/frontend-implementation、validation、progress/docs、Git/CI；架构建模/持久化/接口/并发安全/容量/发布。既有Runtime漂移沿手工专业pass，不冒称机器Gate或独立Agent审查。
+
+### S12C 已交付
+
+
 
 - 完整任务`capability-delivery-20261021`，51项已批准，parallel=no；用户最新“继续执行任务吧”。S12B已交付，S12C实现、必需验收和Git/CI交付PASS，整体未完成；接续S12D。
 - 两仓原目录`feat/research-coverage-20261101`，起点后端891c553fcdf9a2e4c64a5f4304afa45431961ef2、前端da4b7d914b4349684d6d1a55cb32870b8429433c；本片后端275eeb5fa8f6dcef25ffd6a0fa467d13081dd949、前端e29292b00f1e6f454c5a5b4268916597b71077dc已正常ff合并推origin/main，无新worktree。后端main工作树仍在~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027，当前干净。
