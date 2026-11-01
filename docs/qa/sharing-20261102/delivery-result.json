@@ -58,5 +58,32 @@
         }
       }
     }
-  }
+  },
+  "followupDeliveries": [
+    {
+      "scope": "Disabled-sharing and failed-access receipt recovery",
+      "repository": "frontend",
+      "productCommit": "cbe10887f2c6b09903c41bd147b7ec34416fe7f9",
+      "branch": "feat/knowledge-sharing-20261101",
+      "target": "origin/main",
+      "merge": "fast-forward",
+      "status": "PASS",
+      "ci": {
+        "branch": {
+          "conclusion": "success",
+          "databaseId": 41329703941,
+          "headSha": "cbe10887f2c6b09903c41bd147b7ec34416fe7f9",
+          "status": "completed",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41329703941"
+        },
+        "main": {
+          "conclusion": "success",
+          "databaseId": 41329938057,
+          "headSha": "cbe10887f2c6b09903c41bd147b7ec34416fe7f9",
+          "status": "completed",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41329938057"
+        }
+      }
+    }
+  ]
 }

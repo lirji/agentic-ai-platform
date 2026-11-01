@@ -50,11 +50,11 @@
     "src/features/identity/session.ts": "b1d85650643f0f750c758fdf122e7b0e1e58ee0b2bb2875a12d977efbb9f92c6",
     "src/features/knowledge/SharedDocumentDetail.tsx": "5bdebd0dfe15c62fe403fd45269aec6b0f62b9c3afa61921d40cf61ad475c8aa",
     "src/features/knowledge/SharedDocuments.tsx": "d6d8f5bdc47a937ed15ff3394a16810663dd2b9893c945e5335f039830ff9f14",
-    "src/features/knowledge/SharingPanel.test.tsx": "d92babe21419869793237b084fad53b3f56d48a057de721f31dcf34f3deeef20",
-    "src/features/knowledge/SharingPanel.tsx": "472cc2612d95b5ce7bf84b8030b22915bbfafe391f309dcfc2136399447df027",
+    "src/features/knowledge/SharingPanel.test.tsx": "e4f562cdbac6f8cda223d39e43e0cfa1507ab9d64e5f4fd0c64d2ee9f2c5be66",
+    "src/features/knowledge/SharingPanel.tsx": "a70d0bfed88ee95d0844843ee3ac894096c4e30ef14ae2713ce72ec8ff38b3c9",
     "src/features/knowledge/UploadModal.tsx": "9123c336bb64d73a2ad7f1ea632b3823bdbe152adfede3ba9a653bbac94a15a3",
     "src/features/knowledge/api.ts": "69d34cea97a4c3bcfce725b82812ff5050b035f5914a6fbd4a3f46ddefb08433",
-    "src/features/knowledge/sharing.ts": "d6f6a3845988d8c4a30283a88dbb7266f07339aaa4d6d12ecceef3da31501aa1",
+    "src/features/knowledge/sharing.ts": "27f64c35ac0c330a85483ba4e87f907f8dfe352aab4174f6f590c9eb343e0464",
     "src/pages/DocumentPage.tsx": "2076dd1749b7ec0d385fe5d32d4609ba518feb545fbda30e3b0ef0c34003ae53",
     "src/pages/KnowledgePage.tsx": "b9330da7c64c31d5117f8593bd3e8f4d0edede0c5d80e0ce10a48a8b46fc8271",
     "src/pages/SearchPage.tsx": "b0b795d0edcb3160a3ce49b3cceacc9107fa91f67d3a1a087e69ef1cfd99c9a7",
@@ -76,7 +76,9 @@
     ".logs/s13c-doc-contracts.log": "b84ffe57789b04d3f4ec39bd97ce3e105f5969ec38395783e063d1e5f39a12fd",
     ".logs/s13c-joint-13758045025645574489/consumers.log": "f71c59edf35054ee57c4709e1c3d0a29e9615d24c69580e30236ad3709fc3918",
     ".logs/s13b-browser-10229499330609422357/browser.log": "2fb542f7ba43f662f91f26fd1ed9858bbff1e9cdd338b7386aaf8f21d8f7a830",
-    ".logs/s13bc-test-task-state.txt": "90b52b2f335e3ecc912f80c8111b8a08d856e134bd05d37da4fc0377218746f2"
+    ".logs/s13bc-test-task-state.txt": "90b52b2f335e3ecc912f80c8111b8a08d856e134bd05d37da4fc0377218746f2",
+    ".logs/s13c-recovery-browser-final.log": "f01f79474b77725bb4aec275660217d152a23187eae0d837f575642f9e1ba6de",
+    ".logs/s13b-browser-3734748811868858427/browser.log": "0487ecd4210c16a53b8c95ab01b69e7bae9db1d1af0cb3b07f1fab52bf4759ef"
   },
   "frontendEvidence": {
     ".logs/s13c-final-unit.log": "44bb09d67639a56fddb58355fcded7fbd35037dc1e98d4dcec78ecd97232312f",
@@ -88,7 +90,16 @@
     ".logs/s13c-parser-build.log": "c8a0d43fcfbefcc49b506a683a8b64a42ded2b45248d323e66c6f57d8060671b",
     ".logs/s13c-code-hygiene-final.log": "137802a303d4a0e3b4af9a09328bab99fcc0747972cc161c29a8c78c428fa01a",
     ".logs/s13c-browser-regression.log": "c3879d7dedf7a3b9ca0aecaed02cb9c9f15a7640d10edc313cfc147f21a1e9da",
-    ".logs/s13c-browser-regression-r2.log": "26218ae78ea59b7cd16379aea6cac1b36e4d59f182580df339bd440d49662fae"
+    ".logs/s13c-browser-regression-r2.log": "26218ae78ea59b7cd16379aea6cac1b36e4d59f182580df339bd440d49662fae",
+    ".logs/s13c-recovery-format.log": "1e26bd153b21985dca54689ca752635093c581e6017d8e2b4049a648dfd09aba",
+    ".logs/s13c-recovery-type.log": "8366207267355d3e3d5bf3bf6e8c94c5f93f6078c34f08973fa2b38cdda6cc92",
+    ".logs/s13c-recovery-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".logs/s13c-recovery-unit.log": "d749bb78c7c9aec949a77f9305523b2013e2c4ebbb7ce838eacdddb0df50329f",
+    ".logs/s13c-recovery-unit-r1.log": "4483e94fb16a3de89db2abc85792ebf6fe97ece5c8b9ee6f09d01a9420294e61",
+    ".logs/s13c-recovery-build.log": "6be5aac32c1848cc5e985d5d996844fba459d952b1adb8173df7c43a424ae6ad",
+    ".logs/s13c-recovery-hygiene.log": "d888c7cf86bc129c658c4460f3ac5df7033566724cde45779652679970bce2d8",
+    ".logs/s13c-recovery-hygiene-text.log": "d1d5757a2451f29ea185955f869b84cc973296af6d178eea63a7b0c2b88dfb01",
+    ".logs/s13c-recovery-branch-ci-full.log": "5d2dfcdeb63ef0a7e6bcc2c09ea14c27c87ea13e7cae46dec5d0a6c9e37b3587"
   },
   "screenshots": {
     "docs/qa/sharing-20261102/regression/retrieval-consumers-20261030/screenshots/chat-history-414.png": "9bd60855b68d349d85fff44502baf72d659183a13cea9125f18ad50d9c57b7f6",
@@ -109,8 +120,8 @@
     "docs/qa/sharing-20261102/regression/s5e/screenshots/streaming-1440.png": "ba80949f3de8599ae67a735edd69a2fed162d59938ec38e648ba7b2cd680ac6b",
     "docs/qa/sharing-20261102/regression/s7/screenshots/unknown-submit-414.png": "ac4fd89cf8aec5452dc24858d0042459186cf8161e62b7cb253556fc095701b5",
     "docs/qa/sharing-20261102/regression/s7/screenshots/unknown-submit.png": "435118ed95997cd35708dbe1be87fb391f6f67b2fccbe3a9920eaeed7e5dd0b3",
-    "docs/qa/sharing-20261102/screenshots/owner-desktop.png": "ad379ced0452fea2a4aff997f246e4f4edb6d3daaa4eb5706c9cf6f7c339c194",
-    "docs/qa/sharing-20261102/screenshots/owner-narrow.png": "8d84949d5867a8b37aa1353ee707f56f96b3e95710ab33228fa932421448e1a5",
+    "docs/qa/sharing-20261102/screenshots/owner-desktop.png": "7cd6a7025f20d75ba19404c775fe778fda563b9e135b864c3848d259b1d4ad59",
+    "docs/qa/sharing-20261102/screenshots/owner-narrow.png": "c58d83b3c43c84a46bda8355992b217ea8812a2d7cd8ce7d8d49e8d65d019924",
     "docs/qa/sharing-20261102/screenshots/reader-desktop.png": "4ab0911ef693eb8591524cdb4ed94a795aa74a3887a5431371b26b2b9c98e0cb",
     "docs/qa/sharing-20261102/screenshots/reader-detail.png": "01bd7ad36c8e19496ea14c49150d34a1c0a5e2a4529a67f0305e32c52e80d84f",
     "docs/qa/sharing-20261102/screenshots/reader-revoked.png": "060a82aa468913711854c72bceece258c0f68cc3999eb4bb14921e0dd92d5ecd"
@@ -120,7 +131,7 @@
     "necessaryIntegrationFinal": 48,
     "pythonUnit": 620,
     "pythonDefaultSkipped": 97,
-    "frontendUnit": 192,
+    "frontendUnit": 196,
     "realSharingBrowser": 1,
     "compatibilityBrowser": 17
   },
@@ -136,5 +147,20 @@
     "Fault-injection mapper fixture now loads shared SQL include",
     "Old browser fixture registers sharing capabilities disabled"
   ],
-  "deliveryReceipt": "delivery-result.json"
+  "deliveryReceipt": "delivery-result.json",
+  "followup": {
+    "scope": "Shared receipt remains available when feature disabled or access lookup fails",
+    "validation": "PASS",
+    "delivery": "PASS",
+    "frontendTargetedTests": 8,
+    "realBrowserFinalBuild": 1,
+    "notes": [
+      "Initial 2 new tests matched transient loading icon in accessible name; stable action text fixed",
+      "CLI binary input decoding limitation; same scanner rerun on all changed text files, PNG reviewed visually",
+      "Existing backend integration and frontend unaffected test evidence retained; source unchanged outside 3 frontend files"
+    ],
+    "frontendCiUnit": 196,
+    "frontendBranchCi": 41329703941,
+    "frontendMainCi": 41329938057
+  }
 }

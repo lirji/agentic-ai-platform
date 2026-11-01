@@ -21,3 +21,9 @@
 V13只应用隔离test库，不改写迁移历史。开发/生产数据库与运行容器未迁移或更新；测试随机租户/回执/日志保留，不清空数据重测。已知限制与整改见[REVIEW](REVIEW.md)；日志/源码/截图摘要见[validation.json](validation.json)。
 
 保留状态：5个本轮隔离联合测试租户中，失败尝试留1条租约已过期的RUNNING测试行，无活跃租约或worker；状态记录`.logs/s13bc-test-task-state.txt`。没有删除或重发，后续清理须明确范围。
+
+## 回执恢复补修
+
+共享关闭或权限读取失败不再遮住原回执查询入口。关闭时不读取目录或权限、不发送新命令；回执404/网络错误保留原intent，提示仍可核对。`.logs/s13c-recovery-unit.log`8项通过（新增4项），格式/类型/静态/构建通过；最终构建真实HTTP浏览器`.logs/s13c-recovery-browser-final.log`与`.logs/s13b-browser-3734748811868858427/browser.log`通过。补修提交cbe1088的分支CI 41329703941全量196项通过，其余后端/联合验证源码未变仍有效。两张owner截图已刷新并查看。
+
+初轮新增2项断言被Ant加载动画的可访问图标影响，修正为稳定操作文字匹配后通过；失败日志保留`.logs/s13c-recovery-unit-r1.log`。代码卫生CLI直接读取PNG为UTF-8失败；仅筛除二进制输入，复用原扫描器检查全部变更文本并PASS，图片独立实看，日志`.logs/s13c-recovery-hygiene-text.log`。没有修改全局工具或跳过产品源码。补修cbe1088已正常ff合并推main，分支CI 41329703941/main CI 41329938057均精确SHA PASS，见交付收据。
