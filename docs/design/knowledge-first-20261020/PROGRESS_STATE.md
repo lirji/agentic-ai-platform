@@ -1,15 +1,15 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S14B 本地验收完成，Git 交付进行中
+## 当前任务：S14B 已交付，继续 S14C
 
-- 原计划 capability-delivery-20261021，51项、parallel=no；用户“自行处理”。S14B DONE / Validation PASS，完整计划未完成；交付完成后立即进入 S14C 审核与真实入库发布。
-- 两仓原目录 feat/knowledge-candidates-20261102，提交前基线后端 fa76188、前端3120d90；本片修改均属当前范围。已合入身份逐字匹配补修7cd82c7（分支/main CI PASS），本片同时归档其交付收据。
+- 原计划 capability-delivery-20261021，51项、parallel=no；用户“自行处理”。S14B DONE / Validation及两仓分支/main CI PASS，完整计划未完成；立即进入 S14C 审核与真实入库发布。
+- 后端产品cd3e753、前端7623885已正常合并推送main，精确分支/main CI全部PASS；[收据](../../qa/candidates-20261102/delivery-result.json)。两仓原目录、无新增工作树。已合入身份逐字匹配补修7cd82c7（分支/main CI PASS），本片同时归档其交付收据。
 - 业务边界：owner负责反馈、编辑和审批；同组织指定成员只读、逐份授权可撤回、不得编辑或再分享。候选完整不可变修订、原资料/候选CAS、owner私有校验副本、真实S8定义/报告/人工评分绑定，编辑后失效。requiredText仅字面检查。回执摘要支持原键恢复，普通K07仍13字段，preview追加3字段。
 - 已实现：后端候选API/V16、完整S3源/解析/双索引私有副本、默认检索排除及共享/通用写保护；前端完整正文/附件/历史、摘要原键恢复、冲突草稿保留与显式换基线、质量关联及原编辑器固定副本范围。Runtime显式--operations且默认关闭。
 - 验证PASS：[TEST_RESULT](../../qa/candidates-20261102/TEST_RESULT.md)、[REVIEW](../../qa/candidates-20261102/REVIEW.md)、[摘要](../../qa/candidates-20261102/validation.json)。130项知识单元、27项核心真实IT、共享/HTTP/质量回归；前端211项单元、类型/静态/格式/构建通过。最终实际Tasks联合1项及浏览器2条通过，.logs/s14b-joint-browser-final.log与.logs/s14b-joint-4473254010354186463/browser.log；7张1440/414截图已检查。最终副本READY文案/报告返回路径复验PASS；paid calls=0。
 - 验证限制：确定性质量报告证明流程，不代表真实模型效果；Java无格式器/独立静态工具，人工审查后COMPLETE_WITH_LIMITATIONS；前端卫生IMPLEMENTATION_COMPLETE；新Python Ruff PASS，旧Runtime5条提示与HEAD一致。历史失败保留在日志，均已修正复验。
 - 数据/运行：V16已应用隔离test，不得改写；test索引仅追加purpose。测试Tasks/桥/浏览器已退出；28226预览session63670使用.local/candidates-dist。无在途测试或付费调用。原28216/28206/28196预览与28086 Docker保留。
-- 下一步：核对暂存源码摘要→正常提交推送两仓任务分支→精确SHA CI→fast-forward main与main CI→归档→立即冻结/实施S14C。S14C须在真实审批时复核内容、原资料和质量事实，不能直接信任B读模型中的资格标志。
+- 下一步：归档交付证据后在两仓原目录创建S14C任务分支，冻结审批/原子入库/精确发布读模型→实现→真实验收→正常Git/CI。S14C须在真实审批时复核内容、原资料和质量事实，不能直接信任B读模型中的资格标志。
 - 授权/保留：正常Git交付已授权；不部署、不新增付费调用、不清理。保留test数据/源/索引/待处理副本作业、.local凭据与账本、.logs、.idea及已有main工作树。采用架构规范业务建模/持久化/接口/并发安全/容量/发布章节，以及既有实施、验证、进度、Git/CI、持续交付技能；无子Agent。
 
 ## 历史：20 项差距的框架化实施计划

@@ -1,7 +1,7 @@
 {
   "slice": "S14B",
   "status": "LOCAL_PASS",
-  "gitCiGate": "PENDING",
+  "gitCiGate": "PASS",
   "sources": {
     "backend": {
       "deploy/candidate_browser_bridge.py": "8e7170040265e3b8ced037251f5c7990a4450bb848a450b6387dbbb996569f9e",
@@ -96,7 +96,15 @@
     "../agentic-ai-platform-web/.logs/s14b-final-build-r2.log": "bf6e150355d570b3d11c5cdf222a940284ada2911de356c4587586110610daa5",
     "../agentic-ai-platform-web/.logs/s14b-frontend-hygiene-final.log": "865bdb87c4aee514966165f4c884f83ec9bd07bee7dee49f27a293b6ecef2a3f"
   },
-  "screenshots": {},
+  "screenshots": {
+    "docs/qa/candidates-20261102/screenshots/conflict-narrow.png": "581a5717a8f539ce96e14c9ae3b23d65857efc92c25b463885349ab051617334",
+    "docs/qa/candidates-20261102/screenshots/editor-desktop.png": "a86f1eef7f13c5e1d6a0f8c7d8856c65bb4a0b2357aa2edbaf31d06217536358",
+    "docs/qa/candidates-20261102/screenshots/evaluation-current.png": "2ee2c5577c383b5587a22ef42672aa6e10955404f20d7331f7f8ddf17f7e125c",
+    "docs/qa/candidates-20261102/screenshots/history-stale.png": "6644eb34825d7f56df522a179073d2accc196a332a1e93b1d66c017b3ed27946",
+    "docs/qa/candidates-20261102/screenshots/preparation-narrow.png": "e33362341f8f68bbf4539bf2627f4a971f98b365cf11d9718f07dcbcea4e34ac",
+    "docs/qa/candidates-20261102/screenshots/preview-readonly.png": "9266ab9a149719860dd672dfac7dcebcfa055adbebf48113d993fb64a0655023",
+    "docs/qa/candidates-20261102/screenshots/quality-editor-narrow.png": "90d3506b1e061e610302ef67b915c9130ef90572351106544779911ade4e73fd"
+  },
   "limits": [
     "No production deployment",
     "No paid model calls",

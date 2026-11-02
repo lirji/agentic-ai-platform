@@ -1,0 +1,99 @@
+{
+  "slice": "S14B",
+  "status": "DELIVERED",
+  "method": "task branch -> normal fast-forward merge -> push main",
+  "productionDeployment": false,
+  "branchCi": {
+    "backend": {
+      "headSha": "cd3e7531a1ba0a3aedc7a488bb488853cd1201c5",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41368543071",
+      "jobs": [
+        {
+          "name": "python",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41368543071/job/125033823931"
+        },
+        {
+          "name": "documents",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41368543071/job/125033824152"
+        },
+        {
+          "name": "java",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41368543071/job/125033824192"
+        }
+      ]
+    },
+    "frontend": {
+      "headSha": "7623885f4e78d6e7bd85baead2c6a6cf8fbb94dc",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41368543964",
+      "jobs": [
+        {
+          "name": "web",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41368543964/job/125033826949"
+        }
+      ]
+    }
+  },
+  "mainCi": {
+    "backend": {
+      "headSha": "cd3e7531a1ba0a3aedc7a488bb488853cd1201c5",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41368681084",
+      "jobs": [
+        {
+          "name": "python",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41368681084/job/125034236917"
+        },
+        {
+          "name": "java",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41368681084/job/125034237015"
+        },
+        {
+          "name": "documents",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41368681084/job/125034237236"
+        }
+      ]
+    },
+    "frontend": {
+      "headSha": "7623885f4e78d6e7bd85baead2c6a6cf8fbb94dc",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41368744730",
+      "jobs": [
+        {
+          "name": "web",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41368744730/job/125034428490"
+        }
+      ]
+    }
+  },
+  "retained": [
+    "existing main worktree",
+    ".local credentials and budgets",
+    ".logs",
+    ".idea",
+    "test V16 and random tenant records and source/index",
+    "existing previews and 28226 candidate preview"
+  ],
+  "next": "S14C approval and real publication"
+}
