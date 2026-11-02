@@ -100,7 +100,7 @@ public class BrowserSecurity {
                 .authorizeExchange(a -> a.pathMatchers("/actuator/health/**", "/actuator/prometheus",
                                 "/oauth2/authorization/workbench", "/login/oauth2/code/workbench").permitAll()
                         .pathMatchers("/api/v1/session", "/api/v1/auth/logout", "/api/v1/knowledge/**", "/api/v2/knowledge/**",
-                                "/api/v1/tasks/**", "/api/v2/tasks", "/api/v3/tasks", "/api/v3/tasks/capabilities",
+                                com.lrj.agentic.contract.ModelUsageProtocol.PUBLIC_PATH, "/api/v1/tasks/**", "/api/v2/tasks", "/api/v3/tasks", "/api/v3/tasks/capabilities",
                                 "/api/v4/tasks", "/api/v4/tasks/capabilities", "/api/v1/conversations", "/api/v1/conversations/**",
                                 "/api/v2/conversations/**", "/api/v3/conversations/*/turns").authenticated().anyExchange().denyAll())
                 .oauth2Login(c -> c.clientRegistrationRepository(browserRegistrations).authorizedClientRepository(browserClients)

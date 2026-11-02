@@ -8,6 +8,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from agentic_ai.rag.errors import EmbeddingError, EmbeddingErrorCode
+from agentic_ai.runtime.ledger_freeze import require_writable
 
 MAX_LEDGER_BYTES = 262144
 MICRO_UNITS = Decimal("1000000")
@@ -48,6 +49,7 @@ class EmbeddingBudget:
             descriptor = os.open(self.path, os.O_RDWR | os.O_NOFOLLOW)
             with os.fdopen(descriptor, "r+", encoding="utf-8") as file:
                 fcntl.flock(file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                require_writable(self.path)
                 raw = file.read(MAX_LEDGER_BYTES + 1)
                 if len(raw.encode()) > MAX_LEDGER_BYTES:
                     raise ValueError

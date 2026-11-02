@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.Instant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -24,7 +25,17 @@ import org.springframework.security.web.SecurityFilterChain;
 
 /** 用户委托、会话提交和 worker 三套身份分别验签，不共享可写服务身份。 */
 @Configuration
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class TaskSecurity {
+    /** 同一执行器密钥必须换发usage独立受众和scope，旧task令牌不能写账本。 */
+    @Bean @Order(-1)
+    @ConditionalOnProperty(name = "usage.mode", havingValue = "CENTRAL")
+    SecurityFilterChain usage(HttpSecurity http, ObjectMapper json,
+            @Value("${task.identity.worker-public-key}") Resource key) throws Exception {
+        http.securityMatcher(ModelUsageProtocol.INTERNAL_ROOT, ModelUsageProtocol.INTERNAL_ROOT + "/**")
+                .authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority("SCOPE_" + ModelUsageProtocol.WRITE_SCOPE));
+        return base(http, json, decoder(key, TaskProtocol.WORKER_ISSUER, TaskProtocol.WORKER_PARTY, ModelUsageProtocol.AUDIENCE)).build();
+    }
     @Bean @Order(0)
     @ConditionalOnProperty(name = "task.identity.evaluation-enabled", havingValue = "true")
     SecurityFilterChain evaluation(HttpSecurity http, ObjectMapper json,
@@ -56,12 +67,15 @@ public class TaskSecurity {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/tasks/*/feedback-proof").hasAuthority("SCOPE_" + TaskProtocol.READ)
-                .requestMatchers(HttpMethod.GET, "/api/v1/tasks/**", "/api/v3/tasks/capabilities", "/api/v4/tasks/capabilities").hasAuthority("SCOPE_" + TaskProtocol.READ)
+                .requestMatchers(HttpMethod.GET, "/api/v1/tasks/**", "/api/v3/tasks/capabilities", "/api/v4/tasks/capabilities", ModelUsageProtocol.PUBLIC_PATH).hasAuthority("SCOPE_" + TaskProtocol.READ)
                 .requestMatchers(HttpMethod.POST, "/api/v1/tasks", "/api/v2/tasks", "/api/v3/tasks", "/api/v4/tasks", "/api/v1/tasks/*/cancel", "/api/v1/tasks/*/resume")
                 .hasAuthority("SCOPE_" + TaskProtocol.WRITE).anyRequest().denyAll());
         return base(http, json, decoder(key, IdentityProtocol.INTERNAL_ISSUER, null)).build();
     }
     private JwtDecoder decoder(Resource key, String issuer, String party) throws IOException {
+        return decoder(key, issuer, party, TaskProtocol.AUDIENCE);
+    }
+    private JwtDecoder decoder(Resource key, String issuer, String party, String audience) throws IOException {
         var decoder = NimbusJwtDecoder.withPublicKey(JwtTrust.publicKey(key)).build();
         OAuth2TokenValidator<Jwt> bound = jwt -> {
             Instant issued = jwt.getIssuedAt(), expires = jwt.getExpiresAt(), before = jwt.getNotBefore();
@@ -74,7 +88,7 @@ public class TaskSecurity {
                     new OAuth2Error(PlatformError.AUTH_REQUIRED.code()));
         };
         decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(
-                JwtTrust.validator(issuer, TaskProtocol.AUDIENCE, IdentityProtocol.TENANT_CLAIM),
+                JwtTrust.validator(issuer, audience, IdentityProtocol.TENANT_CLAIM),
                 new JwtTimestampValidator(Duration.ZERO), bound));
         return decoder;
     }
@@ -93,16 +107,19 @@ public class TaskSecurity {
                             return token;
                         })
                         .authenticationEntryPoint((request, response, failure) -> {
+                            response.setHeader("Cache-Control", "no-store");
                             response.setStatus(401); response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             json.writeValue(response.getOutputStream(),
                                     ApiError.of(PlatformError.AUTH_REQUIRED, RequestCorrelation.id(request)));
                         })
                         .accessDeniedHandler((request, response, failure) -> {
+                            response.setHeader("Cache-Control", "no-store");
                             response.setStatus(403); response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             json.writeValue(response.getOutputStream(),
                                     ApiError.of(PlatformError.AUTH_FORBIDDEN, RequestCorrelation.id(request)));
                         }))
                 .exceptionHandling(errors -> errors.accessDeniedHandler((request, response, failure) -> {
+                    response.setHeader("Cache-Control", "no-store");
                     response.setStatus(403); response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     json.writeValue(response.getOutputStream(),
                             ApiError.of(PlatformError.AUTH_FORBIDDEN, RequestCorrelation.id(request)));

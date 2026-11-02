@@ -1,6 +1,7 @@
 package com.lrj.agentic.gateway;
 
 import com.lrj.agentic.contract.PlatformError;
+import com.lrj.agentic.contract.ModelUsageProtocol;
 import com.lrj.agentic.security.IdentityProtocol;
 import java.time.Instant;
 import java.util.List;
@@ -23,7 +24,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class InternalIdentityExchange implements GlobalFilter, Ordered {
     private static final List<String> UNTRUSTED_HEADERS = List.of(HttpHeaders.AUTHORIZATION,
-            HttpHeaders.COOKIE, "X-AGENTIC-XSRF", IdentityProtocol.INTERNAL_HEADER, "X-Service-Token", "X-Tenant-Id", "X-User-Id", "X-Api-Key");
+            HttpHeaders.COOKIE, "X-AGENTIC-XSRF", IdentityProtocol.INTERNAL_HEADER, ModelUsageProtocol.CONTEXT_HEADER, "X-Service-Token", "X-Tenant-Id", "X-User-Id", "X-Api-Key");
     private final JwtEncoder encoder;
     private final IdentityProperties properties;
     private final GatewayErrors errors;
@@ -80,6 +81,7 @@ public class InternalIdentityExchange implements GlobalFilter, Ordered {
 
     /** 按固定路由归属选受众，不能把某服务的令牌转用于其他领域。 */
     private static String audience(String path) {
+        if (ModelUsageProtocol.PUBLIC_PATH.equals(path)) { return IdentityProtocol.TASK_AUDIENCE; }
         if ((path.equals("/api/v1/tasks") || path.startsWith("/api/v1/tasks/")) || path.equals("/api/v2/tasks")
                 || path.equals("/api/v3/tasks") || path.equals("/api/v3/tasks/capabilities") || path.equals("/api/v4/tasks") || path.equals("/api/v4/tasks/capabilities")) { return IdentityProtocol.TASK_AUDIENCE; }
         if (path.equals("/api/v1/conversations") || path.startsWith("/api/v1/conversations/") || path.startsWith("/api/v2/conversations/")

@@ -1,0 +1,166 @@
+-- 预算权威仅属于Tasks usage；不引用Knowledge或其他服务的业务表。
+CREATE TABLE usage_account (
+    account_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '内部资金池UUID，不由模型请求选择',
+    sponsor_ref VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '运营方资助主体受控引用，不表示向用户收费',
+    funding_source_ref VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '稳定资金来源引用，密钥轮换不得复制额度',
+    kind VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '独立用途CHAT/EMBEDDING/RERANK/JUDGE',
+    period_key VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '首版固定LIFETIME，无自动续期',
+    currency CHAR(3) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '首版固定CNY',
+    limit_amount DECIMAL(20,6) NOT NULL COMMENT '明确授权的累计上限，单位CNY',
+    held_amount DECIMAL(20,6) NOT NULL DEFAULT 0 COMMENT '未结算预留含未知结果，单位CNY',
+    booked_amount DECIMAL(40,6) NOT NULL DEFAULT 0 COMMENT '完整usage累计内部成本，额外整数位保留多条超预留真值，非账单',
+    state VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT 'ACTIVE/FROZEN/CLOSED，超额冻结',
+    version BIGINT NOT NULL DEFAULT 0 COMMENT '额度聚合单调递增版本',
+    created_by VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '受控初始化运维主体',
+    updated_by VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '末次可信变更主体',
+    created_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC创建时间',
+    updated_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC最后变更时间',
+    PRIMARY KEY (account_id),
+    UNIQUE KEY uq_usage_account_kind (account_id,kind),
+    UNIQUE KEY uq_usage_funding (funding_source_ref,kind,period_key),
+    CONSTRAINT ck_usage_account_kind CHECK (kind IN ('CHAT','EMBEDDING','RERANK','JUDGE')),
+    CONSTRAINT ck_usage_account_period CHECK (period_key='LIFETIME' AND currency='CNY'),
+    CONSTRAINT ck_usage_account_state CHECK (state IN ('ACTIVE','FROZEN','CLOSED')),
+    CONSTRAINT ck_usage_account_amount CHECK (limit_amount>0 AND held_amount>=0 AND booked_amount>=0 AND version>=0),
+    CONSTRAINT ck_usage_account_overrun CHECK (held_amount+booked_amount<=limit_amount OR state='FROZEN')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='模型用途独立的累计资金池，usage唯一写权威';
+
+CREATE TABLE usage_price (
+    price_version VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '全局不可变价格快照版本',
+    profile_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '服务端允许的模型配置标识',
+    kind VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '价格所属预算用途',
+    pricing_json JSON NOT NULL COMMENT '不可变模型、计价单位、六位单价和输入输出硬上限，无密钥',
+    created_by VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '受控价格登记主体',
+    created_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC登记时间',
+    PRIMARY KEY (price_version),
+    UNIQUE KEY uq_usage_price_binding (price_version,profile_id,kind),
+    CONSTRAINT ck_usage_price_kind CHECK (kind IN ('CHAT','EMBEDDING','RERANK','JUDGE'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='不可变内部成本价格快照，不声称供应商账单价格';
+
+CREATE TABLE usage_binding (
+    tenant_id VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '明确允许消费该资金池的组织',
+    kind VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '用途必须与账户及价格相符',
+    profile_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '受控模型配置标识',
+    account_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '多个组织可绑定同一累计资金池',
+    price_version VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '新预留采用的不可变价格版本',
+    enabled BOOLEAN NOT NULL DEFAULT FALSE COMMENT '显式准入开关，关闭不妨碍迟到结算',
+    created_by VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '受控绑定登记主体',
+    updated_by VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '最后变更的可信主体',
+    created_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC创建时间',
+    updated_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC变更时间',
+    PRIMARY KEY (tenant_id,kind,profile_id),
+    KEY ix_usage_binding_account (account_id),
+    CONSTRAINT fk_usage_binding_account FOREIGN KEY (account_id,kind) REFERENCES usage_account(account_id,kind),
+    CONSTRAINT fk_usage_binding_price FOREIGN KEY (price_version,profile_id,kind) REFERENCES usage_price(price_version,profile_id,kind)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='组织用途与服务端模型配置到资金池的显式绑定';
+
+CREATE TABLE usage_operation (
+    operation_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '跨恢复代次稳定的逻辑模型步骤UUID',
+    tenant_id VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '已验证上下文的组织',
+    actor_id VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '业务调用人归因，不是收费账户',
+    context_type VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT 'TASK或KNOWLEDGE业务来源',
+    context_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '稳定任务或知识作业请求标识',
+    step_key VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '持久语义节点及调用或批次序号，不含epoch',
+    purpose VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT 'QA/RESEARCH/ASSISTANT/INGESTION/SEARCH/EVALUATION',
+    kind VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '独立预算用途',
+    profile_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '固定模型配置标识',
+    input_digest CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '规范输入SHA256，不存正文',
+    account_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '第一次预留固定的账户，重试不能换池',
+    created_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC创建时间',
+    PRIMARY KEY (operation_id),
+    UNIQUE KEY uq_usage_operation (tenant_id,context_type,context_id,step_key),
+    UNIQUE KEY uq_usage_operation_account (operation_id,account_id,tenant_id),
+    KEY ix_usage_operation_actor (tenant_id,actor_id,context_type,context_id),
+    CONSTRAINT fk_usage_operation_account FOREIGN KEY (account_id,kind) REFERENCES usage_account(account_id,kind),
+    CONSTRAINT ck_usage_context CHECK (context_type IN ('TASK','KNOWLEDGE')),
+    CONSTRAINT ck_usage_purpose CHECK (purpose IN ('QA','RESEARCH','ASSISTANT','INGESTION','SEARCH','EVALUATION')),
+    CONSTRAINT ck_usage_operation_kind CHECK (kind IN ('CHAT','EMBEDDING','RERANK','JUDGE'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='稳定逻辑调用归因，不随worker或epoch恢复清零';
+
+CREATE TABLE usage_attempt (
+    attempt_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '每次实际外发前保存的唯一尝试UUID',
+    operation_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '所属稳定逻辑步骤',
+    account_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '固定预留资金池',
+    tenant_id VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '已验证组织，查询必须带入此范围',
+    worker_id VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '预留时可信服务执行主体，迟到报告绑定此主体',
+    source_ref VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '可信issuer与azp组合的SHA256引用',
+    lease_epoch BIGINT NULL COMMENT 'TASK预留时执行代次，知识上下文为空',
+    request_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '规范预留命令摘要，同键异参拒绝',
+    price_version VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '预留时冻结价格，不随配置更新重算',
+    state VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT 'RESERVED/DISPATCHED/UNKNOWN/SETTLED/RELEASED',
+    reserved_amount DECIMAL(20,6) NOT NULL COMMENT '本尝试保守预留CNY，永久保留用于审计',
+    settled_amount DECIMAL(20,6) NULL COMMENT '完整计量折算内部成本CNY，未知为NULL',
+    usage_json JSON NULL COMMENT '仅含提供方token计数，不保存请求响应正文',
+    outcome VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT 'UNKNOWN' COMMENT 'SUCCEEDED/FAILED/CANCELLED/UNKNOWN，不表示计费结果',
+    provider_request_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '提供方安全请求标识，仅辅助对账不作幂等键',
+    report_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '完整结算报告摘要，重复提交不得改变',
+    unknown_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '首次未知报告摘要，不能覆盖终态',
+    retry_of CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '同operation旧未知外发的attempt，首次为空',
+    overrun BOOLEAN NOT NULL DEFAULT FALSE COMMENT '真实计量折算超过本次预留时为真，必须冻结账户',
+    version BIGINT NOT NULL DEFAULT 0 COMMENT '状态迁移版本',
+    created_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC首次预留时间',
+    updated_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC状态变更时间',
+    PRIMARY KEY (attempt_id),
+    KEY ix_usage_attempt_operation (operation_id,created_at,attempt_id),
+    KEY ix_usage_attempt_account (account_id,state),
+    CONSTRAINT fk_usage_attempt_operation FOREIGN KEY (operation_id,account_id,tenant_id) REFERENCES usage_operation(operation_id,account_id,tenant_id),
+    CONSTRAINT fk_usage_attempt_price FOREIGN KEY (price_version) REFERENCES usage_price(price_version),
+    CONSTRAINT fk_usage_attempt_retry FOREIGN KEY (retry_of) REFERENCES usage_attempt(attempt_id),
+    CONSTRAINT ck_usage_attempt_state CHECK (state IN ('RESERVED','DISPATCHED','UNKNOWN','SETTLED','RELEASED')),
+    CONSTRAINT ck_usage_attempt_amount CHECK (reserved_amount>0 AND (settled_amount IS NULL OR settled_amount>=0) AND version>=0),
+    CONSTRAINT ck_usage_attempt_settlement CHECK ((state='SETTLED' AND settled_amount IS NOT NULL AND report_sha256 IS NOT NULL AND usage_json IS NOT NULL) OR (state<>'SETTLED' AND settled_amount IS NULL)),
+    CONSTRAINT ck_usage_attempt_outcome CHECK (outcome IN ('SUCCEEDED','FAILED','CANCELLED','UNKNOWN'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='实际发送尝试及占额生命周期，一次许可不保证供应商恰好执行一次';
+
+CREATE TABLE usage_audit (
+    audit_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '追加审计UUID',
+    account_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '变更所属资金池',
+    attempt_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '关联发送尝试，初始化或导入为空',
+    command_key VARCHAR(160) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '账户内状态命令唯一键，重复命令不重复追加',
+    event_type VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '稳定的初始化预留发送释放未知结算导入事件码',
+    previous_state VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '迁移前状态，首次创建为空',
+    next_state VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '迁移后状态',
+    held_delta DECIMAL(20,6) NOT NULL COMMENT '占额变动CNY，可为负数',
+    booked_delta DECIMAL(20,6) NOT NULL COMMENT '内部结算成本变动CNY',
+    actor_id VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '可信操作主体，不接受浏览器自报',
+    trace_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NULL COMMENT '脱敏请求关联标识，不代替业务身份',
+    created_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC审计提交时间',
+    PRIMARY KEY (audit_id),
+    UNIQUE KEY uq_usage_audit_command (account_id,command_key),
+    KEY ix_usage_audit_attempt (attempt_id,created_at,audit_id),
+    CONSTRAINT fk_usage_audit_account FOREIGN KEY (account_id) REFERENCES usage_account(account_id),
+    CONSTRAINT fk_usage_audit_attempt FOREIGN KEY (attempt_id) REFERENCES usage_attempt(attempt_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='与额度和状态同事务追加的审计，业务代码无更新删除入口';
+
+CREATE TABLE usage_import (
+    source_ledger_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '冻结旧账本稳定身份，不因改文件名改变',
+    source_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '冻结源文件SHA256，防同内容改名重复导入',
+    manifest_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '显式归属及授权manifest摘要',
+    account_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '唯一目标累计资金池',
+    kind VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '旧账本用途，禁止挪用跨用途额度',
+    limit_amount DECIMAL(20,6) NOT NULL COMMENT '源授权上限原额记录，不创建额外额度',
+    reserved_amount DECIMAL(20,6) NOT NULL COMMENT '源保守累计占额，导入后继续UNKNOWN',
+    entries_count INT NOT NULL COMMENT '已核对的源条目数，单次最多100',
+    freeze_proof_ref VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '旧写入者停用及快照冻结证明的安全引用',
+    created_by VARCHAR(128) COLLATE utf8mb4_bin NOT NULL COMMENT '受控本地CLI执行主体',
+    created_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC原子导入时间',
+    PRIMARY KEY (source_ledger_id),
+    UNIQUE KEY uq_usage_import_source (source_sha256),
+    CONSTRAINT fk_usage_import_account FOREIGN KEY (account_id) REFERENCES usage_account(account_id),
+    CONSTRAINT ck_usage_import_count CHECK (entries_count BETWEEN 0 AND 100),
+    CONSTRAINT ck_usage_import_amount CHECK (limit_amount>0 AND reserved_amount>=0 AND reserved_amount<=limit_amount)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='冻结旧文件账本的唯一导入收据，无自动重置余额';
+
+CREATE TABLE usage_import_entry (
+    entry_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '旧账本原始条目UUID，跨导入源唯一',
+    source_ledger_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '已冻结并登记的来源账本',
+    reserved_amount DECIMAL(20,6) NOT NULL COMMENT '旧条目保守占额CNY，不释放未知费用',
+    attribution VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '固定LEGACY_UNATTRIBUTED，不猜历史用户',
+    state VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '固定UNKNOWN，无普通worker结算入口',
+    created_at DATETIME(6) NOT NULL DEFAULT (UTC_TIMESTAMP(6)) COMMENT 'UTC导入时间',
+    PRIMARY KEY (entry_id),
+    KEY ix_usage_import_entry_source (source_ledger_id),
+    CONSTRAINT fk_usage_import_entry_source FOREIGN KEY (source_ledger_id) REFERENCES usage_import(source_ledger_id),
+    CONSTRAINT ck_usage_import_entry_amount CHECK (reserved_amount>0),
+    CONSTRAINT ck_usage_import_entry_state CHECK (state='UNKNOWN' AND attribution='LEGACY_UNATTRIBUTED')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='保留旧条目身份和未知占额，不伪造实时operation或租户归因';

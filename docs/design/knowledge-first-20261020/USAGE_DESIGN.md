@@ -59,7 +59,7 @@
 | usage_audit / usage | 同事务追加状态变化/操作主体/原因/关联号；无业务正文；关键命令唯一去重，不能仅靠日志作为审计 |
 | usage_import / usage | sourceLedgerId 唯一、源摘要/manifest摘要/条目数/金额/目标账户/冻结证明；旧记录作为 imported UNKNOWN 占额，不伪造实时 operation/用户 |
 
-账户金额用 DECIMAL(20,6)，计算 BigDecimal/Decimal；API 用规范小数字符串，token/byte 单位不可混用。读取采用稳定 cursor（createdAt,id），单页最多 50。单次 HTTP 有界 body、items 和超时；导入单源文件最多沿原账本 256 KiB，单事务最多 100 条，超过拒绝并另定有界迁移方案。首版不自动清理审计或历史账本。
+上限、占额和单次金额用 DECIMAL(20,6)，计算 BigDecimal/Decimal；API 用规范小数字符串，token/byte 单位不可混用。S15B持久化细化：内部累计booked用DECIMAL(40,6)，因为账户冻结后仍可能收到多条在途超预留报告，不能因累计整数位溢出丢弃真实费用。单次计量和费率有硬上限，最小预留0.01限制在途条目总数；宽累计列不是新增授权额度，也不改变公开金额协议。读取采用稳定 cursor（createdAt,id），单页最多 50。单次 HTTP 有界 body、items 和超时；导入单源文件最多沿原账本 256 KiB，单事务最多 100 条，超过拒绝并另定有界迁移方案。首版不自动清理审计或历史账本。
 
 所有额度变化与 attempt/audit 原子提交；锁顺序固定 task fence（有则）→ account → operation → attempt → audit。先非锁定定位账户，再按顺序锁定并复核，不通过预读值更新余额。死锁仅在没有外部副作用的完整事务内最多重试 2 次；连接/事务失败一律不授予发送许可。
 

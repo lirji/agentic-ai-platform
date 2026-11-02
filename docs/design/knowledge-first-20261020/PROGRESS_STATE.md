@@ -1,16 +1,19 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S15A 设计验证通过，Git交付中
+## 当前任务：S15B 共享预算实施
 
-- 继续capability-delivery-20261021完整51项，parallel=no；用户“自行处理”“继续把”。owner处理/编辑/审批，指定同组织成员只读可撤回；完整计划未完成。授权正常提交/合并/push main，不生产部署、不清理、不强推、不新增付费预算，无子Agent。
-- S14C产品和归档已全部交付，后端main起点dd86c5d、前端83b793f；C精确分支/main CI全PASS。S14D使用两仓原目录feat/knowledge-publication-recovery-20261102，设计提交后端408f18b、前端82004ff，无新worktree。
-- S14D DONE，产品后端5d169c9/前端3caabc2已正常ff合并push main，精确分支/main CI全PASS（41373365776/41373368237/41373503922/41373596553）。[收据](../../qa/publication-recovery-20261102/delivery-result.json)/[验收](../../qa/publication-recovery-20261102/TEST_RESULT.md)/[审查](../../qa/publication-recovery-20261102/REVIEW.md)。归档后端d9b0c79分支/main CI41373905225/41374045211通过；前端6a18e72分支CI41373907439通过、已ff合并push main，main CI41374235039通过，详情.local/s14d-archive-delivery.json。
-- 验证PASS：132 Java单元；5类59集成项中54通过/5条件跳过，含PDF/DOCX完整源、并发/回滚/CAS/权限；220前端测试、types/lint/format/build；正式Python/真实索引/React最终联合（.logs/s14d-joint-browser-final.log，夹具.logs/s14d-joint-13543167556431421493）；6状态视觉和交互。Runtime/11字段注释/无新增Ruff通过，Java卫生工具限制保留。
-- S15A DONE / 设计Validation PASS：后端原目录feat/unified-usage-design-20261102，起点d9b0c79；18源文件摘要、51任务ID/前置、16项后续验收、14份Markdown/链接/表格和既有契约检查通过。详见[验收](../../qa/unified-usage-design-20261102/TEST_RESULT.md)及[审查](../../qa/unified-usage-design-20261102/REVIEW.md)。仅文档，无产品/迁移/预算变化，前端main 6a18e72未改。
-- 冻结：Tasks usage自有MySQL；运营方资金池/CNY六位/用途独立累计；operation与attempt分离、一次dispatch许可、未知占额/迟到结算；旧账本冻结导入不清零且不双写。future抽取因task fence事务债为LOW；实际启用/生产容量未验证。
-- 下一步：S15A正常提交、分支CI、ff合并push main及精确main CI；完成后立即S15B按USAGE_ACCEPTANCE的UA01–UA16实施。完整51项未完成。
-- 运行：28246恢复预览session84365/.local/recovery-dist；28236批准、28226候选、28216反馈、28206共享、28196身份及28086原Docker保留。无在途模型/测试/迁移；V16/V17/V18已在test应用不可改写，dev/生产未迁移。保留随机test记录/源/索引/待处理作业、.local凭据预算、.logs、.idea和原main工作树；不做清理。
-- 费用与规范：本片新增付费调用0，原Chat0.957092/1元、Embedding0.781784/1元不变。采用架构业务建模/持久化/接口/安全/容量/发布章节，沿既有实施/Runtime/验证/进度/Git/CI/持续交付技能；手工专业pass不冒充独立子Agent审查。
+- 继续capability-delivery-20261021完整51项，parallel=no；用户“自行处理”“继续把”。指定同组织成员只读可撤回的共享决策已落实S13B。授权任务分支、分批提交、正常合并/push main；不生产部署、不清理、不强推、不新增付费预算，无子Agent。
+- 已交付：S14D产品与归档两仓分支/main CI全PASS；后端d9b0c79、前端6a18e72。S15A设计验证PASS，后端1e41545已合并推main，分支/main CI41374866174/41375067172全PASS，收据`.local/s15a-delivery.json`；历史设计证据仍对应原revision，不重算覆盖。
+- 当前Git：后端原目录`feat/shared-usage-budget-20261102`，基线/HEAD/main/origin-main为1e41545；S15B尚未提交。前端main6a18e72干净未开始S15B。复用原main工作树，无新worktree。
+- 已实现核心：Tasks usage八表、CNY计价、同库Task公开fence、原子预留/一次dispatch/释放/未知/迟到结算、失租恢复lookup、本人分页及Gateway身份路由；Knowledge证明验证器已实现，业务签发/转发尚未接入。新增非Web BOOTSTRAP/CONFIGURE/IMPORT CLI，固定原grant/价格，命令摘要及源/条目防重；三类旧预算与旧验收脚本遵守原锁内冻结标记。
+- Java当前验证PASS：52相关单元、Tasks全部60项真实MySQL/HTTP IT，无跳过，`.logs/s15b-task-regression-it.log`；其中usage20项含7导入管理、13核心/HTTP（含签名/过期/跨租户/委托/范围拒绝）。既有Task默认模式回归通过。V6/V7仅应用agentic_tasks_test，不可改写；摘要`.local/s15b-migration-applied.json`、`.local/s15b-v7-applied.json`。dev/生产未迁移。
+- CLI真实jar验证PASS：合成账本原额导入及重复重放，`.local/s15b-admin-cli.json`、`.logs/s15b-admin-cli-*.log`。冻结/旧预算128 Python回归曾通过；原付费账本SHA未变。CLI/冻结说明见[运行说明](USAGE_RUNTIME.md)。
+- Python当前实现：usage严格DTO、隔离上下文、签名HTTP客户端、lookup恢复、一次许可gate、完整/未知计量、关闭默认配置；Embedding每批已接gate且摘要/字节数/外发复用同一JSON。聊天/Agent/Rerank出口、入口装配、Task稳定scope和Knowledge上下文尚未接入。最近87项用量+Embedding测试、mypy85源码通过；全Python回归677通过/97条件跳过（`.logs/s15b-core-python-all.log`）。卫生初检发现领域裸字符串及同名状态枚举，已统一显式code并区分资金池状态，复验206项通过，mypy86源码通过。原卫生规则误扫忽略的第三方venv；仅校正venv扫描边界后通过并保留限制与原报告，证据`docs/qa/shared-usage-budget-20261102/`。首次测试路径拼错导致0项执行已保留失败日志，正确路径r2全PASS。
+- 跨语言证据：中文实际请求摘要及结算报文共用`async-task-service/src/test/resources/usage-golden.json`，Java/Python测试与CI文档检查已登记。真实Python→签名JavaHTTP→MySQL的预留/恢复/未知/迟到/错误证明拒绝PASS：`.local/s15b-python-java-usage.json`；仅合成fixture证明，不能当Knowledge业务签发完成。
+- 下一步：核心批次验证PASS：受影响Java52单元/20IT、Python206、跨语言真实联合复验及范围校正后的卫生检查均通过；先保存本地逻辑提交（S15B未整体验收，不先合并main），继续Chat/Agent/Rerank、运行入口和Knowledge签发，再做本人前端与UA01–UA16完整验收/交付。S15B IN_PROGRESS、完整51项未完成。技术续接`.local/s15b-next-notes.md`。
+- 运行中：本轮验证进程均已完成，无运行中测试；日志如上。真实联合临时Tasks已正常停止，无在途模型/导入。保留28246恢复预览session84365及28236/28226/28216/28206/28196和28086原Docker。
+- 保留：随机test记录/源/索引/待处理作业、`.local`凭据/预算/合成CLI账本、`.logs`、`.idea`及旧工作树；不清理。Knowledge V16/V17/V18和Tasks V6/V7已在test应用，不可修改。真实Chat0.957092/1 CNY、Embedding0.781784/1 CNY不变，新增付费调用0，Rerank/Judge无新增授权。
+- 采用规范：架构业务建模/持久化/接口/安全/容量/发布章节；既有实施/Runtime/验证/进度/Git/CI/持续交付技能。人工审查不冒充独立子Agent或Runtime Gate；Java格式化/专用静态分析工具缺失限制继续如实记录。
 
 ## 历史：20 项差距的框架化实施计划
 

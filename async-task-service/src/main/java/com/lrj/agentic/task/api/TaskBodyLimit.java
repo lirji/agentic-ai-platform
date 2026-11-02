@@ -2,8 +2,10 @@ package com.lrj.agentic.task.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lrj.agentic.contract.ApiError;
+import com.lrj.agentic.contract.ModelUsageProtocol;
 import com.lrj.agentic.task.domain.TaskError;
 import com.lrj.agentic.task.domain.TaskProtocol;
+import com.lrj.agentic.task.usage.domain.UsageProtocol;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.*;
@@ -24,8 +26,11 @@ public class TaskBodyLimit extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain chain) throws IOException, ServletException {
         if (!"POST".equals(request.getMethod())) { chain.doFilter(request, response); return; }
-        byte[] body = request.getInputStream().readNBytes(TaskProtocol.MAX_BODY + 1);
-        if (body.length > TaskProtocol.MAX_BODY) {
+        int limit = request.getRequestURI().startsWith(ModelUsageProtocol.INTERNAL_ROOT + "/")
+                ? UsageProtocol.MAX_BODY : TaskProtocol.MAX_BODY;
+        byte[] body = request.getInputStream().readNBytes(limit + 1);
+        if (body.length > limit) {
+            response.setHeader("Cache-Control", "no-store");
             response.setStatus(400); response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             json.writeValue(response.getOutputStream(), ApiError.of(TaskError.INPUT_INVALID, RequestCorrelation.id(request)));
             return;

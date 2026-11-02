@@ -6,6 +6,7 @@ import asyncio
 import fcntl
 import hashlib
 import json
+import os
 import struct
 import time
 from decimal import Decimal
@@ -29,6 +30,7 @@ def reserve(operation: str, source_bytes: int) -> str:
     with BUDGET.open("a+", encoding="utf-8") as file:
         BUDGET.chmod(0o600)
         fcntl.flock(file, fcntl.LOCK_EX)
+        _require_unfrozen()
         file.seek(0)
         ledger = json.loads(file.read() or '{"limitCny":"1","reservedCny":"0","calls":[]}')
         total = Decimal(ledger["reservedCny"]) + reservation
@@ -56,6 +58,7 @@ def mark(request_id: str, status: str) -> None:
     """仅记录安全状态；费用仍保守按预留计算，不据 HTTP 错误释放额度。"""
     with BUDGET.open("r+", encoding="utf-8") as file:
         fcntl.flock(file, fcntl.LOCK_EX)
+        _require_unfrozen()
         ledger = json.load(file)
         for item in ledger["calls"]:
             if item["id"] == request_id:
@@ -63,6 +66,15 @@ def mark(request_id: str, status: str) -> None:
         file.seek(0)
         file.truncate()
         json.dump(ledger, file, indent=2)
+
+
+def _require_unfrozen() -> None:
+    """旧独立验收脚本也遵守同一冻结后缀；即使坏标记也不得继续写账本。"""
+    try:
+        os.lstat(str(BUDGET) + ".frozen.json")
+    except FileNotFoundError:
+        return
+    raise RuntimeError("账本已冻结，禁止旧验收脚本继续写入")
 
 
 def service_token(tenant: str, owner: str, scope: str) -> str:

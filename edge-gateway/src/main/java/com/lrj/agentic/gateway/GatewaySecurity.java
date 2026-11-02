@@ -1,6 +1,7 @@
 package com.lrj.agentic.gateway;
 
 import com.lrj.agentic.contract.PlatformError;
+import com.lrj.agentic.contract.ModelUsageProtocol;
 import com.lrj.agentic.security.JwtTrust;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -49,7 +50,7 @@ public class GatewaySecurity {
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authorizeExchange(auth -> auth
                         .pathMatchers("/actuator/health/**", "/actuator/prometheus").permitAll()
-                        .pathMatchers("/api/v1/knowledge/**", "/api/v2/knowledge/**", "/api/v1/tasks/**",
+                        .pathMatchers(ModelUsageProtocol.PUBLIC_PATH, "/api/v1/knowledge/**", "/api/v2/knowledge/**", "/api/v1/tasks/**",
                                 "/api/v1/conversations", "/api/v1/conversations/**", "/api/v2/tasks", "/api/v3/tasks", "/api/v3/tasks/capabilities", "/api/v4/tasks", "/api/v4/tasks/capabilities", "/api/v2/conversations/**", "/api/v3/conversations/*/turns").authenticated()
                         .anyExchange().denyAll())
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> { })

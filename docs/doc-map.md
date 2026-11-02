@@ -14,6 +14,8 @@
 
 
 S15A（2026-11-02，基线d9b0c79）：三类Python本地预算、实际模型出口与Tasks租约/数据库取证，冻结[用量设计](design/knowledge-first-20261020/USAGE_DESIGN.md)、[usage-v1](design/knowledge-first-20261020/USAGE_CONTRACTS.md)和[验收矩阵](design/knowledge-first-20261020/USAGE_ACCEPTANCE.md)。选择Tasks usage模块，原架构/选型原位同步；同库fence事务耦合阻止直接抽取。仅设计，无产品/迁移/额度变更；源码摘要与设计核验见[QA](qa/unified-usage-design-20261102/TEST_RESULT.md)。
+
+S15B实施中：Tasks usage、V6/V7、受控CLI、Python用量协议/冻结工具对应[运行说明](design/knowledge-first-20261020/USAGE_RUNTIME.md)。仅隔离测试库迁移，原付费账本未变；模型出口与前端接入尚未完成。当前检查点与中间证据统一见[进度](design/knowledge-first-20261020/PROGRESS_STATE.md)，不改写S15A历史源码快照。
 ## 当前能力实施（2026-10-21）
 
 用户已要求“开始实施”，并选择以项目架构/操作文档建立机制评测集。[主方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)与 [51 项稳定任务](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)继续有效；不能把规划能力当已实现。

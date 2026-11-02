@@ -10,6 +10,7 @@ from uuid import uuid4
 
 from agentic_ai.qa.chat_config import CHAT_BUDGET_SCOPE, MAX_INPUT_BYTES, ChatConfig
 from agentic_ai.qa.errors import QaCode, QaError
+from agentic_ai.runtime.ledger_freeze import require_writable
 
 MAX_LEDGER_BYTES = 256 * 1024
 MAX_CALLS = 100
@@ -66,6 +67,7 @@ class ChatBudget:
                 if metadata.st_mode & 0o077 or not stat.S_ISREG(metadata.st_mode):
                     raise ValueError
                 fcntl.flock(file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                require_writable(config.budget_file)
                 raw = file.read(MAX_LEDGER_BYTES + 1)
                 if len(raw.encode()) > MAX_LEDGER_BYTES:
                     raise ValueError

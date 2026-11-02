@@ -56,6 +56,18 @@ def read_ledger(config):
     return json.loads(config.budget_file.read_text())
 
 
+def test_frozen_chat_ledger_blocks_checks_and_reservations(tmp_path):
+    config = config_at(tmp_path)
+    ledger_at(config)
+    config.budget_file.with_name(config.budget_file.name + ".frozen.json").write_text("incomplete")
+    budget = ChatBudget(config)
+    with pytest.raises(QaError):
+        budget.check_available()
+    with pytest.raises(QaError):
+        budget.reserve("fixture", 10)
+    assert read_ledger(config)["reservedCny"] == "0"
+
+
 def event(content=None, *, reason=None, **delta):
     return (
         "data: "

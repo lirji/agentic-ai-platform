@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.task.usage.infrastructure.UsageMapper">
+    <sql id="accountColumns">account_id,sponsor_ref,funding_source_ref,kind,period_key,currency,limit_amount,held_amount,booked_amount,state,version,created_by,updated_by,created_at,updated_at</sql>
+    <sql id="priceColumns">price_version,profile_id,kind,pricing_json,created_by,created_at</sql>
+    <sql id="bindingColumns">tenant_id,kind,profile_id,account_id,price_version,enabled,created_by,updated_by,created_at,updated_at</sql>
+    <sql id="operationColumns">operation_id,tenant_id,actor_id,context_type,context_id,step_key,purpose,kind,profile_id,input_digest,account_id,created_at</sql>
+    <sql id="attemptColumns">attempt_id,operation_id,account_id,tenant_id,worker_id,source_ref,lease_epoch,request_sha256,price_version,state,reserved_amount,settled_amount,usage_json,outcome,provider_request_id,report_sha256,unknown_sha256,retry_of,overrun,version,created_at,updated_at</sql>
+    <select id="account" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Account">SELECT <include refid="accountColumns"/> FROM usage_account WHERE account_id=#{id}</select>
+    <select id="lockAccount" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Account">SELECT <include refid="accountColumns"/> FROM usage_account WHERE account_id=#{id} FOR UPDATE</select>
+    <select id="price" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Price">SELECT <include refid="priceColumns"/> FROM usage_price WHERE price_version=#{version}</select>
+    <select id="binding" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Binding">SELECT <include refid="bindingColumns"/> FROM usage_binding WHERE tenant_id=#{tenant} AND kind=#{kind} AND profile_id=#{profile}</select>
+    <select id="lockBinding" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Binding">SELECT <include refid="bindingColumns"/> FROM usage_binding WHERE tenant_id=#{tenant} AND kind=#{kind} AND profile_id=#{profile} FOR SHARE</select>
+    <select id="operation" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Operation">SELECT <include refid="operationColumns"/> FROM usage_operation WHERE tenant_id=#{tenant} AND operation_id=#{id}</select>
+    <select id="operations" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Operation">SELECT <include refid="operationColumns"/> FROM usage_operation WHERE tenant_id=#{tenant} AND operation_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+    </select>
+    <select id="operationByKey" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Operation">SELECT <include refid="operationColumns"/> FROM usage_operation WHERE tenant_id=#{tenant} AND context_type=#{type} AND context_id=#{context} AND step_key=#{step} FOR UPDATE</select>
+    <select id="attempt" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Attempt">SELECT <include refid="attemptColumns"/> FROM usage_attempt WHERE tenant_id=#{tenant} AND attempt_id=#{id}</select>
+    <select id="lockAttempt" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Attempt">SELECT <include refid="attemptColumns"/> FROM usage_attempt WHERE tenant_id=#{tenant} AND attempt_id=#{id} FOR UPDATE</select>
+    <select id="latestAttempt" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Attempt">SELECT <include refid="attemptColumns"/> FROM usage_attempt WHERE tenant_id=#{tenant} AND operation_id=#{operation} ORDER BY created_at DESC,attempt_id DESC LIMIT 1</select>
+    <!-- 身份范围进入SQL，不能只依赖UI筛选或服务层先查再过滤。 -->
+    <select id="listOwn" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Attempt">
+        SELECT <include refid="attemptColumns"/> FROM usage_attempt
+        WHERE tenant_id=#{tenant} AND operation_id IN
+            (SELECT operation_id FROM usage_operation WHERE tenant_id=#{tenant} AND actor_id=#{actor}
+                AND context_type=#{type} AND context_id=#{context})
+        <if test="before != null">AND (created_at &lt; #{before} OR (created_at=#{before} AND attempt_id &lt; #{cursor}))</if>
+        ORDER BY created_at DESC,attempt_id DESC LIMIT #{limit}
+    </select>
+    <select id="ownsContext" resultType="int">
+        SELECT EXISTS(SELECT 1 FROM usage_operation WHERE tenant_id=#{tenant} AND actor_id=#{actor}
+            AND context_type=#{type} AND context_id=#{context})
+    </select>
+    <insert id="insertAccount">INSERT INTO usage_account(account_id,sponsor_ref,funding_source_ref,kind,period_key,currency,limit_amount,held_amount,booked_amount,state,created_by,updated_by)
+        VALUES(#{row.accountId},#{row.sponsorRef},#{row.fundingSourceRef},#{row.kind},#{row.periodKey},#{row.currency},#{row.limitAmount},#{row.heldAmount},#{row.bookedAmount},#{row.state},#{row.createdBy},#{row.updatedBy})</insert>
+    <insert id="insertPrice">INSERT INTO usage_price(price_version,profile_id,kind,pricing_json,created_by)
+        VALUES(#{row.priceVersion},#{row.profileId},#{row.kind},#{row.pricingJson},#{row.createdBy})</insert>
+    <insert id="insertBinding">INSERT INTO usage_binding(tenant_id,kind,profile_id,account_id,price_version,enabled,created_by,updated_by)
+        VALUES(#{row.tenantId},#{row.kind},#{row.profileId},#{row.accountId},#{row.priceVersion},#{row.enabled},#{row.createdBy},#{row.updatedBy})</insert>
+    <insert id="insertOperation">INSERT INTO usage_operation(operation_id,tenant_id,actor_id,context_type,context_id,step_key,purpose,kind,profile_id,input_digest,account_id)
+        VALUES(#{row.operationId},#{row.tenantId},#{row.actorId},#{row.contextType},#{row.contextId},#{row.stepKey},#{row.purpose},#{row.kind},#{row.profileId},#{row.inputDigest},#{row.accountId})</insert>
+    <insert id="insertAttempt">INSERT INTO usage_attempt(attempt_id,operation_id,account_id,tenant_id,worker_id,source_ref,lease_epoch,request_sha256,price_version,state,reserved_amount,outcome,retry_of)
+        VALUES(#{row.attemptId},#{row.operationId},#{row.accountId},#{row.tenantId},#{row.workerId},#{row.sourceRef},#{row.leaseEpoch},#{row.requestSha256},#{row.priceVersion},#{row.state},#{row.reservedAmount},#{row.outcome},#{row.retryOf})</insert>
+    <!-- 原子准入在数据库再次检查额度；不能因先前check_available成功而直接发送。 -->
+    <update id="hold">UPDATE usage_account SET held_amount=held_amount+#{amount},version=version+1,updated_by=#{actor},updated_at=UTC_TIMESTAMP(6)
+        WHERE account_id=#{id} AND version=#{version} AND state='ACTIVE' AND #{amount}&gt;0 AND held_amount+booked_amount+#{amount}&lt;=limit_amount</update>
+    <update id="accountChange">UPDATE usage_account SET held_amount=#{held},booked_amount=#{booked},state=#{state},version=version+1,updated_by=#{actor},updated_at=UTC_TIMESTAMP(6)
+        WHERE account_id=#{id} AND version=#{version}</update>
+    <update id="transition">UPDATE usage_attempt SET state=#{row.state},settled_amount=#{row.settledAmount},usage_json=#{row.usageJson},outcome=#{row.outcome},provider_request_id=#{row.providerRequestId},report_sha256=#{row.reportSha256},unknown_sha256=#{row.unknownSha256},overrun=#{row.overrun},version=version+1,updated_at=UTC_TIMESTAMP(6)
+        WHERE attempt_id=#{row.attemptId} AND tenant_id=#{row.tenantId} AND version=#{row.version} AND state=#{expected}</update>
+    <insert id="audit">INSERT INTO usage_audit(audit_id,account_id,attempt_id,command_key,event_type,previous_state,next_state,held_delta,booked_delta,actor_id,trace_id,command_sha256)
+        VALUES(#{row.auditId},#{row.accountId},#{row.attemptId},#{row.commandKey},#{row.eventType},#{row.previousState},#{row.nextState},#{row.heldDelta},#{row.bookedDelta},#{row.actorId},#{row.traceId},#{row.commandSha256})</insert>
+    <select id="auditByCommand" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$Audit">
+        SELECT audit_id,account_id,attempt_id,command_key,event_type,previous_state,next_state,held_delta,booked_delta,actor_id,trace_id,command_sha256
+        FROM usage_audit WHERE account_id=#{account} AND command_key=#{command}
+    </select>
+    <update id="configureBinding">UPDATE usage_binding SET price_version=#{row.priceVersion},enabled=#{row.enabled},updated_by=#{row.updatedBy},updated_at=UTC_TIMESTAMP(6)
+        WHERE tenant_id=#{row.tenantId} AND kind=#{row.kind} AND profile_id=#{row.profileId} AND account_id=#{row.accountId}</update>
+    <select id="imported" resultType="com.lrj.agentic.task.usage.infrastructure.UsageRows$ImportReceipt">SELECT source_ledger_id,source_sha256,manifest_sha256,account_id,kind,limit_amount,reserved_amount,entries_count,freeze_proof_ref,created_by,created_at FROM usage_import WHERE source_ledger_id=#{id}</select>
+    <insert id="insertImport">INSERT INTO usage_import(source_ledger_id,source_sha256,manifest_sha256,account_id,kind,limit_amount,reserved_amount,entries_count,freeze_proof_ref,created_by)
+        VALUES(#{row.sourceLedgerId},#{row.sourceSha256},#{row.manifestSha256},#{row.accountId},#{row.kind},#{row.limitAmount},#{row.reservedAmount},#{row.entriesCount},#{row.freezeProofRef},#{row.createdBy})</insert>
+    <insert id="insertImportEntry">INSERT INTO usage_import_entry(entry_id,source_ledger_id,reserved_amount,attribution,state)
+        VALUES(#{row.entryId},#{row.sourceLedgerId},#{row.reservedAmount},'LEGACY_UNATTRIBUTED','UNKNOWN')</insert>
+</mapper>

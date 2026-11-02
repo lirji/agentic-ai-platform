@@ -1,0 +1,36 @@
+{
+  "protocol": "usage-v1",
+  "profileId": "fixture-embedding",
+  "requestBody": "{\"model\":\"synthetic\",\"input\":[\"中文\"]}",
+  "inputDigest": "4384f72ca95be8c1f20d4912fb8e0a0ca9e8d7c3d60f31eb3393fced7ea5d25a",
+  "report": {
+    "schemaVersion": "usage-v1",
+    "status": "COMPLETE",
+    "outcome": "SUCCEEDED",
+    "usage": {"inputTokens": null, "outputTokens": null, "totalTokens": 10},
+    "providerRequestId": "fixture-provider"
+  },
+  "settled": {
+    "schemaVersion": "usage-v1",
+    "attemptId": "00000000-0000-0000-0000-000000000001",
+    "operationId": "00000000-0000-0000-0000-000000000002",
+    "contextType": "TASK",
+    "contextId": "00000000-0000-0000-0000-000000000003",
+    "stepKey": "task:embedding:fixture",
+    "purpose": "QA",
+    "kind": "EMBEDDING",
+    "profileId": "fixture-embedding",
+    "priceVersion": "fixture-v1",
+    "currency": "CNY",
+    "state": "SETTLED",
+    "reservedAmount": "0.010000",
+    "settledAmount": "0.000020",
+    "usage": {"inputTokens": null, "outputTokens": null, "totalTokens": 10},
+    "usageSource": "PROVIDER_REPORTED",
+    "outcome": "SUCCEEDED",
+    "retryOf": null,
+    "overrun": false,
+    "createdAt": "2026-11-02T00:00:00Z",
+    "updatedAt": "2026-11-02T00:00:01Z"
+  }
+}

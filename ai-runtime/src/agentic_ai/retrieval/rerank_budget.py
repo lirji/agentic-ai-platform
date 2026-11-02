@@ -14,6 +14,7 @@ from uuid import uuid4
 from agentic_ai.retrieval.errors import RetrievalCode, RetrievalError
 from agentic_ai.retrieval.rerank_config import RerankConfig, unique_object
 from agentic_ai.retrieval.rerank_models import RERANK_BUDGET_SCOPE
+from agentic_ai.runtime.ledger_freeze import require_writable
 
 MAX_LEDGER_BYTES = 256 * 1024
 MAX_LEDGER_CALLS = 100
@@ -99,6 +100,7 @@ class RerankBudget:
                 if not stat.S_ISREG(metadata.st_mode) or metadata.st_mode & 0o077:
                     raise ValueError
                 fcntl.flock(file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                require_writable(config.budget_file)
                 raw = file.read(MAX_LEDGER_BYTES + 1)
                 if len(raw.encode()) > MAX_LEDGER_BYTES:
                     raise ValueError

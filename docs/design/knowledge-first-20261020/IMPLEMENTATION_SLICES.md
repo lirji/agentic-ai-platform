@@ -613,7 +613,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-USAGE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 真实 DB 并发超额阻止、重复预留/结算、取消/超时未知结果；Embedding/聊天/重排/裁判都受约束；旧账本迁移核对保守余额。
 - **Pass / Runtime：** IMPLEMENT；既有 MySQL；无新分布式锁/缓存权威。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G15 G18。
+- **状态 / 并行 / 对应缺口：** IN_PROGRESS；parallel=no；G15 G18。按[usage-v1](USAGE_CONTRACTS.md)与[UA01–UA16](USAGE_ACCEPTANCE.md)实施；预算核心/CLI/跨语言中间验证通过，模型全出口、Knowledge业务上下文及前端未完成，整体尚未验收。
 
 ### S15C · 跨语言诊断和业务审计
 

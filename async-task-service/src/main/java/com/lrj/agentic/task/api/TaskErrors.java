@@ -2,6 +2,8 @@ package com.lrj.agentic.task.api;
 
 import com.lrj.agentic.contract.*;
 import com.lrj.agentic.task.domain.*;
+import com.lrj.agentic.task.usage.domain.UsageFailure;
+import com.lrj.agentic.task.usage.domain.UsageError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class TaskErrors {
     private static final Logger LOG = LoggerFactory.getLogger(TaskErrors.class);
+    /** 用量模块复用同一错误外壳，但保持自己的稳定业务code。 */
+    @ExceptionHandler(UsageFailure.class)
+    public ResponseEntity<ApiError> usage(UsageFailure error, HttpServletRequest request) {
+        return response(error.error(), request);
+    }
     /** 业务拒绝保持契约状态。 */
     @ExceptionHandler(TaskFailure.class)
     public ResponseEntity<ApiError> expected(TaskFailure error, HttpServletRequest request) {
@@ -33,7 +40,7 @@ public class TaskErrors {
     @ExceptionHandler({DataAccessException.class, TransactionException.class})
     public ResponseEntity<ApiError> storage(Exception ignored, HttpServletRequest request) {
         LOG.warn("task_storage_unavailable requestId={}", RequestCorrelation.id(request));
-        return response(TaskError.DEPENDENCY_UNAVAILABLE, request);
+        return response(usagePath(request) ? UsageError.UNAVAILABLE : TaskError.DEPENDENCY_UNAVAILABLE, request);
     }
     /** 意外失败只记录安全类型，原始异常消息可能包含正文。 */
     @ExceptionHandler(Exception.class)
@@ -42,6 +49,12 @@ public class TaskErrors {
         return response(PlatformError.INTERNAL_ERROR, request);
     }
     private ResponseEntity<ApiError> response(ErrorCode code, HttpServletRequest request) {
-        return ResponseEntity.status(code.httpStatus()).body(ApiError.of(code, RequestCorrelation.id(request)));
+        var response = ResponseEntity.status(code.httpStatus());
+        if (usagePath(request)) { response.cacheControl(org.springframework.http.CacheControl.noStore()); }
+        return response.body(ApiError.of(code, RequestCorrelation.id(request)));
+    }
+    private static boolean usagePath(HttpServletRequest request) {
+        return request.getRequestURI().equals(ModelUsageProtocol.PUBLIC_PATH)
+                || request.getRequestURI().startsWith(ModelUsageProtocol.INTERNAL_ROOT + "/");
     }
 }

@@ -10,8 +10,10 @@
 - `priceVersion` 服务端不可变，包含 profile/model/kind、input/output/total 的计价口径、每百万 token CNY、reserveMargin、minReservation、maxInputBytes/maxOutputTokens、usageCompletenessPolicy。单个 profile 仅选 INPUT_OUTPUT 或 TOTAL，不混算。价格切换不重算在途预留；保留旧快照用于迟到结算。
 - CHAT/JUDGE 预留：`ceil6(max(minReservation, ((inputBytes + tokenOverhead) * inputRate + maxOutputTokens * outputRate) * reserveMargin / 1000000))`。EMBEDDING 的 UTF8_V1 使用 `inputBytes + tokenOverhead`；RERANK 的 PAIR_UTF8_V1 使用 `(queryBytes + tokenOverhead) * documentCount + documentBytes`，其中documentBytes为所有候选UTF-8字节总和，query按每篇重复计算。两者以该估算token数乘TOTAL单价/百万和余量，再取最小预留并ceil6。首版tokenOverhead=512、reserveMargin=2、minReservation=0.010000，变更必须新priceVersion，不能运行中覆盖。保守字节估算不是供应商保证；未知模型/计价维度不能准入。
 - `operationId` 由服务端为 `(tenant,contextType,contextId,stepKey)` 生成，stepKey 为稳定语义节点/调用序号/批号，1–128 ASCII `[A-Za-z0-9._:-]`；同键固定 actor/purpose/kind/profile/inputDigest。epoch、TraceId、随机重试号不得成为 stepKey。多轮/批次分别建 operation。
-- `attemptId` 为客户端在第一次预留前生成并保存的 UUID；同一次预留/状态查询/报告始终使用原 ID。真正外发重试使用新 ID，并带 retryOf；逻辑 operation 保持不变，旧未知仍占额。checkpoint/任务恢复不得通过新 epoch 重置余额；新 invocation 的语义序号需随既有持久状态保存。
+- `attemptId` 为客户端在第一次预留前生成并在本次调用内固定的 UUID；发送前必须在服务端持久预留，同一次预留/状态查询/报告使用原 ID。进程丢失本地ID时通过下述可信operation lookup找回，不重新创建相同UUID。真正外发重试使用新 ID，并带 retryOf；逻辑 operation 保持不变，旧未知仍占额。checkpoint/任务恢复不得通过新 epoch 重置余额；新 invocation 的语义序号需随既有持久状态保存。
 - `inputDigest` 为 SHA-256 小写64hex，对严格规范的 profile + 输入报文语义计算；规范由各适配器显式登记并提供跨语言 golden。不存正文；同 stepKey 不同输入409，不能静默覆盖。新输入需新逻辑步骤，不能冒充重放。
+
+S15B适配规范：对实际外发UTF-8 JSON字节求SHA-256，再以固定字段顺序、无空格JSON `{"profileId":"...","requestSha256":"..."}` 求SHA-256。不在服务端保存原请求。适配器必须复用同一份已序列化字节用于摘要/字节计量/外发；稳定scope为阶段和调用或批次序号，不含epoch。stepKey采用可信前缀+kind+scope摘要前16hex+完整inputDigest，总长不超过128。Java `UsagePriceTest`与Python `test_usage.py`有中文请求golden `4384f72ca95be8c1f20d4912fb8e0a0ca9e8d7c3d60f31eb3393fced7ea5d25a`；hash只提供输入绑定，不代替授权或provider幂等。
 
 计价数值全部从受控适配器的实际最终请求产生；RERANK额外提交queryBytes/documentBytes/documentCount，非RERANK三者为null。服务端按profile硬上限及正整数规则验证，不接受客户端金额/任意tokenUpperBound。price的单价和硬上限组合须先做溢出校验；单次最大费用不能溢出DECIMAL(20,6)。可信适配器是计量信任边界，若它遭篡改则不能靠摘要证明它报告的字节数真实；出口请求与统计一致性需UA10验证。
 
@@ -19,14 +21,14 @@ operation首次固定accountId。绑定后来改指其他账户时，同operatio
 
 ## 2. 认证与费用归因
 
-所有写接口仅可信服务调用，沿项目 RS256、独立 audience/issuer/azp、短时有效 JWT 与 `X-Internal-Authorization`，不接受浏览器透传 tenant/actor/account。新增 usage 受众/作用域在 platform-contracts 集中定义；不得复用普通用户的 task:write 作为计量写权限。协议 body 严格 JSON（无额外/重复 key、尾随内容、非法 Unicode/NUL），最大 32 KiB；错误沿统一 code/message/traceId。
+所有写接口仅可信服务调用，沿项目 RS256、独立 audience/issuer/azp、短时有效 JWT 与已有 `X-Internal-Token`，不接受浏览器透传 tenant/actor/account。新增 usage 受众/作用域在 platform-contracts 集中定义；不得复用普通用户的 task:write 作为计量写权限。协议 body 严格 JSON（无额外/重复 key、尾随内容、非法 Unicode/NUL），最大 32 KiB；错误沿统一 code/message/traceId。
 
 两类上下文：
 
 | contextType | 来源与准入复核 |
 | --- | --- |
 | TASK | 已验证 task worker 身份；contextId=taskId、epoch。Tasks 从本域行得到 tenant/owner/kind，拒绝外部 actor；reserve/dispatch 要当前 worker、有效租约、允许状态。通过公开 `TaskUsageContextPort` 在同事务检查/锁定，无跨模块 Mapper 引用 |
-| KNOWLEDGE | Knowledge 在已授权的检索或准备入口签发 usage 专用短时上下文；包含 tenant/actor、contextId（稳定 job/request ID）、purpose、允许 kind/profile、operation 前缀、jti、iat/nbf/exp（≤30秒）、aud=usage、azp=knowledge；Tasks 验签并绑定调用方，Python 不能自行构造归因。准备 actor 来自原 job，不是 worker 服务账号；续签必须重新校验 job/权限，不能只凭旧 token |
+| KNOWLEDGE | Knowledge 在已授权的检索或准备入口签发 usage 专用短时上下文；包含 tenant/actor、contextId（稳定 job/request ID）、purpose、允许 kind/profile、operation 前缀、jti、iat/nbf/exp（≤30秒）、aud=agentic-ai-usage-context、azp=knowledge-service、delegate_azp=ai-runtime-worker；Tasks 验签并绑定调用方，Python 不能自行构造归因。准备 actor 来自原 job，不是 worker 服务账号；续签必须重新校验 job/权限，不能只凭旧 token |
 
 Knowledge 上下文由现有服务签名设施和独立 usage 作用域扩展，不使用正文或客户端自报组织作为授权证明。签名原始 token 不持久化；只保存其 jti/安全归因摘要。允许组织→账户映射在服务端；有效身份但无绑定仍拒绝。profile 不能接受自定义 provider URL/密钥/账户。
 
@@ -67,10 +69,13 @@ reserve/dispatch 必须当前授权。report/query 使用可信同源服务身�
 | POST `/attempts/{id}/release` | `{schemaVersion,reason:"NOT_DISPATCHED"}` | `Attempt`；只有RESERVED可释放；重复RELEASED相同收据；其它409 |
 | POST `/attempts/{id}/reports` | `{schemaVersion,status,outcome,usage,providerRequestId}`；status=UNKNOWN或COMPLETE，outcome=SUCCEEDED/FAILED/CANCELLED/UNKNOWN；usage=null或`{inputTokens,outputTokens,totalTokens}`，无关计价字段null | `Attempt`；UNKNOWN可升级COMPLETE；COMPLETE同摘要重放，不同409。providerRequestId可null或≤128安全字符 |
 | GET `/attempts/{id}` | 无body；可信同源且绑定本tenant/context | `Attempt`；404隐藏异租户/异来源；不能返回发送许可 |
+| POST `/operations/lookup` | `{schemaVersion,contextType,contextId,epoch,stepKey,purpose,kind,profileId,inputDigest}`；与reserve相同身份和字段规则，无金额或attemptId | `{schemaVersion,operationId,latestAttempt}`；当前上下文授权后查询，未发生逻辑调用则后两项null；已有不同输入/用途409。只读、不占额、不返回发送许可 |
 
 `Attempt` 字段：`schemaVersion,attemptId,operationId,contextType,contextId,stepKey,purpose,kind,profileId,priceVersion,currency,state,reservedAmount,settledAmount,usage,usageSource,outcome,retryOf,overrun,createdAt,updatedAt`；settledAmount未结算null，usage未获得null，usageSource=NONE/PROVIDER_REPORTED/LEGACY_IMPORT。结算事务失败时保留held；调用方保留原报告以重报，不能显示结算成功。响应不含认证token/密钥/账户全局余额/正文。UNKNOWN的outcome仅表达已知执行结果，不是收费结论。UNKNOWN报告必须usage=null；首次UNKNOWN报告固定摘要，重复同摘要返回原记录，异摘要409，仅COMPLETE可推进它；SETTLED后的UNKNOWN重放返回SETTLED而不回退。
 
-retryOf须是同operation已有DISPATCHED/UNKNOWN的attempt；新attempt同样当前授权。先前SETTLED/RELEASED不能作为未知重试来源。业务主动再次生成同输入须新stepKey，防止把结果复用与实际重新调用混淆。有限自动重试策略仍由原用例决定，usage不自行重试模型。
+retryOf须是同operation已有DISPATCHED/UNKNOWN/SETTLED的attempt；新attempt同样当前授权。SETTLED仅说明计量已入账，模型结果不由usage保存；若结果尚未进入业务checkpoint就崩溃，重新外发仍须新attempt预留并保留前次booked。RELEASED没有外发，不作为重试来源。业务主动开始另一次生成用新stepKey，恢复同一逻辑步骤使用原stepKey。有限自动重试策略仍由原用例决定，usage不自行重试模型。
+
+S15B恢复窗口补充：当前Deep Agents内图明确关闭checkpoint，外层步骤之后才提交结果，且本机模型计数会随实例重建。因此stepKey要由稳定外层阶段、调用序号和规范输入摘要构成，不含epoch；相同输入恢复同operation，不同输入自然形成新步骤。lookup允许恢复遗失的attemptId；旧RESERVED以release CAS关闭后新建attempt，旧DISPATCHED/UNKNOWN保持占额，SETTLED保留原成本。lookup与reserve并非业务exactly-once，任何实际重发都单独受预算准入；不能因查到SETTLED而伪造已找回模型正文。
 
 ### 错误映射
 
@@ -85,6 +90,8 @@ retryOf须是同operation已有DISPATCHED/UNKNOWN的attempt；新attempt同样�
 ## 6. 旧账本兼容与迁移
 
 迁移流程以 [设计§6](USAGE_DESIGN.md#6-迁移与回退) 为准。导入不是公网上传API；受控本地命令读取冻结账本和显式manifest，通过 Tasks 专用非Web CLI入口（独立运维配置，默认关闭）执行同一usage事务规则，不新增远程管理接口。manifest包含version、sourceLedgerId、sourceSha256、fundingSourceRef、kind、accountId、limitAmount、reservedAmount、entriesCount、freezeProofRef；不含密钥。源/条目身份与摘要均防重，缺失历史归因保持LEGACY_UNATTRIBUTED。初始化账户/profile/binding也仅使用该受控CLI的显式manifest，不从普通请求自动创建；已有账户limit不被导入工具覆盖或增加，需与原授权相等，测试合成账户只能属于隔离测试配置。
+
+受控CLI细化见[用量运行说明](USAGE_RUNTIME.md)：BOOTSTRAP可原子初始化并导入，CONFIGURE只调整状态/显式绑定/新价格版本，IMPORT只累加原未知占额。account资金身份与limit、既有priceVersion内容不可变；命令UUID+摘要审计，同命令异参拒绝，非初始化变更需expectedVersion。冻结文件移动不改变源摘要身份。该本地运维协议不扩大用户API或实际费用授权。
 
 LEGACY_LOCAL 与 CENTRAL 不混用同一个实际付费出口；CENTRAL故障不回退。恢复模型请求必须先知道使用哪一权威，旧任务恢复也走当前资金权威并保留旧累计占额；旧operation字符串只作为历史reference，不强行解析出不存在的用户。原研究调用次数、单次token上限和Task租约限制独立保留。
 

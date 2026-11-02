@@ -19,6 +19,7 @@ REGISTERED_CONTRACTS = {
     "CONTEXTUAL_QA_CONTRACTS.md": "contextual-qa-v1",
     "RESEARCH_COVERAGE_CONTRACTS.md": "research-coverage-v1",
     "RESEARCH_RECOVERY_CONTRACTS.md": "research-recovery-v1",
+    "USAGE_CONTRACTS.md": "usage-v1",
 }
 FIXTURES = ROOT / "knowledge-service/src/test/resources"
 
@@ -74,7 +75,11 @@ def main() -> None:
     assert research["input"]["schemaVersion"] == "knowledge-work-input-v3"
     assert research["result"]["schemaVersion"] == "knowledge-work-result-v3"
     assert research["result"]["content"]["schemaVersion"] == "research-report-v1"
-    print(f"{len(REGISTERED_CONTRACTS)} registered contracts and 14 shared wire fixture files: PASS")
+    usage = json.loads((ROOT / "async-task-service/src/test/resources/usage-golden.json").read_text())
+    assert usage["protocol"] == REGISTERED_CONTRACTS["USAGE_CONTRACTS.md"]
+    assert usage["report"]["schemaVersion"] == usage["settled"]["schemaVersion"] == usage["protocol"]
+    assert usage["report"]["usage"] == usage["settled"]["usage"]
+    print(f"{len(REGISTERED_CONTRACTS)} registered contracts and 15 shared wire fixture files: PASS")
 
 
 if __name__ == "__main__":

@@ -171,6 +171,25 @@ def provider_reply(count=2):
     }
 
 
+def test_frozen_rerank_ledger_blocks_check_and_reserve(tmp_path):
+    async def scenario():
+        config = config_and_ledger(tmp_path)
+        config.budget_file.with_name(config.budget_file.name + ".frozen.json").write_text(
+            "incomplete"
+        )
+        budget = RerankBudget(config)
+        try:
+            with pytest.raises(RetrievalError):
+                await budget.check_available()
+            with pytest.raises(RetrievalError):
+                await budget.reserve("question", ("document",))
+            assert json.loads(config.budget_file.read_text())["reservedCny"] == "0"
+        finally:
+            budget.close()
+
+    asyncio.run(scenario())
+
+
 def test_full_pipeline_scores_50_before_topk_and_preserves_json_evidence():
     async def scenario():
         embedding, knowledge, scorer = Embedding(), Knowledge(), Scorer()

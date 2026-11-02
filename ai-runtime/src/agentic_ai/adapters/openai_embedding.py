@@ -4,6 +4,7 @@ import asyncio
 import json
 import math
 from collections.abc import Sequence
+from contextlib import nullcontext
 from http import HTTPStatus
 from types import TracebackType
 from typing import Self
@@ -14,6 +15,9 @@ from agentic_ai.rag.errors import EmbeddingError, EmbeddingErrorCode
 from agentic_ai.rag.ports import EmbeddingResult
 from agentic_ai.runtime.embedding_budget import EmbeddingBudget
 from agentic_ai.runtime.embedding_config import EmbeddingConfig
+from agentic_ai.usage.config import require_gate
+from agentic_ai.usage.gate import MeteredAttempt, UsageGate
+from agentic_ai.usage.models import Kind, UsageError
 
 RESPONSE_CHUNK_BYTES = 65536
 
@@ -27,9 +31,14 @@ class OpenAIEmbeddingAdapter:
         *,
         transport: httpx.AsyncBaseTransport | None = None,
         budget: EmbeddingBudget | None = None,
+        usage: UsageGate | None = None,
     ) -> None:
         self._config = config
-        self._budget = budget
+        try:
+            require_gate(usage)
+        except UsageError:
+            raise EmbeddingError(EmbeddingErrorCode.CONFIGURATION_INVALID) from None
+        self._budget, self._usage = budget, usage
         self._client = httpx.AsyncClient(
             timeout=httpx.Timeout(config.deadline_seconds),
             limits=httpx.Limits(
@@ -67,7 +76,11 @@ class OpenAIEmbeddingAdapter:
             async with asyncio.timeout(self._config.deadline_seconds):
                 for start in range(0, len(inputs), self._config.batch_size):
                     batch = inputs[start : start + self._config.batch_size]
-                    vectors.extend(await self._request_batch(batch))
+                    vectors.extend(
+                        await self._request_batch(batch, start // self._config.batch_size)
+                    )
+        except UsageError:
+            raise EmbeddingError(EmbeddingErrorCode.BUDGET_REJECTED) from None
         except (httpx.RequestError, TimeoutError):
             unavailable = True
         # 在 except 外抛出，连隐式 __context__ 也不保留地址、认证头或上游文本。
@@ -99,8 +112,10 @@ class OpenAIEmbeddingAdapter:
                 raise EmbeddingError(EmbeddingErrorCode.INPUT_INVALID)
         return inputs
 
-    async def _request_batch(self, texts: tuple[str, ...]) -> tuple[tuple[float, ...], ...]:
-        if self._budget is not None:
+    async def _request_batch(
+        self, texts: tuple[str, ...], batch: int
+    ) -> tuple[tuple[float, ...], ...]:
+        if self._usage is None and self._budget is not None:
             self._budget.reserve(texts)
         payload = {
             "model": self._config.model,
@@ -108,11 +123,27 @@ class OpenAIEmbeddingAdapter:
             "dimensions": self._config.dimensions,
             "encoding_format": "float",
         }
+        encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        permit = (
+            self._usage.permit(Kind.EMBEDDING, scope=f"embedding:{batch}", body=encoded)
+            if self._usage is not None
+            else nullcontext(None)
+        )
+        async with permit as meter:
+            return await self._send_batch(encoded, len(texts), meter)
+
+    async def _send_batch(
+        self, encoded: bytes, count: int, meter: MeteredAttempt | None
+    ) -> tuple[tuple[float, ...], ...]:
+        """摘要、输入字节和外发复用同一份JSON；解析失败也保留提供方已给出的完整计量。"""
         async with self._client.stream(
             "POST",
             f"{self._config.base_url}/embeddings",
-            headers={"Authorization": f"Bearer {self._config.api_key.get_secret_value()}"},
-            json=payload,
+            headers={
+                "Authorization": f"Bearer {self._config.api_key.get_secret_value()}",
+                "Content-Type": "application/json",
+            },
+            content=encoded,
         ) as response:
             if response.status_code == HTTPStatus.TOO_MANY_REQUESTS or response.is_server_error:
                 raise EmbeddingError(EmbeddingErrorCode.UPSTREAM_UNAVAILABLE, retryable=True)
@@ -129,7 +160,9 @@ class OpenAIEmbeddingAdapter:
             decoded: object = json.loads(body)
         except (ValueError, UnicodeDecodeError, RecursionError):
             decoded = None
-        return self._parse_vectors(decoded, len(texts))
+        if meter is not None and isinstance(decoded, dict):
+            meter.observe(decoded.get("usage"), decoded.get("id"))
+        return self._parse_vectors(decoded, count)
 
     def _parse_vectors(self, payload: object, count: int) -> tuple[tuple[float, ...], ...]:
         if not isinstance(payload, dict):
