@@ -232,7 +232,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S15A | 统一模型用量与预算语义 | S8A, S11A | DESIGN | DONE |
 | S15B | 共享额度预留、结算与调用归因 | S15A, S13A | IMPLEMENT | DONE |
 | S15C | 跨语言诊断和业务审计 | S8F, S11E | IMPLEMENT | DONE |
-| S16A | 多 worker 竞争和有界恢复 | S15B, S12D, S13C | IMPLEMENT | PLANNED |
+| S16A | 多 worker 竞争和有界恢复 | S15B, S12D, S13C | IMPLEMENT | DONE |
 | S16B | 租户公平与后台资源隔离 | S16A, S15C | IMPLEMENT | PLANNED |
 | S16C | 代表负载与故障容量报告 | S16B, S10F, S11E | VALIDATE | PLANNED |
 | S16D | 可操作告警与运行手册 | S15C, S16C | IMPLEMENT | PLANNED |
@@ -633,7 +633,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-CAPACITY、C-WORK2；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 抢占/失租/延迟心跳/取消/重启/终态未知窗口；PG与中央一致；任务/工具预算跨attempt；新旧图版本按规则兼容。
 - **Pass / Runtime：** IMPLEMENT；现有服务增加受控 worker 实例；先隔离验证再调整长期运行。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G13。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G13。本地MW01–MW05 PASS，见[验收](../../qa/multi-worker-recovery-20261102/TEST_RESULT.md)；Git交付按PROGRESS_STATE，不声明S16B全局公平或生产容量完成。
 
 ### S16B · 租户公平与后台资源隔离
 

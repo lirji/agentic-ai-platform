@@ -27,7 +27,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     for name in ("qa-worker", "check-qa-worker"):
         command = commands.add_parser(name, help="显式启动或预检知识问答 worker")
         command.add_argument("--config", required=True, type=Path, help="本机 0600 私密配置路径")
+    group = commands.add_parser("check-worker-group", help="预检显式多worker清单，不启动或调用模型")
+    group.add_argument("--manifest", required=True, type=Path, help="本机0600绝对清单路径")
     args = parser.parse_args(argv)
+    if args.command == "check-worker-group":
+        from agentic_ai.qa.errors import QaError
+        from agentic_ai.qa.group import WorkerGroup
+
+        try:
+            print(json.dumps(WorkerGroup.from_file(args.manifest).inspect()))
+        except (QaError, EmbeddingError) as error:
+            print(json.dumps({"code": error.code}), file=sys.stderr)
+            return EXIT_CONFIGURATION_ERROR
+        return 0
     if args.command in {"qa-worker", "serve"}:
         from agentic_ai.diagnostics.telemetry import DiagnosticCode, configure_logging
 

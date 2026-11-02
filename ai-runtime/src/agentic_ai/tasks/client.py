@@ -36,6 +36,7 @@ HTTP_CONNECTIONS = 4
 MAX_RESPONSE_BYTES = 256 * 1024
 MAX_PRIVATE_KEY_BYTES = 16384
 WORKER_SCOPE = "task:worker"
+TASK_RUNTIME = "langgraph-v1"
 INTERNAL_HEADER = "X-Internal-Token"
 
 
@@ -185,8 +186,15 @@ class CentralTaskClient:
             "POST",
             "/internal/v1/task-worker/claim",
             ClaimReply,
-            {"runtimeVersion": "langgraph-v1", "graphVersion": graph_version},
+            {"runtimeVersion": TASK_RUNTIME, "graphVersion": graph_version},
         )
+        if reply.task is not None and (
+            reply.task.graph_version != graph_version
+            or reply.task.runtime_version != TASK_RUNTIME
+            or reply.task.tenant_id != self.tenant_id
+            or reply.task.worker_id != self.worker_id
+        ):
+            raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID)
         return reply.task
 
     async def inspect(self, task_id: str) -> TaskLease:

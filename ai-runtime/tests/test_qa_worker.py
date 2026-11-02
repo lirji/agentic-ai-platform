@@ -217,6 +217,58 @@ def test_pg_preflight_failure_never_claims_or_constructs_chat_client(tmp_path, m
     assert read_ledger(chat_config)["calls"] == []
 
 
+@pytest.mark.parametrize("selected", [None, ["knowledge-work-v1"]])
+def test_polling_uses_only_selected_graphs_and_preserves_default_order(
+    tmp_path, monkeypatch, selected
+):
+    """通过真实轮询入口核对角色配置，避免只验证配置对象而漏掉实际调度。"""
+    seen = []
+
+    class IdleCentral:
+        async def aclose(self):
+            return None
+
+        async def claim(self, graph):
+            if len(seen) == 3:
+                raise asyncio.CancelledError
+            seen.append(graph)
+            return None
+
+    class Ready:
+        async def verify_ready(self):
+            return None
+
+    @asynccontextmanager
+    async def storage(_config):
+        yield Ready()
+
+    monkeypatch.setattr(worker.CentralTaskClient, "from_file", lambda *_args: IdleCentral())
+    monkeypatch.setattr(worker.KnowledgeClient, "from_file", lambda *_args: IdleCentral())
+    monkeypatch.setattr(worker.PostgresCheckpoints, "open", storage)
+    monkeypatch.setattr(worker, "POLL_SECONDS", 0.001)
+    chat_config = config_at(tmp_path)
+    ledger_at(chat_config)
+    monkeypatch.setattr(worker.ChatConfig, "from_file", lambda *_args: chat_config)
+    config = WorkerConfig(
+        tenant_id="synthetic-tenant",
+        tasks_endpoint="http://127.0.0.1:1",
+        knowledge_endpoint="http://127.0.0.1:2",
+        task_private_key=tmp_path / "task.pem",
+        knowledge_private_key=tmp_path / "knowledge.pem",
+        chat_config=tmp_path / "chat.json",
+        checkpoints=UNUSED_PG,
+        graph_versions=selected,
+    )
+    with pytest.raises(asyncio.CancelledError):
+        asyncio.run(run_worker(config))
+    assert seen == (
+        ["knowledge-work-v1"] * 3
+        if selected
+        else ["knowledge-qa-v1", "knowledge-work-v1", "knowledge-qa-v1"]
+    )
+    assert read_ledger(chat_config)["calls"] == []
+
+
 @pytest.mark.parametrize("kind", ["KNOWLEDGE_QA", "RESEARCH"])
 def test_v2_routes_are_explicit_and_require_shared_retrieval(monkeypatch, kind):
     from test_generation_qa import setup as qa_setup

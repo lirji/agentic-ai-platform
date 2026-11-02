@@ -1,0 +1,28 @@
+{
+  "base": "393e14859ec09480da294fa61e27be60ed90e30d",
+  "sourceSha256": {
+    "ai-runtime/src/agentic_ai/cli.py": "659967647c50b01bb342f9d7a735d2fe570ee4983484b786e4c6ab2c49f6d44b",
+    "ai-runtime/src/agentic_ai/qa/group.py": "26d70000c763504f5cade6824f1628f183aedf318c573eb3392889391bf58d6e",
+    "ai-runtime/src/agentic_ai/qa/worker.py": "d807e5fabc4a5d24b90a49372b9233fa545ca96a31cd26df03a42322a590331c",
+    "ai-runtime/src/agentic_ai/tasks/client.py": "c97266d5873d3d635c54b5bcb52ead379c5d7aac048fed2f33e02f8542095cda",
+    "ai-runtime/tests/test_multi_worker_integration.py": "29f2a9295e18a853f9ed2e07c39e42ddeb936fddd2d721c50e7fc45f1a3a7a5a",
+    "ai-runtime/tests/test_qa_worker.py": "a6c6a8ce0171d4f2a670a3c740b915f3f863d1b4d3cdd0b975d378ed43146e63",
+    "ai-runtime/tests/test_task_client.py": "05daf7c52f190318ce6c37d919c1a57508082199aeff7bce6360c9c1fd812696",
+    "ai-runtime/tests/test_worker_group.py": "638fb19b3422dd988ffe88b12bf07b07e9c532e924d9cdf5323096979af960af",
+    "ai-runtime/tests/worker_process_probe.py": "6c10c6d24e08b1a0a186c78e573b17d359a1fdf27f2c7625b8bc0a54ec210b1a",
+    "ci/check_contract_docs.py": "6fea34b479beadafbade69009279329149c409382e39048e370ef2efffd32483"
+  },
+  "logSha256": {
+    ".local/s16a-python-full.log": "79419f063382ca819421ceecea419b37b41669960ab7d03f6a7a045868546e9e",
+    ".local/s16a-process-it-final.log": "4d02a3c74a996e0598803cb4fc7d0b2be34f366c7fae272d9205b7902e11a628",
+    ".local/s16a-recovery-regression.log": "0ee44c22f9fa33d0ccd8bdb766617b083d0ae9d6a1ad2ec033b09499cf946792",
+    ".local/s16a-worker-final.log": "dcb7495a4b198e3f529eb7b4698ac2735d4444cdef4f6a9ecc4e5e25432b9d98",
+    ".local/s16a-mypy-final.log": "4ceb57b647f65ad9bc4a2ac12b1f1d95323ae55da4304fb3e5014cf75bf56502",
+    ".local/s16a-ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    ".local/s16a-format-final.log": "51d94654febba1afc963749c8e307edbc4c302686178c5d2ce1a9a7ca7b2da67",
+    ".local/s16a-contract-docs.log": "203614f15b44330ed654bf7c3ead5c5ff87b8f38081bf4b323d252035fc78968"
+  },
+  "frontendChanged": false,
+  "javaChanged": false,
+  "newDependencies": false
+}

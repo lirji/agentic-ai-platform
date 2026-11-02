@@ -9,6 +9,7 @@ import stat
 import time
 from contextlib import AsyncExitStack
 from datetime import UTC, datetime
+from enum import StrEnum
 from pathlib import Path
 from typing import Self
 from uuid import uuid4
@@ -67,10 +68,25 @@ USAGE_PURPOSES = {
 }
 
 
+class WorkerGraph(StrEnum):
+    """显式稳定图版本，调度分工不能重命名已持久的历史图。"""
+
+    QA_V1 = "knowledge-qa-v1"
+    WORK_V1 = WORK_GRAPH
+    EVALUATION_V1 = EVALUATION_GRAPH
+    QA_V2 = QA_GRAPH_V2
+    WORK_V2 = WORK_GRAPH_V2
+    RESEARCH_V3 = RESEARCH_GRAPH
+    RESEARCH_V4 = STAGED_RESEARCH_GRAPH
+    QA_V3 = QA_GRAPH_V3
+    EVALUATION_V2 = EVALUATION_GRAPH_V2
+
+
 class WorkerConfig(BaseModel):
     """只在显式 CLI 启动时启用，配置不包含模型默认值或用户可覆写的 worker ID。"""
 
     model_config = ConfigDict(frozen=True, extra="forbid", hide_input_in_errors=True)
+    graph_versions: tuple[WorkerGraph, ...] | None = Field(default=None, min_length=1, max_length=9)
     tenant_id: SubjectId
     tasks_endpoint: str = Field(repr=False, max_length=2048)
     knowledge_endpoint: str = Field(repr=False, max_length=2048)
@@ -90,7 +106,39 @@ class WorkerConfig(BaseModel):
             self.rerank_config is not None or self.contextual_qa_enabled
         ) and not self.retrieval_enabled:
             raise ValueError(QaCode.CONFIG_INVALID.value)
+        if self.graph_versions is not None and (
+            len(set(self.graph_versions)) != len(self.graph_versions)
+            or not set(self.graph_versions).issubset(self.supported_graphs())
+        ):
+            raise ValueError(QaCode.CONFIG_INVALID.value)
         return self
+
+    def supported_graphs(self) -> tuple[WorkerGraph, ...]:
+        """仅列出启动配置实际能装配的图；默认顺序兼容既有轮询。"""
+        return (
+            (WorkerGraph.QA_V1, WorkerGraph.WORK_V1)
+            + ((WorkerGraph.EVALUATION_V1,) if self.evaluation_private_key is not None else ())
+            + (
+                (
+                    WorkerGraph.QA_V2,
+                    WorkerGraph.WORK_V2,
+                    WorkerGraph.RESEARCH_V3,
+                    WorkerGraph.RESEARCH_V4,
+                )
+                if self.retrieval_enabled
+                else ()
+            )
+            + ((WorkerGraph.QA_V3,) if self.contextual_qa_enabled else ())
+            + (
+                (WorkerGraph.EVALUATION_V2,)
+                if self.retrieval_enabled and self.evaluation_private_key is not None
+                else ()
+            )
+        )
+
+    def selected_graphs(self) -> tuple[WorkerGraph, ...]:
+        """显式版本用于旧图排空或研究专用worker，未配置时保留原行为。"""
+        return self.graph_versions if self.graph_versions is not None else self.supported_graphs()
 
     @field_validator("task_private_key", "knowledge_private_key", "chat_config")
     @classmethod
@@ -404,7 +452,7 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
             stack.push_async_callback(tool_chat.aclose)
             retrieval = None
             if embedding_config is not None:
-                # 单worker只装配一个许可；与单HTTP进程的一个许可合计为契约总量2。
+                # 每worker一个本地许可；多进程须按运行清单累加，不能视作全平台配额。
                 embedding = OpenAIEmbeddingAdapter(
                     embedding_config,
                     budget=EmbeddingBudget.from_environment() if usage is None else None,
@@ -420,21 +468,7 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                 _log("CONFIGURATION_VALID")
                 return
             _log("READY")
-            graph_versions = (
-                ("knowledge-qa-v1", WORK_GRAPH)
-                + ((EVALUATION_GRAPH,) if config.evaluation_private_key is not None else ())
-                + (
-                    (QA_GRAPH_V2, WORK_GRAPH_V2, RESEARCH_GRAPH, STAGED_RESEARCH_GRAPH)
-                    if retrieval is not None
-                    else ()
-                )
-                + ((QA_GRAPH_V3,) if config.contextual_qa_enabled else ())
-                + (
-                    (EVALUATION_GRAPH_V2,)
-                    if retrieval is not None and evaluation_key is not None
-                    else ()
-                )
-            )
+            graph_versions = config.selected_graphs()
             next_graph = 0
             while not stop.is_set():
                 if budget is not None:

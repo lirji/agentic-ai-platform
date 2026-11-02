@@ -20,6 +20,7 @@ REGISTERED_CONTRACTS = {
     "RESEARCH_COVERAGE_CONTRACTS.md": "research-coverage-v1",
     "RESEARCH_RECOVERY_CONTRACTS.md": "research-recovery-v1",
     "USAGE_CONTRACTS.md": "usage-v1",
+    "CAPACITY_CONTRACTS.md": "worker-group-v1",
 }
 FIXTURES = ROOT / "knowledge-service/src/test/resources"
 

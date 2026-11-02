@@ -224,3 +224,33 @@ def test_research_allowance_receipt_is_bound_to_exact_call(worker_key, changed):
             await api.aclose()
 
     asyncio.run(scenario())
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("tenant_id", "other-tenant"),
+        ("worker_id", "other-worker"),
+        ("graph_version", "knowledge-work-v4"),
+    ],
+)
+def test_claim_rejects_lease_not_bound_to_requested_worker_and_graph(worker_key, field, value):
+    from test_qa_pipeline import lease
+
+    async def scenario():
+        binding = lease().model_copy(
+            update={"tenant_id": "test-tenant", "worker_id": "test-worker", field: value}
+        )
+        api = client(
+            worker_key,
+            lambda _: httpx.Response(
+                200, json={"task": binding.model_dump(mode="json", by_alias=True)}
+            ),
+        )
+        try:
+            with pytest.raises(TaskRuntimeError, match=TaskRuntimeCode.PROTOCOL_INVALID):
+                await api.claim("knowledge-qa-v1")
+        finally:
+            await api.aclose()
+
+    asyncio.run(scenario())

@@ -1,6 +1,18 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S15C已交付，继续S16A
+## 当前任务：S16A多worker竞争和有界恢复
+
+- capability-delivery-20261021按用户“继续做后续任务”持续执行，parallel=no，无子Agent。完整51项未完成。
+- S15C产品1111e88与归档393e148均正常合并推main；产品与归档分支/main CI全部PASS，最终收据.local/s15c-final-delivery.json。
+- S16A IN_PROGRESS：C-CAPACITY/S16A契约→显式worker图版本白名单、有限组配置/资源核对→两独立Python进程的真实MySQL/PG竞争/退出接管/迟到结果/取消→文档、验证、正常Git/CI交付。S15B/S12D/S13C前置均DONE。
+- Git：原目录feat/multi-worker-recovery-20261102，起点393e148（只含前一片归档，先合并其父提交）；无新worktree。前端main未改。
+- 已核对：Tasks已有SKIP LOCKED、数据库租约时间与epoch fencing；worker默认单在途轮询全部已启用图，缺少显式版本分工；CENTRAL worker ID来自私密usage配置，组内必须唯一，不能把LEGACY_LOCAL账本复制成多实例资金权威。
+- S16A实现/本地验证PASS：版本分工、claim身份/图匹配、私密两实例组/共享checkpoint核对；Python全量768通过/100条件跳过，新增轮询后37相关复验PASS；真实双进程3项及旧图/阶段/预算恢复19项全PASS。初次夹具严格JSON还原失败已修正；生产容量未验证。待文档/卫生与Git/CI交付。
+- 边界：首轮2个隔离测试进程，每进程单在途；模型替身与合成test预算，付费调用0；不调整原长期worker/真实中央模式，不引入新中间件，不清理旧数据。U06未知仅报实测，S16B才实现公平调度/全局资源准入。
+- 运行任务：本轮模型/测试子进程已退出；无付费调用，原服务保留。日志.local/s16a-{python-full,process-it-final,recovery-regression,worker-final}.log，正在完成卫生/文档检查。
+- 规范：延续S15C已读架构建模/持久化/契约/安全/容量/发布和个人并发/追踪；backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate。
+
+## 上一检查点：S15C交付通过
 
 - 用户2026-11-02“继续做后续任务”恢复capability-delivery-20261021完整既有计划；parallel=no，无子Agent。完整51项未完成。
 - S15C DONE/本地Validation PASS：[OB01–OB07](../../qa/cross-language-diagnostics-20261102/TEST_RESULT.md)、[源码/日志摘要](../../qa/cross-language-diagnostics-20261102/source-evidence.json)。Python W3C/固定阶段/受控OTLP、共享与预算owner审计API及网关精确路由完成；发布/补偿沿原审计事实，无新库或迁移。

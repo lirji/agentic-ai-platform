@@ -159,3 +159,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 - S14D：CandidateRecoveryService/RecoveryMapper/V18与React恢复面板对应[发布后恢复契约](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md)的operations-recovery-v1；[验收](qa/publication-recovery-20261102/TEST_RESULT.md)记录精确探测、历史完整源补偿与明确撤下。
 
 S15C：由Java既有Micrometer/OTel、Python真实HTTP/worker及原共享/预算流水映射到[C-OBS](design/knowledge-first-20261020/OBSERVABILITY_CONTRACTS.md)、[运行说明](design/knowledge-first-20261020/OBSERVABILITY_RUNTIME.md)和[验收](qa/cross-language-diagnostics-20261102/TEST_RESULT.md)。源码摘要固定在验收目录，未新增审计库或生产采集服务。
+
+S16A：WorkerConfig/CLI、中央claim绑定与既有MySQL租约/PG检查点映射到[容量契约](design/knowledge-first-20261020/CAPACITY_CONTRACTS.md)、[运行说明](design/knowledge-first-20261020/CAPACITY_RUNTIME.md)及[验收](qa/multi-worker-recovery-20261102/TEST_RESULT.md)。真实双进程竞争与19项恢复复验，无新数据库迁移；全局公平仍属S16B。
