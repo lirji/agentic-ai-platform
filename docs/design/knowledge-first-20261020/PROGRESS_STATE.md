@@ -3,10 +3,17 @@
 ## 当前任务：S14B 候选修订与内容绑定评估（实施中）
 
 - 两仓原目录新分支feat/knowledge-candidates-20261102，起点后端906a974/前端5e90700，开始时干净；S14A产品及归档分支/main CI全部PASS，归档收据.local/s14a-archive-delivery.json。无新worktree，无S14B产品/迁移/模型调用。
-- 本片计划：①沿C-OPERATIONS冻结候选修订、隔离评估副本、当前内容与真实质量运行的绑定；②追加V15与后端候选/私有副本/共享检索边界；③React编辑与已有质量界面连接；④真实DB/双索引/质量链路和浏览器验证/审查；⑤正常Git交付后继续S14C。①契约与有界架构增量已完成；②开始前发现共享/反馈身份列使用utf8mb4_0900_ai_ci（真实information_schema已核实），先独立修正精确身份比较再继续V16候选迁移。②–⑤尚无产品改动。
+- 本片计划：①沿C-OPERATIONS冻结候选修订、隔离评估副本、当前内容与真实质量运行的绑定；②追加V16与后端候选/私有副本/共享检索边界；③React编辑与已有质量界面连接；④真实DB/双索引/质量链路和浏览器验证/审查；⑤正常Git交付后继续S14C。①契约与有界架构增量已完成；②开始前发现共享/反馈身份列使用utf8mb4_0900_ai_ci（真实information_schema已核实），独立补修已本地验证通过并合入当前分支，分支CI运行中；继续V16候选迁移。②–⑤尚无产品改动。
 - 技术事实：现有质量执行只读取当前索引发布身份，未入索引的候选不能靠旧原文评估过关。采用owner私有校验副本复用同一入库/检索/质量管线，隔离默认检索/普通列表/共享与直接生命周期写；原资料及ACL在S14C实际发布前保持原事实。编辑使当前修订与旧评估绑定不符，不能复用旧批准。
 - 输入范围拟沿已有TXT/PDF/DOCX上传边界：TXT可编辑完整替换文本，附件上传完整修正版；不把反馈选中片段当完整原文件。requiredText仅对精确提取片段做局部字面检查，语义/检索仍由S8真实运行和人工评分提供。
-- C-OPERATIONS增量operations-candidate-v1与BACKEND_ARCHITECTURE D-OPS-04–07已冻结。调查笔记.local/s14a-next-slice-notes.md仅历史草案（评测用途实际为BUSINESS，非QUALITY）；以下按正式契约实施。下一操作V15候选/修订/回执及preview目的隔离。采用的技能/授权/付费边界与下方S14A一致，parallel=no。
+- C-OPERATIONS增量operations-candidate-v1与BACKEND_ARCHITECTURE D-OPS-04–07已冻结。调查笔记.local/s14a-next-slice-notes.md仅历史草案（评测用途实际为BUSINESS，非QUALITY）；以下按正式契约实施。下一操作V16候选/修订/回执及preview目的隔离。采用的技能/授权/付费边界与下方S14A一致，parallel=no。
+
+### 共享/反馈精确身份补修（交付中）
+
+- S14B设计已在后端feat/knowledge-candidates-20261102@a43bff0、前端同名分支@3120d90保存；尚无S14B产品改动。其契约/计划仍有效，补修交付后合并回该分支继续，候选迁移顺延V16。
+- 后端原目录独立fix/knowledge-identity-comparison-20261102，基线906a974；前端保留S14B分支，本补修不改前端产品。真实information_schema确认V13/V14身份列继承utf8mb4_0900_ai_ci，会折叠大小写/重音。需要身份逐字匹配，不能依赖当前IdP碰巧使用小写UUID。
+- 计划：①真实DB回归重现；②新增V15将共享ACL/共享命令/反馈表改为utf8mb4_0900_bin，保留字节/数据/注释和旧迁移；③真实共享/反馈/HTTP回归；④文档与正常Git/CI交付；⑤回S14B。①真实回归已FAIL，证明错大小写tenant读取未被拒绝（.logs/s14-identity-comparison-before.log）；②V15已在隔离test库验证；③19项中16项执行PASS、3项联合浏览器按配置跳过；原287条记录逐行摘要及列注释摘要全部保留，Flyway15成功。验证会话26037已结束；证据见[补修验收](../../qa/identity-comparison-20261102/TEST_RESULT.md)。④7cd82c7已提交推补修分支，分支CI41365252899运行中；通过后从原main工作树ff合并推main并核对CI；无S14B产品代码混入。
+- 原授权不变：仅测试库必要迁移/验证；不更新运行服务，不清理数据，不新增模型调用。S14A产品及归档两仓分支/main CI均PASS，见.local/s14a-archive-delivery.json。本补修真实失败与复验均另记，不沿旧证据假称该边界已经覆盖。
 
 ### S14A 已交付（历史）
 

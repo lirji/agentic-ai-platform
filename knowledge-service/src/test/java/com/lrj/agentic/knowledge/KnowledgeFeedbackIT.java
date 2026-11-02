@@ -165,6 +165,21 @@ class KnowledgeFeedbackIT {
         members.unavailable=true;error(KnowledgeError.SHARING_MEMBER_UNAVAILABLE,()->feedback.create(reader,key(),command(ref,"不可降级")));
         assertThat(feedback.create(owner,key(),command(ref,"owner不依赖目录"))).isNotNull();
     }
+    /** 身份是不透明标识，数据库不能按大小写、重音或尾部空格折叠为同一主体。 */
+    @Test void feedbackIdentityComparisonsAreExact() {
+        var ref=reference();String key=key();var accepted=feedback.create(owner,key,command(ref,"仅本人可见"));
+        for(var other:List.of(new Caller(owner.tenantId().toUpperCase(Locale.ROOT),owner.userId()),
+                new Caller(owner.tenantId().replace("feedback", "féedback"),owner.userId()),
+                new Caller(owner.tenantId()+" ",owner.userId()),
+                new Caller(owner.tenantId(),owner.userId().toUpperCase(Locale.ROOT)),
+                new Caller(owner.tenantId(),owner.userId()+" "))) {
+            error(KnowledgeError.NOT_FOUND,()->feedback.get(other,accepted.feedbackId()));
+            error(KnowledgeError.NOT_FOUND,()->feedback.submission(other,key));
+            assertThat(feedback.page(other,"mine",20,null).items()).isEmpty();
+            assertThat(feedback.page(other,"inbox",20,null).items()).isEmpty();
+        }
+        assertThat(feedback.submission(owner,key)).isEqualTo(accepted);
+    }
     /** 真实Tasks签发、Knowledge验签及浏览器路径；测试数据保留以便复核。 */
     @Test void realTaskProofAndBrowserFeedback() throws Exception {
         org.junit.jupiter.api.Assumptions.assumeTrue("1".equals(System.getenv("AGENTIC_FEEDBACK_BROWSER")));
