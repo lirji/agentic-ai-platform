@@ -83,7 +83,7 @@ class AdaptiveKnowledgeSearchTest {
 
     private KnowledgeSearch search(int ai, int perIndex) {
         var beans = new StaticListableBeanFactory(); beans.addBean("processor", processor); beans.addBean("index", index);
-        return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), ai, perIndex, new KnowledgeQueryCapacity());
+        return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), ai, perIndex, CapacityTestSupport.query());
     }
     private List<SearchIndex.Candidate> candidates(int count) {
         return IntStream.range(0, count).mapToObj(i -> new SearchIndex.Candidate(String.format("%064x", i + 1), "a".repeat(64))).toList();

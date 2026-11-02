@@ -52,6 +52,8 @@ import org.springframework.transaction.TransactionSystemException;
 @SpringBootTest(properties = {"server.port=0", "spring.main.banner-mode=off",
         "knowledge.processing.worker-enabled=false", "knowledge.parsing.enabled=true"})
 class KnowledgeStructuredProcessingIT {
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity distributedCapacity;
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties capacityPolicy;
     private static final Path CHINESE = Path.of("../docs/qa/pdf-ingestion-20261024/fixtures/chinese-pages.pdf");
     private static final Path DOCX = Path.of("../docs/qa/docx-ingestion-20261025/fixtures/chinese-structure.docx");
     private static final Path STRUCTURE_FIXTURES = Path.of("../docs/qa/structured-chunking-20261025/fixtures");
@@ -323,7 +325,7 @@ class KnowledgeStructuredProcessingIT {
         var extraction = parser.extract(storage.source(job), job.profile().format());
         var reference = storage.saveExtraction(job, extraction);
         var claim = claim(job, "unknown-receipt");
-        var uncertain = new MySqlProcessingRepository(mapper, jobs, loseReceipt(() -> { }), 5, json, lifecycleMapper);
+        var uncertain = new MySqlProcessingRepository(mapper, jobs, loseReceipt(() -> { }), 5, json, lifecycleMapper, distributedCapacity);
         var resolved = uncertain.extracted(claim, reference, extraction);
         assertThat(resolved.extraction()).isEqualTo(reference);
         assertThat(events(job, "EXTRACTED")).isEqualTo(1);
@@ -337,7 +339,7 @@ class KnowledgeStructuredProcessingIT {
         var extraction = parser.extract(storage.source(job), job.profile().format());
         var reference = storage.saveExtraction(job, extraction);
         var claim = claim(job, "expired-receipt");
-        var uncertain = new MySqlProcessingRepository(mapper, jobs, loseReceipt(() -> expire(job)), 5, json, lifecycleMapper);
+        var uncertain = new MySqlProcessingRepository(mapper, jobs, loseReceipt(() -> expire(job)), 5, json, lifecycleMapper, distributedCapacity);
         error(KnowledgeError.DATABASE_UNAVAILABLE, () -> uncertain.extracted(claim, reference, extraction));
         assertThat(events(job, "EXTRACTED")).isEqualTo(1);
         assertThat(chunkCount(job)).isZero();
@@ -436,7 +438,7 @@ class KnowledgeStructuredProcessingIT {
     }
     private KnowledgeSearch search(KnowledgeProcessor model, SearchIndex target) {
         var beans = new StaticListableBeanFactory(Map.of("model", model, "index", target));
-        return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), 45, 8, new KnowledgeQueryCapacity());
+        return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), 45, 8, new KnowledgeQueryCapacity(distributedCapacity,capacityPolicy));
     }
     private static void error(KnowledgeError expected, Runnable operation) {
         assertThatThrownBy(operation::run).isInstanceOfSatisfying(KnowledgeFailure.class,

@@ -19,6 +19,7 @@ public final class TaskProtocol {
     public static final String WORK_GRAPH = "knowledge-work-v1";
     public static final String WORK_INPUT = "knowledge-work-input-v1";
     public static final String EVALUATION_KIND = "KNOWLEDGE_EVALUATION";
+    public static final java.util.List<String> BACKGROUND_KINDS = java.util.List.of(WorkKind.RESEARCH.code(), EVALUATION_KIND);
     public static final String EVALUATION_GRAPH = "knowledge-evaluation-v1";
     public static final String EVALUATION_INPUT = "evaluation-input-v1";
     public static final String EVALUATION_RESULT = "evaluation-completion-v1";

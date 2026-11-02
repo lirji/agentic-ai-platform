@@ -22,6 +22,12 @@
     </select>
     <select id="candidate" resultType="com.lrj.agentic.task.infrastructure.TaskRow">
         SELECT * FROM ai_task WHERE tenant_id=#{tenant} AND runtime_version=#{runtime} AND graph_version=#{graph}
+          <if test="!interactive">AND kind IN
+            <foreach collection="backgroundKinds" item="kind" open="(" close=")" separator=",">#{kind}</foreach>
+          </if>
+          <if test="!background">AND kind NOT IN
+            <foreach collection="backgroundKinds" item="kind" open="(" close=")" separator=",">#{kind}</foreach>
+          </if>
           AND (status='QUEUED' OR (status='RUNNING' AND lease_expires_at&lt;=UTC_TIMESTAMP(6)))
         ORDER BY created_at,task_id LIMIT 1 FOR UPDATE SKIP LOCKED
     </select>

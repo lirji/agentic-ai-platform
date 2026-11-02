@@ -40,7 +40,7 @@ class AuthorizedRetrievalTest {
         assertThat(caller).isEqualTo(owner); limits.add(limit); budgets.add(remaining); vectors.add(values);
         return raw.subList(0, Math.min(limit, raw.size()));
     };
-    private final KnowledgeQueryCapacity capacity = new KnowledgeQueryCapacity();
+    private final KnowledgeQueryCapacity capacity = CapacityTestSupport.query();
 
     @Test void expandsWithoutEmbeddingFusionRankCompressionOrCrossRoundAccumulation() {
         authority = ids -> List.of(raw.get(69), raw.get(89)).stream()

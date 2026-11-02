@@ -55,7 +55,7 @@ class PythonConsumerRetrievalTest {
         var properties = properties(URI.create("http://127.0.0.1:" + server.getAddress().getPort()), key);
         var identity = new PythonServiceIdentity(properties, new KnowledgeUsageProperties(mode,
                 mode == KnowledgeUsageProperties.Mode.CENTRAL ? "fixture-embedding" : null, null));
-        var client = new PythonConsumerRetrieval(properties, json, identity, Tracer.NOOP, Propagator.NOOP, true);
+        var client = new PythonConsumerRetrieval(properties, json, identity, Tracer.NOOP, Propagator.NOOP, true, CapacityTestSupport.disabled());
         try {
             assertThat(client.search(owner, input, Duration.ofSeconds(2)).validated(input).mode()).isEqualTo("EMPTY");
             var jwt = decoder.decode(received.get());
@@ -95,7 +95,7 @@ class PythonConsumerRetrievalTest {
             response.set(new BoundedHttp.Reply(200, "{\"degraded\":0}".getBytes(StandardCharsets.UTF_8)));
             error(KnowledgeError.RETRIEVAL_RESULT_INVALID, () -> client.search(owner, input, Duration.ofSeconds(2)));
             assertThatThrownBy(() -> new PythonConsumerRetrieval(properties, json, identity,
-                    Tracer.NOOP, Propagator.NOOP, false)).isInstanceOf(IllegalArgumentException.class);
+                    Tracer.NOOP, Propagator.NOOP, false, CapacityTestSupport.disabled())).isInstanceOf(IllegalArgumentException.class);
         } finally { client.close(); server.stop(0); }
     }
 

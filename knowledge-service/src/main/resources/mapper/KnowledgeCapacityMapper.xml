@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.KnowledgeCapacityMapper">
+    <select id="lockPolicy" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.KnowledgeCapacityMapper$Policy">
+        SELECT policy_key,policy_sha256 FROM knowledge_capacity_policy WHERE policy_key='knowledge-capacity-v1' FOR UPDATE
+    </select>
+    <update id="configure">
+        UPDATE knowledge_capacity_policy SET policy_sha256=#{sha},snapshot_json=CAST(#{snapshot} AS JSON),configured_at=UTC_TIMESTAMP(6)
+        WHERE policy_key='knowledge-capacity-v1' AND policy_sha256 IS NULL
+    </update>
+    <select id="countIngestion" resultType="int">
+        SELECT COUNT(*) FROM knowledge_ingestion WHERE tenant_id=#{tenant}
+        <choose>
+            <when test="active">AND status='PROCESSING' AND lease_until&gt;UTC_TIMESTAMP(6)</when>
+            <otherwise>AND status IN ('RECEIVED','PROCESSING')</otherwise>
+        </choose>
+    </select>
+    <select id="unallocated" resultType="int">
+        SELECT COUNT(*) FROM knowledge_ingestion WHERE status IN ('RECEIVED','PROCESSING') AND tenant_id NOT IN
+        <foreach collection="tenants" item="tenant" open="(" close=")" separator=",">#{tenant}</foreach>
+    </select>
+    <insert id="createSlots">
+        INSERT INTO knowledge_capacity_slot(tenant_id,lane,slot_number) VALUES
+        <foreach collection="slots" item="s" separator=",">(#{s.tenant},#{s.lane},#{s.slot})</foreach>
+    </insert>
+    <select id="nextSlot" resultType="int">
+        SELECT slot_number FROM knowledge_capacity_slot WHERE tenant_id=#{tenant} AND lane=#{lane}
+          AND (lease_token IS NULL OR lease_until&lt;=UTC_TIMESTAMP(6))
+        ORDER BY slot_number LIMIT 1 FOR UPDATE SKIP LOCKED
+    </select>
+    <update id="acquire">
+        UPDATE knowledge_capacity_slot SET lease_token=#{token},lease_until=TIMESTAMPADD(SECOND,#{seconds},UTC_TIMESTAMP(6))
+        WHERE tenant_id=#{tenant} AND lane=#{lane} AND slot_number=#{slot}
+          AND (lease_token IS NULL OR lease_until&lt;=UTC_TIMESTAMP(6))
+    </update>
+    <update id="release">
+        UPDATE knowledge_capacity_slot SET lease_token=NULL,lease_until=NULL
+        WHERE tenant_id=#{tenant} AND lane=#{lane} AND slot_number=#{slot}
+          AND lease_token=#{token} AND lease_until&gt;UTC_TIMESTAMP(6)
+    </update>
+</mapper>

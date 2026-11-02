@@ -28,7 +28,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/** 三个在途槽位覆盖一名 worker 和两个查询；完整响应有界且取消传给 HTTP 交换。 */
+/** 本地HTTP槽位与受控份额匹配；完整响应有界且取消传给HTTP交换。 */
 @Component
 @ConditionalOnProperty(name = "knowledge.processing.enabled", havingValue = "true")
 public class BoundedHttp {
@@ -41,6 +41,13 @@ public class BoundedHttp {
 
     /** 使用应用现有 Micrometer 追踪组件，HTTP 子 span 不记录 URL、身份或正文。 */
     @Autowired
+    public BoundedHttp(Tracer tracer, Propagator propagator,
+            com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties capacity) {
+        this(tracer, propagator, capacity.enabled()?capacity.remoteSlots():ProcessingProtocol.MAX_REMOTE_CALLS,
+                ProcessingProtocol.MAX_RESPONSE_BYTES);
+    }
+
+    /** 独立协议探针保留原本地上限，不改变正式容器注入的配额选择。 */
     public BoundedHttp(Tracer tracer, Propagator propagator) {
         this(tracer, propagator, ProcessingProtocol.MAX_REMOTE_CALLS, ProcessingProtocol.MAX_RESPONSE_BYTES);
     }
@@ -54,7 +61,7 @@ public class BoundedHttp {
 
     /** 回调型门面使用独立许可，不能占用候选请求回来的同一传输池。 */
     public static BoundedHttp isolated(Tracer tracer, Propagator propagator, int maximum, int maxResponseBytes) {
-        if (maximum < 1 || maximum > ProcessingProtocol.MAX_REMOTE_CALLS
+        if (maximum < 1 || maximum > com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties.MAX_CAPACITY
                 || maxResponseBytes < 1 || maxResponseBytes > ProcessingProtocol.MAX_RESPONSE_BYTES) {
             throw new IllegalArgumentException("知识远程调用边界无效");
         }

@@ -51,9 +51,9 @@ public class KnowledgeSearch {
         KnowledgeProcessor processor = processors.getIfAvailable();
         SearchIndex index = indices.getIfAvailable();
         if (processor == null || index == null) { throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED); }
-        capacity.acquireOrReject();
-        try {
-            long deadline = System.nanoTime() + queryBudgetNanos;
+        long deadline = System.nanoTime() + queryBudgetNanos;
+        try (var permit = capacity.acquireOrReject(caller,
+                com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity.Lane.SEARCH, Duration.ofNanos(queryBudgetNanos))) {
             var vector = processor.query(caller, valid.query());
             for (int limit : CANDIDATE_LIMITS) {
                 Map<SearchIndex.Candidate, Double> scores = new HashMap<>();
@@ -80,7 +80,7 @@ public class KnowledgeSearch {
                 }
             }
             throw new KnowledgeFailure(KnowledgeError.INDEX_UNAVAILABLE);
-        } finally { capacity.release(); }
+        }
     }
 
     private static Duration remaining(long deadline) {

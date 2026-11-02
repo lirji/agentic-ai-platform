@@ -112,8 +112,10 @@ def create_app() -> FastAPI:
             finally:
                 await scoped.aclose()
 
-        use_case = RetrievalUseCase(client, RetrievalCapacity(1), reranker)
-        app.include_router(retrieval_router(use_case, verifier, candidates, reranker))
+        use_case = RetrievalUseCase(client, RetrievalCapacity(retrieval.max_concurrent), reranker)
+        app.include_router(
+            retrieval_router(use_case, verifier, candidates, reranker, retrieval.max_concurrent)
+        )
 
     @app.get("/health/live", response_model=LivenessReply)
     async def liveness() -> LivenessReply:

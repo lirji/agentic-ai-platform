@@ -96,7 +96,7 @@ U01代表语料/标注、U04真实Reranker条件、U03共享身份、U06规模SL
 
 公开投影为`{schemaVersion:"knowledge-search-result-v2",strategy,mode,degraded,elapsedMs,hits}`；每条命中恰为`{rank,identity,text,source,rrfScore,rerankScore,routes}`，rank从1连续编号，routes固定VECTOR/KEYWORD顺序，仅表达该合法命中的贡献来源。rrfScore沿既有兼容协议提供，不能额外公开sourceRank/sourceScore、候选总量、过滤数量或内部URL。rerankScore未实际观察时为null；不增加推算费用或未计时阶段的零值。
 
-HTTP和worker分别复用进程级单实例用例，每进程最多1个在途，无等待队列；当前部署必须固定一个HTTP进程和一个串行worker，合计最多2。不能将通用测试类的默认2许可直接各装配一次。扩副本/uvicorn多worker前必须重新分配容量，当前不承诺集群分布式信号量。Java公共门面不获取候选回调许可；原语仍复用已有Knowledge容量。每次执行的30秒总限额夹紧到调用方剩余期限，取消继续传播且不退回已预留模型费用。
+默认兼容拓扑（S16B显式容量模式见[容量契约](CAPACITY_CONTRACTS.md)）中，HTTP和worker分别复用进程级单实例用例，每进程最多1个在途，无等待队列；当前部署必须固定一个HTTP进程和一个串行worker，合计最多2。不能将通用测试类的默认2许可直接各装配一次。扩副本/uvicorn多worker前必须重新分配容量，当前不承诺集群分布式信号量。Java公共门面不获取候选回调许可；原语仍复用已有Knowledge容量。每次执行的30秒总限额夹紧到调用方剩余期限，取消继续传播且不退回已预留模型费用。
 
 ### 9.2 完整引用的受限核验
 

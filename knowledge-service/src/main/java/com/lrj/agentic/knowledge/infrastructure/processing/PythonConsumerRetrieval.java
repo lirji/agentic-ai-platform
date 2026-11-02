@@ -33,10 +33,12 @@ public class PythonConsumerRetrieval implements ConsumerRetrieval {
 
     /** 缺少回调身份或旧处理基础配置时启动失败，不开放半条链路。 */
     public PythonConsumerRetrieval(ProcessingProperties properties, ProcessingJson json, PythonServiceIdentity identity,
-            Tracer tracer, Propagator propagator, @Value("${knowledge.runtime.enabled:false}") boolean callbackEnabled) {
+            Tracer tracer, Propagator propagator, @Value("${knowledge.runtime.enabled:false}") boolean callbackEnabled,
+            com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties capacity) {
         if (!properties.enabled() || !callbackEnabled) { throw new IllegalArgumentException("完整检索回调尚未启用"); }
         this.properties = properties; this.json = json; this.identity = identity;
-        this.http = BoundedHttp.isolated(tracer, propagator, 1, RetrievalProtocol.MAX_RESPONSE_BYTES);
+        this.http = BoundedHttp.isolated(tracer, propagator,
+                capacity.enabled() ? Math.max(1, capacity.searchSlots()) : 1, RetrievalProtocol.MAX_RESPONSE_BYTES);
     }
 
     /** 预算只向下收紧；公开输入不能决定内部URL、身份或模型参数。 */

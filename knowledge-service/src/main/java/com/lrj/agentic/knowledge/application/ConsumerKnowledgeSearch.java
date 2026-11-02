@@ -15,12 +15,15 @@ import org.springframework.stereotype.Service;
 /** 新公共搜索保留Java业务边界，远程融合完成后再核验完整发布事实。 */
 @Service
 public class ConsumerKnowledgeSearch {
+    private static final int CAPABILITY_SECONDS = 5;
     private final ObjectProvider<ConsumerRetrieval> runtimes;
     private final AuthorizedRetrieval authority;
+    private final com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity;
 
-    /** 不注入KnowledgeQueryCapacity，避免持有候选回调所需许可等待Python。 */
-    public ConsumerKnowledgeSearch(ObjectProvider<ConsumerRetrieval> runtimes, AuthorizedRetrieval authority) {
-        this.runtimes = runtimes; this.authority = authority;
+    /** 外层SEARCH与候选回调CANDIDATE使用独立许可，避免等待Python时占用回调额度。 */
+    public ConsumerKnowledgeSearch(ObjectProvider<ConsumerRetrieval> runtimes, AuthorizedRetrieval authority,
+            com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity) {
+        this.runtimes = runtimes; this.authority = authority; this.capacity = capacity;
     }
 
     /** 只有版本化入口调用；旧K04仍保持原检索语义。 */
@@ -28,6 +31,13 @@ public class ConsumerKnowledgeSearch {
         validate(input);
         var runtime = runtimes.getIfAvailable();
         if (runtime == null) { throw new KnowledgeFailure(KnowledgeError.RETRIEVAL_DISABLED); }
+        try (var permit = capacity.acquire(owner, com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity.Lane.SEARCH, Duration.ofSeconds(QUERY_SECONDS))) {
+            return searchWithinPermit(owner,input,runtime);
+        }
+    }
+
+    /** 许可已提交后才调用Python，回调与最终核权沿同一根期限。 */
+    private Result searchWithinPermit(Caller owner,Search input,ConsumerRetrieval runtime) {
         long deadline = System.nanoTime() + Duration.ofSeconds(QUERY_SECONDS).toNanos();
         Result result = runtime.search(owner, input, remaining(deadline));
         if (result == null) { throw new KnowledgeFailure(KnowledgeError.RETRIEVAL_RESULT_INVALID); }
@@ -66,9 +76,12 @@ public class ConsumerKnowledgeSearch {
     public Capabilities capabilities(Caller owner) {
         var runtime = runtimes.getIfAvailable();
         if (runtime == null) { return Capabilities.disabled(); }
-        var result = runtime.capabilities(owner);
-        if (result == null) { throw new KnowledgeFailure(KnowledgeError.RETRIEVAL_RESULT_INVALID); }
-        return result.validated();
+        try (var permit = capacity.acquire(owner,
+                com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity.Lane.SEARCH, Duration.ofSeconds(CAPABILITY_SECONDS))) {
+            var result = runtime.capabilities(owner);
+            if (result == null) { throw new KnowledgeFailure(KnowledgeError.RETRIEVAL_RESULT_INVALID); }
+            return result.validated();
+        }
     }
 
     /** 新输入不继承旧入口topK/策略默认值，格式和范围规则继续共用。 */

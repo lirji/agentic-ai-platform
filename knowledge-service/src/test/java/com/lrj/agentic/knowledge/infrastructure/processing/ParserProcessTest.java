@@ -76,7 +76,8 @@ class ParserProcessTest {
         assertThatThrownBy(() -> new ParserProperties(true, false, false, Path.of("/does-not-exist"), Path.of("/missing.jar")))
                 .isInstanceOf(IllegalArgumentException.class);
         var disabled = new ParserProcess(new ParserProperties(false, false, false, null, null),
-                new ProcessingJson(new ObjectMapper()), Tracer.NOOP, new SimpleMeterRegistry());
+                new ProcessingJson(new ObjectMapper()), Tracer.NOOP, new SimpleMeterRegistry(),
+                new com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties(false,2,2,4,java.util.Map.of()));
         assertThatThrownBy(() -> disabled.extract(new byte[] {1}, Format.PDF)).isInstanceOfSatisfying(KnowledgeFailure.class,
                 error -> assertThat(error.error()).isEqualTo(KnowledgeError.PARSER_UNAVAILABLE));
         disabled.close();
@@ -89,6 +90,27 @@ class ParserProcessTest {
         }
     }
 
+    @Test void reservedParserSlotsRunTogetherAndCloseReapsEveryChild() throws Exception {
+        try (Fixture fixture = fixture(Duration.ofSeconds(10), true)) {
+            Path first = directory.resolve("first.pid"), second = directory.resolve("second.pid");
+            Runnable one = () -> { try { fixture.parser.extract(request("hang", first), Format.PDF); }
+                catch (KnowledgeFailure expected) { /* 关闭进程的结果不能成为成功解析。 */ } };
+            Runnable two = () -> { try { fixture.parser.extract(request("hang", second), Format.DOCX); }
+                catch (KnowledgeFailure expected) { /* 两个槽位的中断独立收尾。 */ } };
+            Thread a = new Thread(one), b = new Thread(two);
+            a.start(); b.start();
+            try {
+                awaitPid(first); awaitPid(second);
+                assertThat(fixture.meters.get("knowledge.parser.active").gauge().value()).isEqualTo(2);
+                assertThatThrownBy(() -> fixture.parser.extract(request("invalid", directory.resolve("third.pid")), Format.PDF))
+                        .isInstanceOfSatisfying(KnowledgeFailure.class, error -> assertThat(error.error()).isEqualTo(KnowledgeError.BUSY));
+                fixture.parser.close();
+            } finally { a.interrupt(); b.interrupt(); a.join(6000); b.join(6000); }
+            assertThat(a.isAlive()).isFalse(); assertThat(b.isAlive()).isFalse();
+            assertDead(first); assertDead(second);
+        }
+    }
+
     private void failure(Fixture fixture, String mode, KnowledgeError expected) throws Exception {
         Path pid = directory.resolve(mode + ".pid");
         assertThatThrownBy(() -> fixture.parser.extract(request(mode, pid), Format.PDF))
@@ -97,7 +119,9 @@ class ParserProcessTest {
         assertThat(fixture.meters.get("knowledge.parser.active").gauge().value()).isZero();
     }
 
-    private Fixture fixture(Duration timeout) throws Exception {
+    private Fixture fixture(Duration timeout) throws Exception { return fixture(timeout, false); }
+
+    private Fixture fixture(Duration timeout, boolean reserved) throws Exception {
         Path jar = directory.resolve("fault-parser.jar");
         Manifest manifest = new Manifest();
         manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
@@ -111,7 +135,11 @@ class ParserProcessTest {
         }
         var meters = new SimpleMeterRegistry();
         var properties = new ParserProperties(true, false, false, Path.of(System.getProperty("java.home"), "bin", "java"), jar);
-        return new Fixture(new ParserProcess(properties, new ProcessingJson(new ObjectMapper()), Tracer.NOOP, meters, timeout), meters);
+        var policy = new com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties(true,2,2,2,
+                java.util.Map.of("a",new com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties.Share(1,1,1,2),
+                        "b",new com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties.Share(1,1,1,2)));
+        return new Fixture(reserved ? new ParserProcess(properties, new ProcessingJson(new ObjectMapper()), Tracer.NOOP, meters, policy)
+                : new ParserProcess(properties, new ProcessingJson(new ObjectMapper()), Tracer.NOOP, meters, timeout), meters);
     }
 
     private static byte[] request(String mode, Path path) { return (mode + "|" + path).getBytes(StandardCharsets.UTF_8); }

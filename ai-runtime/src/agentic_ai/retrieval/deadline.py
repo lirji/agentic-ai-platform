@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 
 from agentic_ai.retrieval.errors import RetrievalCode, RetrievalError
-from agentic_ai.retrieval.models import QUERY_CAPACITY, QUERY_SECONDS
+from agentic_ai.retrieval.models import MAX_QUERY_CAPACITY, QUERY_CAPACITY, QUERY_SECONDS
 
 
 @dataclass(frozen=True, slots=True)
@@ -45,8 +45,8 @@ class RetrievalCapacity:
     """由装配方在应用范围共享，不能为每个请求另建两个许可。"""
 
     def __init__(self, maximum: int = QUERY_CAPACITY) -> None:
-        # 生产装配按HTTP/worker分别分配1许可，不能因新增进程翻倍总容量。
-        if type(maximum) is not int or not 1 <= maximum <= QUERY_CAPACITY:
+        # 此处只保护本进程；跨实例租户份额由Java准入裁决，部署须核对连接总量。
+        if type(maximum) is not int or not 1 <= maximum <= MAX_QUERY_CAPACITY:
             raise RetrievalError(RetrievalCode.CONFIG_INVALID)
         self._slots = asyncio.Semaphore(maximum)
 

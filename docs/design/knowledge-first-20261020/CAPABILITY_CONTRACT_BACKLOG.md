@@ -20,7 +20,7 @@
 | C-OPERATIONS | S14A–D；Knowledge | 反馈与问题/证据/任务关联；候选版本/内容摘要；评估/审批/发布角色与状态；实际入库绑定；发布后探测和补偿版本 | 编辑使评估审批失效；发布幂等、未知结果可查询；并发审批/发布合法；补偿不直接覆写已发布历史；审批与任务图暂停分开 |
 | C-USAGE | S15A/B；Tasks 内独立 usage 模块 | [usage-v1](USAGE_CONTRACTS.md)、[设计](USAGE_DESIGN.md)、[验收](USAGE_ACCEPTANCE.md)：运营方资金池/CNY累计周期、稳定operation/attempt、一次发送许可、结算/未知/迁移 | S15A冻结；S15B待实施。原子准入、未知占额、历史连续、同源导入唯一；内部成本不是供应商账单，不新增实际额度 |
 | C-OBS | S15C/S16D；现有观测/各业务 Owner；[S15C契约](OBSERVABILITY_CONTRACTS.md) | W3C trace、request/task/doc/run 关联；检索/模型/队列阶段指标；业务审计事件与权限、脱敏/保留 | 不用高基数 ID 作普通指标标签；采样/采集失败不阻断业务；不默认外发正文/提示；告警有处置人/步骤 |
-| C-CAPACITY | S16A–C；Tasks/Knowledge/worker；[S16A契约](CAPACITY_CONTRACTS.md) | 多 worker 领取/租约/接管、调度公平、租户额度、下游并发/连接/排队/deadline、退出行为 | fencing 延续；取消与迟到结果一致；串号/饥饿/过载可验证；目标值先约定或标观测值，不虚构 SLA |
+| C-CAPACITY | S16A–C；Tasks/Knowledge/worker；[S16A/B契约](CAPACITY_CONTRACTS.md) | 多 worker 领取/租约/接管、调度公平、租户额度、下游并发/连接/排队/deadline、退出行为 | fencing 延续；取消与迟到结果一致；串号/饥饿/过载可验证；目标值先约定或标观测值，不虚构 SLA |
 | C-RELEASE | S8F 最小 CI；S17A/B/D 完整发布；Runtime/契约/数据库 Owner | 固定制品、启动与配置、版本兼容矩阵、迁移账户/阶段、回退、CI/SBOM/依赖门禁 | 最小CI已在 [ci-v1](CI_CONTRACTS.md) 冻结；S8F 不依赖 S17；只增量迁移、不重写历史；代码回退与数据补偿分开；模型预算不因重建重置；失败门禁不自动豁免 |
 | C-RECOVERY | S17C；各权威数据 Owner | 数据分类、备份一致点、隔离还原目标、索引可重建条件、任务/引用/预算恢复、删除传播、RTO/RPO | 明确保留期限及授权后才做真实清理；不能覆盖共享/生产数据；备份成功不能代替还原验证 |
 | C-SYNC | S18A；Knowledge | 一个真实来源的身份绑定、记录 ID、版本/游标、变更/删除、轮询/暂停/重试/运行历史 | 来源不能由请求任意替换 URL/身份；重放去重；业务定时触发按个人约定用 XXL-JOB，首次需要时复用基础设施，不预先加 MQ |

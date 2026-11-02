@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "paidCalls": 0,
+  "unchanged": {
+    ".local/chat-budget-20261020.json": true,
+    ".local/embedding-budget-20261020.json": true
+  }
+}

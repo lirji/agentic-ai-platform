@@ -60,7 +60,7 @@ class RetrievalFusionGoldenTest {
             };
             var beans = new StaticListableBeanFactory(Map.of("model", model, "index", index));
             var search = new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class),
-                    beans.getBeanProvider(SearchIndex.class), 45, 8, new KnowledgeQueryCapacity());
+                    beans.getBeanProvider(SearchIndex.class), 45, 8, CapacityTestSupport.query());
             var hits = search.search(owner, new KnowledgeSearch.SearchRequest("固定查询", 2, null));
             assertThat(hits).hasSize(sample.path("expectedOrder").size());
             for (int i = 0; i < hits.size(); i++) {

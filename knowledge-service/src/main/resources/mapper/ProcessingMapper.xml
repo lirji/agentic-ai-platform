@@ -15,6 +15,9 @@
         WHERE next_attempt_at &lt;= UTC_TIMESTAMP(6)
         AND (status = 'RECEIVED' OR (status = 'PROCESSING' AND lease_until &lt;= UTC_TIMESTAMP(6)))
         <if test="tenant != null and tenant != ''">AND tenant_id = #{tenant}</if>
+        <if test="restricted">AND tenant_id IN
+            <foreach collection="allowedTenants" item="allowed" open="(" close=")" separator=",">#{allowed}</foreach>
+        </if>
         ORDER BY next_attempt_at, created_at, job_id LIMIT 20
     </select>
     <select id="find" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingRow">

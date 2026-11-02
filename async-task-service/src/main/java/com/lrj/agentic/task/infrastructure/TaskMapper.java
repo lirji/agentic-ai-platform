@@ -13,7 +13,9 @@ public interface TaskMapper extends BaseMapper<TaskRow> {
     TaskRow byKey(@Param("tenant") String tenant, @Param("owner") String owner, @Param("key") String key);
     TaskRow lock(@Param("tenant") String tenant, @Param("id") String id);
     TaskRow read(@Param("tenant") String tenant, @Param("id") String id);
-    TaskRow candidate(@Param("tenant") String tenant, @Param("runtime") String runtime, @Param("graph") String graph);
+    TaskRow candidate(@Param("tenant") String tenant, @Param("runtime") String runtime, @Param("graph") String graph,
+            @Param("interactive") boolean interactive, @Param("background") boolean background,
+            @Param("backgroundKinds") List<String> backgroundKinds);
     int create(@Param("row") TaskRow row);
     int claim(@Param("id") String id, @Param("worker") String worker, @Param("seconds") int seconds);
     int heartbeat(@Param("id") String id, @Param("worker") String worker, @Param("epoch") long epoch,

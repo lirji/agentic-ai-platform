@@ -39,6 +39,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
                 "knowledge.lifecycle.updates-enabled=true", "knowledge.lifecycle.withdrawals-enabled=true",
                 "knowledge.lifecycle.deletions-enabled=true", "knowledge.lifecycle.reindexes-enabled=true"})
 class KnowledgeLifecycleIT {
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity distributedCapacity;
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties capacityPolicy;
     @Autowired KnowledgeService knowledge;
     @Autowired KnowledgeRepository registrations;
     @Autowired LifecycleService lifecycle;
@@ -514,7 +516,7 @@ class KnowledgeLifecycleIT {
             }
         };
         var beans = new org.springframework.beans.factory.support.StaticListableBeanFactory(); beans.addBean("model", model); beans.addBean("index", counted);
-        var search = new KnowledgeSearch(processing, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), 45, 8, new KnowledgeQueryCapacity());
+        var search = new KnowledgeSearch(processing, beans.getBeanProvider(KnowledgeProcessor.class), beans.getBeanProvider(SearchIndex.class), 45, 8, new KnowledgeQueryCapacity(distributedCapacity,capacityPolicy));
         if (staleCount == 20) {
             assertThat(search.search(owner, new KnowledgeSearch.SearchRequest(query, 1, List.of(first.documentId())))).extracting(KnowledgeSearch.Hit::chunkId).containsExactly(chunk(first));
             assertThat(limits).containsExactly(20, 20, 60, 60);

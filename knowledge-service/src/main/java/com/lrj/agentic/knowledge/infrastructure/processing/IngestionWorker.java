@@ -39,33 +39,37 @@ public class IngestionWorker implements SmartLifecycle {
     private final AtomicInteger pending = new AtomicInteger();
     private final AtomicInteger failed = new AtomicInteger();
     private volatile boolean running;
-    private final ThreadPoolExecutor executor = new ThreadPoolExecutor(ProcessingProtocol.MAX_ACTIVE_INGESTIONS,
-            ProcessingProtocol.MAX_ACTIVE_INGESTIONS, 0, TimeUnit.SECONDS,
-            new SynchronousQueue<>(), runnable -> new Thread(runnable, "knowledge-ingestion"),
-            new ThreadPoolExecutor.AbortPolicy());
+    private final ThreadPoolExecutor executor;
+    private final int concurrency;
     private final ScheduledThreadPoolExecutor heartbeat = new ScheduledThreadPoolExecutor(2,
             runnable -> new Thread(runnable, "knowledge-lease"));
 
     /** 仅显式不可变任务上下文跨线程，不复制用户凭据或事务 ThreadLocal。 */
     public IngestionWorker(ProcessingRepository repository, IngestionRunner runner, ProcessingProperties properties,
-            MeterRegistry meters, Tracer tracer) {
+            MeterRegistry meters, Tracer tracer,
+            com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties capacity) {
         this.repository = repository;
         this.runner = runner;
         this.properties = properties;
         this.meters = meters;
         this.tracer = tracer;
+        concurrency = capacity.enabled() ? capacity.ingestionSlots() : ProcessingProtocol.MAX_ACTIVE_INGESTIONS;
+        // 零入库份额不启动循环；线程池对象仍使用合法的最小上限，不额外授予许可。
+        executor = new ThreadPoolExecutor(Math.max(1, concurrency), Math.max(1, concurrency), 0, TimeUnit.SECONDS,
+                new SynchronousQueue<>(), runnable -> new Thread(runnable, "knowledge-ingestion"),
+                new ThreadPoolExecutor.AbortPolicy());
         heartbeat.setRemoveOnCancelPolicy(true);
         meters.gauge("knowledge.ingestion.active", active);
         meters.gauge("knowledge.ingestion.pending", pending);
         meters.gauge("knowledge.ingestion.failed", failed);
     }
 
-    /** 生命周期只提交一个循环，执行队列容量为零，任务本身始终在数据库。 */
+    /** 每个预留槽位有独立循环，队列容量为零，任务本身始终在数据库。 */
     @Override
     public void start() {
         if (!running) {
             running = true;
-            executor.execute(this::loop);
+            for (int slot = 0; slot < concurrency; slot++) { executor.execute(this::loop); }
         }
     }
 
@@ -88,7 +92,7 @@ public class IngestionWorker implements SmartLifecycle {
     }
 
     private void process(ProcessingClaim claim) {
-        active.set(1);
+        active.incrementAndGet();
         meters.counter("knowledge.ingestion.events", "event", "claim").increment();
         Timer.Sample timer = Timer.start(meters);
         Thread processing = Thread.currentThread();
@@ -143,7 +147,7 @@ public class IngestionWorker implements SmartLifecycle {
             }
             span.end();
             timer.stop(meters.timer("knowledge.ingestion.duration"));
-            active.set(0);
+            active.decrementAndGet();
         }
     }
 

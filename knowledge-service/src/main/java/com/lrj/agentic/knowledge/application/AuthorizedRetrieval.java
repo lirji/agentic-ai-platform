@@ -49,8 +49,8 @@ public class AuthorizedRetrieval {
         RankedSearchIndex index = indices.getIfAvailable();
         if (index == null) { throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED); }
         long deadline = deadline(input.timeoutMs());
-        capacity.acquireOrReject();
-        try {
+        try (var permit = capacity.acquireOrReject(caller,
+                com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity.Lane.CANDIDATE, java.time.Duration.ofMillis(input.timeoutMs()))) {
             for (int limit : RetrievalProtocol.CANDIDATE_LIMITS) {
                 var vectors = raw(index, Sink.VECTOR, caller, input.query(), vector, documents, limit, deadline);
                 var keywords = raw(index, Sink.KEYWORD, caller, input.query(), vector, documents, limit, deadline);
@@ -75,7 +75,7 @@ public class AuthorizedRetrieval {
                 }
             }
             throw new KnowledgeFailure(KnowledgeError.INDEX_UNAVAILABLE);
-        } finally { capacity.release(); }
+        }
     }
 
     /** 完整身份必须全部仍为当前发布，不能用现时新稿替换冻结候选。 */
@@ -89,8 +89,8 @@ public class AuthorizedRetrieval {
         var requested = List.copyOf(input.candidates());
         if (new HashSet<>(requested).size() != requested.size()) { invalid(); }
         long deadline = deadline(input.timeoutMs());
-        capacity.acquireOrReject();
-        try {
+        try (var permit = capacity.acquireOrReject(caller,
+                com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity.Lane.CANDIDATE, java.time.Duration.ofMillis(input.timeoutMs()))) {
             remaining(deadline);
             Map<Identity, Hit> current = new HashMap<>();
             var ids = requested.stream().map(Identity::chunkId).distinct().toList();
@@ -107,7 +107,7 @@ public class AuthorizedRetrieval {
                 hits.add(value);
             }
             return new ResolveReply(RetrievalProtocol.SCHEMA, List.copyOf(hits));
-        } finally { capacity.release(); }
+        }
     }
 
     private static List<RankedCandidate> raw(RankedSearchIndex index, Sink sink, Caller caller, String query,

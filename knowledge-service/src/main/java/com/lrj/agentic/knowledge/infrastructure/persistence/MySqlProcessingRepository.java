@@ -38,19 +38,23 @@ public class MySqlProcessingRepository implements ProcessingRepository {
     private final ProcessingJson json;
     private final LifecycleMapper lifecycle;
     private final SharedReadAccess sharing;
+    private final com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity;
 
     /** 与受理使用同一事务管理器，但不共享线程或连接上的事务资源。 */
     public MySqlProcessingRepository(ProcessingMapper mapper, KnowledgeMapper knowledge,
             PlatformTransactionManager manager, @Value("${knowledge.transaction-timeout-seconds:5}") int seconds,
-            ProcessingJson json, LifecycleMapper lifecycle) {
-        this(mapper, knowledge, manager, seconds, json, lifecycle, null);
+            ProcessingJson json, LifecycleMapper lifecycle,
+            com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity) {
+        this(mapper, knowledge, manager, seconds, json, lifecycle, null, capacity);
     }
     /** 正式容器注入当前共享权限适配，历史测试构造仍保持owner范围。 */
     @org.springframework.beans.factory.annotation.Autowired
     public MySqlProcessingRepository(ProcessingMapper mapper, KnowledgeMapper knowledge,
             PlatformTransactionManager manager, @Value("${knowledge.transaction-timeout-seconds:5}") int seconds,
-            ProcessingJson json, LifecycleMapper lifecycle, SharedReadAccess sharing) {
+            ProcessingJson json, LifecycleMapper lifecycle, SharedReadAccess sharing,
+            com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity) {
         this.sharing = sharing;
+        this.capacity = capacity;
         this.mapper = mapper;
         this.knowledge = knowledge;
         this.json = json;
@@ -60,12 +64,16 @@ public class MySqlProcessingRepository implements ProcessingRepository {
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
     }
 
-    /** 先无锁选有限候选，再按document→job领取；管理操作永远不会与worker形成反序锁。 */
+    /** 先排除满额租户，再按capacity→document→job领取；仅释放资源的旧操作不反向取得容量锁。 */
     @Override
     public Optional<ProcessingClaim> claim(String worker, int leaseSeconds, String tenantScope) {
         return access(() -> {
-            for (ProcessingRow candidate : mapper.nextCandidates(tenantScope)) {
+            var selection = capacity.ingestibleTenants(tenantScope);
+            if (selection.restricted() && selection.tenants().isEmpty()) { return Optional.empty(); }
+            for (ProcessingRow candidate : mapper.nextCandidates(tenantScope, selection.restricted(), selection.tenants())) {
                 Optional<ProcessingClaim> claimed = transaction.execute(status -> {
+                    capacity.guard();
+                    if (!capacity.canIngest(candidate.tenantId())) { return Optional.empty(); }
                     Caller caller = new Caller(candidate.tenantId(), candidate.ownerId());
                     var job = knowledge.findIngestion(caller.tenantId(), caller.userId(), candidate.jobId());
                     if (job == null) { return Optional.empty(); }
@@ -200,13 +208,20 @@ public class MySqlProcessingRepository implements ProcessingRepository {
     @Override
     public Ingestion retry(Caller caller, String jobId, long revision) {
         return access(() -> transaction.execute(status -> {
+            capacity.guard();
             var before = knowledge.findIngestion(caller.tenantId(), caller.userId(), jobId);
             if (before == null) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
             var state = lifecycle.lockDocument(caller, before.documentId());
             if (state == null || !state.lifecycleReady() || !LifecycleModels.Lifecycle.ACTIVE.code().equals(state.lifecycle())
                     || !jobId.equals(state.activeJobId())) { throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT); }
-            int delay = (1 << Math.min(before.retryCount() + 1, ProcessingProtocol.MAX_RETRIES))
+            var current = lifecycle.lockJob(caller, jobId);
+            if (current == null || !IngestionStatus.FAILED.code().equals(current.status()) || !current.retryable()
+                    || current.retryCount() >= ProcessingProtocol.MAX_RETRIES || current.revision() != revision) {
+                throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT);
+            }
+            int delay = (1 << Math.min(current.retryCount() + 1, ProcessingProtocol.MAX_RETRIES))
                     + ThreadLocalRandom.current().nextInt(2);
+            capacity.acceptIngestion(caller.tenantId());
             changed(mapper.retry(caller, jobId, revision, delay, ProcessingProtocol.MAX_RETRIES));
             var after = knowledge.findIngestion(caller.tenantId(), caller.userId(), jobId).domain();
             // REINDEX有独立job；不能让其恢复覆盖首次内容任务或较新的失败草稿状态。

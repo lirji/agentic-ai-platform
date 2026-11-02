@@ -1,4 +1,4 @@
-# S16A多worker运行与恢复
+# S16A–B多worker、租户份额与恢复
 
 本入口是显式、最多2实例的受控清单；[契约](CAPACITY_CONTRACTS.md)冻结领取/版本/预算边界。默认单worker不变，组预检不启动进程、不连接数据库、不发送模型。没有长期实例自动扩容或CENTRAL预算迁移。本轮只运行登记test库和确定性模型替身。
 
@@ -73,3 +73,51 @@ AGENTIC_STAGED_RESEARCH_PG_IT=1 AGENTIC_RESEARCH_PG_IT=1 \
 ```
 
 夹具启动临时Tasks、独立Python子进程和受控引用端口，使用随机test租户/任务；所有模型为替身，无付费请求。前一组每场景两个竞争进程、一个后继进程；计划确认后终止本夹具自己的进程。后继恢复使用真实PG与中央HTTP。故障/完成后有界等待退出，保留`.logs/s11e-generation-pg-*/workers-*`中的私密配置/结果/日志，不停止长期服务、不清理数据。预算资金出口双实例竞争、未知占额由S15B证据支持；本组直接模型端口用于验证研究次数预算，不冒称真实提供方计费。
+
+
+## S16B显式预留份额
+
+默认关闭且不登记策略；代码升级不等于启用容量模式。本轮Docker更新继续沿用现有默认。启用前升级全部相应writer，核对所有未终结任务的tenant/lane均有份额，旧有效租约不得超额；旧队列超额保留、拒绝追加直到排空。Tasks V8与Knowledge V19只做追加迁移，应用仍仅DML。首次启用把排序配置摘要写入各自DB，此后关闭或不同配置的实例拒绝工作；不能靠改环境变量、删策略行或手工重置许可调整份额。策略变更需要后续有版本的受控方案。
+
+下面是两租户受控验证示例，须替换为真实授权租户并评估资源后使用；不是生产推荐值。采用独立的Spring外部YAML，通过现有`--spring.config.additional-location=file:/absolute/private/capacity.yaml`载入，不能把多个重复租户键拼入JSON。Spring YAML加载拒绝重复键，配置类拒绝未知字段、零/负或超额份额。
+
+```yaml
+task:
+  capacity:
+    enabled: true
+    max-interactive: 2
+    max-background: 2
+    tenants:
+      tenant-a: {interactive: 1, background: 1, queued-per-lane: 8}
+      tenant-b: {interactive: 1, background: 1, queued-per-lane: 8}
+knowledge:
+  capacity:
+    enabled: true
+    max-ingestions: 2
+    max-searches: 2
+    max-candidates: 4
+    tenants:
+      tenant-a: {ingestions: 1, searches: 1, candidates: 2, queued-ingestions: 8}
+      tenant-b: {ingestions: 1, searches: 1, candidates: 2, queued-ingestions: 8}
+```
+
+每个服务只载入自身段。份额不可借用，未知租户拒绝；队列上限含执行中记录。Tasks的RESEARCH/KNOWLEDGE_EVALUATION使用后台lane，其余已登记kind使用交互lane；幂等重放不增加积压，满额claim返回空。Knowledge上传、更新、重索引、retry、候选私有副本与批准均遵守同一入库队列。`TASK_CAPACITY_EXCEEDED`与`KNOWLEDGE_BUSY`表示429，可保留原请求键待容量释放后重试；不要新建无界客户端重试队列。
+
+| 资源 | 示例单实例保护层 | 跨实例有效上限/注意 |
+| --- | --- | --- |
+| Tasks交互/后台有效租约 | 原固定tenant Python worker逐进程1 | 各2，需为各tenant/图配置worker，额外进程不增加DB额度 |
+| Knowledge入库循环/解析JVM | 各2槽、执行队列0 | 有效租约合计2；每个解析JVM原128MiB heap/32MiB direct/96MiB metaspace不变，另计宿主和管道线程 |
+| Java SEARCH转发 | 2 | SEARCH有效许可2；能力目录也纳入此类许可 |
+| Java本地查询/共用HTTP | 查询6、共用HTTP8 | DB SEARCH2/CANDIDATE4，入库2；传输池不是资金权威 |
+| Python检索HTTP与用例 | `AI_RETRIEVAL_MAX_CONCURRENT=2`（默认1，范围1–8） | 同一进程共用配置，Java预留份额是跨实例上限；多uvicorn进程须逐个计连接 |
+| Python处理API | `AI_PROCESSING_MAX_CONCURRENT=4`（原默认2，范围1–8） | 覆盖入库2+旧搜索2；新搜索另有检索入口，总量按实际入口去重核算 |
+| Embedding传输 | 对应配置`max_connections`至少4，原默认10 | 本进程入库+搜索峰值4；其他worker自己的客户端/资金账户另计 |
+| MySQL/Hikari | Knowledge/Tasks各默认10；每次准入短事务5秒 | 两实例每服务最多20连接（实际覆盖配置优先）；不得持连接等待模型。容量锁只用于准入/计数 |
+
+示例只覆盖RRF及确定性模型替身；Rerank提供方、共享索引、CPU、网络和资金账户仍可能拒绝或降速，不把并发上限解释成吞吐/SLO。启用更大Java份额必须重新核对Python（最多8）、HTTP、DB、解析内存和实例总量，不能只增配额。预算仍按S15B执行；多worker使用CENTRAL，不复制LEGACY_LOCAL余额。
+
+停止拥有租约的实例时，先停止领取、中断本地等待并关闭客户端；持久任务保留，过期后新epoch接管，旧心跳/写入无效。在线槽位期限为请求预算向上取整加5秒（最多300秒），结束时按token释放；过期或失去token的调用不能返回迟到成功。外部未知效果不等于已取消，原费用占额保留。
+
+`*_CAPACITY_CONFIG_INVALID`应核对实例策略与DB登记、旧任务所属租户及全部writer版本；不得通过回退关闭开关绕过。数据库不可达返回依赖不可用，无本地准入后门。排查积压同时核对份额、固定tenant worker、图能力和资金；增加队列或worker不产生新配额。
+
+复验证据及故障范围见[租户隔离验收](../../qa/tenant-capacity-isolation-20261102/TEST_RESULT.md)。新容量IT须使用新隔离test库，不能向已有登记库换策略：按`deploy/local.py environment('test')`和`deploy/task_local.py environment('test')`原配置提供连接，独立schema授予既有app DML/migrator追加DDL，执行`mvn -B -ntp -pl knowledge-service -am -Pintegration -Dit.test=KnowledgeCapacityIT -Dfailsafe.failIfNoSpecifiedTests=false verify`及Tasks对应`TaskCapacityIT`。首次启用兼容测试各用另一个未登记test库；普通回归不启用容量模式。保留schema、源与日志，不清理历史记录，不调用付费模型。

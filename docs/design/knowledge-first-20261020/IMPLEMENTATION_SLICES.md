@@ -233,7 +233,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S15B | 共享额度预留、结算与调用归因 | S15A, S13A | IMPLEMENT | DONE |
 | S15C | 跨语言诊断和业务审计 | S8F, S11E | IMPLEMENT | DONE |
 | S16A | 多 worker 竞争和有界恢复 | S15B, S12D, S13C | IMPLEMENT | DONE |
-| S16B | 租户公平与后台资源隔离 | S16A, S15C | IMPLEMENT | PLANNED |
+| S16B | 租户公平与后台资源隔离 | S16A, S15C | IMPLEMENT | DONE |
 | S16C | 代表负载与故障容量报告 | S16B, S10F, S11E | VALIDATE | PLANNED |
 | S16D | 可操作告警与运行手册 | S15C, S16C | IMPLEMENT | PLANNED |
 | S17A | 完整应用制品与本地部署入口 | S8F, S9C, S11E, S15B | IMPLEMENT | PLANNED |
@@ -643,7 +643,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-CAPACITY；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 饥饿/饱和/拒绝/下游慢；任务不静默丢失；Java TTL/Trace和Python上下文验证；跨实例总预算；优雅停机可续办。
 - **Pass / Runtime：** IMPLEMENT；既有 DB/HTTP/worker资源；不为了公平预设 MQ。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G13 G14。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G13 G14。CI01–CI06本地PASS，见[租户隔离验收](../../qa/tenant-capacity-isolation-20261102/TEST_RESULT.md)；静态份额默认未启用，Git/Docker状态以PROGRESS_STATE及部署收据为准。
 
 ### S16C · 代表负载与故障容量报告
 

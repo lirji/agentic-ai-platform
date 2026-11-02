@@ -23,15 +23,18 @@ public class MySqlKnowledgeRepository implements KnowledgeRepository {
     private final KnowledgeMapper mapper;
     private final TransactionTemplate transaction;
     private final LifecycleInitialization lifecycle;
+    private final com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity;
 
     /** 短事务期限配置化，拒绝无界等待。 */
     public MySqlKnowledgeRepository(KnowledgeMapper mapper, PlatformTransactionManager manager,
-            @Value("${knowledge.transaction-timeout-seconds:5}") int timeoutSeconds, LifecycleInitialization lifecycle) {
+            @Value("${knowledge.transaction-timeout-seconds:5}") int timeoutSeconds, LifecycleInitialization lifecycle,
+            com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity) {
         if (timeoutSeconds < 1 || timeoutSeconds > 10) {
             throw new IllegalArgumentException("知识事务期限必须为 1–10 秒");
         }
         this.mapper = mapper;
         this.lifecycle = lifecycle;
+        this.capacity = capacity;
         this.transaction = new TransactionTemplate(manager);
         transaction.setTimeout(timeoutSeconds);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
@@ -54,15 +57,20 @@ public class MySqlKnowledgeRepository implements KnowledgeRepository {
     @Override
     public Ingestion register(Document document, Ingestion ingestion) {
         try {
-            transaction.executeWithoutResult(status -> {
+            return transaction.execute(status -> {
+                capacity.guard();
+                // 准入锁内重查幂等；满额不能把已提交的相同请求改成拒绝。
+                var existing = mapper.findIdempotency(ingestion.tenantId(), ingestion.ownerId(), ingestion.idempotencyKey());
+                if (existing != null) { return existing.domain().requireFingerprint(ingestion.requestFingerprint()); }
+                capacity.acceptIngestion(ingestion.tenantId());
                 if (mapper.createDocument(DocumentRow.from(document)) != 1
                         || mapper.createIngestion(IngestionRow.from(ingestion)) != 1) {
                     throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);
                 }
                 lifecycle.initialize(new Caller(document.tenantId(), document.ownerId()), document.documentId(),
                         com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.Action.CREATE);
+                return ingestion;
             });
-            return ingestion;
         } catch (DuplicateKeyException conflict) {
             // 必须等失败事务回滚后再读获胜者，不能在 rollback-only 事务中重放。
             var caller = new Caller(ingestion.tenantId(), ingestion.ownerId());

@@ -38,6 +38,7 @@ public class CandidatePublicationService {
     private final ProcessingAdmissionProperties admission;
     private final boolean processingEnabled;
     private final TransactionTemplate transaction;
+    private final com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity;
 
     /** 事务共享Knowledge连接池；任何远程质量核对都先于本地锁。 */
     public CandidatePublicationService(CandidateMapper candidates,PublicationMapper approvals,KnowledgeMapper knowledge,
@@ -45,10 +46,12 @@ public class CandidatePublicationService {
             CandidateJson json,CandidateProperties properties,LifecycleProperties lifecycleProperties,
             ProcessingAdmissionProperties admission,PlatformTransactionManager manager,
             @Value("${knowledge.transaction-timeout-seconds:5}") int timeout,
-            @Value("${knowledge.processing.enabled:false}") boolean processingEnabled) {
+            @Value("${knowledge.processing.enabled:false}") boolean processingEnabled,
+            com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity) {
         this.candidates=candidates;this.approvals=approvals;this.knowledge=knowledge;this.commands=commands;
         this.quality=quality;this.decisions=decisions;this.lifecycle=lifecycle;this.json=json;this.properties=properties;
         this.lifecycleProperties=lifecycleProperties;this.admission=admission;this.processingEnabled=processingEnabled;
+        this.capacity=capacity;
         transaction=new TransactionTemplate(manager);transaction.setTimeout(timeout);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
     }
@@ -80,7 +83,8 @@ public class CandidatePublicationService {
             var assessed=quality.assessment(owner,input.runId(),input.manifestDigest(),input.reviewDigest(),preview,datasets);
             if(!assessed.businessEligible()) throw failure(KnowledgeError.CANDIDATE_APPROVAL_INVALID);
             return database(()->transaction.execute(status->{
-                // 沿质量模块既有run→文档锁序复核，避免评分提交与批准交错。
+                // 先取得容量锁再沿run→文档锁序复核，嵌套update不会反向等待其他准入者。
+                capacity.guard();
                 decisions.requireBusinessApproval(owner,assessed.run(),assessed.definition(),input.reviewDigest());
                 var document=candidates.document(owner,root.documentId(),true);
                 var repeated=replay(owner,key,fingerprint);if(repeated!=null) return repeated;

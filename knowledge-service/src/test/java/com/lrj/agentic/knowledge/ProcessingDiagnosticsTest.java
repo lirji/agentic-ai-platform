@@ -18,7 +18,7 @@ class ProcessingDiagnosticsTest {
     @Test void unavailableStoreNeverLooksLikeAnEmptyListOrMissingAcceptance() {
         var mapper = unavailable(LifecycleMapper.class);
         var repository = new MySqlLifecycleRepository(mapper, unavailable(ProcessingMapper.class),
-                unavailable(PlatformTransactionManager.class), 5);
+                unavailable(PlatformTransactionManager.class), 5, unavailable(com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity.class));
         var caller = new Caller("tenant", "owner");
         var filter = new Filter(null, null, null);
         for (Runnable query : new Runnable[]{() -> repository.processingTasks(caller, filter, "", 21),

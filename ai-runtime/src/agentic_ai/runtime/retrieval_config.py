@@ -6,13 +6,14 @@ from pathlib import Path
 from typing import Self
 from urllib.parse import urlsplit
 
-from pydantic import BaseModel, ConfigDict, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from agentic_ai.retrieval.errors import RetrievalCode, RetrievalError
+from agentic_ai.retrieval.models import MAX_QUERY_CAPACITY
 
 
 class RetrievalHttpConfig(BaseModel):
-    """不暴露并发可调项，当前拓扑只允许HTTP一许可与worker一许可。"""
+    """默认保留HTTP单许可；受控部署可匹配Java预留份额，不能视为全局配额。"""
 
     model_config = ConfigDict(frozen=True, extra="forbid", hide_input_in_errors=True)
 
@@ -20,6 +21,7 @@ class RetrievalHttpConfig(BaseModel):
     knowledge_endpoint: str
     knowledge_private_key: Path
     rerank_config: Path | None = None
+    max_concurrent: int = Field(default=1, ge=1, le=MAX_QUERY_CAPACITY)
 
     @field_validator("public_key_path", "knowledge_private_key", "rerank_config")
     @classmethod
@@ -63,6 +65,7 @@ class RetrievalHttpConfig(BaseModel):
             "knowledge_endpoint": "AI_RETRIEVAL_KNOWLEDGE_ENDPOINT",
             "knowledge_private_key": "AI_RETRIEVAL_PRIVATE_KEY",
             "rerank_config": "AI_RETRIEVAL_RERANK_CONFIG",
+            "max_concurrent": "AI_RETRIEVAL_MAX_CONCURRENT",
         }
         parsed = None
         try:

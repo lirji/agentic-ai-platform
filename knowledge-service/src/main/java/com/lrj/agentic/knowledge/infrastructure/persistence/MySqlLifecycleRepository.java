@@ -31,9 +31,12 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
     private final LifecycleMapper mapper;
     private final ProcessingMapper processing;
     private final TransactionTemplate transaction;
+    private final com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity;
     public MySqlLifecycleRepository(LifecycleMapper mapper, ProcessingMapper processing, PlatformTransactionManager manager,
-            @Value("${knowledge.transaction-timeout-seconds:5}") int timeout) {
+            @Value("${knowledge.transaction-timeout-seconds:5}") int timeout,
+            com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity) {
         this.mapper = mapper; this.processing = processing;
+        this.capacity = capacity;
         transaction = new TransactionTemplate(manager); transaction.setTimeout(timeout);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
     }
@@ -76,6 +79,7 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
     @Override public CommandReceipt update(Caller caller, Update input) {
         try {
             return transaction.execute(status -> {
+                capacity.guard();
                 var state = mapper.lockDocument(caller, input.documentId());
                 if (state == null) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
                 var replay = command(caller, input.key(), input.fingerprint());
@@ -99,6 +103,7 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
                         IngestionStatus.RECEIVED, IngestionStage.ACCEPTED, null, false, 0, 0,
                         input.acceptedAt(), input.acceptedAt(), input.profile(), state.lastGeneration() + 1,
                         ProcessingProtocol.GENERATION_SCHEMA));
+                capacity.acceptIngestion(caller.tenantId());
                 changed(mapper.generation(job, state, Operation.UPDATE.code()));
                 changed(mapper.revision(state, job, input.displayName()));
                 changed(mapper.acceptUpdate(caller, input, job));
@@ -169,6 +174,7 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
     @Override public CommandReceipt reindex(Caller caller, Reindex input) {
         try {
             return transaction.execute(status -> {
+                capacity.guard();
                 var state = mapper.lockDocument(caller, input.documentId());
                 if (state == null) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
                 var replay = command(caller, input.key(), input.fingerprint());
@@ -198,6 +204,7 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
                         input.documentId(), input.snapshot().contentRevision(), input.key(), input.fingerprint(), input.snapshot().source(),
                         IngestionStatus.RECEIVED, IngestionStage.ACCEPTED, null, false, 0, 0, input.acceptedAt(), input.acceptedAt(),
                         input.profile(), state.lastGeneration() + 1, ProcessingProtocol.GENERATION_SCHEMA));
+                capacity.acceptIngestion(caller.tenantId());
                 changed(mapper.generation(job, state, Operation.REINDEX.code()));
                 changed(mapper.acceptReindex(caller, input, job));
                 changed(mapper.reindexCommand(caller, input, job));

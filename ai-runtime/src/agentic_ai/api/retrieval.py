@@ -19,6 +19,7 @@ from agentic_ai.rag.errors import EmbeddingError
 from agentic_ai.retrieval.consumer import RetrievalUseCase
 from agentic_ai.retrieval.errors import RetrievalCode, RetrievalError
 from agentic_ai.retrieval.models import (
+    MAX_QUERY_CAPACITY,
     QUERY_SECONDS,
     RetrievalInput,
     RetrievalStrategy,
@@ -88,10 +89,13 @@ def retrieval_router(
     verifier: ServiceVerifier,
     clients: ClientFactory,
     reranker: RerankPort | None = None,
+    maximum: int = HTTP_QUERY_CAPACITY,
 ) -> APIRouter:
     """入口和计算均立即拒绝过载；候选客户端只在当前owner请求生命周期存在。"""
     router = APIRouter()
-    admission = Admission(HTTP_QUERY_CAPACITY)
+    if type(maximum) is not int or not 1 <= maximum <= MAX_QUERY_CAPACITY:
+        raise RetrievalError(RetrievalCode.CONFIG_INVALID)
+    admission = Admission(maximum)
 
     def identity(request: Request) -> ServiceIdentity:
         headers = request.headers.getlist(INTERNAL_HEADER)

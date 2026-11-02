@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.task.infrastructure.TaskCapacityMapper">
+    <select id="lockPolicy" resultType="com.lrj.agentic.task.infrastructure.TaskCapacityMapper$Policy">
+        SELECT policy_key,policy_sha256 FROM task_capacity_policy WHERE policy_key='task-capacity-v1' FOR UPDATE
+    </select>
+    <update id="configure">
+        UPDATE task_capacity_policy SET policy_sha256=#{sha},snapshot_json=CAST(#{snapshot} AS JSON),configured_at=UTC_TIMESTAMP(6)
+        WHERE policy_key='task-capacity-v1' AND policy_sha256 IS NULL
+    </update>
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM ai_task WHERE tenant_id=#{tenant}
+        <choose>
+            <when test="background">AND kind IN</when>
+            <otherwise>AND kind NOT IN</otherwise>
+        </choose>
+        <foreach collection="backgroundKinds" item="kind" open="(" close=")" separator=",">#{kind}</foreach>
+        <choose>
+            <when test="active">AND status='RUNNING' AND lease_expires_at&gt;UTC_TIMESTAMP(6)</when>
+            <otherwise>AND status IN ('QUEUED','RUNNING')</otherwise>
+        </choose>
+    </select>
+    <select id="unallocated" resultType="int">
+        SELECT COUNT(*) FROM ai_task WHERE status IN ('QUEUED','RUNNING') AND tenant_id NOT IN
+        <foreach collection="tenants" item="tenant" open="(" close=")" separator=",">#{tenant}</foreach>
+    </select>
+</mapper>

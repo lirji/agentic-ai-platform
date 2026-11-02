@@ -98,8 +98,8 @@ def test_empty_is_observed_and_not_reranked():
     asyncio.run(run())
 
 
-@pytest.mark.parametrize("maximum", [0, 3, True, 1.0])
-def test_capacity_configuration_cannot_expand_platform_limit(maximum):
+@pytest.mark.parametrize("maximum", [0, 9, True, 1.0])
+def test_capacity_configuration_cannot_expand_bounded_local_limit(maximum):
     with pytest.raises(RetrievalError):
         RetrievalCapacity(maximum)
 

@@ -4,6 +4,8 @@ import com.lrj.agentic.contract.ErrorCode;
 
 /** 中央任务的唯一对外错误目录，拒绝拼接输入与数据库异常。 */
 public enum TaskError implements ErrorCode {
+    CAPACITY_CONFIG_INVALID("TASK_CAPACITY_CONFIG_INVALID", "任务容量配置不一致，暂不能执行。", 503),
+    CAPACITY_EXCEEDED("TASK_CAPACITY_EXCEEDED", "当前任务容量已满，请稍后重试。", 429),
     FEEDBACK_DISABLED("TASK_FEEDBACK_DISABLED", "任务反馈关联尚未启用。", 503),
     RESEARCH_DISABLED("TASK_RESEARCH_DISABLED", "分问题研究尚未开放，请使用现有研究方式。", 503),
     RESEARCH_LIMIT("TASK_RESEARCH_LIMIT", "本任务的研究调用额度已用尽，不能继续执行。", 409),

@@ -57,6 +57,8 @@ import org.springframework.transaction.PlatformTransactionManager;
         "knowledge.feedback.enabled=true", "knowledge.operations.enabled=true", "knowledge.operations.publication-enabled=true", "knowledge.operations.recovery-enabled=true", "knowledge.parsing.enabled=true",
         "knowledge.parsing.pdf-upload-enabled=true", "knowledge.parsing.docx-upload-enabled=true"})
 class KnowledgeCandidateIT {
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity distributedCapacity;
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties capacityPolicy;
     private static CrossRuntimeRetrievalIT.PythonRuntime recoveryRuntime;
     @org.springframework.test.context.DynamicPropertySource
     static void recoveryEndpoint(org.springframework.test.context.DynamicPropertyRegistry registry) {
@@ -569,12 +571,12 @@ class KnowledgeCandidateIT {
             public Capabilities capabilities(Caller caller) { return Capabilities.disabled(); }
         };
         var factory=new org.springframework.beans.factory.support.StaticListableBeanFactory();factory.addBean("runtime",runtime);
-        return new ConsumerKnowledgeSearch(factory.getBeanProvider(ConsumerRetrieval.class),retrieval);
+        return new ConsumerKnowledgeSearch(factory.getBeanProvider(ConsumerRetrieval.class),retrieval,distributedCapacity);
     }
     private CandidatePublicationService publicationService(CandidateQuality quality,boolean enabled,PublicationMapper mapper) {
         return new CandidatePublicationService(bean(CandidateMapper.class),mapper,bean(KnowledgeMapper.class),candidates,quality,
                 bean(EvaluationDecisionRepository.class),lifecycle,json,new CandidateProperties(true,enabled),bean(LifecycleProperties.class),
-                bean(ProcessingAdmissionProperties.class),bean(PlatformTransactionManager.class),5,true);
+                bean(ProcessingAdmissionProperties.class),bean(PlatformTransactionManager.class),5,true,distributedCapacity);
     }
     private PublicationFixture publicationFixture(String purpose,List<String> terms) {
         return publicationFixture(fixture(),purpose,terms);
@@ -629,7 +631,7 @@ class KnowledgeCandidateIT {
     private CandidateService configured(boolean enabled,CandidateQuality quality) {
         return new CandidateService(bean(CandidateMapper.class),bean(KnowledgeMapper.class),bean(LifecycleInitialization.class),bean(SourceStore.class),json,
                 quality,new CandidateProperties(enabled),bean(LifecycleProperties.class),bean(ProcessingAdmissionProperties.class),
-                bean(ParserProperties.class),bean(PlatformTransactionManager.class),5,true);
+                bean(ParserProperties.class),bean(PlatformTransactionManager.class),5,true,distributedCapacity);
     }
     /** 真实Tasks中央完成与React操作共用随机租户；评估结果仅为机制夹具，不调用模型。 */
     @Test void realTasksAndBrowserCandidateWorkflow() throws Exception {

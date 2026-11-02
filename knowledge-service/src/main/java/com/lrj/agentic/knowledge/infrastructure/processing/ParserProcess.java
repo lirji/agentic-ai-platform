@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/** 单槽、无等待解析进程；传输线程只持有管道，不传播身份、事务或服务密钥。 */
+/** 解析槽位覆盖已分配入库份额；管道线程不传播身份、事务或服务密钥。 */
 @Component
 public class ParserProcess implements DocumentExtractor {
     private static final Logger LOG = LoggerFactory.getLogger(ParserProcess.class);
@@ -46,23 +46,31 @@ public class ParserProcess implements DocumentExtractor {
     private final Tracer tracer;
     private final MeterRegistry meters;
     private final Duration timeout;
-    private final Semaphore slot = new Semaphore(1);
+    private final Semaphore slot;
     private final AtomicBoolean closed = new AtomicBoolean();
-    private volatile ManagedChild active;
+    private final Set<ManagedChild> active = ConcurrentHashMap.newKeySet();
 
     /** 总期限与 P03 固定配置一致，外层租约中断会提前结束本次执行。 */
     @Autowired
-    public ParserProcess(ParserProperties properties, ProcessingJson json, Tracer tracer, MeterRegistry meters) {
-        this(properties, json, tracer, meters, Duration.ofSeconds(ExtractionProtocol.TIMEOUT_SECONDS));
+    public ParserProcess(ParserProperties properties, ProcessingJson json, Tracer tracer, MeterRegistry meters,
+            com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties capacity) {
+        this(properties, json, tracer, meters, Duration.ofSeconds(ExtractionProtocol.TIMEOUT_SECONDS),
+                capacity.enabled() ? Math.max(1, capacity.ingestionSlots()) : 1);
     }
 
     ParserProcess(ParserProperties properties, ProcessingJson json, Tracer tracer, MeterRegistry meters, Duration timeout) {
+        this(properties, json, tracer, meters, timeout, 1);
+    }
+
+    private ParserProcess(ParserProperties properties, ProcessingJson json, Tracer tracer, MeterRegistry meters,
+            Duration timeout, int maximum) {
         this.properties = properties;
         this.json = json;
         this.tracer = tracer;
         this.meters = meters;
         this.timeout = timeout;
-        meters.gauge("knowledge.parser.active", slot, value -> 1 - value.availablePermits());
+        slot = new Semaphore(maximum);
+        meters.gauge("knowledge.parser.active", slot, value -> maximum - value.availablePermits());
     }
 
     /** 返回前验证原字节绑定；失败时先回收已知进程，再归还槽位。 */
@@ -91,7 +99,7 @@ public class ParserProcess implements DocumentExtractor {
             builder.environment().clear();
             builder.environment().putAll(Map.of("LANG", "C.UTF-8", "TZ", "UTC"));
             process = new ManagedChild(builder.start());
-            active = process;
+            active.add(process);
             if (closed.get()) { throw new KnowledgeFailure(KnowledgeError.PARSER_UNAVAILABLE); }
             ManagedChild child = process;
             // 一次执行仅有三个 I/O 任务，任务线程随进程一起有界关闭，不另建可积压队列。
@@ -132,7 +140,7 @@ public class ParserProcess implements DocumentExtractor {
         } finally {
             if (process != null) {
                 release = process.reap();
-                if (release) { active = null; }
+                if (release) { active.remove(process); }
             }
             if (pipes != null) {
                 pipes.shutdownNow();
@@ -245,7 +253,6 @@ public class ParserProcess implements DocumentExtractor {
     /** 停机先关闭新准入，现有执行负责等待管道结束及临时目录回收。 */
     @PreDestroy public void close() {
         closed.set(true);
-        ManagedChild process = active;
-        if (process != null) { process.reap(); }
+        active.forEach(ManagedChild::reap);
     }
 }

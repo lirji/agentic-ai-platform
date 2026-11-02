@@ -41,6 +41,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
         properties = {"management.server.port=0", "spring.main.banner-mode=off",
                 "knowledge.processing.worker-enabled=false"})
 class KnowledgeProcessingIT {
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity distributedCapacity;
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties capacityPolicy;
     @Autowired KnowledgeService knowledge;
     @Autowired ProcessingRepository repository;
     @Autowired PreparationStore storage;
@@ -250,7 +252,7 @@ class KnowledgeProcessingIT {
     private KnowledgeSearch search(KnowledgeProcessor model, SearchIndex index) {
         var beans = new StaticListableBeanFactory(Map.of("model", model, "index", index));
         return new KnowledgeSearch(repository, beans.getBeanProvider(KnowledgeProcessor.class),
-                beans.getBeanProvider(SearchIndex.class), 45, 8, new KnowledgeQueryCapacity());
+                beans.getBeanProvider(SearchIndex.class), 45, 8, new KnowledgeQueryCapacity(distributedCapacity,capacityPolicy));
     }
     private static void error(KnowledgeError expected, Runnable operation) {
         assertThatThrownBy(operation::run).isInstanceOfSatisfying(KnowledgeFailure.class,

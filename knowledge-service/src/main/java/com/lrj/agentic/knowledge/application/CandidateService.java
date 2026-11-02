@@ -41,16 +41,19 @@ public class CandidateService {
     private final ParserProperties parsing;
     private final boolean processingEnabled;
     private final TransactionTemplate transaction;
+    private final com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity;
 
     /** 复用已有存储、处理和质量用例；不创建第二套队列或执行器。 */
     public CandidateService(CandidateMapper mapper,KnowledgeMapper knowledge,LifecycleInitialization initialization,
             SourceStore sources,CandidateJson json,CandidateQuality quality,CandidateProperties properties,
             LifecycleProperties lifecycle,ProcessingAdmissionProperties admission,ParserProperties parsing,
             PlatformTransactionManager manager,@Value("${knowledge.transaction-timeout-seconds:5}") int timeout,
-            @Value("${knowledge.processing.enabled:false}") boolean processingEnabled) {
+            @Value("${knowledge.processing.enabled:false}") boolean processingEnabled,
+            com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity capacity) {
         this.mapper=mapper;this.knowledge=knowledge;this.initialization=initialization;this.sources=sources;this.json=json;
         this.quality=quality;this.properties=properties;this.lifecycle=lifecycle;this.admission=admission;this.parsing=parsing;
         this.processingEnabled=processingEnabled;
+        this.capacity=capacity;
         transaction=new TransactionTemplate(manager);transaction.setTimeout(timeout);
         transaction.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
     }
@@ -119,12 +122,15 @@ public class CandidateService {
         var observed=current(owner,id,input.expectedRevision(),input.contentDigest(),false);enabled();
         if(!processingEnabled || !lifecycle.createEnabled() || !lifecycle.generationEnabled()) throw failure(KnowledgeError.PROCESSING_DISABLED);
         return write(owner,key,fingerprint,()->{
+            // 候选副本仍占真实入库资源，容量锁必须先于原文档与候选锁。
+            capacity.guard();
             mapper.document(owner,observed.root().documentId(),true);
             var repeated=replay(owner,key,fingerprint);if(repeated!=null) return repeated;
             original(owner,observed.root().documentId(),observed.revision().baseRevision(),false);
             var state=current(owner,id,input.expectedRevision(),input.contentDigest(),true);
             var preparation=mapper.preparation(owner,id,state.revision().revision());var at=now();
             if(preparation==null) {
+                capacity.acceptIngestion(owner.tenantId());
                 var revision=state.revision();String documentId=newId(),jobId=newId();
                 var document=new Document(documentId,owner.tenantId(),owner.userId(),revision.displayName(),1,null,
                         IngestionStatus.RECEIVED,revision.contentType(),revision.sizeBytes(),revision.contentHash(),jobId,at,at);

@@ -25,6 +25,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
         "knowledge.lifecycle.updates-enabled=true", "knowledge.lifecycle.withdrawals-enabled=true",
         "knowledge.lifecycle.deletions-enabled=true", "knowledge.lifecycle.reindexes-enabled=true"})
 class KnowledgeCandidateIsolationIT {
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.domain.capacity.KnowledgeCapacity distributedCapacity;
+    @org.springframework.beans.factory.annotation.Autowired com.lrj.agentic.knowledge.config.KnowledgeCapacityProperties capacityPolicy;
     @Autowired KnowledgeService knowledge;
     @Autowired LifecycleService lifecycle;
     @Autowired SharingService sharing;
@@ -69,7 +71,7 @@ class KnowledgeCandidateIsolationIT {
         assertThat(processing.searchPublished(owner,List.of(hit.chunkId()),List.of())).isEmpty();
         assertThat(processing.searchPublished(owner,List.of(hit.chunkId()),List.of(id))).hasSize(1);
         var beans=new StaticListableBeanFactory(Map.of("model",model,"index",index));
-        var legacy=new KnowledgeSearch(processing,beans.getBeanProvider(KnowledgeProcessor.class),beans.getBeanProvider(SearchIndex.class),45,8,new KnowledgeQueryCapacity());
+        var legacy=new KnowledgeSearch(processing,beans.getBeanProvider(KnowledgeProcessor.class),beans.getBeanProvider(SearchIndex.class),45,8,new KnowledgeQueryCapacity(distributedCapacity,capacityPolicy));
         assertThat(legacy.search(owner,new KnowledgeSearch.SearchRequest("候选隔离资料",1,null))).isEmpty();
         assertThat(legacy.search(owner,new KnowledgeSearch.SearchRequest("候选隔离资料",1,List.of(id)))).hasSize(1);
         var reader=new Caller(owner.tenantId(),key());

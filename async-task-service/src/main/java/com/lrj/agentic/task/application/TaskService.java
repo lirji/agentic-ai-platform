@@ -26,6 +26,7 @@ public class TaskService {
     private final boolean contextualEnabled;
     private final boolean researchEnabled;
     private final boolean researchStagedEnabled;
+    private final TaskCapacity capacity;
 
     /** 单独限制事务时长；显式传递身份，避免复用线程泄漏主体。 */
     public TaskService(TaskMapper mapper, TaskValues values, PlatformTransactionManager manager,
@@ -33,7 +34,8 @@ public class TaskService {
             TaskKnowledgeVisibility visibility, @Value("${task.generation-enabled:false}") boolean generationEnabled,
             @Value("${task.contextual-qa-enabled:false}") boolean contextualEnabled,
             @Value("${task.research-enabled:false}") boolean researchEnabled,
-            @Value("${task.research-staged-enabled:false}") boolean researchStagedEnabled) {
+            @Value("${task.research-staged-enabled:false}") boolean researchStagedEnabled,
+            TaskCapacity capacity) {
         if (leaseSeconds < 5 || leaseSeconds > 60) { throw new IllegalArgumentException("任务租约配置无效"); }
         this.mapper = mapper; this.values = values; this.leaseSeconds = leaseSeconds;
         this.tx = new TransactionTemplate(manager);
@@ -41,6 +43,7 @@ public class TaskService {
         this.evidence = evidence; this.visibility = visibility;
         this.generationEnabled = generationEnabled;
         this.contextualEnabled = contextualEnabled; this.researchEnabled = researchEnabled; this.researchStagedEnabled = researchStagedEnabled;
+        this.capacity = capacity;
     }
 
     /** 唯一约束争用必须先回滚败方事务，再读取已经提交的同键结果。 */
@@ -74,6 +77,11 @@ public class TaskService {
         require(!TaskProtocol.WORK_GRAPH_V4.equals(command.graphVersion()) || researchStagedEnabled, TaskError.RESEARCH_DISABLED);
         try {
             return tx.execute(ignored -> {
+                capacity.guard();
+                // 竞争者可能在外层幂等读取后提交；持准入锁重查，满额时也必须返回原受理。
+                var replay = mapper.byKey(owner.tenantId(), owner.userId(), key);
+                if (replay != null) { return replay(replay, digest); }
+                capacity.accept(owner.tenantId(), command.kind());
                 var row = new TaskRow(command.taskId(), owner.tenantId(), owner.userId(), key, digest,
                         command.kind(), command.runtimeVersion(), command.graphVersion(), input,
                         TaskStatus.QUEUED, 0, 0, null, null, 0, 0, false, null,
@@ -196,11 +204,15 @@ public class TaskService {
         return evidence.generationManifest(row);
     }
 
-    /** SKIP LOCKED 避免多个领取者互等；过期任务最多自动领取五次。 */
+    /** 容量锁串行裁决份额，候选SKIP LOCKED跳过其他操作的任务锁；过期任务最多自动领取五次。 */
     public Claimed claim(Caller worker, Claim command) {
         versions(command.runtimeVersion(), command.graphVersion());
         return tx.execute(ignored -> {
-            var row = mapper.candidate(worker.tenantId(), command.runtimeVersion(), command.graphVersion());
+            capacity.guard();
+            var available = capacity.available(worker.tenantId());
+            if (!available.interactive() && !available.background()) { return new Claimed(null); }
+            var row = mapper.candidate(worker.tenantId(), command.runtimeVersion(), command.graphVersion(),
+                    available.interactive(), available.background(), TaskProtocol.BACKGROUND_KINDS);
             if (row == null) { return new Claimed(null); }
             if (row.attemptCount() >= TaskProtocol.MAX_ATTEMPTS || row.eventSequence() >= TaskProtocol.MAX_EVENTS - 1) {
                 terminal(row, TaskStatus.FAILED, null, null, null, TaskProtocol.EXECUTION_FAILED, true);
@@ -422,12 +434,14 @@ public class TaskService {
 
     private View resume(Caller owner, String id, Revision command, boolean evaluation) {
         return tx.execute(ignored -> {
+            capacity.guard();
             var row = lockOwned(owner, id);
             require(evaluation == TaskProtocol.EVALUATION_KIND.equals(row.kind()), TaskError.NOT_FOUND);
             require(row.status() == TaskStatus.FAILED && row.retryable()
                     && row.resumeCount() < TaskProtocol.MAX_RESUMES
                     && row.revision() == command.expectedRevision(), TaskError.CONFLICT);
             require(row.eventSequence() < TaskProtocol.MAX_EVENTS - 3, TaskError.EVENT_LIMIT);
+            capacity.accept(owner.tenantId(), row.kind());
             changed(mapper.resume(row.taskId()));
             var updated = mapper.read(row.tenantId(), row.taskId());
             status(updated, "resume:" + updated.resumeCount());

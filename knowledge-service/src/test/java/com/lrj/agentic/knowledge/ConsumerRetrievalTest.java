@@ -128,7 +128,7 @@ class ConsumerRetrievalTest {
             @Override public Capabilities capabilities(Caller caller) { throw new AssertionError(); }
         };
         var beans = new StaticListableBeanFactory(Map.of("runtime", callback));
-        assertThat(new ConsumerKnowledgeSearch(beans.getBeanProvider(ConsumerRetrieval.class), authority).search(owner, input))
+        assertThat(new ConsumerKnowledgeSearch(beans.getBeanProvider(ConsumerRetrieval.class), authority, CapacityTestSupport.allowed()).search(owner, input))
                 .isEqualTo(result);
     }
 
@@ -144,11 +144,11 @@ class ConsumerRetrievalTest {
     }
     private ConsumerKnowledgeSearch service(ConsumerRetrieval runtime, RetrievalRepository repository) {
         var beans = new StaticListableBeanFactory(); if (runtime != null) beans.addBean("runtime", runtime);
-        return new ConsumerKnowledgeSearch(beans.getBeanProvider(ConsumerRetrieval.class), authority(repository));
+        return new ConsumerKnowledgeSearch(beans.getBeanProvider(ConsumerRetrieval.class), authority(repository), CapacityTestSupport.allowed());
     }
     private AuthorizedRetrieval authority(RetrievalRepository repository) {
         return new AuthorizedRetrieval(repository, new StaticListableBeanFactory().getBeanProvider(RankedSearchIndex.class),
-                new KnowledgeQueryCapacity());
+                CapacityTestSupport.query());
     }
     private PublishedChunk published(Hit hit) {
         var r = hit.identity();

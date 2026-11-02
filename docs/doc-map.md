@@ -161,3 +161,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 S15C：由Java既有Micrometer/OTel、Python真实HTTP/worker及原共享/预算流水映射到[C-OBS](design/knowledge-first-20261020/OBSERVABILITY_CONTRACTS.md)、[运行说明](design/knowledge-first-20261020/OBSERVABILITY_RUNTIME.md)和[验收](qa/cross-language-diagnostics-20261102/TEST_RESULT.md)。源码摘要固定在验收目录，未新增审计库或生产采集服务。
 
 S16A：WorkerConfig/CLI、中央claim绑定与既有MySQL租约/PG检查点映射到[容量契约](design/knowledge-first-20261020/CAPACITY_CONTRACTS.md)、[运行说明](design/knowledge-first-20261020/CAPACITY_RUNTIME.md)及[验收](qa/multi-worker-recovery-20261102/TEST_RESULT.md)。真实双进程竞争与19项恢复复验，无新数据库迁移；全局公平仍属S16B。
+
+S16B：Tasks V8/Knowledge V19及各自容量Mapper、全部新增/恢复入口、查询许可、独立执行器与Python显式HTTP容量映射到同一[容量契约](design/knowledge-first-20261020/CAPACITY_CONTRACTS.md)、[运行说明](design/knowledge-first-20261020/CAPACITY_RUNTIME.md)和[租户隔离验收](qa/tenant-capacity-isolation-20261102/TEST_RESULT.md)。默认未启用，新模式需全writer升级与固定策略；生产混合容量/SLO仍属S16C。

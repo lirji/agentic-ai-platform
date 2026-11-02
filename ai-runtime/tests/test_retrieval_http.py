@@ -39,7 +39,7 @@ def command(**updates):
     }
 
 
-def api(key, embedding=None):
+def api(key, embedding=None, maximum=1):
     embedding = embedding or Embedding()
     knowledge, owners, closed = Knowledge(), [], []
 
@@ -54,9 +54,10 @@ def api(key, embedding=None):
     app = FastAPI()
     app.include_router(
         retrieval_router(
-            RetrievalUseCase(embedding, RetrievalCapacity(1)),
+            RetrievalUseCase(embedding, RetrievalCapacity(maximum)),
             ServiceVerifier(key.public_key()),
             factory,
+            maximum=maximum,
         )
     )
     return app, embedding, knowledge, owners, closed
@@ -200,7 +201,7 @@ def test_single_capacity_timeout_and_cancellation_release_request_scopes(key):
     asyncio.run(scenario())
 
 
-def test_runtime_config_is_explicit_and_has_no_per_process_capacity_override():
+def test_runtime_config_defaults_to_one_and_bounds_explicit_local_capacity():
     assert RetrievalHttpConfig.from_environment({}) is None
     valid = {
         "AI_RETRIEVAL_ENABLED": "true",
@@ -209,7 +210,17 @@ def test_runtime_config_is_explicit_and_has_no_per_process_capacity_override():
         "AI_RETRIEVAL_PRIVATE_KEY": "/private/runtime.pem",
     }
     assert RetrievalHttpConfig.from_environment(valid).rerank_config is None
+    assert RetrievalHttpConfig.from_environment(valid).max_concurrent == 1
+    assert (
+        RetrievalHttpConfig.from_environment(
+            {**valid, "AI_RETRIEVAL_MAX_CONCURRENT": "2"}
+        ).max_concurrent
+        == 2
+    )
     for change in (
+        {"AI_RETRIEVAL_MAX_CONCURRENT": "0"},
+        {"AI_RETRIEVAL_MAX_CONCURRENT": "9"},
+        {"AI_RETRIEVAL_MAX_CONCURRENT": "invalid"},
         {"AI_RETRIEVAL_ENABLED": "yes"},
         {"AI_RETRIEVAL_PRIVATE_KEY": "relative.pem"},
         {"AI_RETRIEVAL_KNOWLEDGE_ENDPOINT": "https://host/path"},
@@ -387,5 +398,50 @@ def test_body_read_time_consumes_callers_remaining_budget_before_embedding(key):
             assert response.status_code == 504
             assert response.json()["code"] == "RETRIEVAL_DEADLINE_EXCEEDED"
             assert not embedding.calls and owners == closed
+
+    asyncio.run(scenario())
+
+
+def test_two_admitted_tenants_share_no_request_scope_while_one_model_waits(key):
+    async def scenario():
+        entered, release = asyncio.Event(), asyncio.Event()
+
+        class SlowFirst(Embedding):
+            async def embed(self, texts):
+                if texts[0] == "slow-tenant-a":
+                    entered.set()
+                    await release.wait()
+                return await super().embed(texts)
+
+        app, _, _, owners, closed = api(key, SlowFirst(), maximum=2)
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client:
+            pending = asyncio.create_task(
+                client.post(
+                    SEARCH,
+                    headers=headers(key, tenant_id="tenant-a"),
+                    json=command(query="slow-tenant-a"),
+                )
+            )
+            try:
+                await asyncio.wait_for(entered.wait(), 1)
+                fast = await asyncio.wait_for(
+                    client.post(
+                        SEARCH,
+                        headers=headers(key, tenant_id="tenant-b"),
+                        json=command(query="fast-tenant-b"),
+                    ),
+                    2,
+                )
+                assert fast.status_code == 200 and not pending.done()
+                assert [owner.tenant_id for owner in closed] == ["tenant-b"]
+                assert {owner.tenant_id for owner in owners} == {"tenant-a", "tenant-b"}
+            finally:
+                pending.cancel()
+                await asyncio.gather(pending, return_exceptions=True)
+            assert len(closed) == 2
+            recovered = await client.post(SEARCH, headers=headers(key), json=command())
+            assert recovered.status_code == 200
 
     asyncio.run(scenario())
