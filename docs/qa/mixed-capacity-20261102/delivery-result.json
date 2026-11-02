@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "slice": "S16C",
+  "branch": "feat/mixed-capacity-validation-20261102",
+  "implementationCommit": "cdf333c8e5499b8ec60b9c92bf1be93b8ca0973b",
+  "remoteMainAtDelivery": "cdf333c8e5499b8ec60b9c92bf1be93b8ca0973b",
+  "validationRun": "9ad83207",
+  "ci": {
+    "branch": {
+      "runId": 41420530526,
+      "sha": "cdf333c8e5499b8ec60b9c92bf1be93b8ca0973b",
+      "status": "PASS",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41420530526",
+      "jobs": [
+        {
+          "name": "documents",
+          "result": "success"
+        },
+        {
+          "name": "python",
+          "result": "success"
+        },
+        {
+          "name": "java",
+          "result": "success"
+        }
+      ]
+    },
+    "main": {
+      "runId": 41420867029,
+      "sha": "cdf333c8e5499b8ec60b9c92bf1be93b8ca0973b",
+      "status": "PASS",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41420867029",
+      "jobs": [
+        {
+          "name": "python",
+          "result": "success"
+        },
+        {
+          "name": "java",
+          "result": "success"
+        },
+        {
+          "name": "documents",
+          "result": "success"
+        }
+      ]
+    }
+  },
+  "archiveFinalReceipt": ".local/s16c-final-delivery.json",
+  "productionDeploy": false,
+  "cleanupPerformed": false,
+  "retained": [
+    "all isolated test schemas and synthetic object/index/PG data",
+    "logs and private receipts",
+    "existing Docker runtime mounts and historical worktree"
+  ]
+}

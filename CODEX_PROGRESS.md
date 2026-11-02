@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务：用户已授权执行S16C（混合负载与故障容量报告），本地验收PASS、Git/CI待交付；本轮不扩展S16D。
+- 当前任务：用户已授权执行S16C（混合负载与故障容量报告），本地验收及Git/CI PASS；本轮不扩展S16D。
 - 唯一进度入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。恢复先核对其中S16C检查点、当前Git和运行中任务。
-- 原目录分支feat/mixed-capacity-validation-20261102，基线a52c94f；上一部署归档已合并推main且CI通过。
+- 原目录分支feat/mixed-capacity-validation-20261102；S16C测试/报告cdf333c已合并推main且CI通过，最终归档ref/CI见.local/s16c-final-delivery.json。
 - 现有Docker release6b6adccd4f4f997f保留；本轮仅隔离验证，不清理数据/卷、不新增模型费用。
 
 ## 前期可行性任务记录
