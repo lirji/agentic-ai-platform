@@ -3,7 +3,7 @@
 - 当前Docker部署任务docker-identity-20261101已完成：9容器healthy，入口http://localhost:28086/；权威入口：[部署进度](docs/deployment/docker-identity-20261101/PROGRESS_STATE.md)。原能力交付状态保留在下方。
 
 - 当前任务capability-delivery-20261021：S13A正式登录已交付；后端c0ddc0e/前端11f541a已正常合并推main，分支/main CI全部PASS。完整51项未完成。
-- S14B已交付，两仓分支/main CI PASS；当前继续S14C：审核与真实入库发布；两仓feat/knowledge-publication-approval-20261102。S14A及归档CI全部PASS。唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，完整51项未完成。
+- S14C已交付，后端5887bae/前端83b793f分支/main CI全PASS；当前归档后继续S14D发布后探测与补偿。S14A及归档CI全部PASS。唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，完整51项未完成。
 - S13A验收/收据：docs/qa/identity-20261101/；预览http://localhost:28196/，运行入口IDENTITY_RUNTIME.md。归档两仓分支/main CI也全PASS，收据.local/s13a-product-delivery.json；旧s13a-delivery.json仅历史前置文档。
 
 ## 前期可行性任务记录

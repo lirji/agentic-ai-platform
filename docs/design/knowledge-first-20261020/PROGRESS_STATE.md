@@ -1,13 +1,13 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S14C 本地验收通过，Git交付中
+## 当前任务：S14C 已交付，继续S14D
 
 - 目标：继续 capability-delivery-20261021 完整51项，parallel=no。用户“自行处理”，owner处理反馈/编辑/审批；指定同组织成员只读可撤回，不得编辑或再分享。完整计划未完成。
 - S14B DONE，后端cd3e753/前端7623885已正常合并推送main，精确分支/main CI全部PASS；[验收](../../qa/candidates-20261102/TEST_RESULT.md)、[收据](../../qa/candidates-20261102/delivery-result.json)。后端证据归档155adc2已合并推main，分支CI PASS，main CI41369178371 PASS，归档完整交付，不影响产品已通过事实。
 - 两仓原目录 feat/knowledge-publication-approval-20261102，后端起点155adc2、前端7623885；无新worktree。S14C方案已在[C-OPERATIONS](OPERATIONS_CONTRACTS.md)冻结：显式“批准并入库”，审批审计/原UPDATE作业/双回执同事务，质量当前性锁内复核；无新角色/队列/模型预算。
 - 实施清单：①V17审批审计与质量事务护栏；②复用生命周期UPDATE、精确发布读模型/API/default-off开关；③React批准/原键恢复/真实状态与原作业重试入口；④真实DB并发/回滚/权限、S3/worker/双索引/质量与浏览器；⑤审查/文档/正常两仓Git及精确CI；随后S14D。
 - 后端核心3项真实IT及131项Java单元PASS（Knowledge121+Security10）；最终相关回归48项实际执行PASS/4项条件跳过，候选编辑/原文变化/依赖故障补充1项PASS。日志.logs/s14c-{approval-core-it-r5,final-regression,stale-approval-it}.log；V17已应用test，不得改写。
-- 前端215项/39文件单元、格式/ESLint/类型/构建PASS；最终真实Tasks/Knowledge/React联合、Esc关闭/焦点返回与6状态视觉检查PASS（.logs/s14c-joint-browser-visual-final.log，夹具6331607576901284829）。[验收](../../qa/publication-approval-20261102/TEST_RESULT.md)与[审查](../../qa/publication-approval-20261102/REVIEW.md)。S14C DONE；当前准备两仓产品提交、分支/main精确CI，随后立即S14D。Java卫生限制明确保留。无测试在途，预览28236/.local/approval-dist（session7570）。
+- 前端215项/39文件单元、格式/ESLint/类型/构建PASS；最终真实Tasks/Knowledge/React联合、Esc关闭/焦点返回与6状态视觉检查PASS（.logs/s14c-joint-browser-visual-final.log，夹具6331607576901284829）。[验收](../../qa/publication-approval-20261102/TEST_RESULT.md)与[审查](../../qa/publication-approval-20261102/REVIEW.md)。S14C DONE；后端5887bae/前端83b793f已正常合并推main，分支CI全部PASS；main CI41370984823/41371018081也全部PASS，产品已交付；当前归档[交付收据](../../qa/publication-approval-20261102/delivery-result.json)，随后立即S14D。D只读调查/契约草稿在.local/s14d-{design-notes,contract-draft}.md：原job记录base_published快照可精确生成补偿草稿，尚未实施。Java卫生限制明确保留。无测试在途，预览28236/.local/approval-dist（session7570）。
 
 - 关键约束：锁序run→preview→original→candidate；远程Tasks/IAM/S3在事务外。每候选修订审批唯一，内容/原资料/质量摘要准确绑定。HTTP受理只显示等待入库，唯有ACTIVE原资料精确发布元组匹配才为PUBLISHED。编辑后旧批准不沿用；失败沿原job重试，历史不改写。
 - 运行/保留：28226候选预览session63670/.local/candidates-dist；原28216/28206/28196及28086Docker不动。无测试或付费调用在途；V16/V17已应用test不得改写。保留随机test记录/源/索引/待处理作业、.local凭据预算、.logs、.idea和旧main工作树。原Chat0.957092/1元、Embedding0.781784/1元，本片新增付费调用0。

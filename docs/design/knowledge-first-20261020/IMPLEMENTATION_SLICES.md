@@ -583,7 +583,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-OPERATIONS、C-LIFECYCLE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 并发审批/发布、内容变更、未知提交、worker失败重试；固定内容摘要；角色/权限复核；不把图 interrupt 或模型文本当批准。
 - **Pass / Runtime：** IMPLEMENT；复用 Knowledge 入库作业；不增加通用工作流引擎。
-- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G09 G10 G18。operations-publication-v1实现与本地验收PASS，见[验收](../../qa/publication-approval-20261102/TEST_RESULT.md)；正常Git/CI交付进行中。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G09 G10 G18。operations-publication-v1实现与本地验收PASS，见[验收](../../qa/publication-approval-20261102/TEST_RESULT.md)；两仓产品正常合并推main，分支/main CI全部PASS。
 
 ### S14D · 发布后探测与补偿版本
 

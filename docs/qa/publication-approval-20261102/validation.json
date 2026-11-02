@@ -1,7 +1,7 @@
 {
   "slice": "S14C",
   "status": "PASS",
-  "git": "PENDING",
+  "git": "PASS",
   "backend": {
     "base": "155adc2",
     "files": {
@@ -86,5 +86,6 @@
     "Java formatter unavailable; independent static analyzer not configured",
     "Existing Runtime Ruff findings unchanged",
     "Deterministic processing and quality fixtures do not prove model quality"
-  ]
+  ],
+  "delivery": "delivery-result.json"
 }
