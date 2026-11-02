@@ -1,0 +1,87 @@
+{
+  "slice": "S15B",
+  "status": "PRODUCT_DELIVERED",
+  "stopAfterDelivery": true,
+  "nextSliceNotStarted": "S15C",
+  "full51ItemPlanComplete": false,
+  "repositories": [
+    {
+      "repository": "agentic-ai-platform",
+      "taskBranch": "feat/shared-usage-budget-20261102",
+      "productCommit": "cbc53fc36f8484b170ae27257229f0cbbf53e6be",
+      "logicalCommits": [
+        "55319763c6bb7d0f15cbcd80f3dac81f2853a20b",
+        "d157947f742999f62a4c5fd4ddb0f1c57bf1370f",
+        "cbc53fc36f8484b170ae27257229f0cbbf53e6be"
+      ],
+      "main": "merged and pushed fast-forward",
+      "ci": [
+        {
+          "runId": 41387910652,
+          "commit": "cbc53fc36f8484b170ae27257229f0cbbf53e6be",
+          "status": "PASS",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41387910652",
+          "jobs": [
+            "java",
+            "python",
+            "documents"
+          ]
+        },
+        {
+          "runId": 41388120672,
+          "commit": "cbc53fc36f8484b170ae27257229f0cbbf53e6be",
+          "status": "PASS",
+          "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41388120672",
+          "jobs": [
+            "documents",
+            "java",
+            "python"
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "agentic-ai-platform-web",
+      "taskBranch": "feat/shared-usage-budget-20261102",
+      "productCommit": "d6bf5e7cb646d7e499616260cd29a7458f7f3945",
+      "main": "merged and pushed fast-forward",
+      "ci": [
+        {
+          "runId": 41387891084,
+          "commit": "d6bf5e7cb646d7e499616260cd29a7458f7f3945",
+          "status": "PASS",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41387891084",
+          "jobs": [
+            "web"
+          ]
+        },
+        {
+          "runId": 41388121657,
+          "commit": "d6bf5e7cb646d7e499616260cd29a7458f7f3945",
+          "status": "PASS",
+          "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41388121657",
+          "jobs": [
+            "web"
+          ]
+        }
+      ]
+    }
+  ],
+  "archive": "This receipt and final progress are documentation-only follow-up commits. Final archive refs/CI are recorded in local .local/s15b-final-delivery.json and Git history; do not rewrite product receipts to imply a self-referential commit.",
+  "boundaries": {
+    "productionDeployment": false,
+    "realBudgetMigration": false,
+    "additionalPaidCalls": 0,
+    "newWorktrees": 0,
+    "forcePush": false,
+    "cleanups": false
+  },
+  "preserved": [
+    "original .idea files",
+    "private credentials and original ledgers in .local",
+    "synthetic test rows and sources/indexes",
+    "verification logs",
+    "pre-existing worktrees and previews"
+  ],
+  "directoryAudit": "No unowned tracked/untracked files; ignored .local/.logs/.idea, build/test caches retained. Existing backend main worktree reused. Build/test caches may be cleaned only after separate authorization and no need to reproduce; private state, sources, runtime tooling and logs retained."
+}
