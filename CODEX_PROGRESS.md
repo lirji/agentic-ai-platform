@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务：恢复 capability-delivery-20261021；S16D 告警与运行手册已验证，正在Git交付后接续S17A。
+- 当前任务：恢复 capability-delivery-20261021；S16D 告警与运行手册已验证并合入main，接续S17A。
 - 唯一业务进度入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，实施和验收以其引用的 IMPLEMENTATION_SLICES 为准。
-- 原目录分支 feat/operational-alerts-20261102，基线38f5bbf；parallel=no。S16D本地PASS，完成Git/CI后按原依赖推进S17；完整51项未完成。
+- 原目录分支 feat/operational-alerts-20261102，基线38f5bbf；parallel=no。S16D产品6f0b7ce本地/分支与mainCI全PASS；归档收据.local/s16d-final-delivery.json，随后推进S17；完整51项未完成。
 - 最新Docker部署已验收并推main，9容器运行 release6b7bf063f040da7a；[部署进度](docs/deployment/docker-latest-20261102/PROGRESS_STATE.md)。本次恢复不重复部署，不新增费用或清理数据。
 
 ## 前期可行性任务记录

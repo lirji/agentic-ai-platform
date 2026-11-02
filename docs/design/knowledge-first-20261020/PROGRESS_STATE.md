@@ -5,10 +5,10 @@
 - 最新授权：用户2026-11-02“继续没有执行完的任务”，恢复既有capability-delivery-20261021；parallel=no，无子Agent。沿原计划继续，正常Git提交/合并推main；无新付费额度、生产部署或数据清理授权。用户已授权代定U07：备份保留14天、每日完整一致性备份、RTO60分钟、RPO24小时；S17C在隔离目标按正式阈值验收，未实测不宣称达标。
 - S16D DONE / 本地Validation PASS：[验收](../../qa/operational-alerts-20261102/TEST_RESULT.md)、[源码/日志摘要](../../qa/operational-alerts-20261102/source-evidence.json)。Tasks/Knowledge只读汇总、旧账本适配、8条规则、具体手册、Docker显式指标开关及CI检查完成；默认未开启常驻采集，不发送外部通知。
 - 验证：受影响Java及依赖167项全过；独立空库4单元+2IT再通过；8规则双实例触发/恢复与实际3触发/0重复/3恢复通知PASS；3文件锁/HTTP、Ruff、契约/边界/链接/diff通过。代码卫生无阻断，Java专用formatter/static缺失已记录。初次测试HTTP状态字面值修复后重新通知验收，原失败保留。
-- Git：原目录feat/operational-alerts-20261102，基线38f5bbf，尚待本片提交/分支CI/正常合并推main及mainCI；main工作树复用既有docker-deployment-20261027，无新worktree。前端未改。
+- Git：产品6f0b7ce已正常合并推main，分支CI41462440252/mainCI41462730722四项全PASS；[交付收据](../../qa/operational-alerts-20261102/delivery-result.json)。本次归档提交的最终状态见.local/s16d-final-delivery.json。原目录feat/operational-alerts-20261102，基线38f5bbf；main工作树复用既有docker-deployment-20261027，无新worktree。前端未改。
 - 现场：最新Docker部署已交付，9容器继续release6b7bf063f040da7a；本片未部署。Java/HTTP/通知测试全部退出，停滞镜像拉取已中止，官方同版本二进制校验后完成通知验收；无在途迁移/模型调用。
 - 保留：新增agentic_knowledge_test_s16d_f0cfb968和agentic_tasks_test_s16d_f0cfb968、合成资料、.local/s16d*、.logs/s16d*均保留；原两账本摘要与S16C一致、费用0。原test库内本片合成测试记录亦保留。
-- 下一步：完成S16D正常Git交付/精确CI后，原目录切S17A分支；核对既有Docker制品/本地入口有效证据，冻结C-RELEASE兼容增量和隔离新环境验收，不重做已完成业务功能。S17A–D尚未验收；完整51项未完成，条件S9E/F、S18依原前提。
+- 下一步：S16D产品Git/CI已通过；归档交付后原目录切S17A分支，继续原计划；核对既有Docker制品/本地入口有效证据，冻结C-RELEASE兼容增量和隔离新环境验收，不重做已完成业务功能。S17A–D尚未验收；完整51项未完成，条件S9E/F、S18依原前提。
 - 规范：session-handoff、continue-approved-delivery、backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate；架构业务建模/持久化/并发安全/容量/发布、个人并发/追踪。沿既有手工pass，不宣称机器Runtime治理通过。
 
 ## 上一检查点：S16C代表负载与故障容量报告

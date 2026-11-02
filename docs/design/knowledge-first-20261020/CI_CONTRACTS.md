@@ -8,6 +8,7 @@
 | --- | --- |
 | backend / `java` | JDK21、现有POM依赖与Maven插件构建；全部无数据库单元/本机协议测试通过；P01/P04与E02金标拒绝DTO字段/类型漂移 |
 | backend / `python` | Python3.12按uv.lock安装（locked检查后冻结运行）；Ruff格式/lint、mypy、全部默认pytest通过；P01/P04与E02读取同一份金标 |
+| backend / `operational-alerts`（S16D增量） | 只读账本文件/锁/HTTP测试与固定Prometheus工具的8条告警触发/恢复/副本去重检查 |
 | backend / `documents` | 当前CI登记的契约文件/版本标记与金标路径存在，JSON可解析；差异无空白错误。只验证登记的契约，不冒称所有历史Markdown链接均有效 |
 | frontend / `web` | Node取.nvmrc，pnpm取packageManager，pnpm-lock.yaml冻结安装；格式、lint、类型、全部单元及Vite构建通过 |
 
