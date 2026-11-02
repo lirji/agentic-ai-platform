@@ -19,7 +19,7 @@ operation首次固定accountId。绑定后来改指其他账户时，同operatio
 
 ## 2. 认证与费用归因
 
-所有写接口仅可信服务调用，沿项目 RS256、独立 audience/issuer/azp、短时有效 JWT 与 `X-Internal-Authorization`，不接受浏览器透传 tenant/actor/account。新增 usage 受众/作用域在 platform-contracts 集中定义；不得复用普通用户的 tasks:write 作为计量写权限。协议 body 严格 JSON（无额外/重复 key、尾随内容、非法 Unicode/NUL），最大 32 KiB；错误沿统一 code/message/traceId。
+所有写接口仅可信服务调用，沿项目 RS256、独立 audience/issuer/azp、短时有效 JWT 与 `X-Internal-Authorization`，不接受浏览器透传 tenant/actor/account。新增 usage 受众/作用域在 platform-contracts 集中定义；不得复用普通用户的 task:write 作为计量写权限。协议 body 严格 JSON（无额外/重复 key、尾随内容、非法 Unicode/NUL），最大 32 KiB；错误沿统一 code/message/traceId。
 
 两类上下文：
 
@@ -74,11 +74,11 @@ retryOf须是同operation已有DISPATCHED/UNKNOWN的attempt；新attempt同样�
 
 ### 错误映射
 
-复用项目 `ApiError` 和 `PlatformError` 的401/403/400基础错误；新语义集中在 Tasks usage 错误枚举/前端消息目录，不能靠 message 判断。稳定 code：`USAGE_NOT_FOUND`404、`USAGE_CONFLICT`409、`USAGE_LEASE_LOST`409、`USAGE_BUDGET_EXCEEDED`409、`USAGE_DISABLED`409、`USAGE_PROFILE_INVALID`400、`USAGE_REPORT_INVALID`400、`USAGE_UNAVAILABLE`503。暴露余额前先授权，额度拒绝不给出其他组织资金细节。503/网络失败绝不被解释成免费或成功。
+复用项目 `ApiError`、`PlatformError` 的401/403和 `TaskError.INPUT_INVALID` 的400基础错误；新语义集中在 Tasks usage 错误枚举/前端消息目录，不能靠 message 判断。稳定 code：`USAGE_NOT_FOUND`404、`USAGE_CONFLICT`409、`USAGE_LEASE_LOST`409、`USAGE_BUDGET_EXCEEDED`409、`USAGE_DISABLED`409、`USAGE_PROFILE_INVALID`400、`USAGE_REPORT_INVALID`400、`USAGE_UNAVAILABLE`503。暴露余额前先授权，额度拒绝不给出其他组织资金细节。503/网络失败绝不被解释成免费或成功。
 
 ## 5. 用户只读视图
 
-`GET /api/v1/usage?contextType=TASK|KNOWLEDGE&contextId=<id>&cursor=<optional>&limit=20`，需要已验证的 `tasks:read`（Gateway仅查询转发）。Tasks 只返回当前tenant/actor自己的记录，不因组织同名、资料共享或已知taskId放开。不是自己产生的上下文返回404；历史本人审计不需要重新获得正文读取权，也不能返回正文或引用内容。旧未归因记录不分配给任何普通用户，仅供受控本地对账。
+`GET /api/v1/usage?contextType=TASK|KNOWLEDGE&contextId=<id>&cursor=<optional>&limit=20`，需要已验证的 `task:read`（Gateway仅查询转发）。Tasks 只返回当前tenant/actor自己的记录，不因组织同名、资料共享或已知taskId放开。不是自己产生的上下文返回404；历史本人审计不需要重新获得正文读取权，也不能返回正文或引用内容。旧未归因记录不分配给任何普通用户，仅供受控本地对账。
 
 响应 `{schemaVersion:"usage-v1",items:[Attempt],nextCursor:null|string}`；limit1–50，cursor与当前用户、上下文绑定，排序createdAt/id稳定；空本人上下文可返回空列表，不能用空列表区分他人对象存在。界面只显示“预留”“已结算内部成本”“结果未知”和真实 token（若有），说明不是供应商账单；不显示运营资金池剩余量。S15B 放在现有任务/资料相关入口，不新增管理后台或充值流程。
 

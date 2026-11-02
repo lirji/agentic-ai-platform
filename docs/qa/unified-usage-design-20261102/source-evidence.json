@@ -66,6 +66,14 @@
     {
       "path": "async-task-service/src/main/resources/db/migration/V5__generation_evidence.sql",
       "sha256": "5384d398d0f6fd576fd1decb935c32460f62dc5439cc33ed5a9a5ae81828e1ac"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/domain/TaskProtocol.java",
+      "sha256": "a41061a1e2ec86f0a5828b8f31a7a345f2bd46af7db5317a259ba39ba4c4541e"
+    },
+    {
+      "path": "platform-contracts/src/main/java/com/lrj/agentic/contract/PlatformError.java",
+      "sha256": "bdf70a1a0ac5eb32776af375b03bf529a932d0757ea8c20efd20c0182580e66e"
     }
   ]
 }

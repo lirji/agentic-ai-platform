@@ -12,3 +12,5 @@
 - Tasks和usage没有跨域Mapper依赖；同库task fence事务仍形成明确抽取债，Readiness LOW而非“已可抽取”。
 
 未发现阻止S15A设计交接的问题。风险保留：价格及计量信任边界、保守占额造成可用额度降低、Tasks故障阻止新付费调用、实际账号绑定/预算启用需受控配置。生产容量、价格真实性、运行并发和UI均未在设计阶段验证。S15B必须按全部UA项执行，不能把本审查PASS当实现PASS。
+
+交付前接入核对补正：现有scope实际为task:read/task:write（不是tasks复数），400基础错误属于TaskError.INPUT_INVALID而非PlatformError；正式契约已按真实目录修正并重验，不引入新权限别名或第二套错误体系。
