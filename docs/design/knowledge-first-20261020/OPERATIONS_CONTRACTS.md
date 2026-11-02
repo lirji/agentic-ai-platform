@@ -118,3 +118,42 @@ C04 当前内容与真实S8定义/报告/人工评分绑定；旧原文、其他
 C05 React编辑/附件/冲突/原键恢复、准备状态、质量工作台跳转/关联及反馈返回；桌面与窄屏真实服务验证和截图实看。
 
 C06 必需静态/单元/DB/双索引/质量联合、审查/文档/Git/CI；本片不执行原资料发布、生产部署或付费模型探针。
+
+## S14C 审核与真实入库发布
+
+协议增量 `operations-publication-v1`；沿已确认的资料owner权限和现有生命周期更新，不新增角色、模型裁判或通用工作流引擎。用户“自行处理”授权下，采用一个明确的“批准并入库”动作：审批审计与真实入库受理在同一短事务提交；不保留只有批准、没有可靠入库交接的中间状态。
+
+### 不变量与事务
+
+- 只有当前原资料owner且具有knowledge:write的主体可以批准。原资料须ACTIVE、STANDARD、生命周期已就绪、无正在处理的冲突意图，原资料revision必须等于候选baseRevision及请求expectedDocumentRevision。共享reader/跨租户/他人404；撤权不被批准动作恢复，更新原documentId而不重建ACL。
+- 请求精确绑定当前候选revision/contentDigest、已关联runId/manifestDigest/reviewDigest及非空批准说明（最多2000码点、合法UTF-8、无NUL）。不是客户端传入approvalEligible布尔值，LangGraph暂停或模型输出不授予批准。
+- 事务外读取真实S8中央终态确认报告与评分；事务内按run→preview document→original document→candidate的顺序加锁，沿质量模块重新验证当前清单、未恢复运行、源发布绑定、最新逐题评分摘要和BUSINESS/ReviewRules资格。原资料、候选和绑定精确复核；所有requiredText须在该副本字面PRESENT。锁内不访问Tasks/IAM/S3/模型。
+- 复用生命周期UPDATE受理路径与持久worker，直接使用候选已持久化的可信完整源引用，不能接受客户端对象地址、截取反馈片段或复制校验副本的发布状态。接收profile须与副本评估的processor一致；源内容必须不同于原资料最新源，保持原UPDATE约束。
+- V17新增不可变knowledge_candidate_approval，完整中文表/列注释，tenant/owner逐字比较；每candidate+revision唯一，每真实job唯一，记录批准人、说明、时间、命令、原资料基线、内容/质量摘要、私有副本身份、真实目标版本/代次/job。审批记录、生命周期命令/修订/作业和候选命令回执同事务；任何失败整体回滚。
+- 同修订只能受理一次批准。相同原键始终恢复同一不可变回执；不同键并发由原资料CAS和唯一约束裁决，不分配第二作业。新编辑生成新候选修订，旧批准只属于旧修订，不能用于新内容；已原子受理的旧作业继续处理其冻结源，后续草稿编辑不隐式撤销已接受的发布。
+
+### API 与状态
+
+沿operations前缀、严格有界JSON、UTC/no-store和统一错误体系。
+
+| 方法/路径 | 语义 |
+| --- | --- |
+| GET /publication-capabilities | `{enabled}`；同时受operations、publication、updates/generation/processing门禁控制 |
+| POST /candidates/{id}/publication | `{expectedRevision,expectedDocumentRevision,contentDigest,runId,manifestDigest,reviewDigest,note}`；UUID Idempotency-Key；200返回原Receipt，operation=APPROVE_PUBLISH，仅表示批准并受理 |
+| GET /candidates/{id}/publication?revision=n | owner读取该不可变修订的批准与真实入库状态；默认当前修订，未批准404 |
+
+回执沿B的12字段，不添加源正文；previewDocumentId仍为私有校验副本，jobId为本次原资料真实入库作业。指纹沿B规范Intent(APPROVE_PUBLISH,id,expectedRevision,expectedDocumentRevision,contentDigest,input)。GET /commands/{key}仍能在关闭功能、编辑或原资料删除后恢复接受事实。
+
+发布读模型返回批准标识、候选/原资料/基线/目标版本代次、jobId、run与清单/评分/内容摘要、批准时间/说明，以及当前status/errorCode/retryable/jobRevision/publication。状态由真实资料发布指针和任务投影计算：QUEUED、PROCESSING、FAILED、PUBLISHED、SUPERSEDED、INACTIVE；仅当前ACTIVE资料的publishedVersion/generation/job与批准目标全匹配且源摘要相同、job READY才是PUBLISHED。旧READY或其他新版本不能冒充本次已生效；撤下/删除为INACTIVE，其他意图取代为SUPERSEDED。读取不另起发布或模型调用。
+
+失败重试沿现有K03/job详情及CAS、原任务身份和不可变源，不重新批准或创建版本；状态恢复沿同一批准关系展示。已完成历史保留，发布后探测与补偿入口由S14D完成。
+
+### 页面、开关与验收
+
+- 当前候选展示批准说明、原资料与目标修订/摘要摘要、质量关联及“批准并入库”确认；明确源将替换原资料全文并保留其已有共享。资格不足/历史/只读主体/功能关闭禁用提交；服务器仍重新验证。
+- 复用B原键恢复；刷新或响应未知优先查原键，不换键重发。保存说明不进入sessionStorage。接受成功显示“已批准，等待入库”，轮询真实发布状态；FAILED显示作业错误与现有重试入口，只有精确发布事实显示“已生效”。
+- 新knowledge.operations.publication-enabled默认false，显式Runtime开关；不隐式开启worker、模型预算或部署。GET历史和原回执不依赖写开关。
+- P01 真实DB并发批准、同键恢复/异内容冲突、候选/原文/评分变更与owner拒绝、失败事务不留审批或孤立job。
+- P02 真实S3源→原UPDATE→真实worker双索引发布，受理/失败/重试/精确PUBLISHED/后续SUPERSEDED/撤下INACTIVE，原ACL保留；没有把preview READY冒充原资料发布。
+- P03 真实质量事实和评分并发锁裁决，外部依赖故障不可批准；默认关闭和严格HTTP/权限/no-store。
+- P04 真实React/HTTP完整批准与未知恢复、异步状态、错误重试、历史/窄屏；静态/类型/单元/集成/审查/文档与两仓分支/main CI。确定性模型夹具验证流程，付费调用0，生产部署0。
