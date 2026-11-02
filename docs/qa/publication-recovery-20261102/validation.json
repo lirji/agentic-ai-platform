@@ -1,7 +1,7 @@
 {
   "slice": "S14D",
   "status": "PASS",
-  "git": "PENDING",
+  "git": "PASS",
   "backend": {
     "base": "dd86c5d",
     "files": {
