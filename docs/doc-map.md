@@ -171,3 +171,5 @@ S16B：Tasks V8/Knowledge V19及各自容量Mapper、全部新增/恢复入口�
 [报告](qa/mixed-capacity-20261102/CAPACITY_REPORT.md)与[验收](qa/mixed-capacity-20261102/TEST_RESULT.md)由`deploy/capacity_validation.py`、`ai-runtime/tests/capacity_probe.py`和`test_capacity_integration.py`真实隔离运行生成；精确源码/日志摘要见[source-evidence](qa/mixed-capacity-20261102/source-evidence.json)。原产品契约/运行默认值未变，当前进度仍以唯一PROGRESS_STATE为准。
 
 2026-11-02 S16C后Docker更新：固定后端7863ae3/前端c2d12fe，release6b7bf063f040da7a，见[部署验收](deployment/docker-latest-20261102/TEST_RESULT.md)和[实际制品收据](deployment/docker-latest-20261102/deployment-result.json)。9健康、45业务表2716行及预算不变；前端相同源码制品复用及文件层核对见[复用证据](deployment/docker-latest-20261102/frontend-reuse.json)。
+
+S17A：`deploy/docker`制品门禁/隔离入口、Knowledge ProcessingProperties命名空间、本地身份桥origin及可读资料分页对应[C-RELEASE](design/knowledge-first-20261020/RELEASE_CONTRACTS.md)与[验收](qa/isolated-release-validation-20261102/TEST_RESULT.md)。只读/合成隔离验证通过，原九应用恢复；未生产部署。

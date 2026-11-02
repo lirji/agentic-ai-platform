@@ -37,9 +37,7 @@ def run(command: list[str], cwd: Path | None = None) -> None:
 def private(path: Path, data: str) -> None:
     """只写派生私密配置，原密钥和原账本始终由原目录持有。"""
     path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    with os.fdopen(
-        os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w"
-    ) as stream:
+    with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w") as stream:
         stream.write(data)
     path.chmod(0o600)
 
@@ -61,9 +59,7 @@ def source_contents(root: Path, revision: str | None = None) -> dict[str, bytes]
                     raise RuntimeError("源码快照不接受链接或逃逸路径")
                 result[item.name] = source.extractfile(item).read()
             return result
-    raw = subprocess.check_output(
-        ["git", "ls-files", "-co", "--exclude-standard", "-z"], cwd=root
-    )
+    raw = subprocess.check_output(["git", "ls-files", "-co", "--exclude-standard", "-z"], cwd=root)
     result = {}
     for name in sorted(set(raw.decode().strip("\0").split("\0"))):
         path = root / name
@@ -81,9 +77,7 @@ def prepare(args: argparse.Namespace) -> None:
     state = backend / ".local"
     store = state / "docker-runtime"
     commits = {
-        kind: subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root)
-        .decode()
-        .strip()
+        kind: subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root).decode().strip()
         for kind, root in (("backend", backend), ("frontend", frontend))
     }
     contents = {
@@ -140,12 +134,8 @@ def prepare(args: argparse.Namespace) -> None:
             + "\n",
         )
     (context / "docker").mkdir(exist_ok=True)
-    shutil.copyfile(
-        context / "deploy/docker/web.config.ts", context / "docker/web.config.ts"
-    )
-    shutil.copyfile(
-        context / "deploy/docker/search_bridge.py", context / "docker/search_bridge.py"
-    )
+    shutil.copyfile(context / "deploy/docker/web.config.ts", context / "docker/web.config.ts")
+    shutil.copyfile(context / "deploy/docker/search_bridge.py", context / "docker/search_bridge.py")
     (context / ".dockerignore").write_text(
         "**/target\n**/node_modules\n**/.venv\n**/.local\n**/.logs\n**/__pycache__\n"
         "**/.pytest_cache\n**/.mypy_cache\n**/.ruff_cache\n.git\ndocs\n.engineering\n"
@@ -166,14 +156,12 @@ def prepare(args: argparse.Namespace) -> None:
     )
     available_schema = max(
         int(path.name.split("__")[0][1:])
-        for path in (
-            context / "knowledge-service/src/main/resources/db/migration"
-        ).glob("V*__*.sql")
+        for path in (context / "knowledge-service/src/main/resources/db/migration").glob(
+            "V*__*.sql"
+        )
     )
     if current_schema > available_schema:
-        raise RuntimeError(
-            "开发库版本高于待部署源码；请恢复兼容该迁移的代码，不启动旧 writer"
-        )
+        raise RuntimeError("开发库版本高于待部署源码；请恢复兼容该迁移的代码，不启动旧 writer")
 
     # 解析开关由操作参数显式选择；生命周期仍读取原项目配置。
     os.environ.update(
@@ -191,9 +179,7 @@ def prepare(args: argparse.Namespace) -> None:
         import identity_local
 
         identity = identity_local.read_private(state / "identity/state.json")
-        registration = identity_local.read_private(
-            state / "identity/registration-result.json"
-        )
+        registration = identity_local.read_private(state / "identity/registration-result.json")
         if (
             registration.get("status") != "PASS"
             or identity.get("organization") != identity_local.ORGANIZATION
@@ -215,11 +201,18 @@ def prepare(args: argparse.Namespace) -> None:
         }
 
     import sharing_local
+
     source_env.update(sharing_local.environment(browser, args.sharing))
     import feedback_local
+
     source_env.update(feedback_local.environment(source_env, args.feedback))
     import operations_local
-    source_env.update(operations_local.environment(args.operations, args.operations_publication, args.operations_recovery))
+
+    source_env.update(
+        operations_local.environment(
+            args.operations, args.operations_publication, args.operations_recovery
+        )
+    )
 
     def transform(value: str, service: str) -> str:
         """仅替换本项目已知地址；内部服务保留共享网络内 loopback。"""
@@ -287,9 +280,7 @@ def prepare(args: argparse.Namespace) -> None:
         if service == "conversations":
             selected["CONVERSATION_WORKER_TENANT"] = tenant
         selected["OTEL_EXPORT_ENABLED"] = "false"
-        env_file(
-            service, {key: transform(value, service) for key, value in selected.items()}
-        )
+        env_file(service, {key: transform(value, service) for key, value in selected.items()})
 
     ai_env = {
         key: transform(str(value), "ai")
@@ -368,6 +359,23 @@ def prepare(args: argparse.Namespace) -> None:
 def compose(state: Path, *arguments: str) -> list[str]:
     """固定项目和配置，避免从不同工作目录误操作其他 Compose。"""
     settings = json.loads((state / "current.json").read_text())
+    override = []
+    if arguments and arguments[0] == "up":
+        # 校验完成后仍使用不可变ID，避免标签在核对与启动之间变化。
+        receipt = json.loads((state / "artifacts.json").read_text())
+        pinned = state / "pinned-images.json"
+        private(
+            pinned,
+            json.dumps(
+                {
+                    "services": {
+                        name: {"image": item["imageId"]}
+                        for name, item in receipt["services"].items()
+                    }
+                }
+            ),
+        )
+        override = ["-f", str(pinned)]
     return [
         "docker",
         "compose",
@@ -375,13 +383,34 @@ def compose(state: Path, *arguments: str) -> list[str]:
         str(state / "compose.env"),
         "-f",
         str(Path(settings["DOCKER_FILES"]) / "compose.yaml"),
+        *override,
         *arguments,
     ]
+
+
+def service_images(state: Path) -> dict[str, str]:
+    """Compose展开可能含凭据，仅在内存提取服务镜像映射，禁止打印原配置。"""
+    resolved = json.loads(subprocess.check_output(compose(state, "config", "--format", "json")))
+    return {name: service["image"] for name, service in resolved["services"].items()}
+
+
+def verify_artifacts(state: Path) -> None:
+    """旧成功标记不足以证明当前标签，必须有匹配的不可变ID收据。"""
+    import release_artifacts
+
+    receipt = state / "artifacts.json"
+    if not receipt.is_file():
+        raise RuntimeError(release_artifacts.ReleaseError.RECEIPT_MISSING)
+    settings = json.loads((state / "current.json").read_text())
+    release_artifacts.verify(settings, service_images(state), json.loads(receipt.read_text()))
 
 
 def build(state: Path) -> None:
     """只在隔离源码快照构建，不能覆盖宿主仍在使用的 fat JAR。"""
     settings = json.loads((state / "current.json").read_text())
+    import release_artifacts
+
+    release_artifacts.verify_source(settings)
     context = Path(settings["BUILD_CONTEXT"])
     run(["mvn", "-B", "-ntp", "verify"], context)
     (context / "jars").mkdir(exist_ok=True)
@@ -395,6 +424,10 @@ def build(state: Path) -> None:
     with bake.open("wb") as output:
         subprocess.run(compose(state, "build", "--print"), stdout=output, check=True)
     run(["docker", "buildx", "bake", "--file", str(bake), "--load"])
+    private(
+        state / "artifacts.json",
+        json.dumps(release_artifacts.record(settings, service_images(state)), indent=2) + "\n",
+    )
     private(
         state / "build-result.json",
         json.dumps(
@@ -427,9 +460,7 @@ def smoke(state: Path) -> None:
         "/api/v1/tasks?kind=READONLY_ASSISTANT&limit=1",
         "/api/v1/knowledge/evaluations/datasets?limit=1",
     ):
-        request = Request(
-            base + path, headers={"X-Workbench-Request": "1", "Origin": base}
-        )
+        request = Request(base + path, headers={"X-Workbench-Request": "1", "Origin": base})
         with urlopen(request, timeout=15) as response:
             if response.status != 200:
                 raise RuntimeError("只读页面/接口验证失败")
@@ -444,7 +475,21 @@ def smoke(state: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "action", choices=("prepare", "build", "up", "status", "stop", "smoke")
+        "action",
+        choices=(
+            "prepare",
+            "build",
+            "up",
+            "status",
+            "stop",
+            "smoke",
+            "validation-prepare",
+            "validation-up",
+            "validation-stop",
+            "validation-status",
+            "validation-pause-original",
+            "validation-restore-original",
+        ),
     )
     parser.add_argument("--backend", type=Path, required=True)
     parser.add_argument("--frontend", type=Path)
@@ -454,16 +499,36 @@ def main() -> None:
     parser.add_argument("--identity-mode", choices=("local", "oidc"), default="local")
     parser.add_argument("--sharing", action="store_true", help="仅与oidc一起启用已验收的只读共享")
     parser.add_argument("--feedback", action="store_true", help="启用所有者反馈及任务引用证明")
-    parser.add_argument("--operations", action="store_true", help="启用所有者候选修订；不会自动开启处理worker")
-    parser.add_argument("--operations-publication", action="store_true", help="显式启用候选批准入库；要求同时指定--operations")
-    parser.add_argument("--operations-recovery", action="store_true", help="显式启用发布后检查与补偿；要求同时指定--operations")
-    parser.add_argument("--operational-metrics", action="store_true", help="显式启用只读管理指标；不启动采集或外发")
+    parser.add_argument(
+        "--operations", action="store_true", help="启用所有者候选修订；不会自动开启处理worker"
+    )
+    parser.add_argument(
+        "--operations-publication",
+        action="store_true",
+        help="显式启用候选批准入库；要求同时指定--operations",
+    )
+    parser.add_argument(
+        "--operations-recovery",
+        action="store_true",
+        help="显式启用发布后检查与补偿；要求同时指定--operations",
+    )
+    parser.add_argument(
+        "--operational-metrics", action="store_true", help="显式启用只读管理指标；不启动采集或外发"
+    )
+    parser.add_argument("--validation-id", help="复用8位十六进制隔离验证ID，不操作原开发项目")
     parser.add_argument("--committed-only", action="store_true")
     parser.add_argument(
         "--structured-profile", choices=("BLOCK_V2", "STRUCTURE_V3"), default="BLOCK_V2"
     )
     args = parser.parse_args()
     state = args.backend.resolve() / ".local/docker-runtime"
+    if args.action.startswith("validation-"):
+        import validation_runtime
+
+        if not args.validation_id:
+            parser.error("validation操作需要--validation-id")
+        validation_runtime.action(args.action.removeprefix("validation-"), args.validation_id)
+        return
     if args.action == "prepare":
         if args.frontend is None:
             parser.error("prepare 必须提供 --frontend")
@@ -477,6 +542,7 @@ def main() -> None:
         result = json.loads((state / "build-result.json").read_text())
         if result["sourceFingerprint"] != settings["SOURCE_FINGERPRINT"]:
             raise RuntimeError("构建结果不属于当前快照")
+        verify_artifacts(state)
         sys.path.insert(0, str(args.backend.resolve() / "deploy"))
         import ai_local
         import chat_local
@@ -485,13 +551,9 @@ def main() -> None:
         if (
             any(local.alive(service) for service in local.SERVICES)
             or ai_local.alive()
-            or any(
-                chat_local.alive(service) for service in ("qa-worker", "model-proxy")
-            )
+            or any(chat_local.alive(service) for service in ("qa-worker", "model-proxy"))
         ):
-            raise RuntimeError(
-                "宿主旧应用仍运行，请正常停止后再切换，不能同时启动两套 writer"
-            )
+            raise RuntimeError("宿主旧应用仍运行，请正常停止后再切换，不能同时启动两套 writer")
         run(
             compose(
                 state,

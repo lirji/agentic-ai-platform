@@ -236,7 +236,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S16B | 租户公平与后台资源隔离 | S16A, S15C | IMPLEMENT | DONE |
 | S16C | 代表负载与故障容量报告 | S16B, S10F, S11E | VALIDATE | DONE |
 | S16D | 可操作告警与运行手册 | S15C, S16C | IMPLEMENT | PLANNED |
-| S17A | 完整应用制品与本地部署入口 | S8F, S9C, S11E, S15B | IMPLEMENT | PLANNED |
+| S17A | 完整应用制品与本地部署入口 | S8F, S9C, S11E, S15B | IMPLEMENT | DONE |
 | S17B | 升级兼容与回退演练 | S17A, S10D, S12D | VALIDATE | PLANNED |
 | S17C | 跨存储还原与删除传播演练 | S17B, S13C, S15B | VALIDATE | PLANNED |
 | S17D | 制品与依赖供应链门禁 | S8F, S17A | ENGINEERING | PLANNED |
@@ -673,7 +673,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-RELEASE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** dev_infra 连接/账号/命名空间隔离；健康/ready分开；私密凭据外置；无旧业务服务隐式依赖；重启不重置预算。
 - **Pass / Runtime：** IMPLEMENT；完整应用容器；共享组件优先 dev_infra；非生产目标。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G17。
+- **状态 / 并行 / 对应缺口：** DONE（本地验收PASS，Git交付中）；parallel=no；G17。
 
 ### S17B · 升级兼容与回退演练
 

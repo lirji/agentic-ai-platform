@@ -70,6 +70,8 @@ try {
     ['GET', '/api/v2/conversations/capabilities'],
     ['POST', '/api/v3/conversations/11111111-1111-4111-8111-111111111111/turns'],
     ['GET', '/api/v1/tasks'],
+    ['GET', '/api/v1/knowledge/readable-documents?limit=20'],
+    ['GET', '/api/v1/usage?contextType=TASK&contextId=11111111-1111-4111-8111-111111111111&limit=1'],
   ];
   for (const [method, path] of routes) {
     const response = await fetch(origin + path, { method, headers,

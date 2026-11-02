@@ -1,9 +1,9 @@
 # Codex Progress
 
-- 当前任务：恢复 capability-delivery-20261021；S16D 告警与运行手册已验证并合入main，接续S17A。
-- 唯一业务进度入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，实施和验收以其引用的 IMPLEMENTATION_SLICES 为准。
-- 原目录分支 feat/operational-alerts-20261102，基线38f5bbf；parallel=no。S16D产品6f0b7ce本地/分支与mainCI全PASS；归档收据.local/s16d-final-delivery.json，随后推进S17；完整51项未完成。
-- 最新Docker部署已验收并推main，9容器运行 release6b7bf063f040da7a；[部署进度](docs/deployment/docker-latest-20261102/PROGRESS_STATE.md)。本次恢复不重复部署，不新增费用或清理数据。
+- 当前任务：capability-delivery-20261021持续执行；S17A本地验收PASS，正在两仓Git交付；之后继续S17B–D。
+- 唯一入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；[本片验收](docs/qa/isolated-release-validation-20261102/TEST_RESULT.md)。
+- 后端原目录feat/isolated-release-validation-20261102，HEAD14f033e；前端同名分支HEADc2d12fe。当前本片未提交；parallel=no，无新worktree。
+- 原九应用已经原样恢复且全部healthy，数据/预算一致；隔离7f6a3c91停止并VERIFIED，52693/59500均已退出。用户暂停/恢复授权持续有效，无新费用/生产部署/清理授权。U07=14天/每日/RTO60分钟/RPO24小时，S17C未验收。
 
 ## 前期可行性任务记录
 

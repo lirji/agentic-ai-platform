@@ -69,6 +69,8 @@ jobs:
           python3 ci/check_contract_docs.py
           python3 ci/check_usage_boundaries.py
           python3 -m py_compile deploy/docker/runtime.py deploy/docker/search_bridge.py
+          python3 -m compileall -q deploy/docker
+          python3 -m unittest discover -s deploy/docker -p 'test_*.py'
           git show --format= --check HEAD
 
   operational-alerts:

@@ -1,0 +1,108 @@
+{
+  "protocol": "s17a-evidence-v1",
+  "status": "PASS",
+  "runId": "7f6a3c91",
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "c0a0a1534b29529f9ff60d9de3252dd0a88e39cfe855a6d78b51eba5b622e331",
+    "deploy/docker/runtime.py": "b03a905fd39b82b06e24b6cc00eb288c420d1fbdde4381d7e377026c08b80b3a",
+    "deploy/docker/release_artifacts.py": "1b321a8b762ea0f0e4ce8422f1b38aef8b86ff2c470e4f4603167b94ac700c29",
+    "deploy/docker/test_release_artifacts.py": "a4fe8341ccd8ba822e91f5a4f6cc5184716fafead63b34126de776b64f4c8cfd",
+    "deploy/docker/test_validation_runtime.py": "61c3481b5ac3bba189831682898bab71bb5cf05a2e7aef2e26d2d0e7078a500c",
+    "deploy/docker/validation_resources.py": "c6d2913f1aa4ba3b949ce3555407a26d8af6ec5190c44af8371fcecf22c4cd35",
+    "deploy/docker/validation_runtime.py": "903dbd4d590794ce85e4bdc1811e0625c129e788e60c680062e90be9ce84a5b5",
+    "deploy/docker/validation_probe.py": "e0af9d6979f8083085800a5ed4c81cbc9955571cb6aac09fc8b793440c4d368c",
+    "deploy/docker/web.config.ts": "0632e1d818e6e94b2645be939bed38a3e12ffbffec1ad80493313824e5853ce6",
+    "deploy/docker/tests/isolated-browser-smoke.mjs": "3f9e0d3167611fb186bd13e3599b6da3ad7085eaf55f894719804329316e42f6",
+    "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/processing/ProcessingProperties.java": "5dd4f28157b408f4d8b093ed4dafe696d1c44f81cb187893b9457551cdcaca07",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/ProcessingNamespaceTest.java": "5434ad04dab6aabe583fb516566245175a7ea96451a508a0d15ae5a5671f1411",
+    "deploy/docker/tests/web-proxy-smoke.mjs": "89c172df36a58657e3b09b94ed0b1656bd298306da602075958cff05fa0c0c59"
+  },
+  "frontendFiles": {
+    "deploy/local-identity.ts": "43d3dc235168dc3416e60cbe20a392c04a5b11a9bcb87aca048798d7ed3c2371",
+    "deploy/local-origin.test.ts": "f136a63aee00e3f3fb90696fb760314e4539068c9ed90a0b75f228e1795606d9"
+  },
+  "images": {
+    "gateway": {
+      "reference": "agentic-ai/edge-gateway:6b7bf063f040da7a",
+      "imageId": "sha256:bc775034e6051b2abdf94ce658d752f347e7a0b744fe58c07855bbc68da188c6",
+      "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657"
+    },
+    "knowledge": {
+      "reference": "agentic-ai/knowledge-validation:a5bbe3eaa891f156",
+      "imageId": "sha256:169c921222037cd909b4e0c5290a98487931f73bf4c58b29131315b688c3177f",
+      "sourceFingerprint": "a5bbe3eaa891f1563eba1a1b6d2e93230374e51d4da890ed6904cbdb5afa74d3"
+    },
+    "tasks": {
+      "reference": "agentic-ai/async-task-service:6b7bf063f040da7a",
+      "imageId": "sha256:4c8b10af6bfbfd23a36b1297e0e2a6b521c850ade3a63067ce8c3e4b8de6bce2",
+      "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657"
+    },
+    "conversations": {
+      "reference": "agentic-ai/conversation-service:6b7bf063f040da7a",
+      "imageId": "sha256:9a9bd3d2c320d6562a618ad9343021a69cc107828f9b549d9c5de04c846daba9",
+      "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657"
+    },
+    "ai": {
+      "reference": "agentic-ai/ai-runtime:6b7bf063f040da7a",
+      "imageId": "sha256:2d4840bc906d43a489ebd3c2af0d52b3f198e25770fb2c9b81e0656ebe7cd05b",
+      "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657"
+    },
+    "model-proxy": {
+      "reference": "agentic-ai/model-proxy:6b7bf063f040da7a",
+      "imageId": "sha256:77a5943a13be9537b584f6dc7d93cf37f7b92f898c2027a8f508542f0346f99b",
+      "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657"
+    },
+    "qa-worker": {
+      "reference": "agentic-ai/ai-runtime:6b7bf063f040da7a",
+      "imageId": "sha256:2d4840bc906d43a489ebd3c2af0d52b3f198e25770fb2c9b81e0656ebe7cd05b",
+      "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657"
+    },
+    "web": {
+      "reference": "agentic-ai/web-validation:6c3f673eb43bff68",
+      "imageId": "sha256:a1c3eed87f8522c845dee75dbf832455553f47684f9b28d612306c030b29a744",
+      "sourceFingerprint": "6c3f673eb43bff68c7c940550611810ba3fa0b4cc1d6aee9cfeac96658eea57b"
+    },
+    "search-bridge": {
+      "reference": "agentic-ai/ai-runtime:6b7bf063f040da7a",
+      "imageId": "sha256:2d4840bc906d43a489ebd3c2af0d52b3f198e25770fb2c9b81e0656ebe7cd05b",
+      "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657"
+    }
+  },
+  "includesUncommittedValidationInputs": true,
+  "webInputFingerprint": "6c3f673eb43bff68c7c940550611810ba3fa0b4cc1d6aee9cfeac96658eea57b",
+  "knowledgeInputFingerprint": "a5bbe3eaa891f1563eba1a1b6d2e93230374e51d4da890ed6904cbdb5afa74d3",
+  "artifactProbe": {
+    "fixedSourceAndImages": "PASS",
+    "realTagReplacementDenied": "PASS",
+    "missingReceiptDenied": "PASS",
+    "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657",
+    "tag": "agentic-ai/validation-drift:7f6a3c91",
+    "previousImageId": "sha256:bc775034e6051b2abdf94ce658d752f347e7a0b744fe58c07855bbc68da188c6",
+    "changedImageId": "sha256:e7d43219a85c7422ed743a6c569b768e4007af595a89e62ad47e4c87f59860fe"
+  },
+  "logs": {
+    "web-build.log": "d57c6a4d112a5703fe70eb14a1e40f20cf67ece806d817461607e42039ee19b6",
+    "web-host-build.log": "e4be61bc6b32817555f49b2d21278c710c755e722018eafa7ec8a58eaabdf501",
+    "knowledge-build.log": "01a13e82b6473ebf701075b65f97a51333190ba9be43dd5f2ffc9ac44cae1893",
+    "knowledge-image.log": "f9846ee89ab6ed4e562c3065773feeaec7d1b45bd13f59f51f970000f66c0d8b",
+    "compose-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-stop.log": "e57d2f8d4ad7d2af393945a9b80dfbc77224ab79631f8f1720bdbb6f3a8a22c5",
+    "original-start.log": "be68c76c5bad4e50b98b52418e9a115fa1adb0bd35e802a4700e2d92be7493cf"
+  },
+  "originalContinuity": {
+    "status": "PASS",
+    "healthyContainers": 9,
+    "tables": 48,
+    "rows": 2746,
+    "budgetHashes": {
+      "chat": "69ce3f7679582ee2a6f506125e99abd22af8c5f47fb93d3b579b7b33e6af77b1",
+      "embedding": "e39835470384ed8a6d785be9a23cd5e1c7db636a596d80972aafab67e101bed8"
+    }
+  },
+  "localProxyRegression": {
+    "status": "PASS",
+    "routes": 15,
+    "network": "none",
+    "logSha256": "6b3ba06fb89e2944991d6306d77cd3f82901d0246acaf95723c1df771e9a7714"
+  }
+}

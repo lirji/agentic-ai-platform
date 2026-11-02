@@ -84,3 +84,27 @@ S14B候选修订使用独立`--operations`，默认关闭；仅派生候选入�
 2026-11-02最新固定制品为`6b7bf063f040da7a`（后端7863ae3/前端c2d12fe），9容器健康、45业务表2716行及两预算摘要一致。后端已重新构建；前端源码和全部构建输入未变，复用已验证旧镜像并核对文件层完全相同，详见本轮前端复用收据。本次保持OIDC/PDF/DOCX/STRUCTURE_V3与原开关；sharing/feedback/operations及新的容量模式没有自动启用，LEGACY_LOCAL资金模式保留。容量策略启用另遵守[容量运行说明](../../docs/design/knowledge-first-20261020/CAPACITY_RUNTIME.md)，不能通过增副本或复制账本增加额度。
 
 S16D只读运维指标可在后续明确部署的prepare命令增加`--operational-metrics`；默认关闭并纳入制品摘要。采集器与告警配置见[告警手册](../monitoring/RUNBOOK.md)，本片没有替换运行中的镜像。
+
+## 固定制品与独立验证（S17A）
+
+新`build`在成功后保存私密`artifacts.json`，逐服务绑定源码指纹与不可变镜像ID。`up`核对源码快照、清单、镜像标签解析结果，再使用ID覆盖启动；增加未登记源码、修改快照或移动标签均拒绝。旧`build-result.json`不替代新收据，旧环境的`status`/`stop`仍可用。正式发布使用`--committed-only`。
+
+隔离入口复用本文件的Compose结构与已验证制品收据，原`.local/docker-runtime/current.json`保持。当前基底收据固定为`docs/deployment/docker-latest-20261102/deployment-result.json`；新Web按冻结输入构建本地身份模式，Knowledge从冻结源码构建以支持独立检索命名空间，其余服务保留真实旧来源。宿主使用已锁定Node24.22.0和JDK21/Maven进行编译/测试，Docker只在无网络模式封装，减轻共享VM内存压力。验证制品记录工作树输入摘要，不冒称正式提交制品。私密配置在`.local/release-validation/<id>`，资源所有权与阶段分别记入`resources.json`、`state.json`，失败必须使用同一个ID继续。
+
+```sh
+# 选择未使用的8位十六进制ID；恢复已有演练时直接复用其ID。
+ai-runtime/.venv/bin/python deploy/docker/runtime.py validation-prepare --backend "$PWD" --validation-id 7f6a3c91
+ai-runtime/.venv/bin/python deploy/docker/validation_probe.py artifacts --id 7f6a3c91
+ai-runtime/.venv/bin/python deploy/docker/validation_probe.py baseline --id 7f6a3c91
+ai-runtime/.venv/bin/python deploy/docker/runtime.py validation-up --backend "$PWD" --validation-id 7f6a3c91
+ai-runtime/.venv/bin/python deploy/docker/validation_probe.py before-restart --id 7f6a3c91
+ai-runtime/.venv/bin/python deploy/docker/runtime.py validation-stop --backend "$PWD" --validation-id 7f6a3c91
+ai-runtime/.venv/bin/python deploy/docker/runtime.py validation-up --backend "$PWD" --validation-id 7f6a3c91
+ai-runtime/.venv/bin/python deploy/docker/validation_probe.py after-restart --id 7f6a3c91
+```
+
+同一宿主一次运行一组隔离验证，端口固定为Web `127.0.0.1:28096`、Gateway `127.0.0.1:28090`，管理与内部端口不发布。验证基线已有时不能覆盖，直接从未完成步骤恢复。探针创建幂等合成会话，核对真实DML权限、同源身份边界、健康/就绪与数据/预算连续性；不生成问答或调用付费模型。新资源和合成资金不能用于正式费用，也不能以演练额度替代原累计账本。全部资源保留，普通停止不删除容器、数据、索引或私密证据。
+
+应用DB身份仅有本库DML；Flyway仍由独立迁移身份执行启动迁移，不能宣称应用进程完全不持有迁移凭据。Qdrant复用本项目实例key并锁定独立集合，尚无集合级凭据隔离。AI健康仅表示HTTP存活，模型出口在本演练中禁用；完整验收条件见[C-RELEASE](../../docs/design/knowledge-first-20261020/RELEASE_CONTRACTS.md)。
+
+共享宿主内存不足时，需要先明确是否允许本项目短暂停服。获授权后使用`validation-pause-original`；同一`--validation-id`下的`validation-restore-original`先停止隔离应用，再按原容器ID和imageId恢复现有应用。操作阶段写入`originalPhase`，中断时先读取状态和日志；禁止改成`up`重建旧环境或用新tag替代原镜像。应将恢复放入演练调用方的`finally`，成功与失败都执行。不得停止其他项目或共享中间件。

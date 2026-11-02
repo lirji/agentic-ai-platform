@@ -1,6 +1,19 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：恢复既有能力交付，S16D交付，接续S17A
+## 当前任务：S17A验收通过，Git交付中
+
+- 授权：继续capability-delivery-20261021完整原计划；parallel=no、无子Agent；正常两仓提交/合并推main已授权。用户允许仅本项目原9应用短暂停服做隔离演练，结束必须恢复；无生产部署、付费扩额或清理授权。
+- S17A DONE/本地Validation PASS：[RL01–RL05](../../qa/isolated-release-validation-20261102/TEST_RESULT.md)、[结果](../../qa/isolated-release-validation-20261102/validation-result.json)、[源码](../../qa/isolated-release-validation-20261102/source-evidence.json)。固定ID/来源/漂移拒绝、独立资源、权限/真实页面与stop/up连续性通过，Git/CI待交付。S17B–D未验收，完整51项未完成。
+- 现场：原agentic-ai-app九容器已按原ID/镜像恢复，全部healthy/restartCount=0；原48表2746行及两账本摘要相同。隔离agentic-s17-7f6a3c91全部停止；state.phase=VERIFIED、originalPhase=RESTORED。会话52693/59500均已成功退出，无在途模型/迁移/构建/测试。
+- 制品/边界：Web6c3f673eb43bff68、Knowledgea5bbe3eaa891f156为冻结工作树验证制品，其他七服务来自旧验收制品；真实源码/模式逐项保留，不冒称最终提交制品。原Docker仍6b7bf063f040da7a，未部署本片业务改动。固定Node宿主编译、Docker无网络封装；新资源/签名/预算完全独立，模型出口禁用。
+- 验证：冻结源码Maven164、前端249、Python门禁4项全部PASS；Ruff/编译/契约/usage/diff及真实Chromium通过，两截图已查看。代码卫生无阻断，Java专用formatter/static未配置。实际失败与修复详见TEST_RESULT，未隐藏OOM/健康Host/索引白名单/浏览器分页403等失败。
+- 保留：.local/release-validation/7f6a3c91全部资源/配置/原始与失败收据；.logs/s17a；专用漂移tag均保留。日志final-validation.log/final-evidence.log；original-continuity-final.json为最终恢复对账。没有新worktree或数据清理。
+- Git：后端原目录feat/isolated-release-validation-20261102，HEAD14f033e；前端原目录同名分支已提交120ba1e6e14e31e16dee39030ff35b1c3ffc5d86并推分支，CI待核对。后端产品/文档尚未提交；后端main工作树复用docker-deployment-20261027且干净。下一步按task-git-delivery逐仓提交/分支CI/正常合并推main/主分支CI，再归档交付收据，不直接覆盖main或夹带其他任务。
+- 后续：交付完成立即继续S17B升级兼容/回退矩阵与隔离DB演练；之后S17C跨存储恢复、S17D供应链门禁。原条件项仍按条件触发，不把S17A等同整体完成。
+- U07用户授权代定：备份保留14天、每日完整一致性备份、RTO60分钟、RPO24小时；已同步计划/生命周期，S17C待实测。其他数据保留期限未定，不自动清理到期备份。
+- 规范：session-handoff、continue-approved-delivery、backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate；架构建模/持久化/安全/分布式/中间件/容量/发布。沿手工有界pass，不宣称机器Runtime治理通过。
+
+## 上一检查点：S16D告警交付
 
 - 最新授权：用户2026-11-02“继续没有执行完的任务”，恢复既有capability-delivery-20261021；parallel=no，无子Agent。沿原计划继续，正常Git提交/合并推main；无新付费额度、生产部署或数据清理授权。用户已授权代定U07：备份保留14天、每日完整一致性备份、RTO60分钟、RPO24小时；S17C在隔离目标按正式阈值验收，未实测不宣称达标。
 - S16D DONE / 本地Validation PASS：[验收](../../qa/operational-alerts-20261102/TEST_RESULT.md)、[源码/日志摘要](../../qa/operational-alerts-20261102/source-evidence.json)。Tasks/Knowledge只读汇总、旧账本适配、8条规则、具体手册、Docker显式指标开关及CI检查完成；默认未开启常驻采集，不发送外部通知。

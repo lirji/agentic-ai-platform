@@ -100,3 +100,5 @@ S12B答案支撑、覆盖和拒答已通过[校准与验收](qa/answer-quality-2
 - [S14B 候选修正](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md#s14b-候选修订与内容绑定评估)：完整修订、私有校验副本及真实质量绑定；[审查](qa/candidates-20261102/REVIEW.md)。实际完成与 Git 门禁见进度。
 
 - [S16D告警与运行手册验收](qa/operational-alerts-20261102/TEST_RESULT.md)：真实DB、8规则、触发/恢复/去重与只读预算采集。
+
+- [S17A固定制品与隔离发布验收](qa/isolated-release-validation-20261102/TEST_RESULT.md)：固定镜像门禁、独立资源、真实权限/页面和stop/up连续性；[契约](design/knowledge-first-20261020/RELEASE_CONTRACTS.md)。

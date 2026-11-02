@@ -1,0 +1,9 @@
+{
+  "runId": "7f6a3c91",
+  "status": "PASS",
+  "checks": {
+    "knowledgePageAndRealApi": true,
+    "persistedConversationAndReload": true,
+    "noBrowserErrors": true
+  }
+}
