@@ -91,6 +91,24 @@ class KnowledgeSharingIT {
         error(KnowledgeError.NOT_FOUND,()->sharing.received(new Caller("another-tenant",reader.userId()),id));
         assertThat(jdbc.queryForObject("SELECT owner_id FROM knowledge_document WHERE document_id=?",String.class,id)).isEqualTo(owner.userId());
     }
+    /** 原命令查询及ACL索引不能把大小写/重音不同的身份折叠为同一主体。 */
+    @Test void sharingIdentityComparisonsAreExact() {
+        String id=published().documentId(), original=key();
+        var receipt=sharing.change(owner,id,original,reader.userId(),Operation.GRANT_READ,0);
+        for(var other:List.of(new Caller(owner.tenantId().toUpperCase(Locale.ROOT),owner.userId()),
+                new Caller(owner.tenantId().replace("sharing", "sháring"),owner.userId()),
+                new Caller(owner.tenantId()+" ",owner.userId()),
+                new Caller(owner.tenantId(),owner.userId().toUpperCase(Locale.ROOT)),
+                new Caller(owner.tenantId(),owner.userId()+" "))) {
+            error(KnowledgeError.NOT_FOUND,()->sharing.command(other,original));
+        }
+        assertThat(sharing.command(owner,original)).isEqualTo(receipt);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_document_share WHERE tenant_id=? AND recipient_id=?",
+                Integer.class,reader.tenantId(),reader.userId().toUpperCase(Locale.ROOT))).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_document_share WHERE tenant_id=? AND recipient_id=?",
+                Integer.class,reader.tenantId(),reader.userId())).isEqualTo(1);
+        assertThat(sharing.received(reader,id).documentId()).isEqualTo(id);
+    }
     @Test void replayAndUnknownResultCannotResurrectRevokedGrant() {
         String id=published().documentId(), original=key();
         var grant=sharing.change(owner,id,original,reader.userId(),Operation.GRANT_READ,0);

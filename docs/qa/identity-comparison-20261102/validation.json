@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "baseline": "906a974bfd8eaf945b15ffdbfb5a594245c1485d",
+  "sourceSha256": {
+    "knowledge-service/src/main/resources/db/migration/V15__exact_sharing_feedback_identity.sql": "e01b56b4e2909be6b2a4ed7ad6e4d02a46e2efcd34cf071104297938ea83d37f",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/KnowledgeFeedbackIT.java": "583e1cc33783caae157a001d3c517c2e5e59476c7883f59d8ffe9fe75924c3bc",
+    "knowledge-service/src/test/java/com/lrj/agentic/knowledge/KnowledgeSharingIT.java": "825d3ad5f547400d3566d8f6a7aff88b07340cc47b24672eb90c035d40ac8b76"
+  },
+  "beforeRegression": "FAIL: wrong-case tenant feedback get unexpectedly succeeded",
+  "integration": {
+    "tests": 19,
+    "executed": 16,
+    "skippedOptInJointBrowser": 3,
+    "failures": 0
+  },
+  "unit": [
+    {
+      "module": "platform-contracts",
+      "tests": 0,
+      "failures": 0
+    },
+    {
+      "module": "platform-security",
+      "tests": 10,
+      "failures": 0
+    },
+    {
+      "module": "knowledge-service",
+      "tests": 119,
+      "failures": 0
+    }
+  ],
+  "migrationPreservation": {
+    "knowledge_document_share": {
+      "previousRows": 96,
+      "currentRows": 109,
+      "missingOrChangedPreviousRows": 0,
+      "collation": "utf8mb4_0900_bin",
+      "allColumnCommentsNonempty": true,
+      "tableCommentNonempty": true,
+      "commentsSha256": "da28322bcbb9ee5e25188992a864a1b175fb0daf98dfc09d0ece9156b0ed8402"
+    },
+    "knowledge_sharing_command": {
+      "previousRows": 167,
+      "currentRows": 185,
+      "missingOrChangedPreviousRows": 0,
+      "collation": "utf8mb4_0900_bin",
+      "allColumnCommentsNonempty": true,
+      "tableCommentNonempty": true,
+      "commentsSha256": "00866a3ad0c1e80bbced506e9790008f1946a353b7ee534eb5ddffcb801148c5"
+    },
+    "knowledge_feedback": {
+      "previousRows": 24,
+      "currentRows": 35,
+      "missingOrChangedPreviousRows": 0,
+      "collation": "utf8mb4_0900_bin",
+      "allColumnCommentsNonempty": true,
+      "tableCommentNonempty": true,
+      "commentsSha256": "336d2c2a923490b78ce05c22f43112ef305c6de822d4e4189f6e49454fe247be"
+    },
+    "flyway": "15\t1"
+  },
+  "commentsPreserved": true,
+  "logs": [
+    ".logs/s14-identity-comparison-before.log",
+    ".logs/s14-identity-comparison-after.log",
+    ".logs/identity-comparison-hygiene.log"
+  ],
+  "paidCalls": 0,
+  "deployment": "NOT_EXECUTED",
+  "hygiene": {
+    "automated": "NOT_APPLICABLE: only SQL migration and tests; no production Java changed",
+    "manual": "PASS: immutable migrations, exact collation, comments/data preserved, bounded scope",
+    "diff": "PASS",
+    "contracts": "PASS: 13 registered and 14 wire fixtures"
+  }
+}

@@ -1,6 +1,13 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S14A 已交付，继续 S14B
+## 当前任务：共享/反馈精确身份比较补修
+
+- S14B设计已在后端feat/knowledge-candidates-20261102@a43bff0、前端同名分支@3120d90保存；尚无S14B产品改动。其契约/计划仍有效，补修交付后合并回该分支继续，候选迁移顺延V16。
+- 后端原目录独立fix/knowledge-identity-comparison-20261102，基线906a974；前端保留S14B分支，本补修不改前端产品。真实information_schema确认V13/V14身份列继承utf8mb4_0900_ai_ci，会折叠大小写/重音。需要身份逐字匹配，不能依赖当前IdP碰巧使用小写UUID。
+- 计划：①真实DB回归重现；②新增V15将共享ACL/共享命令/反馈表改为utf8mb4_0900_bin，保留字节/数据/注释和旧迁移；③真实共享/反馈/HTTP回归；④文档与正常Git/CI交付；⑤回S14B。①真实回归已FAIL，证明错大小写tenant读取未被拒绝（.logs/s14-identity-comparison-before.log）；②V15已在隔离test库验证；③19项中16项执行PASS、3项联合浏览器按配置跳过；原287条记录逐行摘要及列注释摘要全部保留，Flyway15成功。验证会话26037已结束；证据见[补修验收](../../qa/identity-comparison-20261102/TEST_RESULT.md)。④当前待正常提交及分支/main CI；无S14B产品代码混入。
+- 原授权不变：仅测试库必要迁移/验证；不更新运行服务，不清理数据，不新增模型调用。S14A产品及归档两仓分支/main CI均PASS，见.local/s14a-archive-delivery.json。本补修真实失败与复验均另记，不沿旧证据假称该边界已经覆盖。
+
+### S14A 已交付（历史）
 
 - 用户2026-11-02授权“自行处理”，本轮按既有资料所有权采用owner处理反馈与编辑/审批修正，不新增组织运营管理员。沿capability-delivery-20261021共51项，parallel=no，整体未完成；下一片S14B候选编辑与内容绑定评估，其后S14C真实审批发布、S14D精确探测/补偿。
 - S14A契约、实现、验证、审查与产品Git交付DONE。后端009f141/前端5f597b2已正常ff合并推main；分支CI41363910246/41363911648和main CI41364091686/41364105004全部精确SHA PASS，见[交付收据](../../qa/feedback-20261102/delivery-result.json)。当前feat/knowledge-feedback-20261102仅归档收据/状态；归档精确HEAD和CI写.local/s14a-archive-delivery.json，避免递归记录自身hash。
