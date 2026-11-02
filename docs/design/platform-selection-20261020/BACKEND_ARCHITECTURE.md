@@ -370,3 +370,11 @@ LLAMA_RERANK_V1在同一容量/根期限内执行50候选目标、一次融合�
 - 事务外查成员和证明，事务内document锁重验发布/ACL/块身份并写唯一幂等反馈；与生命周期/共享修改同锁，无RPC/模型在事务内。原键恢复先于证明期限检查。
 - R-OPS-01：IAM与数据库不构成原子事务；每次重验，ACL/发布并发由本库锁裁定。反馈是用户主动交付，撤回共享不撤销已发送文字；不存引用正文副本。
 - Runtime默认关闭，任务关联还需既有K08身份就绪；S14A追加V14，不改旧迁移或部署正式库；关开关保留查询/回执，日志不含证明token或消息正文。契约见[OPERATIONS_CONTRACTS](../knowledge-first-20261020/OPERATIONS_CONTRACTS.md)。S14B/C/D随后分别冻结，无新增业务决定阻塞S14A。
+
+### S14B 候选与私有校验副本（2026-11-02）
+
+- D-OPS-04：候选修订归Knowledge，源对象复用现有S3，preview沿已有ingestion/双索引；数据库原子标记OPERATIONS_PREVIEW并绑定候选修订，避免未审批语料混入普通空间。完整文件/内容摘要与原资料baseRevision固定，源存储在短事务外。
+- D-OPS-05：预览仅owner显式范围可读；默认索引查询前过滤、MySQL最终复核，普通列表/查重/共享/生命周期写拒绝预览。STANDARD默认值兼容旧行/旧索引。新V15收窄活跃去重生成列到STANDARD；保留旧迁移、记录与索引，不批量删除或覆盖。
+- D-OPS-06：语义与检索质量继续使用S8，精确副本定义+实际run manifest+人工review digest绑定candidate revision/contentDigest。编辑/重建/评分变化均使旧绑定不当前。BUSINESS用途与现行资格规则作为后续审批前置；字面requiredText只是局部检查。
+- D-OPS-07：不增加调度器/队列；候选命令有原键回执，准备重放同一副本，评估在现有工作台显式发起，S14C才按固定内容走原资料生命周期真实发布。关闭新操作后保留历史/回执读取。
+- 索引过滤依据：[Qdrant filtering](https://qdrant.tech/documentation/search/filtering/)与[Elasticsearch boolean query](https://www.elastic.co/docs/reference/query-languages/query-dsl/query-dsl-bool-query)支持排除条件；旧缺字段兼容与当前锁定服务的真实请求仍须由C03验证，不以文档代替验收。

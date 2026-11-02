@@ -1,6 +1,14 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S14A 已交付，继续 S14B
+## 当前任务：S14B 候选修订与内容绑定评估（实施中）
+
+- 两仓原目录新分支feat/knowledge-candidates-20261102，起点后端906a974/前端5e90700，开始时干净；S14A产品及归档分支/main CI全部PASS，归档收据.local/s14a-archive-delivery.json。无新worktree，无S14B产品/迁移/模型调用。
+- 本片计划：①沿C-OPERATIONS冻结候选修订、隔离评估副本、当前内容与真实质量运行的绑定；②追加V15与后端候选/私有副本/共享检索边界；③React编辑与已有质量界面连接；④真实DB/双索引/质量链路和浏览器验证/审查；⑤正常Git交付后继续S14C。①契约与有界架构增量已完成；②开始前发现共享/反馈身份列使用utf8mb4_0900_ai_ci（真实information_schema已核实），先独立修正精确身份比较再继续V16候选迁移。②–⑤尚无产品改动。
+- 技术事实：现有质量执行只读取当前索引发布身份，未入索引的候选不能靠旧原文评估过关。采用owner私有校验副本复用同一入库/检索/质量管线，隔离默认检索/普通列表/共享与直接生命周期写；原资料及ACL在S14C实际发布前保持原事实。编辑使当前修订与旧评估绑定不符，不能复用旧批准。
+- 输入范围拟沿已有TXT/PDF/DOCX上传边界：TXT可编辑完整替换文本，附件上传完整修正版；不把反馈选中片段当完整原文件。requiredText仅对精确提取片段做局部字面检查，语义/检索仍由S8真实运行和人工评分提供。
+- C-OPERATIONS增量operations-candidate-v1与BACKEND_ARCHITECTURE D-OPS-04–07已冻结。调查笔记.local/s14a-next-slice-notes.md仅历史草案（评测用途实际为BUSINESS，非QUALITY）；以下按正式契约实施。下一操作V15候选/修订/回执及preview目的隔离。采用的技能/授权/付费边界与下方S14A一致，parallel=no。
+
+### S14A 已交付（历史）
 
 - 用户2026-11-02授权“自行处理”，本轮按既有资料所有权采用owner处理反馈与编辑/审批修正，不新增组织运营管理员。沿capability-delivery-20261021共51项，parallel=no，整体未完成；下一片S14B候选编辑与内容绑定评估，其后S14C真实审批发布、S14D精确探测/补偿。
 - S14A契约、实现、验证、审查与产品Git交付DONE。后端009f141/前端5f597b2已正常ff合并推main；分支CI41363910246/41363911648和main CI41364091686/41364105004全部精确SHA PASS，见[交付收据](../../qa/feedback-20261102/delivery-result.json)。当前feat/knowledge-feedback-20261102仅归档收据/状态；归档精确HEAD和CI写.local/s14a-archive-delivery.json，避免递归记录自身hash。
