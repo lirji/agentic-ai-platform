@@ -1,9 +1,9 @@
 # Codex Progress
 
-- 当前S16B已完成并交付main（ea339ee，分支/main CI全PASS）；按用户追加要求，最新后端ea339ee/前端c2d12fe已部署到现有Docker，release6b6adccd4f4f997f，9容器健康、真实浏览器及数据/账本核对PASS。
-- 唯一能力进度入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。完整51项未完成，S16C尚未启动。
-- 当前分支feat/docker-capacity-20261102仅归档部署证据，最终commit/CI收据在.local/docker-capacity-20261102/delivery-final.json；原main工作树复用。
-- 当前部署：[进度与恢复](docs/deployment/docker-capacity-20261102/PROGRESS_STATE.md)。本次未清理数据/卷、未新增模型费用；新容量模式保留默认关闭。
+- 当前任务：用户已授权执行S16C（混合负载与故障容量报告），本地验收PASS、Git/CI待交付；本轮不扩展S16D。
+- 唯一进度入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。恢复先核对其中S16C检查点、当前Git和运行中任务。
+- 原目录分支feat/mixed-capacity-validation-20261102，基线a52c94f；上一部署归档已合并推main且CI通过。
+- 现有Docker release6b6adccd4f4f997f保留；本轮仅隔离验证，不清理数据/卷、不新增模型费用。
 
 ## 前期可行性任务记录
 

@@ -1,0 +1,70 @@
+{
+  "baseline": "a52c94f292f011750550938e275538afcccb640a",
+  "files": {
+    "ai-runtime/tests/capacity_probe.py": "135a54a1e90211f191f79ef36d0782b082731dd66c29a5fd612275a14ef4488b",
+    "ai-runtime/tests/test_capacity_integration.py": "132199c995abdf3ca5196ca37b9748cb9c896d0c506d1cadc57dfb898ef0d5f6",
+    "deploy/capacity_validation.py": "f91f7a6fcf944ee8778771090cef2a2e4ead7f03ff795aa0743c981c83bc70c0"
+  },
+  "logs": {
+    ".logs/s16c-9ad83207/pytest.log": "997b2393174e23b6c0d9fd922e69315f8331de8196b9a65a3f78fa0e86d5f16d",
+    ".logs/s16c-9ad83207/measurements.json": "ec6109a55cc8c23a34666e97882e7611503d99ed5bbfb261ef3d1229a1766ce5",
+    ".logs/s16c-9ad83207/summary.json": "42fa013071fe8fbb7774cc36e68137aeed15059310380f6e1566dbdeee3973c6",
+    ".logs/s16c-9ad83207/processes.json": "3cc07ff7a9871a737ab421f6322b1208fd983bce159c1d9cc5ebd0be6e2d54c5",
+    ".logs/s16c-baseline-build.log": "139b18f8823b9ee7efb5a20b622c688abb73201a857e8dcda84d9dbb3ac8ecc8",
+    ".logs/s16c-python-format.log": "f52d528266e46c68634e8bf5174096a1e41862d78b2236e1ff5a851a9e2d4f55",
+    ".logs/s16c-python-lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    ".logs/s16c-python-types.log": "4ceb57b647f65ad9bc4a2ac12b1f1d95323ae55da4304fb3e5014cf75bf56502",
+    ".logs/s16c-python-full.log": "27596031c934494269a4f3f670eca8dca88be5249a3e4402452183b89d172eb6"
+  },
+  "runs": [
+    {
+      "runId": "0b92865c",
+      "status": "FAIL",
+      "exitCode": 1,
+      "directory": "/Users/liruijun/personal/LLM/agentic-ai-platform/.logs/s16c-0b92865c",
+      "baseline": "a52c94f292f011750550938e275538afcccb640a"
+    },
+    {
+      "runId": "1920e1ea",
+      "status": "FAIL",
+      "exitCode": 1,
+      "directory": "/Users/liruijun/personal/LLM/agentic-ai-platform/.logs/s16c-1920e1ea",
+      "baseline": "a52c94f292f011750550938e275538afcccb640a"
+    },
+    {
+      "runId": "2b2c7912",
+      "status": "FAIL",
+      "exitCode": 1,
+      "directory": "/Users/liruijun/personal/LLM/agentic-ai-platform/.logs/s16c-2b2c7912",
+      "baseline": "a52c94f292f011750550938e275538afcccb640a"
+    },
+    {
+      "runId": "40df82b9",
+      "status": "FAIL",
+      "exitCode": 1,
+      "directory": "/Users/liruijun/personal/LLM/agentic-ai-platform/.logs/s16c-40df82b9",
+      "baseline": "a52c94f292f011750550938e275538afcccb640a"
+    },
+    {
+      "runId": "74e67f51",
+      "status": "FAIL",
+      "exitCode": 2,
+      "directory": "/Users/liruijun/personal/LLM/agentic-ai-platform/.logs/s16c-74e67f51",
+      "baseline": "a52c94f292f011750550938e275538afcccb640a"
+    },
+    {
+      "runId": "9ad83207",
+      "status": "PASS",
+      "exitCode": 0,
+      "directory": "/Users/liruijun/personal/LLM/agentic-ai-platform/.logs/s16c-9ad83207",
+      "baseline": "a52c94f292f011750550938e275538afcccb640a"
+    },
+    {
+      "runId": "d863f7b3",
+      "status": "PASS",
+      "exitCode": 0,
+      "directory": "/Users/liruijun/personal/LLM/agentic-ai-platform/.logs/s16c-d863f7b3",
+      "baseline": "a52c94f292f011750550938e275538afcccb640a"
+    }
+  ]
+}

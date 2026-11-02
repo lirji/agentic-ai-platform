@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "paidCalls": 0,
+  "before": {
+    ".local/chat-budget-20261020.json": "69ce3f7679582ee2a6f506125e99abd22af8c5f47fb93d3b579b7b33e6af77b1",
+    ".local/embedding-budget-20261020.json": "e39835470384ed8a6d785be9a23cd5e1c7db636a596d80972aafab67e101bed8"
+  },
+  "after": {
+    ".local/chat-budget-20261020.json": "69ce3f7679582ee2a6f506125e99abd22af8c5f47fb93d3b579b7b33e6af77b1",
+    ".local/embedding-budget-20261020.json": "e39835470384ed8a6d785be9a23cd5e1c7db636a596d80972aafab67e101bed8"
+  },
+  "centralTestUsageOperations": 0,
+  "note": "仅替身计数，不验证真实模型计费性能"
+}

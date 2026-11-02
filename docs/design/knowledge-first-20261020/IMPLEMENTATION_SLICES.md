@@ -234,7 +234,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S15C | 跨语言诊断和业务审计 | S8F, S11E | IMPLEMENT | DONE |
 | S16A | 多 worker 竞争和有界恢复 | S15B, S12D, S13C | IMPLEMENT | DONE |
 | S16B | 租户公平与后台资源隔离 | S16A, S15C | IMPLEMENT | DONE |
-| S16C | 代表负载与故障容量报告 | S16B, S10F, S11E | VALIDATE | PLANNED |
+| S16C | 代表负载与故障容量报告 | S16B, S10F, S11E | VALIDATE | DONE |
 | S16D | 可操作告警与运行手册 | S15C, S16C | IMPLEMENT | PLANNED |
 | S17A | 完整应用制品与本地部署入口 | S8F, S9C, S11E, S15B | IMPLEMENT | PLANNED |
 | S17B | 升级兼容与回退演练 | S17A, S10D, S12D | VALIDATE | PLANNED |
@@ -653,7 +653,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-CAPACITY；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** U06 目标未定仅报观测不宣称 SLA；记录排队/尾延迟/费用/资源；数据库慢/索引不可用/模型超时/worker退出；恢复后无非法业务状态。
 - **Pass / Runtime：** VALIDATE；只在明确隔离环境按预算运行。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G13 G14。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G13 G14。LC01–LC07本地PASS，见[容量报告](../../qa/mixed-capacity-20261102/CAPACITY_REPORT.md)与[验收](../../qa/mixed-capacity-20261102/TEST_RESULT.md)；U06未定不承诺生产SLO，Git/CI以PROGRESS_STATE为准。
 
 ### S16D · 可操作告警与运行手册
 

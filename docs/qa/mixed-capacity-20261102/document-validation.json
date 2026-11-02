@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "markdownFiles": 10,
+  "localLinks": 346,
+  "revision": "working-tree",
+  "files": {
+    "CODEX_PROGRESS.md": "64c2af0f389f2a001a6bf7c7a8cb22152f112913ae6716d02be3b84d429ebe99",
+    "docs/README.md": "37f3e98a12030a74704598bd720c65f93114ed796f73357c15bddccc44d2a4ca",
+    "docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md": "3eb88115c8db7b1fca80cfd6eeabbc8f65729e41df787c7f046aaa510007dee1",
+    "docs/design/knowledge-first-20261020/CAPACITY_RUNTIME.md": "9ad6d59b26e6ad00ad9bb6573943590eec4f1dfadc585b842682e88564417554",
+    "docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md": "50caeec4b22599b5e3201ba5c3525c992f5479d362eb9caa0842289ea1a1941c",
+    "docs/design/knowledge-first-20261020/PROGRESS_STATE.md": "74f937b8b95a03fb6478769b352da5be9c8c60829ae8c63ac1d85d7585e07d9d",
+    "docs/doc-map.md": "f24740e1da1701ea64432daebfe94a70c8b2b637ea807c2dd2bf46116b3728ed",
+    "docs/qa/mixed-capacity-20261102/TEST_RESULT.md": "59e38fb5f942a3c0f9ccfa593f7bbcfcab92bccc56821b4a3b7c2cd02efd210e",
+    "docs/qa/mixed-capacity-20261102/CAPACITY_REPORT.md": "10efbd9de58b80fe95a8669732dee01cdb4f025bb7710fc4db334baa0168fa06",
+    "docs/qa/mixed-capacity-20261102/QA_PLAN.md": "906c0a99670d3bc8c7e77c0a7f87e18a9f8d3a0367caa1251ac8df8cf8ca7116"
+  }
+}

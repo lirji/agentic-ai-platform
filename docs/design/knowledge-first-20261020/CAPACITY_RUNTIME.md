@@ -121,3 +121,7 @@ knowledge:
 `*_CAPACITY_CONFIG_INVALID`应核对实例策略与DB登记、旧任务所属租户及全部writer版本；不得通过回退关闭开关绕过。数据库不可达返回依赖不可用，无本地准入后门。排查积压同时核对份额、固定tenant worker、图能力和资金；增加队列或worker不产生新配额。
 
 复验证据及故障范围见[租户隔离验收](../../qa/tenant-capacity-isolation-20261102/TEST_RESULT.md)。新容量IT须使用新隔离test库，不能向已有登记库换策略：按`deploy/local.py environment('test')`和`deploy/task_local.py environment('test')`原配置提供连接，独立schema授予既有app DML/migrator追加DDL，执行`mvn -B -ntp -pl knowledge-service -am -Pintegration -Dit.test=KnowledgeCapacityIT -Dfailsafe.failIfNoSpecifiedTests=false verify`及Tasks对应`TaskCapacityIT`。首次启用兼容测试各用另一个未登记test库；普通回归不启用容量模式。保留schema、源与日志，不清理历史记录，不调用付费模型。
+
+## S16C混合负载与故障复现
+
+S16C仅在独立test schema运行两个worker和正式处理/检索/图链路，模型为确定性替身。复现命令、输入范围、故障隔离和保留策略见[QA_PLAN](../../qa/mixed-capacity-20261102/QA_PLAN.md)，实测尾延迟、排队、连接/内存和恢复见[容量报告](../../qa/mixed-capacity-20261102/CAPACITY_REPORT.md)。入口为`python3 deploy/capacity_validation.py`；默认pytest跳过该有状态实验。此验收不启用长期容量模式、不修改原Docker或费用，不替代S17恢复演练。

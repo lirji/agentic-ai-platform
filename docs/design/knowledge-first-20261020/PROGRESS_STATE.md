@@ -1,6 +1,18 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S16B交付后部署最新Docker
+## 当前任务：S16C代表负载与故障容量报告
+
+- 最新授权：用户“执行S16C”；仅本片，parallel=no，无子Agent。允许隔离本地测试和正常Git提交/合并推main；不启动S16D、不更新现有Docker、不新增付费调用、不清理数据。
+- 状态：S16C DONE / 本地Validation PASS；Git/远程CI待交付。基线a52c94f，原目录feat/mixed-capacity-validation-20261102，前端未改，无新worktree。原main工作树复用。
+- 证据：[容量报告](../../qa/mixed-capacity-20261102/CAPACITY_REPORT.md)、[LC01–LC07验收](../../qa/mixed-capacity-20261102/TEST_RESULT.md)、[测量](../../qa/mixed-capacity-20261102/capacity-results.json)、[源码/日志摘要](../../qa/mixed-capacity-20261102/source-evidence.json)。最终9ad83207耗时96.29秒：30READY/21QA+22研究SUCCEEDED，常规32/恢复16操作无拒绝，突发54操作32次429；四故障恢复与终态/许可/原账本核对PASS。
+- 验证：Maven Knowledge/Tasks及依赖package含单元PASS；Python771 passed/101条件skipped/34既有warnings，其中本片单独显式PASS；Ruff155文件/mypy92源码、15契约/15报文和usage边界PASS。精确日志在.logs/s16c-*。无产品Java/前端/迁移/依赖变更。
+- 校准：前期五次夹具失败已修复并保留；d863f7b3对照发现测试HTTP入口默认1与计划2不符，已显式maximum=2并增加常规零拒绝等断言，最终全量复验PASS。没有需修产品的阻断缺陷。U06未定，模型替身、小文本、共享宿主短测不等于生产容量/SLO。
+- 修改：deploy/capacity_validation.py、ai-runtime/tests/capacity_probe.py与test_capacity_integration.py、QA报告和相关进度/索引。复现先读QA_PLAN，原始测量/进程清单.logs/s16c-9ad83207/，运行收据.local/s16c-9ad83207.json。
+- 运行/保留：所有本轮子进程已退出；全部独立test schema、合成S3/索引/PG数据、日志及私密配置保留。原9应用容器仍release6b6adccd4f4f997f且healthy，未部署/清理；原Chat/Embedding账本摘要不变、费用0。
+- 下一步：完成当前分支提交/branch CI→正常ff main/push→main CI，归档交付收据。S16D可作为后续独立任务，本轮不启动；完整51项及S17恢复演练未完成。
+- 规范：architecture-standards业务建模/持久化/分布式/并发/中间件故障/容量/发布；personal-tech-stack并发/线程/追踪；session-handoff、engineering-workflows有界测试pass、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate。沿既有手工pass，不宣称机器Runtime治理通过。
+
+## 上一检查点：S16B交付后部署最新Docker
 
 - 最新授权：当前任务做完后把最新代码部署到现有本地Docker；先完成S16B Git/CI，再部署desktop-linux/agentic-ai-app（28086）。不先启动S16C；不删除数据/卷、不新增付费额度、不远程生产部署。部署验收PASS，剩余归档Git/CI；parallel=no。完整51项未完成。
 - S16B DONE / 本地CI01–CI06 PASS：[验收](../../qa/tenant-capacity-isolation-20261102/TEST_RESULT.md)、[源码/日志摘要](../../qa/tenant-capacity-isolation-20261102/source-evidence.json)。静态不借用份额、跨实例两域DB准入、全部入库入口/候选批准、查询分lane、独立有界循环/解析、Python显式HTTP容量已完成。默认未启用；U06未定，无生产SLO承诺。
