@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "work": ".local/s15b-browser-dd621e81-1a0a-4c0b-b3dc-af412a53a720",
+  "database": "agentic_tasks_test",
+  "chatAccount": "b94f38bb-b1ad-4137-9237-1b2ef85b80bf",
+  "sharedAccount": "d7c0918b-67a8-4124-beee-f448222e45b7",
+  "twoInstancesGranted": 3,
+  "twoInstancesRejected": 5,
+  "crashedAttempt": "19130093-adad-4f14-be21-8b783104bcca",
+  "restartState": "DISPATCHED",
+  "actualProviderCalls": 0,
+  "realLedgersUnchanged": {
+    "chat-budget-20261020.json": "69ce3f7679582ee2a6f506125e99abd22af8c5f47fb93d3b579b7b33e6af77b1",
+    "embedding-budget-20261020.json": "e39835470384ed8a6d785be9a23cd5e1c7db636a596d80972aafab67e101bed8"
+  },
+  "fixture": {
+    "tenant": "usage-ui-2a1f5cc6-c47a-42e3-90b8-8bdad52a2b15",
+    "research": "6359cbf0-ed73-4845-bf68-223d800b6348",
+    "assistant": "aae0085a-b17e-498d-b269-22756701b8bb",
+    "empty": "108bfc2f-fe95-4bba-8413-2235c78b79ae",
+    "work": ".local/s15b-browser-dd621e81-1a0a-4c0b-b3dc-af412a53a720"
+  }
+}

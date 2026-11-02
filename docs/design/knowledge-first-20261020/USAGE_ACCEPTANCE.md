@@ -1,6 +1,6 @@
 # S15A/B · 用量预算验收矩阵
 
-S15A只验设计闭合；下列运行项为S15B必须完成的要求，当前均NOT_RUN。无付费隔离夹具可证明机制，不能证明模型价格/真实账单/生产容量。正式契约：[usage-v1](USAGE_CONTRACTS.md)。
+S15A只验设计闭合；下列运行项是S15B必须完成的要求，已在隔离环境验收PASS，逐项证据见[S15B TEST_RESULT](../../qa/shared-usage-budget-20261102/TEST_RESULT.md)。无付费隔离夹具可证明机制，不能证明模型价格/真实账单/生产容量。正式契约：[usage-v1](USAGE_CONTRACTS.md)。
 
 | ID | 场景 | 必须观察到的结果 / 证据 |
 | --- | --- | --- |

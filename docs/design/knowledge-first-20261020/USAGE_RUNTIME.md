@@ -1,6 +1,6 @@
 # S15B 用量运行说明
 
-当前为实施中：Tasks预算API、非Web管理CLI及旧账本冻结已在隔离测试库验证；Python CENTRAL出口、Task/Knowledge归因及Java→Python→Tasks联合链路已完成隔离验证；用户视图和整体验收仍在接入。默认LEGACY_LOCAL，不能据本页直接切换真实付费调用。沿用[设计](USAGE_DESIGN.md)和[契约](USAGE_CONTRACTS.md)，不引入新服务、数据库或费用授权。
+S15B实现及UA01–UA16机制验收已通过，详见[TEST_RESULT](../../qa/shared-usage-budget-20261102/TEST_RESULT.md)。Tasks预算API、受控非Web CLI/冻结导入、模型出口、Task/Knowledge归因及React本人用量均已接入；双Tasks争用、worker退出/重启、真实浏览器和DB不可达均完成隔离验证。默认LEGACY_LOCAL，不能据本页直接切换真实付费调用。沿用[设计](USAGE_DESIGN.md)和[契约](USAGE_CONTRACTS.md)，不引入新服务、数据库或费用授权。
 
 ## 运行模式与归因
 
@@ -86,3 +86,10 @@ V6/V7只应用`agentic_tasks_test`；已应用迁移不可修改。最新核心�
 
 
 模型接入批次验证：Knowledge 126项单元及35项真实MySQL/HTTP/搜索集成通过，无跳过（`.logs/s15b-knowledge-usage-it-r2.log`）；Python全量733通过/97条件跳过，新增保守计量与factory检查后120项受影响测试通过（`.logs/s15b-outlets-final-python.log`），mypy88源码通过。真实Java Knowledge→Python API→Tasks/MySQL联调证明两个用户独立归因、本人读取和中央不可用前置拒绝，模型仅本地传输替身（`.local/s15b-knowledge-joint.json`）；原付费账本摘要未变。
+
+
+## 本人用量与复验入口
+
+问答轮次、研究/助手详情、评测运行和资料当前处理任务提供“本人用量”，需task:read，仅展开时请求本人context。每页20条，可翻页/刷新；初始预留不等于已消费，未结算不补零，已结算金额仅为内部成本。没有全局账户余额、充值或管理HTTP入口。
+
+已有本地test凭据与前端构建就绪后运行`ai-runtime/.venv/bin/python deploy/usage_browser_smoke.py`：只写随机agentic_tasks_test记录，启动两个临时Tasks并执行真实浏览器，模型发送仅合成计量，结束正常停止临时服务、保留记录/日志。运行`ai-runtime/.venv/bin/python deploy/usage_browser_smoke.py database-outage`只给新进程配置不可达DB，不停止共用MySQL。脚本默认工作目录为后端根目录；需先在相邻前端执行pnpm build，Node沿既有24.22工具链。`ci/check_usage_boundaries.py`已加入CI，检查usage持久化所有权、包依赖无环与迁移注释。

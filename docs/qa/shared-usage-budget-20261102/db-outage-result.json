@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "actualProviderCalls": 0,
+  "elapsedSeconds": 3.158,
+  "failure": "USAGE_UNAVAILABLE",
+  "sharedMySQLStopped": false
+}

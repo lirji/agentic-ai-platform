@@ -4,7 +4,7 @@
 
 - 用户最新要求：当前S15B共享预算任务完整验收并交付后先停止，不启动S15C；完整51项保持未完成。
 - 当前任务capability-delivery-20261021持续进行中；S13A/S13B已交付，完整51项未完成，最新执行状态只维护下述PROGRESS_STATE。
-- S14D产品已交付且分支/main CI全PASS；归档后端d9b0c79、前端6a18e72均已推main且分支/main CI全PASS。S15A设计验证PASS、1e41545已推main，分支/main CI全PASS；当前S15B共享预算实施，后端feat/shared-usage-budget-20261102。唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，完整51项未完成。
+- S14D产品已交付且分支/main CI全PASS；归档后端d9b0c79、前端6a18e72均已推main且分支/main CI全PASS。S15A设计验证PASS、1e41545已推main，分支/main CI全PASS；S15B实现/UA验收已通过，后端feat/shared-usage-budget-20261102正在Git/CI收尾，完成后停止。唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，完整51项未完成。
 - S13A验收/收据：docs/qa/identity-20261101/；预览http://localhost:28196/，运行入口IDENTITY_RUNTIME.md。归档两仓分支/main CI也全PASS，收据.local/s13a-product-delivery.json；旧s13a-delivery.json仅历史前置文档。
 
 ## 前期可行性任务记录

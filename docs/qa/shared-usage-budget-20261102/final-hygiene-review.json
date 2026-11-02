@@ -1,0 +1,46 @@
+[
+  {
+    "repository": "agentic-ai-platform",
+    "status": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+    "log": ".logs/s15b-backend-hygiene-r2.log",
+    "limitations": [
+      {
+        "code": "FORMAT_TOOL_NOT_AVAILABLE",
+        "check": "FORMAT"
+      }
+    ],
+    "findings": [],
+    "review": "所有剩余建议为合成验收参数或忽略旧checkout中的同名枚举；产品模型沿usage-v1独立显式code，未共用知识状态。Java专用工具缺失限制沿既有证据保留。"
+  },
+  {
+    "repository": "agentic-ai-platform-web",
+    "status": "IMPLEMENTATION_COMPLETE",
+    "log": ".logs/s15b-code-hygiene-r2.log",
+    "limitations": [],
+    "findings": [
+      {
+        "findingId": "HF-001",
+        "ruleId": "HYG-SIMILAR-ENUM",
+        "check": "REPO_CONVENTION",
+        "area": "enum",
+        "severity": "ADVISORY",
+        "file": "src/features/usage/model.ts",
+        "line": 14,
+        "excerpt": "UsageState",
+        "message": "UsageState overlaps existing Status (.local/ci-web-20261024/src/features/knowledge/model.ts)"
+      },
+      {
+        "findingId": "HF-002",
+        "ruleId": "HYG-SIMILAR-ENUM",
+        "check": "REPO_CONVENTION",
+        "area": "enum",
+        "severity": "ADVISORY",
+        "file": "src/features/usage/model.ts",
+        "line": 27,
+        "excerpt": "UsagePurpose",
+        "message": "UsagePurpose overlaps existing Purpose (.local/ci-web-20261024/src/features/quality/model.ts)"
+      }
+    ],
+    "review": "所有剩余建议为合成验收参数或忽略旧checkout中的同名枚举；产品模型沿usage-v1独立显式code，未共用知识状态。Java专用工具缺失限制沿既有证据保留。"
+  }
+]

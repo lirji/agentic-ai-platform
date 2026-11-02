@@ -1,10 +1,10 @@
 # S15B 共享预算实施批次证据
 
-当前核心与模型出口/归因批次验证通过，S15B仍IN_PROGRESS，完整51项未完成。这份记录支持同一任务分批提交，不代替UA01–UA16最终TEST_RESULT、浏览器验收或生产启用。
+当前S15B实现及UA01–UA16机制验收已通过，最终结论见[TEST_RESULT](TEST_RESULT.md)，Git/CI另归档。下方保留核心/出口批次时点的原证据，不代表生产启用；完整51项未完成。
 
 - 已实现：Tasks持久用量/短事务/身份与安全查询、V6/V7、非Web受控账户配置及冻结旧账本导入、Python全部现有模型出口、Task稳定上下文和Knowledge独立短时证明签发/验签/转发；默认LEGACY_LOCAL，CENTRAL故障不能自动回退旧账本。
-- 尚未完成：React本人用量、完整UA矩阵归档/运行验收及Git main交付。Judge当前仍未实现/启用；缺Judge配置的共用许可请求已验证拒绝。
-- Git基线：后端1e41545，原目录分支feat/shared-usage-budget-20261102；前端main6a18e72尚未修改。源文件摘要：[core-source-evidence.json](core-source-evidence.json)。
+- 当前：React本人用量、完整UA验收已通过；Git交付进度以PROGRESS_STATE为准。Judge仍未实现/启用；缺配置的共用许可请求已验证拒绝。
+- Git基线：后端1e41545，原目录分支feat/shared-usage-budget-20261102；前端基线main6a18e72。源文件摘要：[core-source-evidence.json](core-source-evidence.json)。
 
 | 验证 | 实际结果 / 证据 |
 | --- | --- |
@@ -39,3 +39,8 @@ Knowledge原处理密钥签发独立usage受众的30秒证明。入库由原领�
 | source/hygiene | [出口批次摘要](outlets-source-evidence.json)、[卫生逐项审查](outlets-hygiene-review.json)。同原范围修正，零阻断项，Java工具限制保留 |
 
 此批次仍不等于S15B最终验收。历史核心摘要保留5531976时的版本，不覆盖为新源码证据。新增失败诊断原样保留：两项旧factory替身参数未跟随装配签名后已修复；新增Java测试误引未引入Mockito后改JDK接口替身，r2全通过；卫生CLI参数顺序首次错误，修正后通过。没有修改或新增数据库迁移，原付费账本摘要保持一致。
+
+
+## 本人视图与最终验收批次
+
+按需展开的本人用量在问答、研究/助手、评测和资料当前job接入；真实API、严格DTO、6位字符串与状态分离，身份/context切换清理旧请求。246前端单元/组件、16身份桥复验、4真实DB浏览器和3共享消费者契约浏览器均通过。新增双Tasks竞争、独立worker退出/中央重启、DB不可达拒绝和CI边界检查，证据见TEST_RESULT及final-source-evidence.json。已实际查看7张界面截图，不宣称用户视觉确认或供应商账单验证。
