@@ -1,0 +1,71 @@
+{
+  "slice": "S15A",
+  "baseline": "d9b0c79205571961a18fc51b54e50b90ec46d0bc",
+  "evidenceType": "SOURCE_FACT",
+  "files": [
+    {
+      "path": "ai-runtime/src/agentic_ai/qa/chat_budget.py",
+      "sha256": "8b124fe83f226bfd1dbf8288b7e68ad6ec460d8c3c1f883864f7890b23aadb22"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/runtime/embedding_budget.py",
+      "sha256": "a691ddce31111dcf402c1ec2e72a41246feb5cb753380c8df3ef5a70c86d9527"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/retrieval/rerank_budget.py",
+      "sha256": "60cf0eac0c92777cc0e58097b39886f29a0d3ac606be8c9ea84789caab78ddef"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/qa/chat.py",
+      "sha256": "9aab7cca546d60e3ac4e3fd12954fbd54c77ecafd90107ab7c243961cca98705"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/adapters/openai_embedding.py",
+      "sha256": "a0106b0845743b5f8679ea9105bbf39047557f879490fad43e1aa715bc68bc35"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/retrieval/rerank_client.py",
+      "sha256": "cfe6e8db1ab86c8ca4d4040e390956aed62bf5fa65e1062ec7fe0268788bec98"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/agents/chat.py",
+      "sha256": "5b106ea9895aba514fd6412b62b8704dd67659d8ad9c37d0ee015efd82f40757"
+    },
+    {
+      "path": "ai-runtime/src/agentic_ai/agents/pipeline.py",
+      "sha256": "9be28388bb5e478f095a6b28cea714856864a7ea7b27bc40b1104b18cd25e3d1"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/application/TaskService.java",
+      "sha256": "a575daa63803d7c961ba6e0a0e1476c794040c254f1381170bf4d8ca57339b6f"
+    },
+    {
+      "path": "async-task-service/src/main/java/com/lrj/agentic/task/config/TaskSecurity.java",
+      "sha256": "d8cded03c09f74f62309f3eca5d52f0d5d0da7ceb531abeb3569bf54a2660af3"
+    },
+    {
+      "path": "async-task-service/src/main/resources/application.yml",
+      "sha256": "8131dbff04368fb4633fb9231c0099d86cd72d58f7dc383752bc317ddc54923b"
+    },
+    {
+      "path": "async-task-service/src/main/resources/db/migration/V1__durable_tasks.sql",
+      "sha256": "180e589cda1d9a1b7edc63a128e44ea665386da903d2a0a2cf55cc3d10b0e6bd"
+    },
+    {
+      "path": "async-task-service/src/main/resources/db/migration/V2__work_task_listing.sql",
+      "sha256": "a0a7db1b0e3025ac3d6563dd6e3c7d27ccd078cbd274a392016d61934a8b9382"
+    },
+    {
+      "path": "async-task-service/src/main/resources/db/migration/V3__evaluation_failure_proof.sql",
+      "sha256": "a5bcbfc767a5c14baed64c2f560e7349e4e111f8671a578ea58ffa799541f262"
+    },
+    {
+      "path": "async-task-service/src/main/resources/db/migration/V4__knowledge_evidence.sql",
+      "sha256": "c13a8499fae29385eee0ec7af5e35d73bee59d57f62bf899af705577c115436a"
+    },
+    {
+      "path": "async-task-service/src/main/resources/db/migration/V5__generation_evidence.sql",
+      "sha256": "5384d398d0f6fd576fd1decb935c32460f62dc5439cc33ed5a9a5ae81828e1ac"
+    }
+  ]
+}

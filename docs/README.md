@@ -14,6 +14,7 @@
 | --- | --- | --- |
 | [能力实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md) | 框架分工、批次与 G01–G20 映射、三条关键路径、兼容及验收 | 完整计划；43 项主线、8 项条件任务，S8 开始实施 |
 | [实施切片 S8–S18](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices) | 51 项稳定任务、逐项依赖、Owner/路径、契约、Runtime 与可观察验收 | 新任务唯一清单；保留 S0–S7 |
+| [用量预算设计](design/knowledge-first-20261020/USAGE_DESIGN.md)、[usage-v1](design/knowledge-first-20261020/USAGE_CONTRACTS.md)、[验收矩阵](design/knowledge-first-20261020/USAGE_ACCEPTANCE.md) | 资金主体、预留/单次发送许可/未知结果、归因和旧账本迁移 | S15A设计；共享额度产品实现与验收在S15B |
 | [最小CI契约](design/knowledge-first-20261020/CI_CONTRACTS.md)、[S8F验收](qa/ci-contracts-20261024/TEST_RESULT.md) | 两仓冻结安装、共享报文回归、必需检查和无付费边界 | ci-v1；实际远程状态以验收绑定SHA为准 |
 | [解析设计](design/knowledge-first-20261020/PARSING_DESIGN.md)、[P-v2](design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)、[样本矩阵](design/knowledge-first-20261020/PARSING_ACCEPTANCE.md) | 唯一解析者、原文件/提取物、页段表来源、资源/恢复/版本窗口 | S9A/B已交付；[S9C DOCX验收](qa/docx-ingestion-20261025/TEST_RESULT.md)记录段落/表格、合并、权限与真实界面证据；[S9D验收](qa/structured-chunking-20261025/TEST_RESULT.md)记录结构分块、profile同源对照、47来源还原和新旧并存 |
 | [生命周期契约](design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)、[验收矩阵](design/knowledge-first-20261020/LIFECYCLE_ACCEPTANCE.md) | 内容/发布/索引代次、更新失败旧版可用、历史读取、迁移/回退/清理资格 | [S10B验收](qa/document-update-20261026/TEST_RESULT.md)：K07更新与版本历史、P05、K08及历史正文保护已实现；[S10C验收](qa/document-visibility-20261026/TEST_RESULT.md)：撤下/逻辑删除与历史引用失效已实现；[S10D验收](qa/document-reindex-20261027/TEST_RESULT.md)：固定快照重建、profile切换、索引核验与候选扩展已实现 |

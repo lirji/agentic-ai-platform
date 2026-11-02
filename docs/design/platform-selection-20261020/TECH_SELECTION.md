@@ -218,7 +218,7 @@ Spring AI 不再作为本项目主线替代候选；它的 1.1/2.x 分别绑定 
 | T03/T14/T15 检索 | 保持 Qdrant + ES；Java 授权候选，LlamaIndex 显式融合适配保持一基排名与稳定身份。默认查询生成、全局模型和零基排名不能直接沿用 | S11A–C；先固定输入等价，再真实链路对照 |
 | T05 独立精排 | 首选待验证候选为百炼 qwen3-rerank 受控 HTTP + LlamaIndex 后处理；聊天与 rerank 不共用未经验证的协议。仅在数据/部署要求驱动时评估本地 CrossEncoder | S11D；账号、地域、接口、实际费用与独立累计额度落实后才能真实调用 |
 | T01/T02 执行深度 | LangGraph 根图分阶段；Deep Agents 有界规划/证据工具；保持文件工具、通用子 Agent、shell 和内部 saver 对任务关闭；记忆经治理 API | S12、条件 S18；不新增同级 Workflow/调度器 |
-| T09/T12/T13 费用 | 建议 Tasks 内独立 usage 模块/自有 MySQL 账本，内部 API 预留/结算；不让多实例各守本地额度，不在本轮引入独立计费服务 | S15A 冻结归属及精度/未知结果语义；S15B 对账原账本，不清零 |
+| T09/T12/T13 费用 | S15A采用Tasks独立usage模块/自有MySQL、现有MyBatis-Plus/XML与Decimal；单次发送许可、CNY六位金额、用途独立累计资金池；无新计费进程/Redis/MQ | [usage-v1](../knowledge-first-20261020/USAGE_CONTRACTS.md)与[取舍/迁移](../knowledge-first-20261020/USAGE_DESIGN.md)；S15B待验，不新增预算/价格假设 |
 | T22/T29 身份与 UI | 沿 Casdoor/auth-platform 方向和现有 React 栈；先定组织/角色/共享规则，再按真实能力加入评测、运营及共享页面 | S13 及各带 UI 任务 |
 | T27/T30/T31 工程 | 最小 CI 前置，埋点随功能；固定制品、升级、隔离还原及供应链分项验收。公共中间件优先 dev_infra，不新造缓存/MQ/配置中心 | S8F、S15C、S16、S17 |
 

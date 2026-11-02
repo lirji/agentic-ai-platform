@@ -12,6 +12,8 @@
 
 本轮 S6/S7 同步基线：后端 `cb2f688`、前端 `f68e660`。Tasks 公共 work 请求/分页、V2 索引、`agents/` 受控工具与根图、共享 worker 和网关 SSE 映射到 [R02/A01](design/knowledge-first-20261020/WORK_TASK_CONTRACTS.md)；两路页面与共享意图/事件消费映射到独立前端 S7。证据与实际源码摘要见 [S6/S7 验收](qa/research-readonly-20261021/TEST_RESULT.md)，旧 QA 记录为历史验证，不替代当前回归。
 
+
+S15A（2026-11-02，基线d9b0c79）：三类Python本地预算、实际模型出口与Tasks租约/数据库取证，冻结[用量设计](design/knowledge-first-20261020/USAGE_DESIGN.md)、[usage-v1](design/knowledge-first-20261020/USAGE_CONTRACTS.md)和[验收矩阵](design/knowledge-first-20261020/USAGE_ACCEPTANCE.md)。选择Tasks usage模块，原架构/选型原位同步；同库fence事务耦合阻止直接抽取。仅设计，无产品/迁移/额度变更；源码摘要与设计核验见[QA](qa/unified-usage-design-20261102/TEST_RESULT.md)。
 ## 当前能力实施（2026-10-21）
 
 用户已要求“开始实施”，并选择以项目架构/操作文档建立机制评测集。[主方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)与 [51 项稳定任务](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices)继续有效；不能把规划能力当已实现。

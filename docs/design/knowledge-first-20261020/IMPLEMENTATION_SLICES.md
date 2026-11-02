@@ -603,7 +603,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-USAGE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 区分币种/单位/估算/真实usage/账单；operation/attempt身份稳定；恢复不清零；选择 Tasks usage 模块与未来抽取边界。
 - **Pass / Runtime：** DESIGN；仅设计；不增加计量服务或 Redis 权威。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G15 G19。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G15 G19。[设计](USAGE_DESIGN.md)、[usage-v1](USAGE_CONTRACTS.md)与[验收](USAGE_ACCEPTANCE.md)已冻结，[S15A设计验证](../../qa/unified-usage-design-20261102/TEST_RESULT.md)PASS；共享额度产品仍由S15B实施。
 
 ### S15B · 共享额度预留、结算与调用归因
 

@@ -1,12 +1,14 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S14D 产品交付通过，证据归档中
+## 当前任务：S15A 设计验证通过，Git交付中
 
 - 继续capability-delivery-20261021完整51项，parallel=no；用户“自行处理”“继续把”。owner处理/编辑/审批，指定同组织成员只读可撤回；完整计划未完成。授权正常提交/合并/push main，不生产部署、不清理、不强推、不新增付费预算，无子Agent。
-- S14C产品和归档已全部交付，后端main起点dd86c5d、前端83b793f；C精确分支/main CI全PASS。当前两仓原目录feat/knowledge-publication-recovery-20261102，设计提交后端408f18b、前端82004ff，无新worktree。
-- S14D DONE，产品后端5d169c9/前端3caabc2已正常ff合并push main，精确分支/main CI全PASS（41373365776/41373368237/41373503922/41373596553）。[收据](../../qa/publication-recovery-20261102/delivery-result.json)/[验收](../../qa/publication-recovery-20261102/TEST_RESULT.md)/[审查](../../qa/publication-recovery-20261102/REVIEW.md)。当前仅证据归档/进度文件待正常交付。
+- S14C产品和归档已全部交付，后端main起点dd86c5d、前端83b793f；C精确分支/main CI全PASS。S14D使用两仓原目录feat/knowledge-publication-recovery-20261102，设计提交后端408f18b、前端82004ff，无新worktree。
+- S14D DONE，产品后端5d169c9/前端3caabc2已正常ff合并push main，精确分支/main CI全PASS（41373365776/41373368237/41373503922/41373596553）。[收据](../../qa/publication-recovery-20261102/delivery-result.json)/[验收](../../qa/publication-recovery-20261102/TEST_RESULT.md)/[审查](../../qa/publication-recovery-20261102/REVIEW.md)。归档后端d9b0c79分支/main CI41373905225/41374045211通过；前端6a18e72分支CI41373907439通过、已ff合并push main，main CI41374235039通过，详情.local/s14d-archive-delivery.json。
 - 验证PASS：132 Java单元；5类59集成项中54通过/5条件跳过，含PDF/DOCX完整源、并发/回滚/CAS/权限；220前端测试、types/lint/format/build；正式Python/真实索引/React最终联合（.logs/s14d-joint-browser-final.log，夹具.logs/s14d-joint-13543167556431421493）；6状态视觉和交互。Runtime/11字段注释/无新增Ruff通过，Java卫生工具限制保留。
-- 下一步：提交并交付两仓证据/进度归档，核对归档精确CI；随后立即开始S15A统一模型用量与预算语义。不得把全计划写成完成。
+- S15A DONE / 设计Validation PASS：后端原目录feat/unified-usage-design-20261102，起点d9b0c79；16源文件摘要、51任务ID/前置、16项后续验收、14份Markdown/链接/表格和既有契约检查通过。详见[验收](../../qa/unified-usage-design-20261102/TEST_RESULT.md)及[审查](../../qa/unified-usage-design-20261102/REVIEW.md)。仅文档，无产品/迁移/预算变化，前端main 6a18e72未改。
+- 冻结：Tasks usage自有MySQL；运营方资金池/CNY六位/用途独立累计；operation与attempt分离、一次dispatch许可、未知占额/迟到结算；旧账本冻结导入不清零且不双写。future抽取因task fence事务债为LOW；实际启用/生产容量未验证。
+- 下一步：S15A正常提交、分支CI、ff合并push main及精确main CI；完成后立即S15B按USAGE_ACCEPTANCE的UA01–UA16实施。完整51项未完成。
 - 运行：28246恢复预览session84365/.local/recovery-dist；28236批准、28226候选、28216反馈、28206共享、28196身份及28086原Docker保留。无在途模型/测试/迁移；V16/V17/V18已在test应用不可改写，dev/生产未迁移。保留随机test记录/源/索引/待处理作业、.local凭据预算、.logs、.idea和原main工作树；不做清理。
 - 费用与规范：本片新增付费调用0，原Chat0.957092/1元、Embedding0.781784/1元不变。采用架构业务建模/持久化/接口/安全/容量/发布章节，沿既有实施/Runtime/验证/进度/Git/CI/持续交付技能；手工专业pass不冒充独立子Agent审查。
 

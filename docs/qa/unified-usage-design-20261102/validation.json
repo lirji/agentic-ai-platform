@@ -1,0 +1,38 @@
+{
+  "slice": "S15A",
+  "status": "PASS",
+  "scope": "DESIGN_ONLY",
+  "markdownFiles": 14,
+  "localLinks": 381,
+  "newDesignTableRows": 81,
+  "sourceHashes": 16,
+  "stableSlices": 51,
+  "acceptanceCases": 16,
+  "frontend": "UNCHANGED",
+  "productChanges": false,
+  "paidCalls": 0,
+  "runtimeTests": "NOT_RUN_DESIGN_SLICE",
+  "checks": [
+    "markdown-links-anchors-tables",
+    "source-baseline-hashes",
+    "slice-identity-and-dependencies",
+    "acceptance-coverage",
+    "registered-contract-docs",
+    "git-diff-check",
+    "documentation-only-scope"
+  ],
+  "documentHashes": {
+    "docs/README.md": "ac55ed19e15eb69df019ef2be090591556c353fbb97ec7902ffa873f5913b56b",
+    "docs/design/knowledge-first-20261020/CAPABILITY_CONTRACT_BACKLOG.md": "f195020b398c4c937c50eeed206480cf3f420134ea0eeb0047b4ff7b1b7e6702",
+    "docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md": "6fabc09412db33024b61ede20b2d09f9673bc4c1fcefbe2460e1e39fc7d71a5d",
+    "docs/design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md": "a0d300e08c611fcaa7c0cbe976efe3b87adeaf5272da5ab95314ef74706ec24b",
+    "docs/design/knowledge-first-20261020/USAGE_ACCEPTANCE.md": "ec5751ad3d201eab94c4b6f84498d8a5a63c98e928482f039079b0df59bece1f",
+    "docs/design/knowledge-first-20261020/USAGE_CONTRACTS.md": "356945459bfec63a1ee9b8fb88769ca84bcd314e755a2d6491785783d1e1cf3f",
+    "docs/design/knowledge-first-20261020/USAGE_DESIGN.md": "d2715d30d6b712eecc6880806c3b59c6a3b4e8a53ea8a8884fe6b805f4823546",
+    "docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md": "e749fb4882bb28616d8de118232810389358dfb109a26dd88e5f93acc5c7c23a",
+    "docs/design/platform-selection-20261020/TECH_SELECTION.md": "8f33d8d9e8ba424501f3c50472b871fe81f21d9d23c4904b3b6663cb8b4ccadf",
+    "docs/doc-map.md": "1e913c0a8d247d850efffc3d3c2f312caa32bd0de14e826f6ec308c8ab390184",
+    "docs/qa/unified-usage-design-20261102/REVIEW.md": "dfe409f36ea24309abe150e7873acbb091a2e31061faf90a0d6245533c204041",
+    "docs/qa/unified-usage-design-20261102/TEST_RESULT.md": "089f54b23ffce0592958edbecc7c3fe16e1fb02fe1c76ccf1ea13bb7fcda134c"
+  }
+}

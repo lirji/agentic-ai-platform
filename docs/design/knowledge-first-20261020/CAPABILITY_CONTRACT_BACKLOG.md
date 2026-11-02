@@ -18,7 +18,7 @@
 | C-IDENTITY | S13A；Gateway + 已选 IAM + 各服务 | 登录/退出/续期、角色/scope/组织来源；内部 audience/issuer/委托身份；401/403 及前端恢复 | 不信任客户端租户/用户字段；开发会话桥不成为正式认证回退；失效/退出后旧会话行为明确，跨环境凭据隔离 |
 | C-SHARING | S13B/C；Knowledge 授权 Owner | [C-SHARING](SHARING_CONTRACTS.md)：同组织指定成员只读，owner逐份授权/撤回；命令共享修订；文档范围、任务与引用可见性 | 事务提交后各读取路径一致拒绝；语料/候选/精排输入/历史结果/评测/在途任务均检查；策略变动不是仅清前端缓存 |
 | C-OPERATIONS | S14A–D；Knowledge | 反馈与问题/证据/任务关联；候选版本/内容摘要；评估/审批/发布角色与状态；实际入库绑定；发布后探测和补偿版本 | 编辑使评估审批失效；发布幂等、未知结果可查询；并发审批/发布合法；补偿不直接覆写已发布历史；审批与任务图暂停分开 |
-| C-USAGE | S15A/B；建议 Tasks 内独立 usage 模块 | 预算主体/周期/币种/精度；operationId 预留、结算、释放、未知结果、恢复 attempt；各模型调用归因 | 原子额度约束与幂等结算；超时不自动退款；估算/实际用量/账单分开；旧账本保持连续，迁移对账不能清零；收费策略单独确认 |
+| C-USAGE | S15A/B；Tasks 内独立 usage 模块 | [usage-v1](USAGE_CONTRACTS.md)、[设计](USAGE_DESIGN.md)、[验收](USAGE_ACCEPTANCE.md)：运营方资金池/CNY累计周期、稳定operation/attempt、一次发送许可、结算/未知/迁移 | S15A冻结；S15B待实施。原子准入、未知占额、历史连续、同源导入唯一；内部成本不是供应商账单，不新增实际额度 |
 | C-OBS | S15C/S16D；现有观测/各业务 Owner | W3C trace、request/task/doc/run 关联；检索/模型/队列阶段指标；业务审计事件与权限、脱敏/保留 | 不用高基数 ID 作普通指标标签；采样/采集失败不阻断业务；不默认外发正文/提示；告警有处置人/步骤 |
 | C-CAPACITY | S16A–C；Tasks/Knowledge/worker | 多 worker 领取/租约/接管、调度公平、租户额度、下游并发/连接/排队/deadline、退出行为 | fencing 延续；取消与迟到结果一致；串号/饥饿/过载可验证；目标值先约定或标观测值，不虚构 SLA |
 | C-RELEASE | S8F 最小 CI；S17A/B/D 完整发布；Runtime/契约/数据库 Owner | 固定制品、启动与配置、版本兼容矩阵、迁移账户/阶段、回退、CI/SBOM/依赖门禁 | 最小CI已在 [ci-v1](CI_CONTRACTS.md) 冻结；S8F 不依赖 S17；只增量迁移、不重写历史；代码回退与数据补偿分开；模型预算不因重建重置；失败门禁不自动豁免 |
