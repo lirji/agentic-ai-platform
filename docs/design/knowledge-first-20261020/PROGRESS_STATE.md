@@ -1,16 +1,15 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S16A多worker竞争和有界恢复
+## 当前任务：S16A交付完成，继续S16B
 
-- capability-delivery-20261021按用户“继续做后续任务”持续执行，parallel=no，无子Agent。完整51项未完成。
-- S15C产品1111e88与归档393e148均正常合并推main；产品与归档分支/main CI全部PASS，最终收据.local/s15c-final-delivery.json。
-- S16A IN_PROGRESS：C-CAPACITY/S16A契约→显式worker图版本白名单、有限组配置/资源核对→两独立Python进程的真实MySQL/PG竞争/退出接管/迟到结果/取消→文档、验证、正常Git/CI交付。S15B/S12D/S13C前置均DONE。
-- Git：原目录feat/multi-worker-recovery-20261102，起点393e148（只含前一片归档，先合并其父提交）；无新worktree。前端main未改。
-- 已核对：Tasks已有SKIP LOCKED、数据库租约时间与epoch fencing；worker默认单在途轮询全部已启用图，缺少显式版本分工；CENTRAL worker ID来自私密usage配置，组内必须唯一，不能把LEGACY_LOCAL账本复制成多实例资金权威。
-- S16A实现/本地验证PASS：版本分工、claim身份/图匹配、私密两实例组/共享checkpoint核对；Python全量768通过/100条件跳过，新增轮询后37相关复验PASS；真实双进程3项及旧图/阶段/预算恢复19项全PASS。初次夹具严格JSON还原失败已修正；生产容量未验证。待文档/卫生与Git/CI交付。
-- 边界：首轮2个隔离测试进程，每进程单在途；模型替身与合成test预算，付费调用0；不调整原长期worker/真实中央模式，不引入新中间件，不清理旧数据。U06未知仅报实测，S16B才实现公平调度/全局资源准入。
-- 运行任务：本轮模型/测试子进程已退出；无付费调用，原服务保留。日志.local/s16a-{python-full,process-it-final,recovery-regression,worker-final}.log，正在完成卫生/文档检查。
-- 规范：延续S15C已读架构建模/持久化/契约/安全/容量/发布和个人并发/追踪；backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate。
+- capability-delivery-20261021按用户“继续做后续任务”持续执行，parallel=no，无子Agent。完整51项未完成，下一片S16B租户公平与后台资源隔离。
+- S16A DONE/本地MW01–MW05 PASS：[验收](../../qa/multi-worker-recovery-20261102/TEST_RESULT.md)、[源码/日志摘要](../../qa/multi-worker-recovery-20261102/source-evidence.json)。显式worker图分工、claim身份/图匹配、两实例私密组与聚合连接核对，未新增基础设施或迁移。
+- Git：产品7a2edc2在feat/multi-worker-recovery-20261102提交并正常fast-forward合并推main；分支CI41403384621/mainCI41403634984全部PASS。[交付收据](../../qa/multi-worker-recovery-20261102/delivery-result.json)。当前为归档提交，末次归档ref与CI见.local/s16a-final-delivery.json（待生成）。复用原main工作树，无新worktree；前端未改。
+- 验证：Python完整768通过/100条件跳过/34既有警告，最终新增轮询后37相关项PASS；CI在最终提交全量通过。真实双进程3项及旧图/阶段/跨attempt预算19项全PASS。Ruff格式/静态、mypy92源码、15契约/15报文及Markdown本地链接PASS。Java/前端本地无新增测试声明，Java由CI复核。
+- 失败修复：首次进程夹具JSON严格类型反序列化及Ruff异步文件屏障已修复复验；旧epoch心跳/完成/PG快照/pending写入拒绝。无未修复必需失败。预算出口沿S15B未改资金实现，本轮只用模型替身检验任务调用次数。
+- 运行/数据：本轮临时Tasks/Python进程全部退出，原服务保留。原Chat/Embedding账本摘要未变、付费调用0；无部署/清理/长期多实例启用。私密.local、.logs及历史工作树保留。
+- 下一步：归档交付后在原目录建立S16B任务分支，冻结C-CAPACITY增量；优先按真实竞争边界设计Tasks/Knowledge各自DB所有权内的跨实例准入和租户预留配额，在线/后台分隔，复用现有执行器/持久队列；再实现/真实DB竞争与慢依赖/上下文/关停验收。U06未定只报受控实验，不声称生产容量。
+- 规范：session-handoff、continue-approved-delivery、backend-architecture-design、backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate；架构建模/持久化/契约/并发/容量/发布及个人并发/追踪章节本次已复读。S15C归档393e148全部CI也已PASS，最终收据.local/s15c-final-delivery.json。
 
 ## 上一检查点：S15C交付通过
 

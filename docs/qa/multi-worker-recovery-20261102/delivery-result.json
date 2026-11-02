@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "branch": "feat/multi-worker-recovery-20261102",
+  "productCommit": "7a2edc2b21e6f32bb4a3471015ffb55198fc9e29",
+  "branchCi": 41403384621,
+  "mainCi": 41403634984,
+  "allJobs": "success",
+  "merge": "fast-forward",
+  "remoteMainProductVerified": true,
+  "archiveReceipt": ".local/s16a-final-delivery.json",
+  "deploymentPerformed": false
+}
