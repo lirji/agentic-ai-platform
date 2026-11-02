@@ -1,0 +1,100 @@
+# 所有阈值为S16D实验值，未定义生产SLO；标签不能包含动态业务标识。
+groups:
+- name: agentic-operations
+  interval: 15s
+  rules:
+  - alert: AgenticServiceUnavailable
+    expr: min by (service) (up{job="agentic"}) == 0
+    for: 1m
+    labels:
+      severity: warning
+      project: agentic-ai
+      threshold: experimental
+    annotations:
+      summary: 应用或采集端点不可达
+      runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#service
+  - alert: AgenticObservationUnavailable
+    expr: (min by (service) (agentic_ops_read_success{job="agentic"}) == 0) or (time()
+      - min by (service) (agentic_ops_last_success_seconds{job="agentic"}) > 90) or
+      ((max by (service) (up{job="agentic",service=~"knowledge|tasks"}) == 1) unless
+      on (service) max by (service) (agentic_ops_read_success{job="agentic"}))
+    for: 1m
+    labels:
+      severity: warning
+      project: agentic-ai
+      threshold: experimental
+    annotations:
+      summary: 运维快照失败、过期或未启用
+      runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#observation
+  - alert: AgenticQueueBacklog
+    expr: (max by (service) (agentic_ops_oldest_seconds{job="agentic"}) > 120) and
+      on (service) (min by (service) (agentic_ops_read_success{job="agentic"}) ==
+      1)
+    for: 2m
+    labels:
+      severity: warning
+      project: agentic-ai
+      threshold: experimental
+    annotations:
+      summary: 等待领取的最老任务超过实验阈值
+      runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#queue
+  - alert: AgenticCentralBudgetNearLimit
+    expr: (max by (service) (agentic_ops_budget_ratio{job="agentic"}) >= 0.9) and
+      on (service) (max by (service) (agentic_ops_budget_accounts{job="agentic"})
+      > 0) and on (service) (min by (service) (agentic_ops_read_success{job="agentic"})
+      == 1)
+    for: 2m
+    labels:
+      severity: warning
+      project: agentic-ai
+      threshold: experimental
+    annotations:
+      summary: 中央预留与已结算费用接近上限
+      runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#budget
+  - alert: AgenticUsageUnknown
+    expr: (max by (service) (agentic_ops_unknown_seconds{job="agentic"}) > 300) and
+      on (service) (min by (service) (agentic_ops_read_success{job="agentic"}) ==
+      1)
+    for: 2m
+    labels:
+      severity: warning
+      project: agentic-ai
+      threshold: experimental
+    annotations:
+      summary: 中央调用存在长时间未结算或未知结果
+      runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#unknown
+  - alert: AgenticDependencyErrors
+    expr: (sum by (service) (increase(knowledge_ingestion_events_total{job="agentic",event="failed"}[5m]))
+      > 0) or (sum by (service) (increase(http_server_requests_seconds_count{job="agentic",status=~"5.."}[5m]))
+      > 5)
+    for: 1m
+    labels:
+      severity: warning
+      project: agentic-ai
+      threshold: experimental
+    annotations:
+      summary: 处理或请求出现持续依赖错误
+      runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#dependency
+  - alert: AgenticLegacyBudgetNearLimit
+    expr: (max by (service,kind) (agentic_legacy_budget_ratio{job="agentic"}) >= 0.9)
+      and on (service,kind) (min by (service,kind) (agentic_legacy_budget_read_success{job="agentic"})
+      == 1)
+    for: 2m
+    labels:
+      severity: warning
+      project: agentic-ai
+      threshold: experimental
+    annotations:
+      summary: 本地账本累计预留接近上限
+      runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#budget
+  - alert: AgenticLegacyBudgetUnreadable
+    expr: min by (service,kind) (agentic_legacy_budget_read_success{job="agentic"})
+      == 0
+    for: 1m
+    labels:
+      severity: warning
+      project: agentic-ai
+      threshold: experimental
+    annotations:
+      summary: 本地预算账本不可读或校验失败
+      runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#observation

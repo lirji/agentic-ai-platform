@@ -87,3 +87,8 @@ management:
 logging:
   pattern:
     console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%thread] %logger{36} trace=%X{traceId:-} span=%X{spanId:-} request=%X{requestId:-} - %msg%n"
+
+# S16D：显式启用只读运维指标，不改变任务或预算状态。
+operations:
+  metrics:
+    enabled: ${OPERATIONS_METRICS_ENABLED:false}

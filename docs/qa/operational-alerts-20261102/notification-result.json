@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "binarySha256": "970a021ff840c51a235e74d9a6676ddd43ffde3df2d0d60f2c3fce7aba5b9b45",
+  "firing": 3,
+  "duplicateSubmissions": 4,
+  "duplicateNotifications": 0,
+  "resolved": 3,
+  "externalMessages": 0,
+  "alerts": [
+    "AgenticCentralBudgetNearLimit",
+    "AgenticDependencyErrors",
+    "AgenticQueueBacklog"
+  ]
+}

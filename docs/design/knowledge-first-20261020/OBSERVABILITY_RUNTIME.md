@@ -30,3 +30,5 @@ Python默认不外发，显式 `AGENTIC_OTLP_ENDPOINT` 才创建 exporter；值�
 - `test_diagnostics.py` 使用实际OTLP protobuf/本地HTTP拒绝端验证脱敏和有界失败，使用阻塞exporter验证队列饱和。测试不依赖公网采集服务。
 
 原数据库迁移不变；本片新增只读API和诊断埋点，回退代码不会回滚或删除任何授权/预算审计事实。保留期尚未作生产决定，当前不执行清理；不要将本地日志保留当生产合规承诺。
+
+S16D运行告警与处置在[告警手册](../../../deploy/monitoring/RUNBOOK.md)，覆盖只读队列/中央与旧账本费用/采样/依赖信号；规则触发、恢复、实例去重与本机通知链单独验证。

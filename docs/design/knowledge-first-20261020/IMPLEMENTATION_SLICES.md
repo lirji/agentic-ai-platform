@@ -663,7 +663,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-OBS、C-CAPACITY；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 阈值源于实际目标或标试验值；触发/恢复/去重可验证；告警不含正文/密钥；处置可执行，不能只写指标名。
 - **Pass / Runtime：** IMPLEMENT；复用监控设施；无人授权不发送真实外部消息。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G14。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G14。AL01–AL05本地PASS，见[验收](../../qa/operational-alerts-20261102/TEST_RESULT.md)；8规则、真实DB/通知链已验，长期采集未启用，Git/CI见PROGRESS_STATE。
 
 ### S17A · 完整应用制品与本地部署入口
 

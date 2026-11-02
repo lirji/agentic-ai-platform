@@ -82,3 +82,5 @@ S14B候选修订使用独立`--operations`，默认关闭；仅派生候选入�
 发布后探测与补偿须显式指定`--operations --operations-recovery`，默认关闭并纳入快照指纹。它独立于新批准开关，只生成需要重新评估批准的草稿；不会直接恢复旧发布或开启worker。
 
 2026-11-02最新固定制品为`6b7bf063f040da7a`（后端7863ae3/前端c2d12fe），9容器健康、45业务表2716行及两预算摘要一致。后端已重新构建；前端源码和全部构建输入未变，复用已验证旧镜像并核对文件层完全相同，详见本轮前端复用收据。本次保持OIDC/PDF/DOCX/STRUCTURE_V3与原开关；sharing/feedback/operations及新的容量模式没有自动启用，LEGACY_LOCAL资金模式保留。容量策略启用另遵守[容量运行说明](../../docs/design/knowledge-first-20261020/CAPACITY_RUNTIME.md)，不能通过增副本或复制账本增加额度。
+
+S16D只读运维指标可在后续明确部署的prepare命令增加`--operational-metrics`；默认关闭并纳入制品摘要。采集器与告警配置见[告警手册](../monitoring/RUNBOOK.md)，本片没有替换运行中的镜像。

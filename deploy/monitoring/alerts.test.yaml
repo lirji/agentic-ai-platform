@@ -1,0 +1,230 @@
+rule_files:
+- alerts.yaml
+evaluation_interval: 15s
+tests:
+- name: AgenticServiceUnavailable
+  interval: 1m
+  input_series:
+  - series: up{job="agentic",service="tasks",instance="replica-a"}
+    values: 0+0x3 1+0x5
+  - series: up{job="agentic",service="tasks",instance="replica-b"}
+    values: 0+0x3 1+0x5
+  alert_rule_test:
+  - eval_time: 0m
+    alertname: AgenticServiceUnavailable
+    exp_alerts: []
+  - eval_time: 3m
+    alertname: AgenticServiceUnavailable
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        project: agentic-ai
+        threshold: experimental
+        service: tasks
+      exp_annotations:
+        summary: 应用或采集端点不可达
+        runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#service
+  - eval_time: 9m
+    alertname: AgenticServiceUnavailable
+    exp_alerts: []
+- name: AgenticObservationUnavailable
+  interval: 1m
+  input_series:
+  - series: agentic_ops_read_success{job="agentic",service="tasks",instance="replica-a"}
+    values: 0+0x3 1+0x5
+  - series: agentic_ops_read_success{job="agentic",service="tasks",instance="replica-b"}
+    values: 0+0x3 1+0x5
+  - series: agentic_ops_last_success_seconds{job="agentic",service="tasks",instance="replica-a"}
+    values: 0+60x8
+  - series: agentic_ops_last_success_seconds{job="agentic",service="tasks",instance="replica-b"}
+    values: 0+60x8
+  alert_rule_test:
+  - eval_time: 0m
+    alertname: AgenticObservationUnavailable
+    exp_alerts: []
+  - eval_time: 3m
+    alertname: AgenticObservationUnavailable
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        project: agentic-ai
+        threshold: experimental
+        service: tasks
+      exp_annotations:
+        summary: 运维快照失败、过期或未启用
+        runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#observation
+  - eval_time: 9m
+    alertname: AgenticObservationUnavailable
+    exp_alerts: []
+- name: AgenticQueueBacklog
+  interval: 1m
+  input_series:
+  - series: agentic_ops_oldest_seconds{job="agentic",service="tasks",instance="replica-a"}
+    values: 180+0x3 0+0x5
+  - series: agentic_ops_oldest_seconds{job="agentic",service="tasks",instance="replica-b"}
+    values: 180+0x3 0+0x5
+  - series: agentic_ops_read_success{job="agentic",service="tasks",instance="replica-a"}
+    values: 1+0x8
+  - series: agentic_ops_read_success{job="agentic",service="tasks",instance="replica-b"}
+    values: 1+0x8
+  alert_rule_test:
+  - eval_time: 0m
+    alertname: AgenticQueueBacklog
+    exp_alerts: []
+  - eval_time: 3m
+    alertname: AgenticQueueBacklog
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        project: agentic-ai
+        threshold: experimental
+        service: tasks
+      exp_annotations:
+        summary: 等待领取的最老任务超过实验阈值
+        runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#queue
+  - eval_time: 9m
+    alertname: AgenticQueueBacklog
+    exp_alerts: []
+- name: AgenticCentralBudgetNearLimit
+  interval: 1m
+  input_series:
+  - series: agentic_ops_budget_ratio{job="agentic",service="tasks",instance="replica-a"}
+    values: 0.95+0x3 0.1+0x5
+  - series: agentic_ops_budget_ratio{job="agentic",service="tasks",instance="replica-b"}
+    values: 0.95+0x3 0.1+0x5
+  - series: agentic_ops_budget_accounts{job="agentic",service="tasks",instance="replica-a"}
+    values: 1+0x8
+  - series: agentic_ops_budget_accounts{job="agentic",service="tasks",instance="replica-b"}
+    values: 1+0x8
+  - series: agentic_ops_read_success{job="agentic",service="tasks",instance="replica-a"}
+    values: 1+0x8
+  - series: agentic_ops_read_success{job="agentic",service="tasks",instance="replica-b"}
+    values: 1+0x8
+  alert_rule_test:
+  - eval_time: 0m
+    alertname: AgenticCentralBudgetNearLimit
+    exp_alerts: []
+  - eval_time: 3m
+    alertname: AgenticCentralBudgetNearLimit
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        project: agentic-ai
+        threshold: experimental
+        service: tasks
+      exp_annotations:
+        summary: 中央预留与已结算费用接近上限
+        runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#budget
+  - eval_time: 9m
+    alertname: AgenticCentralBudgetNearLimit
+    exp_alerts: []
+- name: AgenticUsageUnknown
+  interval: 1m
+  input_series:
+  - series: agentic_ops_unknown_seconds{job="agentic",service="tasks",instance="replica-a"}
+    values: 400+0x3 0+0x5
+  - series: agentic_ops_unknown_seconds{job="agentic",service="tasks",instance="replica-b"}
+    values: 400+0x3 0+0x5
+  - series: agentic_ops_read_success{job="agentic",service="tasks",instance="replica-a"}
+    values: 1+0x8
+  - series: agentic_ops_read_success{job="agentic",service="tasks",instance="replica-b"}
+    values: 1+0x8
+  alert_rule_test:
+  - eval_time: 0m
+    alertname: AgenticUsageUnknown
+    exp_alerts: []
+  - eval_time: 3m
+    alertname: AgenticUsageUnknown
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        project: agentic-ai
+        threshold: experimental
+        service: tasks
+      exp_annotations:
+        summary: 中央调用存在长时间未结算或未知结果
+        runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#unknown
+  - eval_time: 9m
+    alertname: AgenticUsageUnknown
+    exp_alerts: []
+- name: AgenticDependencyErrors
+  interval: 1m
+  input_series:
+  - series: knowledge_ingestion_events_total{job="agentic",service="tasks",instance="replica-a",event="failed"}
+    values: 0 1 2 3 3+0x8
+  - series: knowledge_ingestion_events_total{job="agentic",service="tasks",instance="replica-b",event="failed"}
+    values: 0 1 2 3 3+0x8
+  alert_rule_test:
+  - eval_time: 0m
+    alertname: AgenticDependencyErrors
+    exp_alerts: []
+  - eval_time: 3m
+    alertname: AgenticDependencyErrors
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        project: agentic-ai
+        threshold: experimental
+        service: tasks
+      exp_annotations:
+        summary: 处理或请求出现持续依赖错误
+        runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#dependency
+  - eval_time: 9m
+    alertname: AgenticDependencyErrors
+    exp_alerts: []
+- name: AgenticLegacyBudgetNearLimit
+  interval: 1m
+  input_series:
+  - series: agentic_legacy_budget_ratio{job="agentic",service="legacy-budget",instance="replica-a",kind="CHAT"}
+    values: 0.95+0x3 0.1+0x5
+  - series: agentic_legacy_budget_ratio{job="agentic",service="legacy-budget",instance="replica-b",kind="CHAT"}
+    values: 0.95+0x3 0.1+0x5
+  - series: agentic_legacy_budget_read_success{job="agentic",service="legacy-budget",instance="replica-a",kind="CHAT"}
+    values: 1+0x8
+  - series: agentic_legacy_budget_read_success{job="agentic",service="legacy-budget",instance="replica-b",kind="CHAT"}
+    values: 1+0x8
+  alert_rule_test:
+  - eval_time: 0m
+    alertname: AgenticLegacyBudgetNearLimit
+    exp_alerts: []
+  - eval_time: 3m
+    alertname: AgenticLegacyBudgetNearLimit
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        project: agentic-ai
+        threshold: experimental
+        service: legacy-budget
+        kind: CHAT
+      exp_annotations:
+        summary: 本地账本累计预留接近上限
+        runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#budget
+  - eval_time: 9m
+    alertname: AgenticLegacyBudgetNearLimit
+    exp_alerts: []
+- name: AgenticLegacyBudgetUnreadable
+  interval: 1m
+  input_series:
+  - series: agentic_legacy_budget_read_success{job="agentic",service="legacy-budget",instance="replica-a",kind="CHAT"}
+    values: 0+0x3 1+0x5
+  - series: agentic_legacy_budget_read_success{job="agentic",service="legacy-budget",instance="replica-b",kind="CHAT"}
+    values: 0+0x3 1+0x5
+  alert_rule_test:
+  - eval_time: 0m
+    alertname: AgenticLegacyBudgetUnreadable
+    exp_alerts: []
+  - eval_time: 3m
+    alertname: AgenticLegacyBudgetUnreadable
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        project: agentic-ai
+        threshold: experimental
+        service: legacy-budget
+        kind: CHAT
+      exp_annotations:
+        summary: 本地预算账本不可读或校验失败
+        runbook_url: https://github.com/lirji/agentic-ai-platform/blob/main/deploy/monitoring/RUNBOOK.md#observation
+  - eval_time: 9m
+    alertname: AgenticLegacyBudgetUnreadable
+    exp_alerts: []

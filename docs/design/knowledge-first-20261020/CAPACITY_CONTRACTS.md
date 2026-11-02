@@ -1,6 +1,6 @@
 # C-CAPACITY：显式worker分工、租户份额与有界恢复
 
-运行清单协议`worker-group-v1`，预检结果协议`worker-group-check-v1`。当前冻结S16A与S16B；S16C混合容量和S16D告警仍须后续各自验收。U06未定，只报告隔离实验，不宣称生产SLO。
+运行清单协议`worker-group-v1`，预检结果协议`worker-group-check-v1`。S16A/B协议保持不变，S16C混合容量与S16D告警已各自本地验收，证据见PROGRESS_STATE。U06未定，只报告隔离实验，不宣称生产SLO。
 
 ## Worker与领取
 

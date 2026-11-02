@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.task.infrastructure.OperationalMapper">
+    <!-- 独立只读采样；服务端执行和JDBC两层超时，不能让诊断无限占用业务连接。 -->
+    <select id="snapshot" resultType="com.lrj.agentic.task.infrastructure.OperationalMapper$Snapshot" timeout="2">
+        SELECT /*+ MAX_EXECUTION_TIME(1500) */ COUNT(*) AS pending,
+            COALESCE(MAX(GREATEST(0,TIMESTAMPDIFF(SECOND,created_at,UTC_TIMESTAMP(6)))),0) AS oldest_seconds,
+            (SELECT COALESCE(MAX((held_amount+booked_amount)/limit_amount),0) FROM usage_account WHERE state IN ('ACTIVE','FROZEN')) AS budget_ratio,
+            (SELECT COUNT(*) FROM usage_account WHERE state IN ('ACTIVE','FROZEN')) AS accounts,
+            (SELECT COALESCE(MAX(GREATEST(0,TIMESTAMPDIFF(SECOND,updated_at,UTC_TIMESTAMP(6)))),0)
+                FROM usage_attempt WHERE state IN ('DISPATCHED','UNKNOWN')) AS unknown_seconds
+        FROM ai_task WHERE status='QUEUED'
+    </select>
+</mapper>

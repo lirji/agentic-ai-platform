@@ -1,9 +1,9 @@
 # Codex Progress
 
-- 当前任务：docker-latest-20261102，已将最新已提交代码部署到本机Docker并启动；9容器健康，真实登录与数据核对PASS。
-- 唯一部署进度入口：[PROGRESS_STATE](docs/deployment/docker-latest-20261102/PROGRESS_STATE.md)。恢复先核对实际制品收据、Git和.local/docker-latest-20261102/delivery-final.json。
-- 原目录分支feat/docker-latest-20261102；release6b7bf063f040da7a，后端7863ae3/前端c2d12fe。服务运行中，部署文档Git/CI状态以精确交付收据为准；无在途构建/迁移/模型任务。
-- S16C业务计划保留在[业务进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，本轮不启动S16D。
+- 当前任务：恢复 capability-delivery-20261021；S16D 告警与运行手册已验证，正在Git交付后接续S17A。
+- 唯一业务进度入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，实施和验收以其引用的 IMPLEMENTATION_SLICES 为准。
+- 原目录分支 feat/operational-alerts-20261102，基线38f5bbf；parallel=no。S16D本地PASS，完成Git/CI后按原依赖推进S17；完整51项未完成。
+- 最新Docker部署已验收并推main，9容器运行 release6b7bf063f040da7a；[部署进度](docs/deployment/docker-latest-20261102/PROGRESS_STATE.md)。本次恢复不重复部署，不新增费用或清理数据。
 
 ## 前期可行性任务记录
 

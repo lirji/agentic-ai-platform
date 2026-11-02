@@ -1,0 +1,6 @@
+{
+  "version": "0.27.0",
+  "archive": "alertmanager-0.27.0.darwin-arm64.tar.gz",
+  "sha256": "2165b4b4bf279ee632bd12ce31722b940380b4b89e73995f2d4e7066747dcb1d",
+  "source": "https://github.com/prometheus/alertmanager/releases/tag/v0.27.0"
+}

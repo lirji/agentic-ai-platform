@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.OperationalMapper">
+    <!-- 独立只读采样；服务端执行和JDBC两层超时，不能让诊断无限占用业务连接。 -->
+    <select id="snapshot" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.OperationalMapper$Snapshot" timeout="2">
+        SELECT /*+ MAX_EXECUTION_TIME(1500) */ COUNT(*) AS pending,
+            COALESCE(MAX(GREATEST(0,TIMESTAMPDIFF(SECOND,created_at,UTC_TIMESTAMP(6)))),0) AS oldest_seconds,
+            0.0 AS budget_ratio, 0 AS accounts, 0.0 AS unknown_seconds
+        FROM knowledge_ingestion WHERE status='RECEIVED'
+    </select>
+</mapper>

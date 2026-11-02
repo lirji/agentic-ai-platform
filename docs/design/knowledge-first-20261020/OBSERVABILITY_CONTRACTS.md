@@ -36,3 +36,12 @@ Python 默认仅在进程内生成上下文，不外发；显式配置本地既�
 | OB07 | 原契约消费者/前端及受影响测试通过，运行说明可执行；未启用采集不额外外发 |
 
 官方依据：[Python传播](https://opentelemetry.io/docs/languages/python/propagation/)、[SDK手工埋点](https://opentelemetry.io/docs/languages/python/instrumentation/)。本契约为既有 C-OBS/S15C 的兼容增量，不改变服务/数据所有权。
+
+## S16D：运维告警增量（2026-11-02）
+
+- Tasks/Knowledge 的既有 loopback Actuator 增加显式 `OPERATIONS_METRICS_ENABLED`（默认 false）。仅本服务 Mapper XML 读取标量，不新增表、接口路由、业务权限或跨服务读库。无正文、用户、租户、账户或动态标签。
+- `agentic_ops_pending`、`agentic_ops_oldest_seconds`：等待领取的 QUEUED/RECEIVED 数量和最老创建年龄；包含延后重试，是积压诊断而非公平/SLO承诺。Tasks另有中央 `agentic_ops_budget_ratio`（ACTIVE/FROZEN账户 held+booked/limit 最大值）、`agentic_ops_budget_accounts`、`agentic_ops_unknown_seconds`（DISPATCHED/UNKNOWN最老更新时间差）。未知费用不释放、不自动重试。
+- 抓取触发最多30秒一次、单飞只读采样；SQL服务端1.5秒/JDBC2秒上限，沿既有连接3秒/Socket5秒上限；未成功为NaN，失败保留旧值，`agentic_ops_read_success=0`及`agentic_ops_last_success_seconds`必须联动告警。并发抓取不等待刷新锁。
+- Prometheus规则对固定 service 聚合去除实例/请求标签，同故障只有稳定告警键；默认通知接收器为空，不发送外部消息。运行/实验阈值在告警文件和手册标记，U06未定不得声称生产SLO。
+- 当前 LEGACY_LOCAL 文件账本仍为费用权威；中央账户数为0不能证明本地费用为0。本地账本监视只读原文件，未知/损坏触发采集告警，绝不复制、重置、导入或释放金额。中央模式与本地模式按实际配置分别接入。
+- 必需验收 AL01：真实DB汇总/权限/空数据与故障；AL02：全部规则触发、恢复、短暂波动及多实例去重；AL03：实际告警接收/去重/恢复不外发；AL04：指标/通知脱敏且规则有可执行处置；AL05：采样故障、有界与现有回归。

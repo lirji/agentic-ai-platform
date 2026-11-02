@@ -101,6 +101,7 @@ def prepare(args: argparse.Namespace) -> None:
         "operations": args.operations,
         "operationsPublication": args.operations_publication,
         "operationsRecovery": args.operations_recovery,
+        "operationalMetrics": args.operational_metrics,
         "parsing": args.parsing,
         "pdf": args.pdf,
         "docx": args.docx,
@@ -270,6 +271,8 @@ def prepare(args: argparse.Namespace) -> None:
                 for key, value in source_env.items()
                 if key.startswith(owners[service]) or key == "INTERNAL_PUBLIC_KEY"
             }
+        if service in {"knowledge", "tasks"}:
+            selected["OPERATIONS_METRICS_ENABLED"] = str(args.operational_metrics).lower()
         if service == "knowledge":
             selected.update(
                 {
@@ -454,6 +457,7 @@ def main() -> None:
     parser.add_argument("--operations", action="store_true", help="启用所有者候选修订；不会自动开启处理worker")
     parser.add_argument("--operations-publication", action="store_true", help="显式启用候选批准入库；要求同时指定--operations")
     parser.add_argument("--operations-recovery", action="store_true", help="显式启用发布后检查与补偿；要求同时指定--operations")
+    parser.add_argument("--operational-metrics", action="store_true", help="显式启用只读管理指标；不启动采集或外发")
     parser.add_argument("--committed-only", action="store_true")
     parser.add_argument(
         "--structured-profile", choices=("BLOCK_V2", "STRUCTURE_V3"), default="BLOCK_V2"

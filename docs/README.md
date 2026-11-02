@@ -98,3 +98,5 @@ S12B答案支撑、覆盖和拒答已通过[校准与验收](qa/answer-quality-2
 
 - [S14A 资料反馈](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md)：本人记录、所有者收件箱和任务引用证明；[运行说明](design/knowledge-first-20261020/OPERATIONS_RUNTIME.md)。
 - [S14B 候选修正](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md#s14b-候选修订与内容绑定评估)：完整修订、私有校验副本及真实质量绑定；[审查](qa/candidates-20261102/REVIEW.md)。实际完成与 Git 门禁见进度。
+
+- [S16D告警与运行手册验收](qa/operational-alerts-20261102/TEST_RESULT.md)：真实DB、8规则、触发/恢复/去重与只读预算采集。

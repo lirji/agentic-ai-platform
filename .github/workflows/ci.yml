@@ -70,3 +70,17 @@ jobs:
           python3 ci/check_usage_boundaries.py
           python3 -m py_compile deploy/docker/runtime.py deploy/docker/search_bridge.py
           git show --format= --check HEAD
+
+  operational-alerts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify read-only legacy budget observer
+        run: python3 -m unittest discover -s deploy/monitoring -p 'test_*.py'
+      - name: Verify alert trigger, recovery and replica aggregation
+        run: |
+          docker run --rm --network none -v "$PWD/deploy/monitoring:/etc/agentic-monitoring:ro" --workdir /etc/agentic-monitoring --entrypoint /bin/promtool prom/prometheus@sha256:f6639335d34a77d9d9db382b92eeb7fc00934be8eae81dbc03b31cfe90411a94 check config prometheus.yaml
+          docker run --rm --network none -v "$PWD/deploy/monitoring:/etc/agentic-monitoring:ro" --workdir /etc/agentic-monitoring --entrypoint /bin/promtool prom/prometheus@sha256:f6639335d34a77d9d9db382b92eeb7fc00934be8eae81dbc03b31cfe90411a94 test rules alerts.test.yaml
