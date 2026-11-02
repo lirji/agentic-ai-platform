@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657",
+  "java": {
+    "tests": 210,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "dockerImages": "PASS",
+  "frontendBuildMode": "REUSE_VERIFIED_IDENTICAL_FRONTEND",
+  "frontendReuseEvidence": "frontend-reuse.json",
+  "frontendCi": {
+    "headSha": "c2d12feac3ad5f6d58f1bfd13a8a16476f6c8980",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41388446325",
+    "jobs": [
+      {
+        "name": "web",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "buildLog": ".logs/docker-latest-20261102/build.log"
+}

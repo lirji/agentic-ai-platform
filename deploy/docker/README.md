@@ -4,7 +4,7 @@
 
 正式登录入口：<http://localhost:28086>；网关仅绑定本机28080。OIDC模式复用现有Casdoor（localhost:18090，容器DNS auth-governance-casdoor:8000）和已登记的local-agentic个人空间。账号由本机0600文件`.local/identity/ACCESS.md`提供，密钥只注入Gateway。旧local-dev数据保留原归属，不自动转成正式用户资料。
 
-本轮部署状态和验收以[最新Docker部署进度](../../docs/deployment/docker-capacity-20261102/PROGRESS_STATE.md)为准。`--identity-mode local`保留原127.0.0.1测试身份入口兼容模式，不与正式模式混用。
+本轮部署状态和验收以[最新Docker部署进度](../../docs/deployment/docker-latest-20261102/PROGRESS_STATE.md)为准。`--identity-mode local`保留原127.0.0.1测试身份入口兼容模式，不与正式模式混用。
 
 ## 前提与构建
 
@@ -37,7 +37,7 @@ python3 deploy/docker/runtime.py status --backend /absolute/path/agentic-ai-plat
 
 `up` 接受当前快照的成功构建记录，等待真实 health/readiness，240 秒内未就绪返回失败。正式浏览器验收检查两个普通账号、匿名/未授权拒绝、Cookie/CSRF、退出及业务列表；不上传、不检索、不调用付费模型。容器可运行不等于未完成业务已通过功能验收。
 
-本轮可复验入口：在后端目录用Node 24执行`node .local/docker-capacity-20261102/browser-smoke.mjs`，复用相邻前端的Playwright、既有私密身份及`.local/docker-identity-20261101/legacy-document.json`（切换前记录的旧租户资料ID）。结果与无凭据截图写入本轮部署目录；不保存trace，不做业务写入。
+本轮可复验入口：在后端目录用Node 24执行`node .local/docker-latest-20261102/browser-smoke.mjs`，复用相邻前端的Playwright、既有私密身份及`.local/docker-identity-20261101/legacy-document.json`（切换前记录的旧租户资料ID）。结果与无凭据截图写入本轮部署目录；不保存trace，不做业务写入。
 
 ## 配置与资源
 
@@ -67,11 +67,11 @@ docker compose --env-file /absolute/path/agentic-ai-platform/.local/docker-runti
 
 普通停止不删除容器、卷、网络、密钥、恢复状态或预算。不要在 Docker 应用运行时执行旧 `local.py start`；它不识别 Docker 内部端口，可能产生重复 worker。
 
-本轮追加迁移为Knowledge V12→V19、Tasks V5→V8，Conversations保持V3。切换前正常停旧应用，保存三开发库SQL备份和原字段摘要；切换后校验版本、旧字段摘要与预算文件。迁移后不能直接重启不支持新schema的旧writer；配置问题优先修复同一新schema版本。不自动逆向恢复数据；备份成功不代表恢复演练通过。
+前次部署追加迁移为Knowledge V12→V19、Tasks V5→V8，Conversations保持V3。本次版本无新增迁移。切换前正常停旧应用，保存三开发库SQL备份和原字段摘要；切换后校验版本、旧字段摘要与预算文件。迁移后不能直接重启不支持新schema的旧writer；配置问题优先修复同一新schema版本。不自动逆向恢复数据；备份成功不代表恢复演练通过。
 
 现行聊天程序要求价格在 7 天内核验；过期需实际核实后按原规则更新，不能仅改日期绕过。缺配置、账本或余额会关闭 worker，不能自动建新账本。
 
-历史部署记录保留在[20261027部署](../../docs/deployment/docker-20261027/PROGRESS_STATE.md)。本轮日志/私密备份位于`.logs/docker-capacity-20261102/`、`.local/docker-capacity-20261102/`；源码/镜像收据在`.local/docker-runtime/`。无清理授权时保留这些恢复材料。
+历史部署记录保留在[20261027部署](../../docs/deployment/docker-20261027/PROGRESS_STATE.md)。本轮日志/私密备份位于`.logs/docker-latest-20261102/`、`.local/docker-latest-20261102/`；源码/镜像收据在`.local/docker-runtime/`。无清理授权时保留这些恢复材料。
 
 S14A反馈可在后续获授权部署的prepare阶段显式添加`--feedback`，默认关闭，选项纳入快照指纹；需要现有Tasks引用签名配置。详见[反馈Runtime](../../docs/design/knowledge-first-20261020/OPERATIONS_RUNTIME.md)。本片仅接线，未更新已运行镜像。
 
@@ -81,4 +81,4 @@ S14B候选修订使用独立`--operations`，默认关闭；仅派生候选入�
 
 发布后探测与补偿须显式指定`--operations --operations-recovery`，默认关闭并纳入快照指纹。它独立于新批准开关，只生成需要重新评估批准的草稿；不会直接恢复旧发布或开启worker。
 
-2026-11-02最新固定制品为`6b6adccd4f4f997f`（后端ea339ee/前端c2d12fe），9容器健康、旧23表2714行及两预算摘要一致。本次保持OIDC/PDF/DOCX/STRUCTURE_V3与原开关；sharing/feedback/operations及新的容量模式没有自动启用，LEGACY_LOCAL资金模式保留。容量策略启用另遵守[容量运行说明](../../docs/design/knowledge-first-20261020/CAPACITY_RUNTIME.md)，不能通过增副本或复制账本增加额度。
+2026-11-02最新固定制品为`6b7bf063f040da7a`（后端7863ae3/前端c2d12fe），9容器健康、45业务表2716行及两预算摘要一致。后端已重新构建；前端源码和全部构建输入未变，复用已验证旧镜像并核对文件层完全相同，详见本轮前端复用收据。本次保持OIDC/PDF/DOCX/STRUCTURE_V3与原开关；sharing/feedback/operations及新的容量模式没有自动启用，LEGACY_LOCAL资金模式保留。容量策略启用另遵守[容量运行说明](../../docs/design/knowledge-first-20261020/CAPACITY_RUNTIME.md)，不能通过增副本或复制账本增加额度。

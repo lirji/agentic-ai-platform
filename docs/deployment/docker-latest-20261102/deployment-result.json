@@ -1,0 +1,117 @@
+{
+  "status": "PASS",
+  "observedAt": "2026-11-02T11:26:39.014741+00:00",
+  "environment": "local Docker Desktop desktop-linux",
+  "project": "agentic-ai-app",
+  "origin": "http://localhost:28086",
+  "release": "6b7bf063f040da7a",
+  "previousRelease": "6b6adccd4f4f997f",
+  "sourceFingerprint": "6b7bf063f040da7ac52bca5486b3530086d103335af53b3130d9fafde25bc657",
+  "commits": {
+    "backend": "7863ae3ecc082a2807333bb55184467d262d7edb",
+    "frontend": "c2d12feac3ad5f6d58f1bfd13a8a16476f6c8980"
+  },
+  "includesUncommitted": false,
+  "containers": [
+    {
+      "service": "agentic-ai-app-gateway-1",
+      "image": "agentic-ai/edge-gateway:6b7bf063f040da7a",
+      "imageId": "sha256:bc775034e6051b2abdf94ce658d752f347e7a0b744fe58c07855bbc68da188c6",
+      "containerId": "d2b523856acecd47c6251afc99bb1befe199af12e67cb420a59d6377588cb6dd",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-knowledge-1",
+      "image": "agentic-ai/knowledge-service:6b7bf063f040da7a",
+      "imageId": "sha256:e7d43219a85c7422ed743a6c569b768e4007af595a89e62ad47e4c87f59860fe",
+      "containerId": "53769766abf5c475671eb73d06cba46f6e1171471b9eff8f3394c74711899f1a",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-tasks-1",
+      "image": "agentic-ai/async-task-service:6b7bf063f040da7a",
+      "imageId": "sha256:4c8b10af6bfbfd23a36b1297e0e2a6b521c850ade3a63067ce8c3e4b8de6bce2",
+      "containerId": "ec6d3422d535ddc205315ea46434071037b82b6bd86af5dc738a90d559d9db35",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-conversations-1",
+      "image": "agentic-ai/conversation-service:6b7bf063f040da7a",
+      "imageId": "sha256:9a9bd3d2c320d6562a618ad9343021a69cc107828f9b549d9c5de04c846daba9",
+      "containerId": "c8d02f5014ca6ee870088e6930c932ceeab3372df7ebd1807b8f77269f2ae7ea",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-ai-1",
+      "image": "agentic-ai/ai-runtime:6b7bf063f040da7a",
+      "imageId": "sha256:2d4840bc906d43a489ebd3c2af0d52b3f198e25770fb2c9b81e0656ebe7cd05b",
+      "containerId": "1391af6419155fee89ccf21b699ca21ece4f4931abcf74583c7ee59b53377103",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-model-proxy-1",
+      "image": "agentic-ai/model-proxy:6b7bf063f040da7a",
+      "imageId": "sha256:77a5943a13be9537b584f6dc7d93cf37f7b92f898c2027a8f508542f0346f99b",
+      "containerId": "ff4bda676a0d1ebc42d34a8d08aac580d22ba248ac3f7ba155289fd768ce2ee0",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-qa-worker-1",
+      "image": "agentic-ai/ai-runtime:6b7bf063f040da7a",
+      "imageId": "sha256:2d4840bc906d43a489ebd3c2af0d52b3f198e25770fb2c9b81e0656ebe7cd05b",
+      "containerId": "86172a113b55ffa2a3610d4cce2dd6cc8dae03c81122a95e999c4e3766ac0410",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-web-1",
+      "image": "agentic-ai/web:6b7bf063f040da7a",
+      "imageId": "sha256:371a85c8c96054af4e500ad4504679173ebd5564ded05615c52f5bf24e4266f9",
+      "containerId": "9c5c86ef657c95b1621fd305008ab422956b8fa9d23b8ae8ddd46d36bd8399f2",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "agentic-ai-app-search-bridge-1",
+      "image": "agentic-ai/ai-runtime:6b7bf063f040da7a",
+      "imageId": "sha256:2d4840bc906d43a489ebd3c2af0d52b3f198e25770fb2c9b81e0656ebe7cd05b",
+      "containerId": "638363a9417eb81b48ebc1901d0faf2aa280809babd8b0d6f5fc8bf7bc5f3087",
+      "health": "healthy",
+      "restarts": 0
+    }
+  ],
+  "schemaVersions": {
+    "agentic_knowledge": "19",
+    "agentic_tasks": "8",
+    "agentic_conversations": "3"
+  },
+  "databaseMigrationsApplied": false,
+  "businessTables": 45,
+  "businessRows": 2716,
+  "businessDataUnchanged": true,
+  "budgetsUnchanged": true,
+  "applicationSourceChanged": false,
+  "runtimeConfigurationChanged": false,
+  "options": {
+    "identity": "oidc",
+    "sharing": false,
+    "feedback": false,
+    "operations": false,
+    "operationsPublication": false,
+    "operationsRecovery": false,
+    "parsing": true,
+    "pdf": true,
+    "docx": true,
+    "structuredProfile": "STRUCTURE_V3"
+  },
+  "browser": "PASS",
+  "paidModelCalls": 0,
+  "ci": "PASS (ci-result.json)",
+  "rollback": "NOT_NEEDED; previous compatible release and private backups retained; no restore rehearsal"
+}

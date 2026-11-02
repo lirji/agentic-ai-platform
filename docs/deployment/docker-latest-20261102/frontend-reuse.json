@@ -1,0 +1,17 @@
+{
+  "mode": "REUSE_VERIFIED_IDENTICAL_FRONTEND",
+  "previousImage": "agentic-ai/web@sha256:68ea04d88ea96db2889e82e68fe238f9ed55a35b0bea8fc525e38d691dc661ec",
+  "frontendCommit": "c2d12feac3ad5f6d58f1bfd13a8a16476f6c8980",
+  "allFrontendSourceHashesEqual": true,
+  "webDockerfileHashEqual": true,
+  "webConfigHashEqual": true,
+  "optionsEqual": true,
+  "reason": "fresh npm package installation stalled; existing image holds the exact latest frontend commit and unchanged build inputs",
+  "initialBuild": "CANCELLED_DURING_NPM_INSTALL",
+  "validation": "existing image build checks, latest exact-commit Web CI, and current 2-account login/read-only browser smoke all PASS",
+  "result": "PASS",
+  "newImage": "sha256:371a85c8c96054af4e500ad4504679173ebd5564ded05615c52f5bf24e4266f9",
+  "filesystemLayersUnchanged": true,
+  "localTagResolvedImage": "sha256:68ea04d88ea96db2889e82e68fe238f9ed55a35b0bea8fc525e38d691dc661ec",
+  "metadataBuildLog": ".logs/docker-latest-20261102/web-reuse-local-build.log"
+}

@@ -1,0 +1,37 @@
+{
+  "gate": "PASS",
+  "sources": {
+    "backend": {
+      "headSha": "7863ae3ecc082a2807333bb55184467d262d7edb",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41421386706",
+      "jobs": [
+        {
+          "name": "python",
+          "conclusion": "success"
+        },
+        {
+          "name": "documents",
+          "conclusion": "success"
+        },
+        {
+          "name": "java",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "frontend": {
+      "headSha": "c2d12feac3ad5f6d58f1bfd13a8a16476f6c8980",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41388446325",
+      "jobs": [
+        {
+          "name": "web",
+          "conclusion": "success"
+        }
+      ]
+    }
+  }
+}

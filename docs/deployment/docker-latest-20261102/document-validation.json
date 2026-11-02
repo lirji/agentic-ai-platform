@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "markdownFiles": 5,
+  "localLinksChecked": 136,
+  "jsonParse": "PASS",
+  "sensitiveMaterialCheck": "PASS",
+  "registeredContractChecks": "PASS",
+  "usageBoundaries": "PASS",
+  "screenshotsReviewed": [
+    "login.png",
+    "workspace-desktop.png",
+    "workspace-mobile.png"
+  ]
+}
