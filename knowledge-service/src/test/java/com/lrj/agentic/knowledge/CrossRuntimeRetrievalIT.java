@@ -265,7 +265,8 @@ class CrossRuntimeRetrievalIT {
     }
 
     /** 每个子进程只获得必要签名文件路径；不传递本地模型配置或预算。 */
-    private static final class PythonRuntime implements AutoCloseable {
+    /** 供同包发布后验收复用正式Python链路，唯一替身仍是无费用向量端口。 */
+    static final class PythonRuntime implements AutoCloseable {
         final Path directory; final Process process; final String endpoint;
         private PythonRuntime(Path directory, Process process, String endpoint) {
             this.directory = directory; this.process = process; this.endpoint = endpoint;

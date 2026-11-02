@@ -168,7 +168,7 @@ S14C发布读模型形状：`{approval,status,errorCode,retryable,jobRevision,pu
 
 - 只有资料owner可对指定已批准修订显式执行；API维持knowledge:read，服务端逐次验证owner。GET页面不会自动调用检索或模型。
 - POST `/api/v1/knowledge/operations/candidates/{id}/publication/probe`：严格JSON `{revision,approvalId,query}`；revision正整数、approvalId规范UUID；query沿现有ConsumerKnowledgeSearch非空UTF8/长度限制。新recovery写开关控制入口，实际检索仍服从既有运行配置/配额。
-- 服务器读取此修订真实PUBLISHED元组，固定原documentId、RRF、topK=5调用现有ConsumerKnowledgeSearch/Python/LlamaIndex链路，不接受客户端任意documentIds/向量/模型/策略。返回前重新确认同一审批的精确当前发布身份；并发更新/重建/撤下导致变化返回现有RETRIEVAL_EVIDENCE_STALE，不返旧命中成功。
+- 服务器读取此修订真实PUBLISHED元组，固定原documentId、RRF、topK=1调用现有ConsumerKnowledgeSearch/Python/LlamaIndex链路，不接受客户端任意documentIds/向量/模型/策略。探测只需一个准确命中；既有检索在污染候选不足目标时明确失败的契约保持不变。返回前重新确认同一审批的精确当前发布身份；并发更新/重建/撤下导致变化返回现有RETRIEVAL_EVIDENCE_STALE，不返旧命中成功。
 - 返回`{approvalId,revision,publication,query,status,checkedAt,hits}`。publication为C的完整7字段元组；hits沿现有ConsumerRetrieval.Hit，仅保留完整document/version/generation/job/processor/batch与目标相等的命中；status为MATCHED或MISSED，checkedAt为服务器UTC。MISSED只表示本次查询未命中，不等于索引损坏。下游异常原样映射现有错误，无假成功/回退/自动重试。只读观察不建立另一套任务/用量账本，也不承诺搜索调用exactly-once。
 
 ### 补偿只生成新草稿
@@ -183,7 +183,7 @@ S14C发布读模型形状：`{approval,status,errorCode,retryable,jobRevision,pu
 
 ### 当前可用性与历史
 
-- GET `/candidates/{id}/recovery?revision=n`按当前owner返回`{enabled,canCompensate,reason,source,compensation}`，revision省略取最新。source为空或`{publication,title,contentType,sizeBytes}`，不含bucket/key。compensation可按源批准修订或生成修订取得同条审计`{compensationId,sourceApprovalId,approvedRevision,sourcePublication,createdRevision,commandId,note,createdAt}`。
+- GET `/candidates/{id}/recovery?revision=n`按当前owner返回`{enabled,canCompensate,reason,source,compensations}`，revision省略取最新。source为空或`{publication,title,contentType,sizeBytes}`，不含bucket/key。compensations为最多两条审计，按createdRevision降序；可按源批准修订或生成修订取得同条审计，连续补偿时同时保留入向/出向记录，避免用单条记录隐藏来源。单条形状为`{compensationId,sourceApprovalId,approvedRevision,sourcePublication,createdRevision,commandId,note,createdAt}`。
 - reason使用显式机器枚举：NOT_PUBLISHED、NEWER_DRAFT、DOCUMENT_CHANGED、NO_PREVIOUS_PUBLICATION、ALREADY_COMPENSATED、DISABLED，或可创建时null；读取存储故障返回真实503，不能伪装成无记录。
 - 新`knowledge.operations.recovery-enabled`默认false，显式Runtime `--operations --operations-recovery`启用；依赖operations，独立于是否允许新批准，以便暂停批准时仍处理已发生问题。历史读取不依赖入口开关。
 - 新错误沿KnowledgeError目录：CANDIDATE_RECOVERY_DISABLED(503)、CANDIDATE_RECOVERY_UNAVAILABLE(409)。owner不存在/陌生人404，查询体/字段400，CAS沿CANDIDATE_CONFLICT；no-store。

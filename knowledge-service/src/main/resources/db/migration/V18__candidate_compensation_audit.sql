@@ -1,0 +1,20 @@
+CREATE TABLE knowledge_candidate_compensation (
+    compensation_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '不可变补偿草稿审计标识',
+    tenant_id VARCHAR(128) NOT NULL COMMENT '可信组织标识，逐字匹配',
+    owner_id VARCHAR(128) NOT NULL COMMENT '可信操作人，也是原资料所有者',
+    candidate_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '沿原反馈保留的修正候选',
+    source_approval_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '需要处理的原发布批准标识',
+    approved_revision BIGINT NOT NULL COMMENT '被补偿的已批准候选修订',
+    source_publication_json JSON NOT NULL COMMENT '原UPDATE受理前实际发布版本的完整元组',
+    created_revision BIGINT NOT NULL COMMENT '本次生成的新候选修订，尚未评估批准',
+    command_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '同事务保存的原命令回执标识',
+    note VARCHAR(2000) NOT NULL COMMENT '所有者填写的补偿原因和核对说明',
+    created_at DATETIME(6) NOT NULL COMMENT 'UTC补偿草稿受理时间',
+    PRIMARY KEY (compensation_id),
+    UNIQUE KEY uq_compensation_approval (source_approval_id),
+    UNIQUE KEY uq_compensation_source_revision (candidate_id, approved_revision),
+    UNIQUE KEY uq_compensation_revision (candidate_id, created_revision),
+    UNIQUE KEY uq_compensation_command (command_id),
+    KEY ix_compensation_owner (tenant_id, owner_id, candidate_id, approved_revision),
+    CONSTRAINT ck_compensation_revision CHECK (approved_revision > 0 AND created_revision = approved_revision + 1)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_bin COMMENT='发布后补偿草稿不可变审计，不覆盖已发布历史';

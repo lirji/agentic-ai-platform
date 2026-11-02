@@ -1,0 +1,12 @@
+{
+  "syntax": "PASS",
+  "defaultOff": "PASS",
+  "explicitFlagDependency": "PASS",
+  "publicationFlagIndependent": "PASS",
+  "deployment": "NOT_EXECUTED",
+  "migration": "V18 applied to test; immutable",
+  "tableComment": true,
+  "columns": 11,
+  "columnsWithoutComments": 0,
+  "identityCollation": "utf8mb4_0900_bin"
+}

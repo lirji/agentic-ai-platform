@@ -78,3 +78,5 @@ S14A反馈可在后续获授权部署的prepare阶段显式添加`--feedback`，
 S14B候选修订使用独立`--operations`，默认关闭；仅派生候选入口，不隐式启用处理/评测worker。准备私有校验副本前须对明确目标追加purpose搜索映射，步骤见同一Runtime文档。本片未执行prepare/build/up或更新运行镜像。
 
 候选批准入库须显式同时指定`--operations --operations-publication`；批准接口另受既有处理/更新/代次门禁约束，不隐式开启worker或增加模型预算。
+
+发布后探测与补偿须显式指定`--operations --operations-recovery`，默认关闭并纳入快照指纹。它独立于新批准开关，只生成需要重新评估批准的草稿；不会直接恢复旧发布或开启worker。

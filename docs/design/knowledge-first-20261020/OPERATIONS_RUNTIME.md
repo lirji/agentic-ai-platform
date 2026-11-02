@@ -39,3 +39,9 @@ V16 增加候选根、不可变完整修订、准备关联、精确定义关联�
 批准与原资料UPDATE受理同一数据库事务。真实worker仍使用原固定源/处理profile及租约、双索引校验；原job的失败与重试由既有任务页面处理。历史批准及原回执关闭入口后可读，原文访问仍遵守当前ACL/lifecycle。既有索引不增加新字段；本片不执行生产部署或清理。
 
 C片联合入口：`ai-runtime/.venv/bin/python deploy/candidate_smoke.py verify-publication`。先用前端既有pnpm构建`.local/approval-dist`并在28236预览；测试启动独立动态端口Tasks、Knowledge随机租户、夹具限定worker与固定本机桥。模拟首次原UPDATE处理失败和真实受理响应丢失，浏览器通过原键恢复和原任务重试，实际双索引发布后核对版本；结束只退出本轮进程，保留随机记录/源/索引。V17已在test应用，dev/生产未迁移。
+
+## S14D 发布后探测与补偿
+
+`KNOWLEDGE_OPERATIONS_RECOVERY_ENABLED=false`默认关闭；身份/Compose工具必须显式`--operations --operations-recovery`才启用。此开关独立于新批准开关，处理已发布问题不要求继续允许新批准；检索能力/原预算仍按现有配置执行，不自动启动worker或新增额度。关闭后补偿历史/原键回执仍可读。
+
+V18为不可变补偿审计；已在隔离test应用，禁止改写。完整源读取在事务外校验，草稿/回执/审计同事务；无新发布队列或索引字段。dev/生产未迁移，现有预览/Docker保持原状。联合入口：`ai-runtime/.venv/bin/python deploy/recovery_smoke.py verify`。先在前端构建`.local/recovery-dist`并于28246预览。测试在动态端口启动Knowledge及正式Python/LlamaIndex检索链，唯一模型替身是确定性无费用向量端口；用随机test租户核对真实双索引发布、回调依赖故障、补偿丢响应原键恢复及撤下。夹具不接收模型凭据，结束关闭本轮进程，保留资料/审计/索引与日志。最终验收状态以PROGRESS_STATE为准。

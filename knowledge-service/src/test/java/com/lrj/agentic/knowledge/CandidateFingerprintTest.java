@@ -24,4 +24,13 @@ class CandidateFingerprintTest {
                 input.expectedDocumentRevision(),input.contentDigest(),input);
         assertThat(json.digest(intent)).isEqualTo(golden.get("requestFingerprint").asText());
     }
+    @Test void compensationCommandMatchesSharedUtf8Golden() throws Exception {
+        var mapper=new ObjectMapper().findAndRegisterModules();var json=new CandidateJson(mapper);
+        var golden=mapper.readTree(Files.readString(Path.of("../docs/qa/publication-recovery-20261102/intent-golden.json")));
+        var input=mapper.treeToValue(golden.get("intent").get("parameters"),com.lrj.agentic.knowledge.domain.operations.RecoveryModels.Compensate.class);
+        var intent=new Intent(Operation.COMPENSATE.code(),golden.get("intent").get("target").asText(),input.expectedRevision(),
+                input.expectedDocumentRevision(),input.contentDigest(),input);
+        assertThat(json.digest(intent)).isEqualTo(golden.get("requestFingerprint").asText());
+    }
+
 }

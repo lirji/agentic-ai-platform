@@ -1,0 +1,132 @@
+{
+  "protocol": "code-hygiene-gate/v1",
+  "finalStatus": "IMPLEMENTATION_COMPLETE",
+  "checks": [
+    {
+      "checkId": "FORMAT",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "canonical command passed"
+    },
+    {
+      "checkId": "STATIC_ANALYSIS",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "canonical command passed"
+    },
+    {
+      "checkId": "CODE_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "REPO_CONVENTION",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "DIFF_HYGIENE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "no blocking findings"
+    },
+    {
+      "checkId": "COMPILE",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    },
+    {
+      "checkId": "UNIT_TEST",
+      "status": "PASS",
+      "skipReason": null,
+      "summary": "caller-executed command"
+    }
+  ],
+  "limitations": [],
+  "findings": [],
+  "report": [
+    {
+      "area": "Repository conventions",
+      "status": "PASS"
+    },
+    {
+      "area": "Formatting",
+      "status": "PASS"
+    },
+    {
+      "area": "Error-code governance",
+      "status": "PASS"
+    },
+    {
+      "area": "Enum/domain modeling",
+      "status": "PASS"
+    },
+    {
+      "area": "Magic value inspection",
+      "status": "PASS"
+    },
+    {
+      "area": "Exception handling",
+      "status": "PASS"
+    },
+    {
+      "area": "Validation",
+      "status": "NOT_AUTOMATED"
+    },
+    {
+      "area": "Logging",
+      "status": "PASS"
+    },
+    {
+      "area": "Transaction review",
+      "status": "N/A"
+    },
+    {
+      "area": "Static analysis",
+      "status": "PASS"
+    },
+    {
+      "area": "Compilation",
+      "status": "PASS"
+    },
+    {
+      "area": "Tests",
+      "status": "PASS"
+    },
+    {
+      "area": "Diff hygiene",
+      "status": "PASS"
+    }
+  ],
+  "canonicalCommands": {
+    "FORMAT": {
+      "status": "EVIDENCE_REQUIRED",
+      "formatter": "prettier",
+      "check": "npx prettier --check src/features/operations/CandidatePublicationPanel.tsx src/features/operations/CandidateRecoveryPanel.tsx src/features/operations/api.ts src/features/operations/messages.ts src/features/operations/model.ts src/features/operations/recovery-api.ts src/pages/CandidatePage.tsx src/shared/api/errors.ts",
+      "apply": "npx prettier --write src/features/operations/CandidatePublicationPanel.tsx src/features/operations/CandidateRecoveryPanel.tsx src/features/operations/api.ts src/features/operations/messages.ts src/features/operations/model.ts src/features/operations/recovery-api.ts src/pages/CandidatePage.tsx src/shared/api/errors.ts",
+      "binaryAvailable": true,
+      "commandTokens": [
+        "prettier --check",
+        "prettier -c"
+      ],
+      "limitation": null
+    },
+    "STATIC_ANALYSIS": {
+      "status": "EVIDENCE_REQUIRED",
+      "analyzers": [
+        "eslint"
+      ],
+      "check": [
+        "npx eslint src/features/operations/CandidatePublicationPanel.tsx src/features/operations/CandidateRecoveryPanel.tsx src/features/operations/api.ts src/features/operations/messages.ts src/features/operations/model.ts src/features/operations/recovery-api.ts src/pages/CandidatePage.tsx src/shared/api/errors.ts"
+      ],
+      "binaryAvailable": true,
+      "commandTokens": [
+        "eslint"
+      ],
+      "limitation": null
+    }
+  }
+}

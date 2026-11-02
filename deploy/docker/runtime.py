@@ -100,6 +100,7 @@ def prepare(args: argparse.Namespace) -> None:
         "feedback": args.feedback,
         "operations": args.operations,
         "operationsPublication": args.operations_publication,
+        "operationsRecovery": args.operations_recovery,
         "parsing": args.parsing,
         "pdf": args.pdf,
         "docx": args.docx,
@@ -217,7 +218,7 @@ def prepare(args: argparse.Namespace) -> None:
     import feedback_local
     source_env.update(feedback_local.environment(source_env, args.feedback))
     import operations_local
-    source_env.update(operations_local.environment(args.operations, args.operations_publication))
+    source_env.update(operations_local.environment(args.operations, args.operations_publication, args.operations_recovery))
 
     def transform(value: str, service: str) -> str:
         """仅替换本项目已知地址；内部服务保留共享网络内 loopback。"""
@@ -452,6 +453,7 @@ def main() -> None:
     parser.add_argument("--feedback", action="store_true", help="启用所有者反馈及任务引用证明")
     parser.add_argument("--operations", action="store_true", help="启用所有者候选修订；不会自动开启处理worker")
     parser.add_argument("--operations-publication", action="store_true", help="显式启用候选批准入库；要求同时指定--operations")
+    parser.add_argument("--operations-recovery", action="store_true", help="显式启用发布后检查与补偿；要求同时指定--operations")
     parser.add_argument("--committed-only", action="store_true")
     parser.add_argument(
         "--structured-profile", choices=("BLOCK_V2", "STRUCTURE_V3"), default="BLOCK_V2"

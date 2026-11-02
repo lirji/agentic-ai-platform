@@ -1,0 +1,63 @@
+{
+  "slice": "S14D",
+  "status": "PASS",
+  "git": "PENDING",
+  "backend": {
+    "base": "dd86c5d",
+    "files": {
+      "deploy/candidate_browser_bridge.py": "ed92a81c9c3450a4ff1c27201a23e334b1883ba0f97f2bd493a9eefaa4985e1f",
+      "deploy/docker/runtime.py": "fee3531994456f8c170c5c6bc24fb42541448d600eaa1eba5d5feefdab1ece4b",
+      "deploy/env.example": "14949daa6ff49f93a7b21dadeaeeb5660c050e42d6850d48016c1465002cee9c",
+      "deploy/identity_runtime.py": "f23a1933af39190313065126ae8ae077b2b34f6c950bc2067a89473a9f15a073",
+      "deploy/operations_local.py": "550aa9785318292cefb4bb5ad49879d45bbada5f5072ea80df9a3e5b3a0e2b9b",
+      "deploy/recovery_smoke.py": "832af3488410bebf3db9b60cf0f898fe0431d11af981e322a5062ae522ab94f9",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/CandidateRecoveryController.java": "b3384a8489d56d03a224085e20a9744fce33cd8ff8f9cefd7b9ece75d08fa43f",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/CandidateRecoveryService.java": "9da37d446c1ae694f93dea5eeef1558d03103d7711836cb9ac5e08f21caa0b59",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/CandidateService.java": "f6128a147ff23d0eae5b023f21eeae015007e4a2eb790cb30e3c8f6eb2995fe7",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/CandidateProperties.java": "13b98aa49d4b451a68f9a25066feee4c75dd9121d0f7cc628bc92f61c79ab82d",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/KnowledgeSecurity.java": "bb5e328deea354f5da2acd2f8880fde53cc8100f3cc70a9c3401ecd57a903393",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeError.java": "b50cc5be9ac4d401fb5d4338389b183b18254b8110e5983f2fe3e69da0590846",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/operations/CandidateModels.java": "afc73a802c89c4a8a4026523d8af5043f94b99673575caaca4793a6af52ae489",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/operations/RecoveryModels.java": "7bf1dd8933b429eeb18a3dd56698bb7c72c2a97e88410b03a2a6270766739986",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/RecoveryMapper.java": "bcddb8f7f7356b088ea75c7bd3708d73998207f2598f37d96adab24700b81826",
+      "knowledge-service/src/main/resources/application.yml": "9a453b2b36202efc0c23cf8d6fd54a42d19f166f8f277f45c331d502ab918859",
+      "knowledge-service/src/main/resources/db/migration/V18__candidate_compensation_audit.sql": "15801e9123d1c593851bf10acba1bb517dfb31f162c65c58b15a36e20119c07c",
+      "knowledge-service/src/main/resources/mapper/RecoveryMapper.xml": "0eae67aa78885b25ae4e26a91c13c3fc75aa0c381bbff1f84303314c8c168261",
+      "knowledge-service/src/test/java/com/lrj/agentic/knowledge/CandidateFingerprintTest.java": "14c186a3113a6c4d3e4ff05b3a90d159bfe4d6dddefbf42cafd67b6fe17e5626",
+      "knowledge-service/src/test/java/com/lrj/agentic/knowledge/CrossRuntimeRetrievalIT.java": "cfbb8cf2401af5a0b6d899f7c8d6532760b39ef05984ae5a37335948116fb116",
+      "knowledge-service/src/test/java/com/lrj/agentic/knowledge/KnowledgeCandidateIT.java": "8a636aaa9c1f2c20901d81e4c61136036b56a3cde61ac8835b6e74138f83ac59"
+    }
+  },
+  "frontend": {
+    "base": "83b793f",
+    "files": {
+      "src/features/operations/CandidatePublicationPanel.tsx": "8cd4166231cdc1301c8c2e7fbee7a9ba1f062b6204c111513ab1020cc36b571c",
+      "src/features/operations/CandidateRecoveryPanel.tsx": "198a362a6205157acb8ae7c3cb465b95dccf32712f179408fe47f46fdbbdd8bc",
+      "src/features/operations/Publication.test.tsx": "ca0b4e94aff86992f913d9c6f232588583965d789f9f0b1d31e7d84b1c393298",
+      "src/features/operations/Recovery.test.tsx": "52c40ea28f14c0330de04d471b14f3e25091f7648fee494f9610df9ccf74da33",
+      "src/features/operations/api.ts": "b04fa25ec3415162cd38c872dd0e465e88ceb1497d112017138d7a3377d0110b",
+      "src/features/operations/messages.ts": "500ba05e5384073d0d6a1449e4e40f55b5fcf634410dbac788233290fcd899c6",
+      "src/features/operations/model.ts": "57a030f77e312a778d25d6b3c988753feb882bb5db84c5bb942c4ca034ce15c1",
+      "src/features/operations/recovery-api.ts": "1718c45fba755cce47234f2a6843ea48a5d18acf0b6d6f196ed56f206a701aa0",
+      "src/features/operations/recovery-intent-golden.json": "32c9c23057461973d75f90f16e2aa3976e1fb8adc9d9e9bb206349e9d02d8d9c",
+      "src/pages/CandidatePage.tsx": "896493437b4efa4e8b760f60044397031758a416ff484353191227392513f352",
+      "src/shared/api/errors.ts": "b36df33715d4fc10e5c297f47c471cc42c00bb564fbb6e9f80e8f1dc740c46bf",
+      "tests/recovery-real.spec.ts": "ec0b4a38f311b3c6d9fd0dacbccafe65b6c17b29cce8e680655f11b2b6040364"
+    }
+  },
+  "screenshots": {
+    "docs/qa/publication-recovery-20261102/screenshots/confirmation-narrow.png": "ffab83000b62477078ab6190caddef8234557f83f2a247a3727dfd76e673f600",
+    "docs/qa/publication-recovery-20261102/screenshots/draft-narrow.png": "7379292817052d2b0c2552bc6ccb14d567f85ecf1d487b7c70a534a0a54f5ef1",
+    "docs/qa/publication-recovery-20261102/screenshots/history-desktop.png": "3da29a634a15c6fed1373433659945fa7a0dc9c0ea2b0a77876f81600c6a36bb",
+    "docs/qa/publication-recovery-20261102/screenshots/probe-desktop.png": "3777ac03b0bba9432ba7a8807499a846afabc9405c06634d3d2846534fe342a6",
+    "docs/qa/publication-recovery-20261102/screenshots/probe-error-narrow.png": "01dfa72ecbdddbae7005df261fbdfc302207e5ac77530f20424cc522b9e707b6",
+    "docs/qa/publication-recovery-20261102/screenshots/withdrawn-narrow.png": "db9b2889f58e8335db7d735efe77b1f08a09946b4364c56fe8aeed128957b2c0"
+  },
+  "secretPatternScan": "PASS",
+  "paidModelCalls": 0,
+  "productionDeployments": 0,
+  "logs": {
+    ".logs/s14d-joint-browser-final.log": "0bef0f576f3e8d339ffd4dd1a62bc09ba4bcdb608cfb57c10c4911bac6077a85",
+    ".logs/s14d-final-regression.log": "61a33c380cb2775ad370b0cc5df91f43dd38c070d14ed05a11a026405188ee66"
+  }
+}

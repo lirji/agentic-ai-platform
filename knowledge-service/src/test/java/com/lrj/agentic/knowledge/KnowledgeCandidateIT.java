@@ -17,6 +17,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import com.lrj.agentic.knowledge.domain.feedback.FeedbackModels.Category;
 import com.lrj.agentic.knowledge.domain.operations.CandidateModels.*;
 import com.lrj.agentic.knowledge.domain.operations.PublicationModels;
+import com.lrj.agentic.knowledge.domain.operations.RecoveryModels;
+import com.lrj.agentic.knowledge.domain.retrieval.ConsumerRetrieval;
 import com.lrj.agentic.knowledge.domain.operations.PublicationModels.Approve;
 import com.lrj.agentic.knowledge.domain.processing.*;
 import com.lrj.agentic.knowledge.domain.retrieval.RetrievalModels.CandidateRequest;
@@ -51,10 +53,22 @@ import org.springframework.transaction.PlatformTransactionManager;
 /** 真实数据库/S3/双索引覆盖候选受理和隔离；确定性处理端口不调用付费模型。 */
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT,properties={"management.server.port=0","spring.main.banner-mode=off", "knowledge.processing.worker-enabled=false",
         "knowledge.retrieval.enabled=true", "knowledge.lifecycle.generation-enabled=true",
-        "knowledge.lifecycle.updates-enabled=true", "knowledge.lifecycle.deletions-enabled=true",
-        "knowledge.feedback.enabled=true", "knowledge.operations.enabled=true", "knowledge.operations.publication-enabled=true", "knowledge.parsing.enabled=true",
+        "knowledge.lifecycle.updates-enabled=true", "knowledge.lifecycle.deletions-enabled=true", "knowledge.lifecycle.withdrawals-enabled=true",
+        "knowledge.feedback.enabled=true", "knowledge.operations.enabled=true", "knowledge.operations.publication-enabled=true", "knowledge.operations.recovery-enabled=true", "knowledge.parsing.enabled=true",
         "knowledge.parsing.pdf-upload-enabled=true", "knowledge.parsing.docx-upload-enabled=true"})
 class KnowledgeCandidateIT {
+    private static CrossRuntimeRetrievalIT.PythonRuntime recoveryRuntime;
+    @org.springframework.test.context.DynamicPropertySource
+    static void recoveryEndpoint(org.springframework.test.context.DynamicPropertyRegistry registry) {
+        if (!"1".equals(System.getenv("AGENTIC_RECOVERY_BROWSER"))) return;
+        recoveryRuntime=CrossRuntimeRetrievalIT.PythonRuntime.start();
+        registry.add("knowledge.processing.ai-endpoint",()->recoveryRuntime.endpoint);
+        registry.add("knowledge.runtime.enabled",()->true);
+    }
+    @org.junit.jupiter.api.AfterAll static void closeRecoveryRuntime() throws Exception {
+        if(recoveryRuntime!=null) recoveryRuntime.close();
+    }
+
     @LocalServerPort int port;
     @Value("${knowledge.identity.public-key}") Resource publicKey;
     @Value("${INTERNAL_PRIVATE_KEY}") Resource privateKey;
@@ -415,13 +429,158 @@ class KnowledgeCandidateIT {
         error(KnowledgeError.CANDIDATE_CONFLICT,()->publicationService(original.quality(),true,bean(PublicationMapper.class)).approve(owner,original.candidate().candidateId(),key(),original.input()));
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_candidate_approval WHERE candidate_id=?",Integer.class,original.candidate().candidateId())).isZero();
     }
+    /** 恢复实际发布V1而非中间失败V2；同键并发只追加一份未评估/未批准的新稿。 */
+    @Test void recoveryRestoresPublishedSourceAcrossFailedVersionWithoutChangingPublication() throws Exception {
+        var original=fixture();var prior=knowledge.ingestion(owner,lifecycle.document(owner,original.documentId()).activeJobId());
+        String update=key();var failed=lifecycle.update(owner,original.documentId(),update,original.documentRevision(),
+                UploadRules.validate(update,"failed.txt","中间失败修订","未发布的失败内容".getBytes(StandardCharsets.UTF_8)));
+        var claim=processing.claim("failed-intermediate",60,owner.tenantId()).orElseThrow();assertThat(claim.job().jobId()).isEqualTo(failed.jobId());
+        processing.fail(claim,KnowledgeError.PROCESSOR_UNAVAILABLE,false);
+        var f=publicationFixture(new Fixture(original.feedbackId(),original.documentId(),lifecycle.document(owner,original.documentId()).revision()),"BUSINESS",List.of("新事实"));
+        publishApproval(f);var service=recoveryService(true,bean(RecoveryMapper.class),storage,bean(ConsumerKnowledgeSearch.class));
+        String id=f.candidate().candidateId();var before=lifecycle.document(owner,original.documentId());var input=compensationInput(f);
+        assertThat(before.publishedRevision()).isEqualTo(3);assertThat(service.get(owner,id,null).source().publication().version()).isEqualTo(1);
+        String key=key();var accepted=race(4,i->service.compensate(owner,id,key,input));
+        assertThat(accepted).allMatch(Receipt.class::isInstance).allMatch(accepted.getFirst()::equals);
+        var receipt=(Receipt)accepted.getFirst();assertThat(receipt.operation()).isEqualTo("COMPENSATE");assertThat(receipt.revision()).isEqualTo(2);
+        assertThat(lifecycle.document(owner,original.documentId())).isEqualTo(before);
+        var restored=bean(CandidateMapper.class).revision(owner,id,2);assertThat(restored.source()).isEqualTo(prior.source());
+        assertThat(restored.textBody()).isEqualTo(new String(storage.source(prior),StandardCharsets.UTF_8));
+        var draft=candidates.get(owner,id,null);assertThat(draft.preview()).isNull();assertThat(draft.datasets()).isEmpty();
+        assertThat(draft.revision().requiredText()).isEmpty();assertThat(draft.evaluation().approvalEligible()).isFalse();
+        assertThat(service.get(owner,id,1L).compensations()).isEqualTo(service.get(owner,id,2L).compensations()).hasSize(1);
+        assertThat(service.get(owner,id,1L).reason()).isEqualTo("ALREADY_COMPENSATED");
+        assertThat(recoveryService(false,bean(RecoveryMapper.class),storage,bean(ConsumerKnowledgeSearch.class)).compensate(owner,id,key,input)).isEqualTo(receipt);
+        var changed=new RecoveryModels.Compensate(input.approvalId(),1L,input.expectedDocumentRevision(),input.contentDigest(),"不同说明");
+        error(KnowledgeError.IDEMPOTENCY_CONFLICT,()->service.compensate(owner,id,key,changed));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_candidate_compensation WHERE candidate_id=?",Integer.class,id)).isEqualTo(1);
+    }
+    /** 补偿PDF/DOCX保留历史完整源字节，不能把提取正文伪装成附件或继承旧批准。 */
+    @Test void recoveryPreservesOriginalPdfAndDocxSources() throws Exception {
+        for(String path:List.of("../docs/qa/pdf-ingestion-20261024/fixtures/chinese-pages.pdf",
+                "../docs/qa/docx-ingestion-20261025/fixtures/chinese-structure.docx")) {
+            var file=java.nio.file.Path.of(path);byte[] bytes=java.nio.file.Files.readAllBytes(file);String key=key();
+            String type=path.endsWith(".pdf")?DocumentFormat.PDF.contentType():DocumentFormat.DOCX.contentType();
+            var original=knowledge.submit(owner,key,UploadRules.validate(key,file.getFileName().toString(),"需要恢复的完整附件",bytes,type,true,true));
+            publish(original);var submitted=feedback.create(owner,key(),feedback(reference(original),"需要核对附件内容"));
+            var f=publicationFixture(new Fixture(submitted.feedbackId(),original.documentId(),lifecycle.document(owner,original.documentId()).revision()),"BUSINESS",List.of("新事实"));
+            publishApproval(f);var service=recoveryService(true,bean(RecoveryMapper.class),storage,bean(ConsumerKnowledgeSearch.class));
+            var receipt=service.compensate(owner,f.candidate().candidateId(),key(),compensationInput(f));
+            var restored=bean(CandidateMapper.class).revision(owner,receipt.candidateId(),2);
+            assertThat(restored.source()).isEqualTo(original.source());assertThat(restored.textBody()).isNull();
+            assertThat(restored.contentType()).isEqualTo(type);assertThat(storage.source(original)).isEqualTo(bytes);
+            var draft=candidates.get(owner,receipt.candidateId(),null);assertThat(draft.preview()).isNull();
+            assertThat(draft.evaluation().approvalEligible()).isFalse();
+            error(KnowledgeError.NOT_FOUND,()->bean(CandidatePublicationService.class).get(owner,receipt.candidateId(),2L));
+            assertThat(lifecycle.document(owner,original.documentId()).publishedRevision()).isEqualTo(2);
+        }
+    }
+    /** 审计失败回滚新稿和回执，不同命令并发由原资料/候选锁唯一裁决。 */
+    @Test void recoveryAuditFailureRollsBackAndConcurrentDistinctCommandsDoNotOverwrite() throws Exception {
+        var f=publicationFixture("BUSINESS",List.of("新事实"));publishApproval(f);String id=f.candidate().candidateId();
+        var mapper=bean(RecoveryMapper.class);var failing=(RecoveryMapper)java.lang.reflect.Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{RecoveryMapper.class},(proxy,method,args)->{
+            if(method.getName().equals("create")) throw new org.springframework.dao.DataIntegrityViolationException("compensation audit fault fixture");
+            try { return method.invoke(mapper,args); } catch(java.lang.reflect.InvocationTargetException failure) { throw failure.getCause(); }
+        });
+        var input=compensationInput(f);String key=key();
+        error(KnowledgeError.DATABASE_UNAVAILABLE,()->recoveryService(true,failing,storage,bean(ConsumerKnowledgeSearch.class)).compensate(owner,id,key,input));
+        assertThat(candidates.get(owner,id,null).latestRevision()).isEqualTo(1);error(KnowledgeError.NOT_FOUND,()->candidates.command(owner,key));
+        assertThat(mapper.audit(owner,id,1)).isEmpty();
+        var service=recoveryService(true,mapper,storage,bean(ConsumerKnowledgeSearch.class));
+        var result=race(2,i->service.compensate(owner,id,key(),input));assertThat(result.stream().filter(Receipt.class::isInstance)).hasSize(1);
+        assertThat(result).contains(KnowledgeError.CANDIDATE_CONFLICT);
+    }
+    /** 源读取在事务外且必须成功，期间出现新稿或原文更新后不能覆盖；身份与开关仍重验。 */
+    @Test void recoveryRejectsUnavailableSourceEditedDraftChangedOriginalAndUnauthorizedCaller() throws Exception {
+        var f=publicationFixture("BUSINESS",List.of("新事实"));publishApproval(f);String id=f.candidate().candidateId();var input=compensationInput(f);
+        var service=recoveryService(true,bean(RecoveryMapper.class),storage,bean(ConsumerKnowledgeSearch.class));
+        error(KnowledgeError.CANDIDATE_RECOVERY_DISABLED,()->recoveryService(false,bean(RecoveryMapper.class),storage,bean(ConsumerKnowledgeSearch.class)).compensate(owner,id,key(),input));
+        error(KnowledgeError.NOT_FOUND,()->service.compensate(new Caller(owner.tenantId(),key()),id,key(),input));
+        error(KnowledgeError.NOT_FOUND,()->service.get(new Caller(owner.tenantId().toUpperCase(Locale.ROOT),owner.userId()),id,null));
+        String unknown=key();var unavailable=sourceBefore(()->{throw new KnowledgeFailure(KnowledgeError.STORAGE_UNAVAILABLE);});
+        error(KnowledgeError.STORAGE_UNAVAILABLE,()->recoveryService(true,bean(RecoveryMapper.class),unavailable,bean(ConsumerKnowledgeSearch.class)).compensate(owner,id,unknown,input));
+        error(KnowledgeError.NOT_FOUND,()->candidates.command(owner,unknown));
+        var edited=sourceBefore(()->{String edit=key();var save=save(1L,input.expectedDocumentRevision(),"正在编辑的新稿",List.of());
+            candidates.save(owner,id,edit,save,upload(edit,save,"不可被补偿覆盖的新稿正文"),false);});
+        error(KnowledgeError.CANDIDATE_CONFLICT,()->recoveryService(true,bean(RecoveryMapper.class),edited,bean(ConsumerKnowledgeSearch.class)).compensate(owner,id,key(),input));
+        assertThat(service.get(owner,id,1L).reason()).isEqualTo("NEWER_DRAFT");assertThat(service.get(owner,id,1L).compensations()).isEmpty();
+        String path="/candidates/"+id+"/compensations";
+        assertThat(http("POST",path,token(owner,"knowledge:read"),key(),json.write(input)).statusCode()).isEqualTo(403);
+        assertThat(http("GET","/candidates/"+id+"/recovery",token(new Caller(owner.tenantId(),key()),"knowledge:read"),null,null).statusCode()).isEqualTo(404);
+        var other=publicationFixture("BUSINESS",List.of("新事实"));publishApproval(other);var stale=compensationInput(other);String update=key();
+        lifecycle.update(owner,other.original().documentId(),update,stale.expectedDocumentRevision(),UploadRules.validate(update,"next.txt","新任务","另处新内容".getBytes(StandardCharsets.UTF_8)));
+        error(KnowledgeError.CANDIDATE_CONFLICT,()->service.compensate(owner,other.candidate().candidateId(),key(),stale));
+        assertThat(service.get(owner,other.candidate().candidateId(),null).reason()).isEqualTo("DOCUMENT_CHANGED");
+    }
+    /** 双索引和最终SQL真实授权；固定向量替代付费模型，旧命中、依赖故障和撤下不能报成功。 */
+    @Test void recoveryProbeMatchesExactPublicationAndRejectsStaleEvidence() throws Exception {
+        var f=publicationFixture("BUSINESS",List.of("新事实"));var old=consumerHits(f.original().documentId());publishApproval(f);
+        String id=f.candidate().candidateId();var approval=bean(CandidatePublicationService.class).get(owner,id,1L).approval();
+        var request=new RecoveryModels.Probe(1L,approval.approvalId(),"新事实");
+        var service=recoveryService(true,bean(RecoveryMapper.class),storage,consumerSearch(input->consumerHits(input.documentIds().getFirst())));
+        var match=service.probe(owner,id,request);assertThat(match.status()).isEqualTo("MATCHED");
+        assertThat(match.hits()).allMatch(hit->hit.identity().jobId().equals(approval.jobId())&&hit.identity().version()==2);
+        var empty=recoveryService(true,bean(RecoveryMapper.class),storage,consumerSearch(input->List.of()));
+        assertThat(empty.probe(owner,id,request).status()).isEqualTo("MISSED");
+        error(KnowledgeError.RETRIEVAL_EVIDENCE_STALE,()->recoveryService(true,bean(RecoveryMapper.class),storage,consumerSearch(input->old)).probe(owner,id,request));
+        error(KnowledgeError.INDEX_UNAVAILABLE,()->recoveryService(true,bean(RecoveryMapper.class),storage,consumerSearch(input->{throw new KnowledgeFailure(KnowledgeError.INDEX_UNAVAILABLE);})).probe(owner,id,request));
+        assertThat(http("POST","/candidates/"+id+"/publication/probe",token(owner,"knowledge:read"),null,json.write(new RecoveryModels.Probe(1L,approval.approvalId(),""))).statusCode()).isEqualTo(400);
+        var withdrawn=recoveryService(true,bean(RecoveryMapper.class),storage,consumerSearch(input->{
+            lifecycle.visibility(owner,f.original().documentId(),key(),lifecycle.document(owner,f.original().documentId()).revision(),com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.Operation.WITHDRAW);
+            return List.of();
+        }));
+        error(KnowledgeError.RETRIEVAL_EVIDENCE_STALE,()->withdrawn.probe(owner,id,request));
+        error(KnowledgeError.CANDIDATE_RECOVERY_UNAVAILABLE,()->service.probe(owner,id,request));
+        error(KnowledgeError.INDEX_UNAVAILABLE,()->consumerHits(f.original().documentId()));
+    }
+    private void publishApproval(PublicationFixture fixture) {
+        var accepted=publicationService(fixture.quality(),true,bean(PublicationMapper.class)).approve(owner,fixture.candidate().candidateId(),key(),fixture.input());
+        publish(knowledge.ingestion(owner,accepted.jobId()));
+    }
+    private RecoveryModels.Compensate compensationInput(PublicationFixture fixture) {
+        var approval=bean(CandidatePublicationService.class).get(owner,fixture.candidate().candidateId(),1L).approval();
+        return new RecoveryModels.Compensate(approval.approvalId(),1L,lifecycle.document(owner,fixture.original().documentId()).revision(),fixture.candidate().contentDigest(),"恢复批准前实际发布的完整源，重新评估后再决定发布。");
+    }
+    private CandidateRecoveryService recoveryService(boolean enabled,RecoveryMapper mapper,PreparationStore source,ConsumerKnowledgeSearch search) {
+        return new CandidateRecoveryService(bean(CandidateMapper.class),bean(PublicationMapper.class),mapper,bean(KnowledgeMapper.class),candidates,
+                bean(CandidatePublicationService.class),search,source,json,new CandidateProperties(true,true,enabled),bean(PlatformTransactionManager.class),5);
+    }
+    private PreparationStore sourceBefore(Runnable action) {
+        return (PreparationStore)java.lang.reflect.Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{PreparationStore.class},(proxy,method,args)->{
+            if(method.getName().equals("source")) { assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();action.run(); }
+            try { return method.invoke(storage,args); } catch(java.lang.reflect.InvocationTargetException failure) { throw failure.getCause(); }
+        });
+    }
+    private List<ConsumerRetrieval.Hit> consumerHits(String documentId) {
+        var result=retrieval.candidates(owner,new CandidateRequest(RetrievalProtocol.SCHEMA,"资料",List.of(documentId),ProcessingProtocol.MODEL,
+                ProcessingProtocol.DIMENSIONS,Collections.nCopies(ProcessingProtocol.DIMENSIONS,0.125),RecoveryModels.PROBE_TOP_K,12000L));
+        var hits=new ArrayList<ConsumerRetrieval.Hit>();
+        for(var row:result.vectorCandidates().stream().limit(RecoveryModels.PROBE_TOP_K).toList()) hits.add(new ConsumerRetrieval.Hit(hits.size()+1,
+                new Reference(row.documentId(),row.version(),row.indexGeneration(),row.jobId(),row.processorVersion(),row.chunkId(),row.batchDigest(),row.textHash()),
+                row.text(),row.source(),1.0/(60+hits.size()+1),null,List.of(ProcessingClaim.Sink.VECTOR.code())));
+        return hits;
+    }
+    private ConsumerKnowledgeSearch consumerSearch(java.util.function.Function<ConsumerRetrieval.Search,List<ConsumerRetrieval.Hit>> action) {
+        ConsumerRetrieval runtime=new ConsumerRetrieval() {
+            public Result search(Caller caller,Search input,Duration remaining) {
+                assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();assertThat(caller).isEqualTo(owner);
+                var hits=action.apply(input);return new Result(RESULT,input.strategy(),(hits.isEmpty()?Mode.EMPTY:Mode.RRF).code(),false,1L,hits);
+            }
+            public Capabilities capabilities(Caller caller) { return Capabilities.disabled(); }
+        };
+        var factory=new org.springframework.beans.factory.support.StaticListableBeanFactory();factory.addBean("runtime",runtime);
+        return new ConsumerKnowledgeSearch(factory.getBeanProvider(ConsumerRetrieval.class),retrieval);
+    }
     private CandidatePublicationService publicationService(CandidateQuality quality,boolean enabled,PublicationMapper mapper) {
         return new CandidatePublicationService(bean(CandidateMapper.class),mapper,bean(KnowledgeMapper.class),candidates,quality,
                 bean(EvaluationDecisionRepository.class),lifecycle,json,new CandidateProperties(true,enabled),bean(LifecycleProperties.class),
                 bean(ProcessingAdmissionProperties.class),bean(PlatformTransactionManager.class),5,true);
     }
     private PublicationFixture publicationFixture(String purpose,List<String> terms) {
-        var original=fixture();var candidate=create(original,"新事实：完整修正内容"+key(),terms);
+        return publicationFixture(fixture(),purpose,terms);
+    }
+    private PublicationFixture publicationFixture(Fixture original,String purpose,List<String> terms) {
+        var candidate=create(original,"新事实：完整修正内容"+key(),terms);
         var preparation=candidates.prepare(owner,candidate.candidateId(),key(),new Prepare(1L,candidate.contentDigest()));publish(knowledge.ingestion(owner,preparation.jobId()));
         var definitions=bean(EvaluationService.class);var reports=bean(EvaluationRunRepository.class);var central=new Central();
         var runs=new EvaluationRunService(bean(EvaluationRepository.class),definitions,reports,central,bean(EvaluationJson.class),bean(GenerationCitationCheck.class),true);
@@ -439,6 +598,33 @@ class KnowledgeCandidateIT {
     private record PublicationFixture(Fixture original,Receipt candidate,Approve input,CandidateQuality quality,
             EvaluationRunService runs,EvaluationDecisionService reviews,String question) { }
 
+
+    /** 正式Python/LlamaIndex/授权回调与真实浏览器，模型向量使用无费用测试端口。 */
+    @Test @org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable(named="AGENTIC_RECOVERY_BROWSER",matches="1")
+    void realPythonAndBrowserRecoveryWorkflow() throws Exception {
+        java.nio.file.Files.writeString(recoveryRuntime.directory.resolve("knowledge-endpoint"),"http://127.0.0.1:"+port);
+        var f=publicationFixture("BUSINESS",List.of("新事实"));publishApproval(f);
+        var root=java.nio.file.Path.of(System.getProperty("user.dir")).toAbsolutePath();
+        while(!java.nio.file.Files.isDirectory(root.resolve("ai-runtime"))) root=root.getParent();
+        var directory=java.nio.file.Files.createTempDirectory(root.resolve(".logs"),"s14d-joint-");
+        var fixture=directory.resolve("fixture.json");var data=new LinkedHashMap<String,Object>();
+        data.put("tenant",owner.tenantId());data.put("owner",owner.userId());data.put("stranger",key());
+        data.put("endpoint","http://127.0.0.1:"+port);data.put("taskEndpoint","http://127.0.0.1:"+port);
+        data.put("recoveryWorkflow",true);data.put("runtimeDirectory",recoveryRuntime.directory.toString());
+        data.put("ready",candidates.get(owner,f.candidate().candidateId(),null));
+        data.put("publication",bean(CandidatePublicationService.class).get(owner,f.candidate().candidateId(),1L));
+        java.nio.file.Files.writeString(fixture,json.write(data));
+        java.nio.file.Files.setPosixFilePermissions(fixture,java.nio.file.attribute.PosixFilePermissions.fromString("rw-------"));
+        var process=new ProcessBuilder(root.resolve("ai-runtime/.venv/bin/python").toString(),root.resolve("deploy/recovery_smoke.py").toString(),"browser",fixture.toString())
+                .directory(root.toFile()).redirectErrorStream(true).redirectOutput(directory.resolve("joint.log").toFile()).start();
+        try { assertThat(process.waitFor(180,TimeUnit.SECONDS)).isTrue();assertThat(process.exitValue()).as(directory.resolve("joint.log").toString()).isZero(); }
+        finally { if(process.isAlive()) { process.destroy();process.waitFor(15,TimeUnit.SECONDS); } }
+        assertThat(candidates.get(owner,f.candidate().candidateId(),null).latestRevision()).isEqualTo(2);
+        assertThat(lifecycle.document(owner,f.original().documentId()).lifecycle()).isEqualTo("WITHDRAWN");
+        assertThat(recoveryRuntime.count("embedding")).isGreaterThanOrEqualTo(2);
+        assertThat(recoveryRuntime.count("candidates")).isGreaterThanOrEqualTo(2);
+        assertThat(recoveryRuntime.count("resolve")).isGreaterThanOrEqualTo(1);
+    }
     private CandidateService disabled() { return configured(false,bean(CandidateQuality.class)); }
     private CandidateService configured(boolean enabled,CandidateQuality quality) {
         return new CandidateService(bean(CandidateMapper.class),bean(KnowledgeMapper.class),bean(LifecycleInitialization.class),bean(SourceStore.class),json,

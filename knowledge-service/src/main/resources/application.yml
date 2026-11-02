@@ -68,6 +68,7 @@ knowledge:
   operations:
     enabled: ${KNOWLEDGE_OPERATIONS_ENABLED:false}
     publication-enabled: ${KNOWLEDGE_OPERATIONS_PUBLICATION_ENABLED:false}
+    recovery-enabled: ${KNOWLEDGE_OPERATIONS_RECOVERY_ENABLED:false}
   feedback:
     enabled: ${KNOWLEDGE_FEEDBACK_ENABLED:false}
   citation-reader:

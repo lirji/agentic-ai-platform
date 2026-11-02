@@ -60,7 +60,9 @@ def serve(fixture: dict):
                 fixture["taskEndpoint" if task else "endpoint"]
                 if api
                 else (
-                    "http://127.0.0.1:28236"
+                    "http://127.0.0.1:28246"
+                    if fixture.get("recoveryWorkflow")
+                    else "http://127.0.0.1:28236"
                     if fixture.get("publicationWorkflow")
                     else "http://127.0.0.1:28226"
                 )
@@ -102,7 +104,9 @@ def serve(fixture: dict):
                 if (
                     self.command == "POST"
                     and self.path.endswith(
-                        "/publication"
+                        "/compensations"
+                        if fixture.get("recoveryWorkflow")
+                        else "/publication"
                         if fixture.get("publicationWorkflow")
                         else "/candidate"
                     )

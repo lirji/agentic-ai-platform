@@ -93,6 +93,24 @@ public class CandidateService {
             return record(owner,key,fingerprint,new Receipt(newId(),operation.code(),root.candidateId(),number,content,null,null,null,null,null,now));
         });
     }
+    /** 补偿可信历史完整源只生成新稿，必须加入外层审计事务，不沿用旧准备/评分/批准。 */
+    @org.springframework.transaction.annotation.Transactional(propagation=org.springframework.transaction.annotation.Propagation.MANDATORY)
+    public Receipt restoreStored(Caller owner,String id,String key,String fingerprint,long expectedRevision,long expectedDocumentRevision,
+            String originalContentDigest,String title,SourceReference source,String text) {
+        validate(id,key,expectedRevision,originalContentDigest);digest(fingerprint);
+        var old=replay(owner,key,fingerprint);if(old!=null) return old;
+        var observed=root(owner,id,false);
+        var document=original(owner,observed.documentId(),expectedDocumentRevision,true);
+        var state=current(owner,id,expectedRevision,originalContentDigest,true);enabled();
+        if(!Lifecycle.ACTIVE.code().equals(document.lifecycle())) throw failure(KnowledgeError.CANDIDATE_CONFLICT);
+        String content=json.digest(new ContentIdentity(SCHEMA,expectedDocumentRevision,title,source.contentType(),
+                source.size(),source.hash(),List.of()));
+        var at=now();long number=state.root().revision()+1;
+        changed(mapper.advance(owner,id,state.root().revision(),at));
+        changed(mapper.save(new Revision(id,number,owner.tenantId(),owner.userId(),expectedDocumentRevision,title,
+                source.contentType(),source.size(),source.hash(),source.bucket(),source.key(),text,json.write(List.of()),content,at)));
+        return record(owner,key,fingerprint,new Receipt(newId(),Operation.COMPENSATE.code(),id,number,content,null,null,null,null,null,at));
+    }
     /** 同修订重复准备复用唯一副本；首次INSERT即带私有目的及候选修订。 */
     public Receipt prepare(Caller owner,String id,String key,Prepare input) {
         validate(id,key,input==null?null:input.expectedRevision(),input==null?null:input.contentDigest());

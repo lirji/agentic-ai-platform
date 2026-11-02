@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.RecoveryMapper">
+    <select id="prior" resultType="com.lrj.agentic.knowledge.domain.operations.RecoveryModels$Prior">
+        SELECT p.document_id,p.document_version AS version,p.index_generation,p.job_id,p.processor_version,p.batch_digest,
+            p.content_hash AS source_hash,r.display_name AS title,r.content_type,r.size_bytes,r.source_bucket,r.source_key
+        FROM knowledge_ingestion j JOIN knowledge_ingestion p ON p.tenant_id=j.tenant_id AND p.owner_id=j.owner_id
+            AND p.document_id=j.document_id AND p.job_id=j.base_published_job_id
+            AND p.document_version=j.base_published_version AND p.index_generation=j.base_published_generation
+        JOIN knowledge_document_revision r ON r.tenant_id=p.tenant_id AND r.owner_id=p.owner_id AND r.document_id=p.document_id
+            AND r.content_revision=p.document_version AND r.content_hash=p.content_hash
+            AND r.content_type=p.content_type AND r.size_bytes=p.size_bytes
+        WHERE j.tenant_id=#{caller.tenantId} AND j.owner_id=#{caller.userId} AND j.job_id=#{jobId}
+            AND p.status='READY' AND p.batch_digest IS NOT NULL
+    </select>
+    <select id="audit" resultType="com.lrj.agentic.knowledge.domain.operations.RecoveryModels$Row">
+        SELECT compensation_id,tenant_id,owner_id,candidate_id,source_approval_id,approved_revision,source_publication_json,
+            created_revision,command_id,note,created_at
+        FROM knowledge_candidate_compensation
+        WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId} AND candidate_id=#{id}
+            AND (approved_revision=#{revision} OR created_revision=#{revision})
+        ORDER BY created_revision DESC LIMIT 2
+    </select>
+    <insert id="create">
+        INSERT INTO knowledge_candidate_compensation (compensation_id,tenant_id,owner_id,candidate_id,source_approval_id,
+            approved_revision,source_publication_json,created_revision,command_id,note,created_at)
+        VALUES (#{row.compensationId},#{row.tenantId},#{row.ownerId},#{row.candidateId},#{row.sourceApprovalId},
+            #{row.approvedRevision},#{row.sourcePublicationJson},#{row.createdRevision},#{row.commandId},#{row.note},#{row.createdAt})
+    </insert>
+</mapper>

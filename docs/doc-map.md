@@ -151,3 +151,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 
 - S14A：FeedbackService/FeedbackMapper/V14、TaskFeedbackProof和FeedbackProofVerifier对应[反馈契约](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md)；React引用反馈、原键恢复与收件箱对应同契约F01–F06；[Runtime](design/knowledge-first-20261020/OPERATIONS_RUNTIME.md)说明默认开关和隔离验收。
 - S14B：CandidateService/CandidateQuality/CandidateMapper/V16、检索目的过滤与同事务副本归属对应 C-OPERATIONS C01–C04；React CandidatePage/operations 与既有质量编辑器对应 C05；candidate_smoke.py 的真实 Tasks/Knowledge/字节流浏览器验证对应 C06。局部文字检查仅提供字面状态，不替代现有质量报告或人工评分。
+
+- S14D：CandidateRecoveryService/RecoveryMapper/V18与React恢复面板对应[发布后恢复契约](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md)的operations-recovery-v1；[验收](qa/publication-recovery-20261102/TEST_RESULT.md)记录精确探测、历史完整源补偿与明确撤下。
