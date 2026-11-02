@@ -16,6 +16,8 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from pydantic import ValidationError
 
+from agentic_ai.diagnostics.http import DiagnosticClient
+from agentic_ai.diagnostics.telemetry import Stage
 from agentic_ai.evaluation.models import (
     EVALUATION_GRAPH,
     LEGACY_RETRIEVAL_PROFILE,
@@ -106,7 +108,9 @@ class EvaluationClient:
         self._key = private_key
         self._root = f"/internal/v1/evaluations/runs/{self.input.run_id}"
         self._slots = asyncio.Semaphore(HTTP_CONNECTIONS)
-        self._http = httpx.AsyncClient(
+        self._http = DiagnosticClient(
+            stage=Stage.EVALUATION,
+            internal=True,
             base_url=endpoint.rstrip("/"),
             trust_env=False,
             follow_redirects=False,

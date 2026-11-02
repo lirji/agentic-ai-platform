@@ -9,6 +9,7 @@ from langsmith import tracing_context
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.schema import Document, MetadataMode, TextNode
 
+from agentic_ai.diagnostics.telemetry import Stage, observed
 from agentic_ai.processing import generation, structured
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.models import (
@@ -63,6 +64,7 @@ class PreparationPipeline:
         graph.add_edge("embed", END)
         self._graph = graph.compile()
 
+    @observed(Stage.PROCESSING)
     async def prepare(self, request: PrepareRequest) -> PreparedDocument:
         """禁用外部 trace 上传；图内部状态不直接暴露给 HTTP 客户端。"""
         with tracing_context(enabled=False):
@@ -74,12 +76,14 @@ class PreparationPipeline:
             raise ProcessingError(ProcessingCode.RESULT_INVALID)
         return prepared
 
+    @observed(Stage.PROCESSING)
     async def query(self, text: str) -> QueryVector:
         """查询复用相同模型和校验，避免产生与索引不匹配的向量。"""
         result = await self._embedding.embed((text,))
         self._validate_embedding(result, 1)
         return QueryVector(vector=result.vectors[0])
 
+    @observed(Stage.PROCESSING)
     async def prepare_generation(
         self, request: generation.GenerationRequest
     ) -> generation.GenerationDocument:
@@ -91,6 +95,7 @@ class PreparationPipeline:
         structured_result = await self.prepare_structured(algorithm)
         return generation.wrap_fresh_result(request, structured_result)
 
+    @observed(Stage.PROCESSING)
     async def prepare_structured(
         self, request: structured.StructuredRequest
     ) -> structured.StructuredDocument:

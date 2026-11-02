@@ -6,6 +6,7 @@ from typing import Literal, Self
 
 from pydantic import Field, field_validator, model_validator
 
+from agentic_ai.diagnostics.telemetry import Stage, observed
 from agentic_ai.qa.models import CitationSource
 from agentic_ai.rag.ports import EmbeddingPort
 from agentic_ai.retrieval.deadline import RetrievalCapacity
@@ -136,6 +137,7 @@ class RetrievalUseCase:
             RerankRetrievalPipeline(embedding, capacity, reranker) if reranker is not None else None
         )
 
+    @observed(Stage.RETRIEVAL)
     async def execute(
         self,
         request: RetrievalInput,

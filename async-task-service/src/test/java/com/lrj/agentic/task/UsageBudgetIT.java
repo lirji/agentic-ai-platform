@@ -239,6 +239,27 @@ class UsageBudgetIT {
         assertThat(http("GET", url, token(stranger, TaskProtocol.AUDIENCE, TaskProtocol.READ, true), null).statusCode()).isEqualTo(404);
         assertThat(http("POST", ModelUsageProtocol.PUBLIC_PATH, token(owner, TaskProtocol.AUDIENCE, TaskProtocol.WRITE, true), "{}").statusCode()).isEqualTo(403);
     }
+    @Test void auditQueryIsOwnedAppendOnlyAndSafeOverHttp() throws Exception {
+        var fixture = fixture("1.000000"); var call = call(fixture, "audit-step", null); var id = call.request().attemptId();
+        var owner = new Caller(fixture.tenant(), "owner");
+        usage.reserve(call.principal(), call.request()); usage.dispatch(call.principal(), id, COMMAND);
+        var unknown = new Report(UsageProtocol.SCHEMA, "UNKNOWN", "UNKNOWN", null, null);
+        usage.report(call.principal(), id, unknown); usage.report(call.principal(), id, unknown);
+        var report = new Report(UsageProtocol.SCHEMA, "COMPLETE", "SUCCEEDED", new Tokens(100L, 10L, 110L), null);
+        usage.report(call.principal(), id, report); usage.report(call.principal(), id, report);
+        assertThat(usage.audit(owner, id).items()).extracting(AuditEvent::eventType)
+                .containsExactly("RESERVED", "DISPATCHED", "UNKNOWN", "SETTLED");
+        String path = ModelUsageProtocol.PUBLIC_PATH + "/attempts/" + id + "/audit";
+        var response = http("GET", path, token(owner, TaskProtocol.AUDIENCE, TaskProtocol.READ, true), null);
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.headers().firstValue("Cache-Control")).contains("no-store");
+        assertThat(response.body()).contains("createdAt", "heldDelta").doesNotContain(fixture.account(), "actorId", "commandKey", "sourceRef", "inputDigest");
+        for (var stranger : List.of(new Caller(owner.tenantId(), "stranger"), new Caller("other", owner.userId()))) {
+            assertThat(http("GET", path, token(stranger, TaskProtocol.AUDIENCE, TaskProtocol.READ, true), null).statusCode()).isEqualTo(404);
+            assertThat(mapper.ownAudit(stranger.tenantId(), stranger.userId(), id)).isEmpty();
+        }
+        assertThat(http("GET", path, token(owner, TaskProtocol.AUDIENCE, TaskProtocol.WRITE, true), null).statusCode()).isEqualTo(403);
+    }
     @Test void lookupRecoversLostIdAndSettledResultLossRequiresAnotherPaidAttempt() {
         var fixture = fixture("1.000000"); var call = call(fixture, "stage-chat-1", null); var request = call.request();
         var lookup = new Lookup(request.schemaVersion(), request.contextType(), request.contextId(), request.epoch(),

@@ -1,12 +1,9 @@
 # Codex Progress
 
-- S15B已完整验收并交付：产品后端cbc53fc/前端d6bf5e7已推main，分支/main CI全PASS；当前已按用户要求停止，不启动S15C。完整51项未完成，恢复仅按下述权威PROGRESS_STATE。
-- 当前Docker部署任务docker-identity-20261101已完成：9容器healthy，入口http://localhost:28086/；权威入口：[部署进度](docs/deployment/docker-identity-20261101/PROGRESS_STATE.md)。原能力交付状态保留在下方。
-
-- 用户最新要求：当前S15B共享预算任务完整验收并交付后先停止，不启动S15C；完整51项保持未完成。
-- 当前任务capability-delivery-20261021按用户要求停止于S15B；S13A/S13B已交付，完整51项未完成，最新执行状态只维护下述PROGRESS_STATE。
-- S14D产品已交付且分支/main CI全PASS；归档后端d9b0c79、前端6a18e72均已推main且分支/main CI全PASS。S15A设计验证PASS、1e41545已推main，分支/main CI全PASS；S15B已交付并停止，产品提交与CI见权威进度。唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)，完整51项未完成。
-- S13A验收/收据：docs/qa/identity-20261101/；预览http://localhost:28196/，运行入口IDENTITY_RUNTIME.md。归档两仓分支/main CI也全PASS，收据.local/s13a-product-delivery.json；旧s13a-delivery.json仅历史前置文档。
+- 用户 2026-11-02 已恢复后续计划；当前 S15C 本地验收通过、Git/CI交付中，后续S16A，完整51项未完成。
+- 唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。先核对该文件、Git 和运行任务，从未完成项继续。
+- 分支 feat/cross-language-diagnostics-20261102；S15B已交付，旧停止要求已由最新“继续”解除。
+- Docker任务独立保留：[部署进度](docs/deployment/docker-identity-20261101/PROGRESS_STATE.md)；本轮不部署。
 
 ## 前期可行性任务记录
 

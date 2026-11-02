@@ -16,6 +16,8 @@ from langchain_core.utils.function_calling import convert_to_openai_tool
 from pydantic import Field, PrivateAttr
 
 from agentic_ai.agents.models import ALLOWED_TOOLS, MAX_MODEL_CALLS, MAX_TOOL_CALLS
+from agentic_ai.diagnostics.http import DiagnosticClient
+from agentic_ai.diagnostics.telemetry import Stage
 from agentic_ai.qa.chat_budget import ChatBudget
 from agentic_ai.qa.chat_config import MAX_INPUT_BYTES, ChatConfig
 from agentic_ai.qa.errors import QaCode, QaError
@@ -85,7 +87,9 @@ class ToolChatClient:
             raise QaError(QaCode.CONFIG_INVALID) from None
         self.config, self.budget, self.usage = config, budget, usage
         self.slot = asyncio.Semaphore(1)
-        self.http = httpx.AsyncClient(
+        self.http = DiagnosticClient(
+            stage=Stage.TOOL_CHAT,
+            internal=False,
             base_url=config.base_url + "/",
             trust_env=False,
             follow_redirects=False,

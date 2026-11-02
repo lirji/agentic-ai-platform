@@ -242,6 +242,16 @@ public class UsageService {
         return new UsageDtos.Page(UsageProtocol.SCHEMA,
                 selected.stream().map(row -> view(row, found(operations.get(row.operationId()), UsageError.CONFLICT))).toList(), next);
     }
+    /** 即使知道attempt标识也必须匹配可信tenant/actor；不存在与越权统一404。 */
+    public UsageDtos.AuditPage audit(com.lrj.agentic.security.Caller owner, String id) {
+        UsageValues.identity(owner.tenantId()); UsageValues.identity(owner.userId()); UsageValues.id(id);
+        var attempt = found(mapper.attempt(owner.tenantId(), id), UsageError.NOT_FOUND);
+        var operation = found(mapper.operation(owner.tenantId(), attempt.operationId()), UsageError.NOT_FOUND);
+        require(owner.userId().equals(operation.actorId()), UsageError.NOT_FOUND);
+        var events = mapper.ownAudit(owner.tenantId(), owner.userId(), id);
+        require(events.size() <= 5, UsageError.CONFLICT);
+        return new UsageDtos.AuditPage(UsageProtocol.SCHEMA, List.copyOf(events));
+    }
     private record Cursor(String scope, Instant createdAt, String attemptId) { }
 
     private UsageRows.Attempt read(UsagePrincipal principal, String id) {

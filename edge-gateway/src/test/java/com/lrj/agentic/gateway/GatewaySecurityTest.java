@@ -43,6 +43,7 @@ class GatewaySecurityTest {
         var properties = new IdentityProperties("issuer", "audience", "tenant_id", null, null, null);
         var filter = new InternalIdentityExchange(encoder, properties, new GatewayErrors(new com.fasterxml.jackson.databind.ObjectMapper()));
         for (var route : java.util.Map.ofEntries(
+                java.util.Map.entry("/api/v1/usage/attempts/00000000-0000-0000-0000-000000000001/audit", "agentic-ai-tasks"),
                 java.util.Map.entry("/api/v2/tasks", "agentic-ai-tasks"),
                 java.util.Map.entry("/api/v1/tasks/id", "agentic-ai-tasks"),
                 java.util.Map.entry("/api/v3/tasks", "agentic-ai-tasks"),

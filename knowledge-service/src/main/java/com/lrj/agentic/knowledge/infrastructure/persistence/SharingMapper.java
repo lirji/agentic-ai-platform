@@ -10,6 +10,8 @@ public interface SharingMapper {
     State owned(@Param("caller") Caller caller, @Param("id") String id, @Param("lock") boolean lock);
     Command command(@Param("caller") Caller caller, @Param("key") String key);
     List<Reader> readers(@Param("caller") Caller caller, @Param("id") String id);
+    List<Receipt> audit(@Param("caller") Caller caller, @Param("id") String id,
+            @Param("before") Integer before, @Param("limit") int limit);
     int advance(@Param("caller") Caller caller, @Param("id") String id, @Param("revision") int revision);
     int grant(@Param("caller") Caller caller, @Param("receipt") Receipt receipt, @Param("active") boolean active);
     int record(@Param("caller") Caller caller, @Param("key") String key, @Param("fingerprint") String fingerprint,

@@ -4,7 +4,6 @@ import asyncio
 from collections.abc import Callable
 from contextlib import AbstractAsyncContextManager
 from typing import Literal
-from uuid import uuid4
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
@@ -13,6 +12,7 @@ from starlette.requests import ClientDisconnect
 
 from agentic_ai.api.processing import EMBEDDING_HTTP_STATUS, Admission, until_disconnect
 from agentic_ai.api.usage_context import knowledge_usage
+from agentic_ai.diagnostics.telemetry import trace_id as current_trace_id
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.identity import INTERNAL_HEADER, ServiceIdentity, ServiceVerifier
 from agentic_ai.rag.errors import EmbeddingError
@@ -100,7 +100,7 @@ def retrieval_router(
         return verifier.verify(headers[0], RETRIEVE_SCOPE)
 
     async def execute(request: Request, *, search: bool) -> JSONResponse:
-        trace = str(uuid4())
+        trace = current_trace_id()
         code: str
         message: str
         status: int

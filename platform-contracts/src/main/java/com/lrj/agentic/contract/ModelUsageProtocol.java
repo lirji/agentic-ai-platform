@@ -12,6 +12,9 @@ public final class ModelUsageProtocol {
     public static final String CONTEXT_HEADER = "X-Usage-Context";
     public static final String INTERNAL_ROOT = "/internal/v1/usage";
     public static final String PUBLIC_PATH = "/api/v1/usage";
+    public static final String AUDIT_PATH = PUBLIC_PATH + "/attempts/{id}/audit";
+    public static final String AUDIT_MATCHER = PUBLIC_PATH + "/attempts/*/audit";
+    public static final String AUDIT_PATTERN = PUBLIC_PATH + "/attempts/[a-f0-9-]{36}/audit";
     public static final int CONTEXT_SECONDS = 30;
     private ModelUsageProtocol() { }
 }

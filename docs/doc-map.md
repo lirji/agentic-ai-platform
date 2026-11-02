@@ -157,3 +157,5 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 - S14B：CandidateService/CandidateQuality/CandidateMapper/V16、检索目的过滤与同事务副本归属对应 C-OPERATIONS C01–C04；React CandidatePage/operations 与既有质量编辑器对应 C05；candidate_smoke.py 的真实 Tasks/Knowledge/字节流浏览器验证对应 C06。局部文字检查仅提供字面状态，不替代现有质量报告或人工评分。
 
 - S14D：CandidateRecoveryService/RecoveryMapper/V18与React恢复面板对应[发布后恢复契约](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md)的operations-recovery-v1；[验收](qa/publication-recovery-20261102/TEST_RESULT.md)记录精确探测、历史完整源补偿与明确撤下。
+
+S15C：由Java既有Micrometer/OTel、Python真实HTTP/worker及原共享/预算流水映射到[C-OBS](design/knowledge-first-20261020/OBSERVABILITY_CONTRACTS.md)、[运行说明](design/knowledge-first-20261020/OBSERVABILITY_RUNTIME.md)和[验收](qa/cross-language-diagnostics-20261102/TEST_RESULT.md)。源码摘要固定在验收目录，未新增审计库或生产采集服务。

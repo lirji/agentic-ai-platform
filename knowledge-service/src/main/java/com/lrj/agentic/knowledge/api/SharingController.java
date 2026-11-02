@@ -42,6 +42,11 @@ public class SharingController {
     @GetMapping("/documents/{id}") public Access access(@AuthenticationPrincipal Jwt jwt, @PathVariable String id) {
         return service.access(JwtTrust.caller(jwt), id);
     }
+    /** 固定上限的历史命令查询，正文/指纹不进入诊断投影。 */
+    @GetMapping("/documents/{id}/audit") public AuditPage audit(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
+            @RequestParam(required=false) Integer beforeRevision, @RequestParam(defaultValue="20") int limit) {
+        return service.audit(JwtTrust.caller(jwt), id, beforeRevision, limit);
+    }
     /** 结果未知时查询原键，不重放授权。 */
     @GetMapping("/commands/{key}") public Receipt command(@AuthenticationPrincipal Jwt jwt, @PathVariable String key) {
         return service.command(JwtTrust.caller(jwt), key);

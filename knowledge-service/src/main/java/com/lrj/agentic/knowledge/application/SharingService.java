@@ -71,6 +71,16 @@ public class SharingService {
     public Receipt command(Caller caller, String key) {
         uuid(key); return database(() -> { var row = mapper.command(caller, key); require(row != null, KnowledgeError.NOT_FOUND); return row.receipt(); });
     }
+    /** 审计可在共享关闭/资料删除后由原owner查询，reader及其他租户统一404。 */
+    public AuditPage audit(Caller caller, String id, Integer before, int limit) {
+        uuid(id); require(limit >= 1 && limit <= SharingModels.MAX_AUDIT_PAGE && (before == null || before > 0), KnowledgeError.INPUT_INVALID);
+        return database(() -> {
+            require(mapper.owned(caller, id, false) != null, KnowledgeError.NOT_FOUND);
+            var rows = mapper.audit(caller, id, before, limit + 1);
+            var selected = rows.stream().limit(limit).toList();
+            return new AuditPage(selected, rows.size() > limit ? selected.getLast().acceptedRevision() : null);
+        });
+    }
     /** 幂等先于新命令前置条件；重放只读回执，不改变当前ACL。 */
     public Receipt change(Caller caller, String id, String key, String recipient, Operation operation, int revision) {
         requireEnabled(); uuid(id); uuid(key); uuid(recipient);

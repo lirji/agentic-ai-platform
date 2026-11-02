@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public final class UsageQueryController {
     private final UsageService usage;
     public UsageQueryController(UsageService usage) { this.usage = usage; }
+    /** 同一使用者只能查本人的状态流水，no-store禁止浏览器复用历史授权。 */
+    @GetMapping(ModelUsageProtocol.AUDIT_PATH)
+    public ResponseEntity<UsageDtos.AuditPage> audit(@AuthenticationPrincipal Jwt jwt, @PathVariable String id) {
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(usage.audit(JwtTrust.caller(jwt), id));
+    }
     /** 金额为预留及内部折算成本，服务端不会返回运营资金池全局余额。 */
     @GetMapping(ModelUsageProtocol.PUBLIC_PATH)
     public ResponseEntity<UsageDtos.Page> list(@AuthenticationPrincipal Jwt jwt,

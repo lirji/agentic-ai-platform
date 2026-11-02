@@ -28,6 +28,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         command = commands.add_parser(name, help="显式启动或预检知识问答 worker")
         command.add_argument("--config", required=True, type=Path, help="本机 0600 私密配置路径")
     args = parser.parse_args(argv)
+    if args.command in {"qa-worker", "serve"}:
+        from agentic_ai.diagnostics.telemetry import DiagnosticCode, configure_logging
+
+        try:
+            configure_logging()
+        except ValueError:
+            print(json.dumps({"code": DiagnosticCode.CONFIG_INVALID.value}), file=sys.stderr)
+            return EXIT_CONFIGURATION_ERROR
     if args.command in {"qa-worker", "check-qa-worker"}:
         from agentic_ai.qa.errors import QaError
         from agentic_ai.qa.worker import WorkerConfig, run_worker

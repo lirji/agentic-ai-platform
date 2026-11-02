@@ -42,6 +42,7 @@ import org.springframework.context.annotation.Import;
         "knowledge.sharing.organization=sharing-test", "knowledge.sharing.tenant-id=sharing-test",
         "knowledge.sharing.client-id=sharing-test", "knowledge.sharing.client-secret=isolated-test-placeholder-not-a-secret-1234",
         "knowledge.sharing.members=00000000-0000-0000-0000-000000000001"})
+@org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 @Import(KnowledgeSharingIT.Directory.class)
 class KnowledgeSharingIT {
     private static final String JOINT_TENANT="eval-joint-"+UUID.randomUUID();
@@ -252,6 +253,66 @@ class KnowledgeSharingIT {
         assertThat(http("GET","/documents/"+id,peer,null,null).statusCode()).isEqualTo(404);
         assertThat(http("GET","/received/"+id,peer,null,null).statusCode()).isEqualTo(200);
         assertThat(http("POST",path,peer,key(),body.replace(reader.userId(),stranger.userId())).statusCode()).isEqualTo(404);
+    }
+    @Autowired io.micrometer.tracing.Tracer tracer;
+    @Autowired io.micrometer.tracing.propagation.Propagator propagator;
+    /** 两种真实追踪实现通过socket互通，回调Java的安全拒绝也保留同一trace。 */
+    @Test void javaPythonJavaTraceCrossesRealHttpBoundaries() throws Exception {
+        var root=java.nio.file.Path.of("").toAbsolutePath().getParent();
+        var ready=java.nio.file.Files.createTempFile(root.resolve(".logs"),"s15c-trace-",".json");
+        var log=java.nio.file.Path.of(ready+".log");
+        var child=new ProcessBuilder(root.resolve("ai-runtime/.venv/bin/python").toString(),
+                root.resolve("ai-runtime/tests/diagnostics_joint_server.py").toString(),
+                "http://127.0.0.1:"+port+"/api/v1/knowledge/sharing/capabilities",ready.toString())
+                .redirectErrorStream(true).redirectOutput(log.toFile()).start();
+        try {
+            var json=new com.fasterxml.jackson.databind.ObjectMapper(); int childPort=0;
+            long deadline=System.nanoTime()+java.util.concurrent.TimeUnit.SECONDS.toNanos(15);
+            while(System.nanoTime()<deadline && child.isAlive()) {
+                try {
+                    childPort=json.readTree(ready.toFile()).path("port").asInt();
+                    try(var socket=new java.net.Socket("127.0.0.1",childPort)) { break; }
+                } catch(Exception pending) { Thread.sleep(50); }
+            }
+            assertThat(childPort).isPositive();
+            var span=tracer.nextSpan().name("diagnostics.joint").start();
+            var wire=new java.util.HashMap<String,String>();
+            propagator.inject(span.context(),wire,Map::put);
+            assertThat(wire).containsKey("traceparent");
+            var remote=new com.lrj.agentic.knowledge.infrastructure.processing.BoundedHttp(tracer,propagator);
+            try(var scope=tracer.withSpan(span)) {
+                var result=json.readTree(remote.request("GET",URI.create("http://127.0.0.1:"+childPort+"/probe"),Map.of(),null,5,KnowledgeError.DATABASE_UNAVAILABLE));
+                assertThat(result.path("pythonTraceId").asText()).isEqualTo(span.context().traceId());
+                assertThat(result.path("javaTraceId").asText()).isEqualTo(span.context().traceId());
+                assertThat(result.path("outgoing").asText().split("-")[1]).isEqualTo(span.context().traceId());
+                assertThat(result.path("outgoing").asText().split("-")[2]).isNotEqualTo(result.path("pythonSpanId").asText());
+                assertThat(result.path("status").asInt()).isEqualTo(401);
+            } finally { remote.close(); span.end(); }
+            assertThat(tracer.currentSpan()).isNull();
+        } finally {
+            child.destroy(); if(!child.waitFor(5,java.util.concurrent.TimeUnit.SECONDS)) child.destroyForcibly();
+        }
+    }
+    @Test void ownerAuditHistoryIsPagedAndSurvivesRevocation() throws Exception {
+        String id=published().documentId(), original=key();
+        var grant=sharing.change(owner,id,original,reader.userId(),Operation.GRANT_READ,0);
+        var revoke=sharing.change(owner,id,key(),reader.userId(),Operation.REVOKE_READ,1);
+        sharing.change(owner,id,original,reader.userId(),Operation.GRANT_READ,0);
+        var first=sharing.audit(owner,id,null,1);
+        assertThat(first.items()).containsExactly(revoke);
+        assertThat(first.nextBeforeRevision()).isEqualTo(2);
+        var last=sharing.audit(owner,id,first.nextBeforeRevision(),1);
+        assertThat(last.items()).containsExactly(grant); assertThat(last.nextBeforeRevision()).isNull();
+        for(var other:List.of(reader,stranger,new Caller("other",owner.userId()))) {
+            error(KnowledgeError.NOT_FOUND,()->sharing.audit(other,id,null,20));
+            assertThat(http("GET","/documents/"+id+"/audit",token(other.tenantId(),other.userId(),"knowledge:read"),null,null).statusCode()).isEqualTo(404);
+        }
+        var response=http("GET","/documents/"+id+"/audit",token(owner.tenantId(),owner.userId(),"knowledge:read"),null,null);
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.headers().firstValue("Cache-Control")).contains("no-store");
+        assertThat(response.body()).doesNotContain("fingerprint", "idempotencyKey");
+        error(KnowledgeError.INPUT_INVALID,()->sharing.audit(owner,id,null,51));
+        error(KnowledgeError.INPUT_INVALID,()->sharing.audit(owner,id,0,20));
     }
     @Test void realBrowserSharingAndRevocation() throws Exception {
         org.junit.jupiter.api.Assumptions.assumeTrue("1".equals(System.getenv("AGENTIC_SHARING_BROWSER")));

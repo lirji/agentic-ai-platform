@@ -14,6 +14,8 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from pydantic import ValidationError
 
 from agentic_ai.agents.models import WorkCitation
+from agentic_ai.diagnostics.http import DiagnosticClient
+from agentic_ai.diagnostics.telemetry import Stage
 from agentic_ai.qa.errors import QaCode, QaError
 from agentic_ai.qa.models import MAX_HITS, MAX_RESPONSE, Citation, KnowledgeHit, SearchReply
 from agentic_ai.tasks.models import WireModel
@@ -60,7 +62,9 @@ class KnowledgeClient:
         self.tenant_id, self.owner_id = tenant_id, owner_id
         self._key = private_key
         self._slots = asyncio.Semaphore(HTTP_CAPACITY)
-        self._http = httpx.AsyncClient(
+        self._http = DiagnosticClient(
+            stage=Stage.KNOWLEDGE,
+            internal=True,
             base_url=endpoint.rstrip("/"),
             trust_env=False,
             follow_redirects=False,

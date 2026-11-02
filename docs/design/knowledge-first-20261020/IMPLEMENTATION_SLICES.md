@@ -229,9 +229,9 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S14B | 候选知识编辑与内容绑定评估 | S14A, S8D, S10B, S13A | IMPLEMENT | DONE |
 | S14C | 审核与真实入库发布 | S14B, S13B | IMPLEMENT | DONE |
 | S14D | 发布后探测与补偿版本 | S14C, S8D, S10C | IMPLEMENT | DONE |
-| S15A | 统一模型用量与预算语义 | S8A, S11A | DESIGN | PLANNED |
+| S15A | 统一模型用量与预算语义 | S8A, S11A | DESIGN | DONE |
 | S15B | 共享额度预留、结算与调用归因 | S15A, S13A | IMPLEMENT | DONE |
-| S15C | 跨语言诊断和业务审计 | S8F, S11E | IMPLEMENT | PLANNED |
+| S15C | 跨语言诊断和业务审计 | S8F, S11E | IMPLEMENT | DONE |
 | S16A | 多 worker 竞争和有界恢复 | S15B, S12D, S13C | IMPLEMENT | PLANNED |
 | S16B | 租户公平与后台资源隔离 | S16A, S15C | IMPLEMENT | PLANNED |
 | S16C | 代表负载与故障容量报告 | S16B, S10F, S11E | VALIDATE | PLANNED |
@@ -613,17 +613,17 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-USAGE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 真实 DB 并发超额阻止、重复预留/结算、取消/超时未知结果；Embedding/聊天/重排/裁判都受约束；旧账本迁移核对保守余额。
 - **Pass / Runtime：** IMPLEMENT；既有 MySQL；无新分布式锁/缓存权威。
-- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G15 G18。预算核心/CLI、全部现有出口、Task/Knowledge归因和前端本人视图完成；[UA01–UA16验收](../../qa/shared-usage-budget-20261102/TEST_RESULT.md)PASS，真实双实例/退出重启/DB故障及浏览器通过。仅机制交付，原预算与生产未迁移；Git/CI状态见权威进度。依用户要求交付后停止，不启动S15C。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G15 G18。预算核心/CLI、全部现有出口、Task/Knowledge归因和前端本人视图完成；[UA01–UA16验收](../../qa/shared-usage-budget-20261102/TEST_RESULT.md)PASS，真实双实例/退出重启/DB故障及浏览器通过。仅机制交付，原预算与生产未迁移；Git/CI状态见权威进度。原交付后停止已由2026-11-02“继续做后续任务”解除，当前S15C见权威进度。
 
 ### S15C · 跨语言诊断和业务审计
 
 - **结果：** 可由任务/请求追到检索、模型、索引或队列失败。
 - **Needs：** S8F, S11E。
 - **Owner / 影响路径：** G、K、T、Q、A、W、R（路径见本节 Owner 表）；范围：现有 Micrometer/OTel 与 Python 关联、关键阶段指标及受控诊断入口。
-- **契约 / 迁移归属：** C-OBS；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
+- **契约 / 迁移归属：** [C-OBS](OBSERVABILITY_CONTRACTS.md)；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** W3C上下文真实传播、线程/异步不串号；脱敏和指标基数；采集失败不拖业务；授权/发布/预算等业务审计可检索。
 - **Pass / Runtime：** IMPLEMENT；复用现有采集设施，不默认引入外部 SaaS。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G14 G18。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G14 G18。[OB01–OB07验收](../../qa/cross-language-diagnostics-20261102/TEST_RESULT.md)PASS；Python/Java真实传播、有限采集及owner审计查询完成。Git/CI见权威进度。
 
 ### S16A · 多 worker 竞争和有界恢复
 

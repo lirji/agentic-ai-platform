@@ -10,6 +10,8 @@ from typing import Literal, Protocol
 import httpx
 from pydantic import Field
 
+from agentic_ai.diagnostics.http import DiagnosticClient
+from agentic_ai.diagnostics.telemetry import Stage
 from agentic_ai.qa.chat_budget import ChatBudget
 from agentic_ai.qa.chat_config import MAX_INPUT_BYTES, ChatConfig
 from agentic_ai.qa.errors import QaCode, QaError
@@ -57,7 +59,9 @@ class ChatClient:
             raise QaError(QaCode.CONFIG_INVALID) from None
         self._config, self._budget, self._usage = config, budget, usage
         self._slot = asyncio.Semaphore(1)
-        self._http = httpx.AsyncClient(
+        self._http = DiagnosticClient(
+            stage=Stage.CHAT,
+            internal=False,
             base_url=config.base_url + "/",
             trust_env=False,
             follow_redirects=False,

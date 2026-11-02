@@ -11,6 +11,8 @@ from typing import Self
 
 import httpx
 
+from agentic_ai.diagnostics.http import DiagnosticClient
+from agentic_ai.diagnostics.telemetry import Stage
 from agentic_ai.rag.errors import EmbeddingError, EmbeddingErrorCode
 from agentic_ai.rag.ports import EmbeddingResult
 from agentic_ai.runtime.embedding_budget import EmbeddingBudget
@@ -39,7 +41,9 @@ class OpenAIEmbeddingAdapter:
         except UsageError:
             raise EmbeddingError(EmbeddingErrorCode.CONFIGURATION_INVALID) from None
         self._budget, self._usage = budget, usage
-        self._client = httpx.AsyncClient(
+        self._client = DiagnosticClient(
+            stage=Stage.EMBEDDING,
+            internal=False,
             timeout=httpx.Timeout(config.deadline_seconds),
             limits=httpx.Limits(
                 max_connections=config.max_connections,

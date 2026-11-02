@@ -14,6 +14,8 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from pydantic import BaseModel, ValidationError
 
+from agentic_ai.diagnostics.http import DiagnosticClient
+from agentic_ai.diagnostics.telemetry import Stage
 from agentic_ai.retrieval.evidence import GenerationManifest, GenerationReference
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.evidence import EvidenceReceipt, EvidenceReference, digest
@@ -76,7 +78,9 @@ class CentralTaskClient:
         self.worker_id = worker_id
         self._key = private_key
         self._slots = asyncio.Semaphore(HTTP_CONNECTIONS)
-        self._http = httpx.AsyncClient(
+        self._http = DiagnosticClient(
+            stage=Stage.TASK,
+            internal=True,
             base_url=endpoint.rstrip("/"),
             trust_env=False,
             transport=transport,

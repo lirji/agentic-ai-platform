@@ -17,6 +17,8 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from pydantic import BaseModel, ValidationError
 
+from agentic_ai.diagnostics.http import DiagnosticClient
+from agentic_ai.diagnostics.telemetry import Stage
 from agentic_ai.usage.context import UsageContext, input_digest, step_key
 from agentic_ai.usage.models import (
     SCHEMA,
@@ -82,7 +84,9 @@ class CentralUsageClient:
             raise UsageError(UsageCode.PROFILE_INVALID)
         self._worker, self._key = worker_id, private_key
         self._slots = asyncio.Semaphore(MAX_CONNECTIONS)
-        self._http = httpx.AsyncClient(
+        self._http = DiagnosticClient(
+            stage=Stage.USAGE,
+            internal=True,
             base_url=endpoint.rstrip("/"),
             transport=transport,
             trust_env=False,

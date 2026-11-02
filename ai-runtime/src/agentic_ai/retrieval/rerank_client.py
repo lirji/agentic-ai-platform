@@ -10,6 +10,8 @@ from typing import Literal, Protocol
 import httpx
 from pydantic import BaseModel, ConfigDict, Field
 
+from agentic_ai.diagnostics.http import DiagnosticClient
+from agentic_ai.diagnostics.telemetry import Stage
 from agentic_ai.qa.models import valid_text
 from agentic_ai.retrieval.deadline import RetrievalCapacity, RetrievalDeadline
 from agentic_ai.retrieval.errors import RetrievalCode, RetrievalError
@@ -88,7 +90,9 @@ class RerankClient:
         self._config, self._usage = config, usage
         self._budget = RerankBudget(config) if usage is None else None
         self._capacity = RetrievalCapacity()
-        self._http = httpx.AsyncClient(
+        self._http = DiagnosticClient(
+            stage=Stage.RERANK,
+            internal=False,
             transport=transport,
             trust_env=False,
             follow_redirects=False,

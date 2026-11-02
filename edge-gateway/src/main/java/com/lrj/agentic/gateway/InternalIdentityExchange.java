@@ -81,7 +81,7 @@ public class InternalIdentityExchange implements GlobalFilter, Ordered {
 
     /** 按固定路由归属选受众，不能把某服务的令牌转用于其他领域。 */
     private static String audience(String path) {
-        if (ModelUsageProtocol.PUBLIC_PATH.equals(path)) { return IdentityProtocol.TASK_AUDIENCE; }
+        if (ModelUsageProtocol.PUBLIC_PATH.equals(path) || path.matches(ModelUsageProtocol.AUDIT_PATTERN)) { return IdentityProtocol.TASK_AUDIENCE; }
         if ((path.equals("/api/v1/tasks") || path.startsWith("/api/v1/tasks/")) || path.equals("/api/v2/tasks")
                 || path.equals("/api/v3/tasks") || path.equals("/api/v3/tasks/capabilities") || path.equals("/api/v4/tasks") || path.equals("/api/v4/tasks/capabilities")) { return IdentityProtocol.TASK_AUDIENCE; }
         if (path.equals("/api/v1/conversations") || path.startsWith("/api/v1/conversations/") || path.startsWith("/api/v2/conversations/")

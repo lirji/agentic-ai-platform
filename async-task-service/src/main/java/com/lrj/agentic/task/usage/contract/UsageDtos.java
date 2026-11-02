@@ -21,6 +21,10 @@ public final class UsageDtos {
             String contextId, String stepKey, String purpose, String kind, String profileId, String priceVersion,
             String currency, String state, String reservedAmount, String settledAmount, Tokens usage,
             String usageSource, String outcome, String retryOf, boolean overrun, Instant createdAt, Instant updatedAt) { }
+    /** 审计投影不携带内部账户、执行器身份或请求指纹。 */
+    public record AuditEvent(String eventType, String previousState, String nextState, String heldDelta,
+            String bookedDelta, String traceId, Instant createdAt) { }
+    public record AuditPage(String schemaVersion, List<AuditEvent> items) { }
     public record Dispatch(Attempt attempt, boolean granted) { }
     public record Page(String schemaVersion, List<Attempt> items, String nextCursor) { }
 }

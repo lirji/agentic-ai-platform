@@ -3,7 +3,6 @@
 import asyncio
 from collections.abc import AsyncIterator, Coroutine
 from contextlib import asynccontextmanager
-from uuid import uuid4
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
@@ -11,6 +10,7 @@ from pydantic import ValidationError
 from starlette.requests import ClientDisconnect
 
 from agentic_ai.api.usage_context import knowledge_usage
+from agentic_ai.diagnostics.telemetry import trace_id as current_trace_id
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.generation import GenerationRequest
 from agentic_ai.processing.identity import (
@@ -101,7 +101,7 @@ def processing_router(
         request: Request, *, prepare: bool, structured: bool = False, generation: bool = False
     ) -> JSONResponse:
         """认证、容量、读入和计算在明确边界中完成，错误不携带底层上下文。"""
-        trace_id = str(uuid4())
+        trace_id = current_trace_id()
         code: str
         message: str
         status: int

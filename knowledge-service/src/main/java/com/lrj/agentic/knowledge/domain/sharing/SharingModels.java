@@ -6,7 +6,7 @@ import java.util.List;
 /** 共享仅表达指定成员只读，角色与操作码不依赖展示文案。 */
 public final class SharingModels {
     private SharingModels() { }
-    public static final int MAX_READERS = 100, MAX_SHARED_SCOPE = 1000;
+    public static final int MAX_READERS = 100, MAX_SHARED_SCOPE = 1000, MAX_AUDIT_PAGE = 50;
     public static final List<String> READ_ACTIONS = List.of("READ", "SEARCH");
     /** 可维护的封闭命令集合，不支持客户端提供任意角色。 */
     public enum Operation {
@@ -44,6 +44,8 @@ public final class SharingModels {
     public record ReadableDocument(String documentId, String displayName, Long publishedVersion, String status) { }
     /** 游标仅描述位置，不授予读取权限。 */
     public record Page<T>(List<T> items, String nextCursor) { }
+    /** 修订游标绑定当前文档；每次查询仍重新验证owner。 */
+    public record AuditPage(List<Receipt> items, Integer nextBeforeRevision) { }
     /** 行锁保护共享修订，与生命周期命令使用同一个资料锁。 */
     public record State(String documentId, int revision, String lifecycle, Long publishedVersion) { }
 }

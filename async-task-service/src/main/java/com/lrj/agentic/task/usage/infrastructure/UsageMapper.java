@@ -25,6 +25,8 @@ public interface UsageMapper extends BaseMapper<UsageRows.Attempt> {
             @Param("before") Instant before, @Param("cursor") String cursor, @Param("limit") int limit);
     int ownsContext(@Param("tenant") String tenant, @Param("actor") String actor,
             @Param("type") String type, @Param("context") String context);
+    List<com.lrj.agentic.task.usage.contract.UsageDtos.AuditEvent> ownAudit(@Param("tenant") String tenant,
+            @Param("actor") String actor, @Param("id") String id);
     int insertAccount(@Param("row") UsageRows.Account row);
     int insertPrice(@Param("row") UsageRows.Price row);
     int insertBinding(@Param("row") UsageRows.Binding row);

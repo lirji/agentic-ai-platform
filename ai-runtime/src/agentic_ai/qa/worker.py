@@ -22,6 +22,7 @@ from agentic_ai.agents.pipeline import WorkPipeline
 from agentic_ai.agents.research_models import RESEARCH_GRAPH
 from agentic_ai.agents.research_pipeline import ResearchPipeline
 from agentic_ai.agents.staged_research_pipeline import STAGED_RESEARCH_GRAPH, StagedResearchPipeline
+from agentic_ai.diagnostics.telemetry import Stage, telemetry
 from agentic_ai.evaluation.client import EvaluationClient, EvaluationPort
 from agentic_ai.evaluation.generation_pipeline import GenerationEvaluationPipeline
 from agentic_ai.evaluation.models import (
@@ -186,126 +187,132 @@ async def execute_qa_task(
     candidates: CandidatePort | None = None,
 ) -> TaskView:
     """异常先核对中央；取消/完成赢得竞争后不再报告覆盖它的失败。"""
-    try:
-        pipeline: QaPipeline | WorkPipeline | EvaluationPipeline
-        if binding.graph_version in (
-            QA_GRAPH_V2,
-            QA_GRAPH_V3,
-            WORK_GRAPH_V2,
-            RESEARCH_GRAPH,
-            STAGED_RESEARCH_GRAPH,
-        ):
-            if retrieval is None or candidates is None:
-                raise QaError(QaCode.CONFIG_INVALID)
-            if binding.graph_version in (WORK_GRAPH_V2, RESEARCH_GRAPH, STAGED_RESEARCH_GRAPH):
-                if tool_chat is None:
-                    raise QaError(QaCode.CONFIG_INVALID)
-                work_type = (
-                    StagedResearchPipeline
-                    if binding.graph_version == STAGED_RESEARCH_GRAPH
-                    else ResearchPipeline
-                    if binding.graph_version == RESEARCH_GRAPH
-                    else GenerationWorkPipeline
-                )
-                pipeline = work_type(binding, central, candidates, tool_chat, retrieval)
-            elif binding.graph_version == QA_GRAPH_V3:
-                pipeline = ContextualQaPipeline(binding, central, candidates, chat, retrieval)
-            else:
-                pipeline = GenerationQaPipeline(binding, central, candidates, chat, retrieval)
-        elif binding.graph_version in (EVALUATION_GRAPH, EVALUATION_GRAPH_V2):
-            if evaluations is None or profile is None:
-                raise QaError(QaCode.CONFIG_INVALID)
-            if binding.graph_version == EVALUATION_GRAPH_V2:
+    with telemetry().stage(
+        Stage.WORKER, root=True, task_id=binding.task.task_id, epoch=binding.epoch
+    ) as diagnostic:
+        try:
+            pipeline: QaPipeline | WorkPipeline | EvaluationPipeline
+            if binding.graph_version in (
+                QA_GRAPH_V2,
+                QA_GRAPH_V3,
+                WORK_GRAPH_V2,
+                RESEARCH_GRAPH,
+                STAGED_RESEARCH_GRAPH,
+            ):
                 if retrieval is None or candidates is None:
                     raise QaError(QaCode.CONFIG_INVALID)
-                incoming = GenerationEvaluationInput.model_validate_json(json.dumps(binding.input))
-                profile = profile.model_copy(
-                    update={"retrieval_profile": incoming.retrieval_strategy.value}
-                )
-                opened = await evaluations.open(profile)
-                pipeline = GenerationEvaluationPipeline(
-                    binding, central, candidates, chat, evaluations, profile, opened, retrieval
-                )
+                if binding.graph_version in (WORK_GRAPH_V2, RESEARCH_GRAPH, STAGED_RESEARCH_GRAPH):
+                    if tool_chat is None:
+                        raise QaError(QaCode.CONFIG_INVALID)
+                    work_type = (
+                        StagedResearchPipeline
+                        if binding.graph_version == STAGED_RESEARCH_GRAPH
+                        else ResearchPipeline
+                        if binding.graph_version == RESEARCH_GRAPH
+                        else GenerationWorkPipeline
+                    )
+                    pipeline = work_type(binding, central, candidates, tool_chat, retrieval)
+                elif binding.graph_version == QA_GRAPH_V3:
+                    pipeline = ContextualQaPipeline(binding, central, candidates, chat, retrieval)
+                else:
+                    pipeline = GenerationQaPipeline(binding, central, candidates, chat, retrieval)
+            elif binding.graph_version in (EVALUATION_GRAPH, EVALUATION_GRAPH_V2):
+                if evaluations is None or profile is None:
+                    raise QaError(QaCode.CONFIG_INVALID)
+                if binding.graph_version == EVALUATION_GRAPH_V2:
+                    if retrieval is None or candidates is None:
+                        raise QaError(QaCode.CONFIG_INVALID)
+                    incoming = GenerationEvaluationInput.model_validate_json(
+                        json.dumps(binding.input)
+                    )
+                    profile = profile.model_copy(
+                        update={"retrieval_profile": incoming.retrieval_strategy.value}
+                    )
+                    opened = await evaluations.open(profile)
+                    pipeline = GenerationEvaluationPipeline(
+                        binding, central, candidates, chat, evaluations, profile, opened, retrieval
+                    )
+                else:
+                    opened = await evaluations.open(profile)
+                    pipeline = EvaluationPipeline(
+                        binding, central, knowledge, chat, evaluations, profile, opened
+                    )
+            elif binding.graph_version == WORK_GRAPH:
+                if tool_chat is None:
+                    raise QaError(QaCode.CONFIG_INVALID)
+                pipeline = WorkPipeline(binding, central, knowledge, tool_chat)
             else:
-                opened = await evaluations.open(profile)
-                pipeline = EvaluationPipeline(
-                    binding, central, knowledge, chat, evaluations, profile, opened
-                )
-        elif binding.graph_version == WORK_GRAPH:
-            if tool_chat is None:
-                raise QaError(QaCode.CONFIG_INVALID)
-            pipeline = WorkPipeline(binding, central, knowledge, tool_chat)
-        else:
-            pipeline = QaPipeline(binding, central, knowledge, chat)
-        # 来源只取中央租约；actor由Tasks在准入事务中解析，不能由模型或输入指定。
-        with bind_usage(
-            UsageContext(
-                binding.tenant_id,
-                ContextType.TASK,
-                binding.task.task_id,
-                binding.epoch,
-                USAGE_PURPOSES[binding.task.kind],
-                "task:",
-            )
-        ):
-            return await _run_with_heartbeat(pipeline, checkpoints)
-    except Exception as error:
-        LOGGER.warning(
-            json.dumps(
-                {
-                    "component": "knowledge-qa-worker",
-                    "state": "EXECUTION_REJECTED",
-                    "taskId": binding.task.task_id,
-                    "code": error.code.value
-                    if isinstance(error, (QaError, TaskRuntimeError, EvaluationFailed))
-                    else "EXECUTION_FAILED",
-                }
-            )
-        )
-        observed = await central.inspect(binding.task.task_id)
-        if (
-            observed.task.task_id != binding.task.task_id
-            or observed.tenant_id != binding.tenant_id
-            or observed.owner_id != binding.owner_id
-            or observed.input != binding.input
-        ):
-            raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID) from None
-        if observed.task.status.terminal:
-            return observed.task
-        if observed.epoch != binding.epoch or observed.worker_id != central.worker_id:
-            raise TaskRuntimeError(TaskRuntimeCode.LEASE_LOST) from None
-        if isinstance(error, TaskRuntimeError) and error.code == TaskRuntimeCode.LEASE_LOST:
-            raise error
-        code, retryable = (
-            (error.code, error.retryable)
-            if isinstance(error, EvaluationFailed)
-            else failure_code(error)
-        )
-        try:
-            if isinstance(error, EvaluationFailed):
-                return await central.fail(
+                pipeline = QaPipeline(binding, central, knowledge, chat)
+            # 来源只取中央租约；actor由Tasks在准入事务中解析，不能由模型或输入指定。
+            with bind_usage(
+                UsageContext(
+                    binding.tenant_id,
+                    ContextType.TASK,
                     binding.task.task_id,
                     binding.epoch,
-                    code,
-                    retryable=retryable,
-                    result=error.proof.model_dump(mode="json", by_alias=True),
+                    USAGE_PURPOSES[binding.task.kind],
+                    "task:",
                 )
-            return await central.fail(
-                binding.task.task_id, binding.epoch, code, retryable=retryable
+            ):
+                return await _run_with_heartbeat(pipeline, checkpoints)
+        except Exception as error:
+            diagnostic.fail()
+            LOGGER.warning(
+                json.dumps(
+                    {
+                        "component": "knowledge-qa-worker",
+                        "state": "EXECUTION_REJECTED",
+                        "taskId": binding.task.task_id,
+                        "code": error.code.value
+                        if isinstance(error, (QaError, TaskRuntimeError, EvaluationFailed))
+                        else "EXECUTION_FAILED",
+                    }
+                )
             )
-        except TaskRuntimeError:
-            # 提交失败可能实际已落库，或取消刚刚赢得行锁；只查询，不重发副作用。
-            latest = await central.inspect(binding.task.task_id)
+            observed = await central.inspect(binding.task.task_id)
             if (
-                latest.task.task_id != binding.task.task_id
-                or latest.tenant_id != binding.tenant_id
-                or latest.owner_id != binding.owner_id
-                or latest.input != binding.input
+                observed.task.task_id != binding.task.task_id
+                or observed.tenant_id != binding.tenant_id
+                or observed.owner_id != binding.owner_id
+                or observed.input != binding.input
             ):
                 raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID) from None
-            if latest.task.status.terminal:
-                return latest.task
-            raise
+            if observed.task.status.terminal:
+                return observed.task
+            if observed.epoch != binding.epoch or observed.worker_id != central.worker_id:
+                raise TaskRuntimeError(TaskRuntimeCode.LEASE_LOST) from None
+            if isinstance(error, TaskRuntimeError) and error.code == TaskRuntimeCode.LEASE_LOST:
+                raise error
+            code, retryable = (
+                (error.code, error.retryable)
+                if isinstance(error, EvaluationFailed)
+                else failure_code(error)
+            )
+            try:
+                if isinstance(error, EvaluationFailed):
+                    return await central.fail(
+                        binding.task.task_id,
+                        binding.epoch,
+                        code,
+                        retryable=retryable,
+                        result=error.proof.model_dump(mode="json", by_alias=True),
+                    )
+                return await central.fail(
+                    binding.task.task_id, binding.epoch, code, retryable=retryable
+                )
+            except TaskRuntimeError:
+                # 提交失败可能实际已落库，或取消刚刚赢得行锁；只查询，不重发副作用。
+                latest = await central.inspect(binding.task.task_id)
+                if (
+                    latest.task.task_id != binding.task.task_id
+                    or latest.tenant_id != binding.tenant_id
+                    or latest.owner_id != binding.owner_id
+                    or latest.input != binding.input
+                ):
+                    raise TaskRuntimeError(TaskRuntimeCode.PROTOCOL_INVALID) from None
+                if latest.task.status.terminal:
+                    return latest.task
+                raise
 
 
 def _log(state: str, *, task: TaskView | None = None, duration: float | None = None) -> None:

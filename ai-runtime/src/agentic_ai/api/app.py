@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from agentic_ai.adapters.openai_embedding import OpenAIEmbeddingAdapter
+from agentic_ai.diagnostics.http import DiagnosticMiddleware
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL
 from agentic_ai.retrieval.rerank_client import RerankClient
@@ -62,6 +63,7 @@ def create_app() -> FastAPI:
         openapi_url=None,
         lifespan=lifespan,
     )
+    app.add_middleware(DiagnosticMiddleware)
     if config is not None or retrieval is not None:
         embedding = EmbeddingConfig.from_environment()
         if embedding.model != EMBEDDING_MODEL or embedding.dimensions != EMBEDDING_DIMENSIONS:

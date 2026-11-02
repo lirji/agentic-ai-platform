@@ -10,6 +10,13 @@
         SELECT command_id, document_id, recipient_id, operation, accepted_revision, accepted_at, fingerprint
         FROM knowledge_sharing_command WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId} AND idempotency_key=#{key}
     </select>
+    <!-- 审计读取不依赖当前授权active，撤权后仍保留历史；身份约束下推SQL。 -->
+    <select id="audit" resultType="com.lrj.agentic.knowledge.domain.sharing.SharingModels$Receipt">
+        SELECT command_id,document_id,recipient_id,operation,accepted_revision,accepted_at
+        FROM knowledge_sharing_command WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId} AND document_id=#{id}
+        <if test="before != null">AND accepted_revision &lt; #{before}</if>
+        ORDER BY accepted_revision DESC LIMIT #{limit}
+    </select>
     <select id="readers" resultType="com.lrj.agentic.knowledge.domain.sharing.SharingModels$Reader">
         SELECT recipient_id AS user_id FROM knowledge_document_share
         WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId} AND document_id=#{id} AND active=TRUE

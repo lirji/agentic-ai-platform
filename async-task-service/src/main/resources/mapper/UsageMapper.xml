@@ -32,6 +32,14 @@
         SELECT EXISTS(SELECT 1 FROM usage_operation WHERE tenant_id=#{tenant} AND actor_id=#{actor}
             AND context_type=#{type} AND context_id=#{context})
     </select>
+    <select id="ownAudit" resultType="com.lrj.agentic.task.usage.contract.UsageDtos$AuditEvent">
+        SELECT a.event_type,a.previous_state,a.next_state,CAST(a.held_delta AS CHAR) AS held_delta,
+            CAST(a.booked_delta AS CHAR) AS booked_delta,a.trace_id,a.created_at
+        FROM usage_audit a JOIN usage_attempt t ON t.attempt_id=a.attempt_id
+        JOIN usage_operation o ON o.operation_id=t.operation_id AND o.tenant_id=t.tenant_id
+        WHERE t.attempt_id=#{id} AND t.tenant_id=#{tenant} AND o.actor_id=#{actor}
+        ORDER BY a.created_at,FIELD(a.event_type,'RESERVED','DISPATCHED','UNKNOWN','SETTLED','RELEASED'),a.audit_id LIMIT 6
+    </select>
     <insert id="insertAccount">INSERT INTO usage_account(account_id,sponsor_ref,funding_source_ref,kind,period_key,currency,limit_amount,held_amount,booked_amount,state,created_by,updated_by)
         VALUES(#{row.accountId},#{row.sponsorRef},#{row.fundingSourceRef},#{row.kind},#{row.periodKey},#{row.currency},#{row.limitAmount},#{row.heldAmount},#{row.bookedAmount},#{row.state},#{row.createdBy},#{row.updatedBy})</insert>
     <insert id="insertPrice">INSERT INTO usage_price(price_version,profile_id,kind,pricing_json,created_by)
