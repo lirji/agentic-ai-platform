@@ -5,6 +5,7 @@ import json
 import logging
 import re
 from collections.abc import Awaitable, Callable, Sequence
+from contextlib import nullcontext
 from typing import Any, Protocol
 
 import httpx
@@ -19,6 +20,9 @@ from agentic_ai.qa.chat_budget import ChatBudget
 from agentic_ai.qa.chat_config import MAX_INPUT_BYTES, ChatConfig
 from agentic_ai.qa.errors import QaCode, QaError
 from agentic_ai.qa.models import MAX_RESPONSE
+from agentic_ai.usage.config import require_gate
+from agentic_ai.usage.gate import UsageGate
+from agentic_ai.usage.models import Kind, UsageCode, UsageError
 
 MODEL_PROFILE = "agentic:read-only-v1"
 
@@ -70,11 +74,16 @@ class ToolChatClient:
     def __init__(
         self,
         config: ChatConfig,
-        budget: ChatBudget,
+        budget: ChatBudget | None,
         *,
         transport: httpx.AsyncBaseTransport | None = None,
+        usage: UsageGate | None = None,
     ) -> None:
-        self.config, self.budget = config, budget
+        try:
+            require_gate(usage)
+        except UsageError:
+            raise QaError(QaCode.CONFIG_INVALID) from None
+        self.config, self.budget, self.usage = config, budget, usage
         self.slot = asyncio.Semaphore(1)
         self.http = httpx.AsyncClient(
             base_url=config.base_url + "/",
@@ -95,6 +104,8 @@ class ToolChatClient:
             and {tool["function"]["name"] for tool in tools} != ALLOWED_TOOLS
         ):
             raise QaError(QaCode.INPUT_REJECTED)
+        if self.usage is not None:
+            self.config.check_pricing()
         body = json.dumps(
             {
                 "model": self.config.route,
@@ -116,9 +127,22 @@ class ToolChatClient:
         if self.slot.locked():
             raise QaError(QaCode.CAPACITY_EXCEEDED)
         async with self.slot:
-            self.budget.reserve(operation_id, len(body))
+            if self.usage is None:
+                if self.budget is None:
+                    raise QaError(QaCode.CONFIG_INVALID)
+                self.budget.reserve(operation_id, len(body))
+            permit = (
+                self.usage.permit(
+                    Kind.CHAT,
+                    scope=operation_id,
+                    body=body,
+                    max_output_tokens=self.config.max_tokens,
+                )
+                if self.usage is not None
+                else nullcontext(None)
+            )
             try:
-                async with asyncio.timeout(self.config.deadline_seconds):
+                async with asyncio.timeout(self.config.deadline_seconds), permit as meter:
                     async with self.http.stream(
                         "POST",
                         "chat/completions",
@@ -135,47 +159,55 @@ class ToolChatClient:
                             raw.extend(chunk)
                             if len(raw) > MAX_RESPONSE:
                                 raise QaError(QaCode.ANSWER_INVALID)
-                payload = json.loads(raw)
-                choices = payload["choices"]
-                if len(choices) != 1 or choices[0]["index"] != 0 or "error" in payload:
-                    raise ValueError
-                message, reason = choices[0]["message"], choices[0]["finish_reason"]
-                if message["role"] != "assistant" or any(
-                    message.get(key)
-                    for key in ("reasoning_content", "reasoning", "refusal", "function_call")
-                ):
-                    raise ValueError
-                calls = message.get("tool_calls") or []
-                if calls and not tools:
-                    raise ValueError
-                logging.getLogger("agentic_ai.agents.chat").info(
-                    json.dumps(
-                        {
-                            "component": "readonly-chat",
-                            "state": "REPLY_RECEIVED",
-                            "toolCount": len(calls),
-                            "normalStop": reason in {"stop", "tool_calls"},
-                            "textLength": len(message.get("content") or ""),
-                        }
-                    )
-                )
-                if reason != ("tool_calls" if calls else "stop"):
-                    raise ValueError
-                parsed = []
-                for call in calls:
-                    if call["type"] != "function":
+                    payload = json.loads(raw)
+                    if meter is not None and isinstance(payload, dict):
+                        meter.observe(payload.get("usage"), payload.get("id"))
+                    choices = payload["choices"]
+                    if len(choices) != 1 or choices[0]["index"] != 0 or "error" in payload:
                         raise ValueError
-                    parsed.append(
-                        {
-                            "name": call["function"]["name"],
-                            "args": json.loads(call["function"]["arguments"]),
-                            "id": call["id"],
-                            "type": "tool_call",
-                        }
+                    message, reason = choices[0]["message"], choices[0]["finish_reason"]
+                    if message["role"] != "assistant" or any(
+                        message.get(key)
+                        for key in ("reasoning_content", "reasoning", "refusal", "function_call")
+                    ):
+                        raise ValueError
+                    calls = message.get("tool_calls") or []
+                    if calls and not tools:
+                        raise ValueError
+                    logging.getLogger("agentic_ai.agents.chat").info(
+                        json.dumps(
+                            {
+                                "component": "readonly-chat",
+                                "state": "REPLY_RECEIVED",
+                                "toolCount": len(calls),
+                                "normalStop": reason in {"stop", "tool_calls"},
+                                "textLength": len(message.get("content") or ""),
+                            }
+                        )
                     )
-                return validate_reply(
-                    AIMessage(content=message.get("content") or "", tool_calls=parsed)
-                )
+                    if reason != ("tool_calls" if calls else "stop"):
+                        raise ValueError
+                    parsed = []
+                    for call in calls:
+                        if call["type"] != "function":
+                            raise ValueError
+                        parsed.append(
+                            {
+                                "name": call["function"]["name"],
+                                "args": json.loads(call["function"]["arguments"]),
+                                "id": call["id"],
+                                "type": "tool_call",
+                            }
+                        )
+                    return validate_reply(
+                        AIMessage(content=message.get("content") or "", tool_calls=parsed)
+                    )
+            except UsageError as failure:
+                raise QaError(
+                    QaCode.BUDGET_EXCEEDED
+                    if failure.code == UsageCode.BUDGET_EXCEEDED
+                    else QaCode.MODEL_UNAVAILABLE
+                ) from None
             except (httpx.HTTPError, TimeoutError):
                 raise QaError(QaCode.MODEL_UNAVAILABLE) from None
             except (ValueError, KeyError, TypeError, UnicodeError, AttributeError):

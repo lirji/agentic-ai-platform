@@ -5,8 +5,6 @@ import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.processing.KnowledgeProcessor;
 import com.lrj.agentic.contract.knowledge.Extraction;
 import com.lrj.agentic.knowledge.domain.processing.PreparedBatch;
-import com.lrj.agentic.knowledge.domain.processing.ProcessingProfile;
-import com.lrj.agentic.knowledge.domain.processing.ProcessingProtocol;
 import com.lrj.agentic.knowledge.domain.processing.DocumentExtractor;
 import com.lrj.agentic.knowledge.domain.processing.PreparationStore;
 import com.lrj.agentic.knowledge.domain.processing.ProcessingClaim;
@@ -57,10 +55,7 @@ public class IngestionRunner {
         checkInterrupted();
         PreparedBatch prepared;
         if (claim.prepared() == null) {
-            prepared = ProcessingProtocol.GENERATION_SCHEMA.equals(claim.job().preparationSchema())
-                    ? processor.prepareGeneration(claim.job(), source, extraction).validated(claim.job(), source, extraction)
-                    : extraction == null ? processor.prepare(claim.job(), source).validated(claim.job(), source)
-                    : processor.prepareStructured(claim.job(), source, extraction).validated(claim.job(), source, extraction);
+            prepared = processor.prepareClaim(claim, source, extraction);
             checkInterrupted();
             var reference = storage.save(claim.job(), prepared);
             claim = repository.prepared(claim, reference, prepared, extraction);

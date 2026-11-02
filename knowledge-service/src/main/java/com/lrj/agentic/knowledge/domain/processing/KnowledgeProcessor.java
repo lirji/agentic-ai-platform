@@ -9,6 +9,14 @@ import java.util.List;
 
 /** AI 仅计算，任何实现都没有业务数据库或检索写权限。 */
 public interface KnowledgeProcessor {
+    /** 正式worker传递原领取；适配器可据此签发预算证明，旧测试实现仍复用原处理协议。 */
+    default PreparedBatch prepareClaim(ProcessingClaim claim, byte[] source, Extraction extraction) {
+        Ingestion job = claim.job();
+        return ProcessingProtocol.GENERATION_SCHEMA.equals(job.preparationSchema())
+                ? prepareGeneration(job, source, extraction).validated(job, source, extraction)
+                : extraction == null ? prepare(job, source).validated(job, source)
+                : prepareStructured(job, source, extraction).validated(job, source, extraction);
+    }
     /** 准备响应必须由调用方完整验证后才可提交。 */
     PreparedDocument prepare(Ingestion job, byte[] source);
     /** v1 实现不得把 PDF 静默降级为原文本；兼容适配器需显式实现 v2。 */

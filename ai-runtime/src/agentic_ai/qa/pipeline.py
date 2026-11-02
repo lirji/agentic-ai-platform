@@ -29,6 +29,7 @@ from agentic_ai.tasks.client import CentralTaskClient
 from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.evidence import EvidenceRegistration
 from agentic_ai.tasks.models import QaStage, TaskEventType, TaskLease, TaskStatus
+from agentic_ai.usage.context import usage_scope
 
 STREAM_BATCH_CHARS = 128
 SYSTEM_PROMPT = (
@@ -217,7 +218,9 @@ class QaPipeline:
         await self._progress(QaStage.RETRIEVING)
         await self.assert_active()
         retriever = AuthorizedRetriever(self.knowledge, tuple(self.question.document_ids))
-        hits = await retrieve_evidence(retriever, self.retrieval_question(state))
+        # 同题恢复沿用步骤，评测不同题目和主动补充检索不会合并成同一operation。
+        with usage_scope(f"{self.operation_scope}:retrieve"):
+            hits = await retrieve_evidence(retriever, self.retrieval_question(state))
         return {"evidence": [hit.model_dump(mode="json", by_alias=True) for hit in hits]}
 
     def retrieval_question(self, state: GraphState) -> str:
@@ -253,9 +256,7 @@ class QaPipeline:
         await self.assert_active()
         draft, pending, batch = "", "", 0
         async with aclosing(
-            self.chat.stream(
-                messages, f"{self.operation_scope}:{self.binding.task.task_id}:{self.binding.epoch}"
-            )
+            self.chat.stream(messages, f"{self.operation_scope}:{self.binding.task.task_id}")
         ) as stream:
             async for text in stream:
                 if not isinstance(text, str) or len(draft) + len(text) > MAX_ANSWER:

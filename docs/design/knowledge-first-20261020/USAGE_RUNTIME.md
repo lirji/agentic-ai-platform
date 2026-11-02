@@ -1,6 +1,33 @@
 # S15B 用量运行说明
 
-当前为实施中：Tasks预算API、非Web管理CLI及旧账本冻结已在隔离测试库验证；Python CENTRAL出口、Knowledge签名、用户视图和全量验收仍在接入。默认LEGACY_LOCAL，不能据本页直接切换真实付费调用。沿用[设计](USAGE_DESIGN.md)和[契约](USAGE_CONTRACTS.md)，不引入新服务、数据库或费用授权。
+当前为实施中：Tasks预算API、非Web管理CLI及旧账本冻结已在隔离测试库验证；Python CENTRAL出口、Task/Knowledge归因及Java→Python→Tasks联合链路已完成隔离验证；用户视图和整体验收仍在接入。默认LEGACY_LOCAL，不能据本页直接切换真实付费调用。沿用[设计](USAGE_DESIGN.md)和[契约](USAGE_CONTRACTS.md)，不引入新服务、数据库或费用授权。
+
+## 运行模式与归因
+
+Tasks设置`USAGE_MODE=CENTRAL`，并以`usage.knowledge-public-key`引用Knowledge既有`knowledge-ai-public.pem`公钥（URI形式）；其worker公钥沿用原Task worker角色。Knowledge设置`USAGE_MODE=CENTRAL`、`USAGE_EMBEDDING_PROFILE`，只有已明确启用重排时提供独立`USAGE_RERANK_PROFILE`；两类profile不能相同。所有引用必须预先由受控CLI登记，不会自动创建或加额。关闭模式下配置profile也拒绝，防止以为已切换但仍使用旧账本。
+
+每个Python HTTP/worker进程设置`AI_USAGE_MODE=CENTRAL`及`AI_USAGE_CONFIG=/absolute/private/usage.json`。文件必须0600、普通文件、绝对路径，示例只表达字段形状：
+
+```json
+{
+  "schemaVersion": "usage-runtime-v1",
+  "endpoint": "http://127.0.0.1:28087",
+  "workerId": "operator-assigned-instance-id",
+  "privateKey": "/absolute/private/task-worker-private.pem",
+  "profiles": {
+    "CHAT": {"profileId": "approved-chat-profile", "model": "approved-provider-model"},
+    "EMBEDDING": {"profileId": "approved-embedding-profile", "model": "text-embedding-v4"}
+  }
+}
+```
+
+只登记该进程实际批准的种类；启动时核对所有启用模型与profile映射。CHAT的model对应`ChatConfig.approved_model`，不填LiteLLM路由别名。HTTP进程与任务worker使用不同的配置/workerId；每个并行实例必须有独立执行身份。任务worker领取与usage写入使用同一workerId，仍由epoch限制旧领取；stepKey不含epoch。CENTRAL不会读取或写入旧Chat/Embedding/Rerank预算文件，任何配置/准入错误均不回退。现有单次输出、价格有效期、工具次数、研究上限和资料权限仍生效。Rerank能力查询在CENTRAL只报告显式配置，实际发送前还须中央原子准入，不对外提供共享资金余额。
+
+Task模型调用从真实租约绑定租户、taskId、epoch和用途，Tasks在事务中解析原用户。题目、阶段、补充搜索序号及Embedding批号参与稳定步骤身份；同一步骤恢复仍需新attempt，已发送的旧尝试保留计量或未知占额。
+
+Knowledge使用原处理签名密钥签发独立audience/scope的30秒证明，Python及Tasks分别验签。入库上下文绑定原jobId/owner，签发前以原领取重验有效租约和当前文档意图；旧prepare方法不能在CENTRAL绕过此检查。搜索绑定已认证的实际查询用户，每次独立请求有独立contextId。共享读者仍归因读者本人。证明只含允许的kind/profile/步骤前缀，不含正文、资金池或价格。
+
+没有用旧token换新token的接口。证明过期后禁止后续批次新的预留/dispatch；已获许可的尝试允许原worker迟到报告。需要恢复时由新一轮可信业务入口重新验权签发，不自动续签或重发模型。准备包仍由原发布流程独立验证。
 
 ## 受控管理命令
 
@@ -56,3 +83,6 @@ uv run --frozen python -m agentic_ai.runtime.ledger_freeze \
 提供方计量的资料核对（2026-11-02）：[DeepSeek Chat](https://api-docs.deepseek.com/api/create-chat-completion/)使用输入/输出token字段，流式计量取完整末尾报告；[百炼Embedding兼容接口](https://help.aliyun.com/zh/model-studio/embedding-interfaces-compatible-with-openai)及[文本Rerank](https://help.aliyun.com/en/model-studio/text-rerank-api)提供total_tokens。这只支持解析规则，不证明当前路由每次都返回计量；缺失、部分、矛盾或无效维度继续UNKNOWN。没有据此次资料查询改变真实模型、费率或额度。
 
 V6/V7只应用`agentic_tasks_test`；已应用迁移不可修改。最新核心验证52项相关Java单元、Tasks全量60项真实数据库/HTTP集成通过；枚举整改后的用量20IT复验通过。Python全量677通过/97条件跳过，受影响206项复验通过、mypy86源码通过。真实jar非Web CLI完成合成账本初始化+导入+重复重放，原付费账本摘要一致。中间日志在`.logs/s15b-admin-it.log`、`.logs/s15b-freeze-python.log`、`.logs/s15b-admin-cli-*.log`；当前证据不等同S15B整体验收完成。
+
+
+模型接入批次验证：Knowledge 126项单元及35项真实MySQL/HTTP/搜索集成通过，无跳过（`.logs/s15b-knowledge-usage-it-r2.log`）；Python全量733通过/97条件跳过，新增保守计量与factory检查后120项受影响测试通过（`.logs/s15b-outlets-final-python.log`），mypy88源码通过。真实Java Knowledge→Python API→Tasks/MySQL联调证明两个用户独立归因、本人读取和中央不可用前置拒绝，模型仅本地传输替身（`.local/s15b-knowledge-joint.json`）；原付费账本摘要未变。

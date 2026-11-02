@@ -11,10 +11,14 @@ from agentic_ai.adapters.openai_embedding import OpenAIEmbeddingAdapter
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL
 from agentic_ai.retrieval.rerank_client import RerankClient
+from agentic_ai.retrieval.rerank_config import RerankConfig
 from agentic_ai.runtime.embedding_budget import EmbeddingBudget
 from agentic_ai.runtime.embedding_config import EmbeddingConfig
 from agentic_ai.runtime.processing_config import ProcessingConfig
 from agentic_ai.runtime.retrieval_config import RetrievalHttpConfig
+from agentic_ai.usage.config import load_gate
+from agentic_ai.usage.gate import UsageGate
+from agentic_ai.usage.models import Kind
 
 
 class LivenessReply(BaseModel):
@@ -30,6 +34,12 @@ def create_app() -> FastAPI:
     retrieval = RetrievalHttpConfig.from_environment()
     client: OpenAIEmbeddingAdapter | None = None
     reranker: RerankClient | None = None
+    usage: UsageGate | None = None
+    rerank_config = (
+        RerankConfig.from_file(retrieval.rerank_config)
+        if retrieval is not None and retrieval.rerank_config is not None
+        else None
+    )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -41,6 +51,8 @@ def create_app() -> FastAPI:
                 await reranker.aclose()
             if client is not None:
                 await client.aclose()
+            if usage is not None:
+                await usage.client.aclose()
 
     app = FastAPI(
         title="Agentic AI Runtime",
@@ -54,11 +66,15 @@ def create_app() -> FastAPI:
         embedding = EmbeddingConfig.from_environment()
         if embedding.model != EMBEDDING_MODEL or embedding.dimensions != EMBEDDING_DIMENSIONS:
             raise ProcessingError(ProcessingCode.CONFIGURATION_INVALID)
-        budget = EmbeddingBudget.from_environment()
-        if retrieval is not None and budget is None:
+        models = {Kind.EMBEDDING: embedding.model}
+        if rerank_config is not None and rerank_config.enabled:
+            models[Kind.RERANK] = rerank_config.model
+        usage = load_gate(models)
+        budget = EmbeddingBudget.from_environment() if usage is None else None
+        if retrieval is not None and budget is None and usage is None:
             # 当前检索迁移复用已授权累计账本，缺配置不能成为无预算的新付费入口。
             raise ProcessingError(ProcessingCode.CONFIGURATION_INVALID)
-        client = OpenAIEmbeddingAdapter(embedding, budget=budget)
+        client = OpenAIEmbeddingAdapter(embedding, budget=budget, usage=usage)
     if config is not None:
         # 延迟载入使关闭处理功能的 S0 探针无需初始化框架或模型资源。
         from agentic_ai.api.processing import processing_router
@@ -76,15 +92,14 @@ def create_app() -> FastAPI:
         from agentic_ai.retrieval.client import RetrievalClient
         from agentic_ai.retrieval.consumer import RetrievalUseCase
         from agentic_ai.retrieval.deadline import RetrievalCapacity
-        from agentic_ai.retrieval.rerank_config import RerankConfig
         from agentic_ai.retrieval.retriever import CandidatePort
 
         assert client is not None
         verifier = ServiceVerifier.from_file(retrieval.public_key_path)
         key = KnowledgeClient.load_private_key(retrieval.knowledge_private_key)
         endpoint = retrieval.knowledge_endpoint
-        if retrieval.rerank_config is not None:
-            reranker = RerankClient(RerankConfig.from_file(retrieval.rerank_config))
+        if rerank_config is not None:
+            reranker = RerankClient(rerank_config, usage=usage)
 
         @asynccontextmanager
         async def candidates(identity: ServiceIdentity) -> AsyncIterator[CandidatePort]:

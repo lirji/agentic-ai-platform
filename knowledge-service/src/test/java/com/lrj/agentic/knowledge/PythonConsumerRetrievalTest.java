@@ -9,6 +9,7 @@ import com.lrj.agentic.knowledge.domain.retrieval.ConsumerRetrieval;
 import com.lrj.agentic.knowledge.infrastructure.processing.*;
 import com.lrj.agentic.security.Caller;
 import com.lrj.agentic.security.IdentityProtocol;
+import com.lrj.agentic.contract.ModelUsageProtocol;
 import com.sun.net.httpserver.HttpServer;
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.propagation.Propagator;
@@ -21,6 +22,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
@@ -32,22 +35,26 @@ class PythonConsumerRetrievalTest {
     private final ConsumerRetrieval.Search input = new ConsumerRetrieval.Search(ConsumerRetrieval.INPUT,
             "资料", null, 5, "LLAMA_RRF_V1");
 
-    @Test void signedIdentityAndSafeErrorsAreVerifiedAcrossRealHttp() throws Exception {
+    @ParameterizedTest @EnumSource(KnowledgeUsageProperties.Mode.class)
+    void signedIdentityAndSafeErrorsAreVerifiedAcrossRealHttp(KnowledgeUsageProperties.Mode mode) throws Exception {
         var keys = KeyPairGenerator.getInstance("RSA"); keys.initialize(2048); var key = keys.generateKeyPair();
         var decoder = NimbusJwtDecoder.withPublicKey((RSAPublicKey) key.getPublic()).build();
         var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         var response = new AtomicReference<>(new BoundedHttp.Reply(200,
                 json.write(new ConsumerRetrieval.Result(ConsumerRetrieval.RESULT, input.strategy(), "EMPTY", false, 1L, List.of()))));
         var received = new AtomicReference<String>(); var payload = new AtomicReference<byte[]>();
+        var receivedProof = new AtomicReference<String>();
         server.createContext("/", exchange -> {
             received.set(exchange.getRequestHeaders().getFirst(IdentityProtocol.INTERNAL_HEADER));
+            receivedProof.set(exchange.getRequestHeaders().getFirst(ModelUsageProtocol.CONTEXT_HEADER));
             payload.set(exchange.getRequestBody().readAllBytes());
             var reply = response.get(); exchange.sendResponseHeaders(reply.status(), reply.body().length);
             exchange.getResponseBody().write(reply.body()); exchange.close();
         });
         server.start();
         var properties = properties(URI.create("http://127.0.0.1:" + server.getAddress().getPort()), key);
-        var identity = new PythonServiceIdentity(properties);
+        var identity = new PythonServiceIdentity(properties, new KnowledgeUsageProperties(mode,
+                mode == KnowledgeUsageProperties.Mode.CENTRAL ? "fixture-embedding" : null, null));
         var client = new PythonConsumerRetrieval(properties, json, identity, Tracer.NOOP, Propagator.NOOP, true);
         try {
             assertThat(client.search(owner, input, Duration.ofSeconds(2)).validated(input).mode()).isEqualTo("EMPTY");
@@ -58,6 +65,18 @@ class PythonConsumerRetrievalTest {
             assertThat(jwt.getClaimAsString("azp")).isEqualTo(ProcessingProtocol.AI_CALLER);
             assertThat(jwt.getClaimAsString(IdentityProtocol.TENANT_CLAIM)).isEqualTo(owner.tenantId());
             assertThat(jwt.getClaimAsString(IdentityProtocol.SCOPE_CLAIM)).isEqualTo(ConsumerRetrieval.SCOPE);
+            if (mode == KnowledgeUsageProperties.Mode.CENTRAL) {
+                var proof = decoder.decode(receivedProof.get());
+                assertThat(proof.getClaimAsString("iss")).isEqualTo(ModelUsageProtocol.CONTEXT_ISSUER);
+                assertThat(proof.getAudience()).containsExactly(ModelUsageProtocol.CONTEXT_AUDIENCE);
+                assertThat(proof.getSubject()).isEqualTo(owner.userId());
+                assertThat(proof.getClaimAsString("tenant_id")).isEqualTo(owner.tenantId());
+                assertThat(proof.getClaimAsString("purpose")).isEqualTo("SEARCH");
+                assertThat(proof.getClaimAsStringList("kinds")).containsExactly("EMBEDDING");
+                assertThat(proof.getClaimAsStringList("profiles")).containsExactly("fixture-embedding");
+                assertThat(Duration.between(proof.getIssuedAt(), proof.getExpiresAt())).isEqualTo(Duration.ofSeconds(30));
+                assertThat(proof.getClaims()).doesNotContainKeys("accountId", "query", "apiKey");
+            } else { assertThat(receivedProof.get()).isNull(); }
             var body = mapper.readTree(payload.get());
             assertThat(body.size()).isEqualTo(6);
             assertThat(body.get("timeoutMs").asLong()).isBetween(1L, 2000L);

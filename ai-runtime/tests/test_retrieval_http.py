@@ -272,8 +272,8 @@ def test_app_factory_shares_one_use_case_and_closes_owner_clients_and_embedding(
 
     embedding.aclose = close
 
-    def build_embedding(config, *, budget):
-        assert budget is marker
+    def build_embedding(config, *, budget, usage):
+        assert budget is marker and usage is None
         return embedding
 
     monkeypatch.setattr(entrypoint, "OpenAIEmbeddingAdapter", build_embedding)
@@ -324,7 +324,11 @@ def test_enabled_http_cannot_start_without_existing_embedding_budget(monkeypatch
     from agentic_ai.processing.errors import ProcessingError
 
     monkeypatch.setattr(entrypoint.ProcessingConfig, "from_environment", lambda: None)
-    monkeypatch.setattr(entrypoint.RetrievalHttpConfig, "from_environment", lambda: object())
+    monkeypatch.setattr(
+        entrypoint.RetrievalHttpConfig,
+        "from_environment",
+        lambda: SimpleNamespace(rerank_config=None),
+    )
     monkeypatch.setattr(
         entrypoint.EmbeddingConfig,
         "from_environment",

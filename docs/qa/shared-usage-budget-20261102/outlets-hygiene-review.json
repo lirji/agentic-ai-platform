@@ -1,0 +1,24 @@
+{
+  "status": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "scopeCorrection": "core-hygiene-review.json",
+  "globalSkillFilesModified": false,
+  "limitations": [
+    "Java未配置formatter/专用静态分析；Python Ruff和mypy另行通过",
+    "机器工具将新authorizeUsage事务检查标N/A；人工已核对短事务只读当前意图/租约，签名与HTTP均在事务外，并由35IT覆盖"
+  ],
+  "findings": [
+    {
+      "findingId": "HF-001",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "ai-runtime/src/agentic_ai/usage/knowledge.py",
+      "line": 17,
+      "excerpt": "MAX_CONTEXT_BYTES = 8192",
+      "message": "business-significant number inline; classify as constant / configuration / enum",
+      "review": "ACCEPTED_WITH_EVIDENCE",
+      "reason": "已用MAX_CONTEXT_BYTES命名为8192字节边界，与原ServiceVerifier及Java身份协议一致；不是散落业务金额。"
+    }
+  ]
+}

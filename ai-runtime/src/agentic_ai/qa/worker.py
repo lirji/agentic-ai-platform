@@ -51,10 +51,19 @@ from agentic_ai.tasks.errors import TaskRuntimeCode, TaskRuntimeError
 from agentic_ai.tasks.execution import MAX_EXECUTION_SECONDS, MAX_GRAPH_STEPS, run_claimed_graph
 from agentic_ai.tasks.models import SubjectId, TaskLease, TaskView
 from agentic_ai.tasks.postgres import CheckpointConfig, PostgresCheckpoints
+from agentic_ai.usage.config import load_gate
+from agentic_ai.usage.context import UsageContext, bind_usage
+from agentic_ai.usage.models import ContextType, Kind, Purpose
 
 HEARTBEAT_SECONDS = 10
 POLL_SECONDS = 2
 LOGGER = logging.getLogger("agentic_ai.qa.worker")
+USAGE_PURPOSES = {
+    "KNOWLEDGE_QA": Purpose.QA,
+    "RESEARCH": Purpose.RESEARCH,
+    "READONLY_ASSISTANT": Purpose.ASSISTANT,
+    "KNOWLEDGE_EVALUATION": Purpose.EVALUATION,
+}
 
 
 class WorkerConfig(BaseModel):
@@ -228,7 +237,18 @@ async def execute_qa_task(
             pipeline = WorkPipeline(binding, central, knowledge, tool_chat)
         else:
             pipeline = QaPipeline(binding, central, knowledge, chat)
-        return await _run_with_heartbeat(pipeline, checkpoints)
+        # 来源只取中央租约；actor由Tasks在准入事务中解析，不能由模型或输入指定。
+        with bind_usage(
+            UsageContext(
+                binding.tenant_id,
+                ContextType.TASK,
+                binding.task.task_id,
+                binding.epoch,
+                USAGE_PURPOSES[binding.task.kind],
+                "task:",
+            )
+        ):
+            return await _run_with_heartbeat(pipeline, checkpoints)
     except Exception as error:
         LOGGER.warning(
             json.dumps(
@@ -315,10 +335,41 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
         loop.add_signal_handler(sig, stop.set)
     try:
         async with AsyncExitStack() as stack:
+            from agentic_ai.adapters.openai_embedding import OpenAIEmbeddingAdapter
+            from agentic_ai.processing.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL
+            from agentic_ai.retrieval.deadline import RetrievalCapacity
+            from agentic_ai.retrieval.rerank_client import RerankClient
+            from agentic_ai.retrieval.rerank_config import RerankConfig
+            from agentic_ai.runtime.embedding_budget import EmbeddingBudget
+            from agentic_ai.runtime.embedding_config import EmbeddingConfig
+
+            chat_config = ChatConfig.from_file(config.chat_config)
+            chat_config.check_pricing()
+            embedding_config = (
+                EmbeddingConfig.from_environment() if config.retrieval_enabled else None
+            )
+            rerank_config = (
+                RerankConfig.from_file(config.rerank_config)
+                if config.rerank_config is not None
+                else None
+            )
+            models = {Kind.CHAT: chat_config.approved_model}
+            if embedding_config is not None:
+                if (
+                    embedding_config.model != EMBEDDING_MODEL
+                    or embedding_config.dimensions != EMBEDDING_DIMENSIONS
+                ):
+                    raise QaError(QaCode.CONFIG_INVALID)
+                models[Kind.EMBEDDING] = embedding_config.model
+            if rerank_config is not None and rerank_config.enabled:
+                models[Kind.RERANK] = rerank_config.model
+            usage = load_gate(models)
+            if usage is not None:
+                stack.push_async_callback(usage.client.aclose)
             central = CentralTaskClient.from_file(
                 config.tasks_endpoint,
                 config.tenant_id,
-                "qa-" + str(uuid4()),
+                usage.client.worker_id if usage is not None else "qa-" + str(uuid4()),
                 config.task_private_key,
             )
             stack.push_async_callback(central.aclose)
@@ -334,40 +385,28 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                 if config.evaluation_private_key is not None
                 else None
             )
-            chat_config = ChatConfig.from_file(config.chat_config)
             evaluation_profile = model_profile(chat_config) if evaluation_key is not None else None
-            budget = ChatBudget(chat_config)
-            budget.check_available()
+            budget = ChatBudget(chat_config) if usage is None else None
+            if budget is not None:
+                budget.check_available()
             async with PostgresCheckpoints.open(config.checkpoints) as storage:
                 await storage.verify_ready()
-            chat = ChatClient(chat_config, budget)
+            chat = ChatClient(chat_config, budget, usage=usage)
             stack.push_async_callback(chat.aclose)
-            tool_chat = ToolChatClient(chat_config, budget)
+            tool_chat = ToolChatClient(chat_config, budget, usage=usage)
             stack.push_async_callback(tool_chat.aclose)
             retrieval = None
-            if config.retrieval_enabled:
+            if embedding_config is not None:
                 # 单worker只装配一个许可；与单HTTP进程的一个许可合计为契约总量2。
-                from agentic_ai.adapters.openai_embedding import OpenAIEmbeddingAdapter
-                from agentic_ai.processing.models import EMBEDDING_DIMENSIONS, EMBEDDING_MODEL
-                from agentic_ai.retrieval.deadline import RetrievalCapacity
-                from agentic_ai.retrieval.rerank_client import RerankClient
-                from agentic_ai.retrieval.rerank_config import RerankConfig
-                from agentic_ai.runtime.embedding_budget import EmbeddingBudget
-                from agentic_ai.runtime.embedding_config import EmbeddingConfig
-
-                embedding_config = EmbeddingConfig.from_environment()
-                if (
-                    embedding_config.model != EMBEDDING_MODEL
-                    or embedding_config.dimensions != EMBEDDING_DIMENSIONS
-                ):
-                    raise QaError(QaCode.CONFIG_INVALID)
                 embedding = OpenAIEmbeddingAdapter(
-                    embedding_config, budget=EmbeddingBudget.from_environment()
+                    embedding_config,
+                    budget=EmbeddingBudget.from_environment() if usage is None else None,
+                    usage=usage,
                 )
                 stack.push_async_callback(embedding.aclose)
                 reranker = None
-                if config.rerank_config is not None:
-                    reranker = RerankClient(RerankConfig.from_file(config.rerank_config))
+                if rerank_config is not None:
+                    reranker = RerankClient(rerank_config, usage=usage)
                     stack.push_async_callback(reranker.aclose)
                 retrieval = RetrievalUseCase(embedding, RetrievalCapacity(1), reranker)
             if check_only:
@@ -391,7 +430,8 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
             )
             next_graph = 0
             while not stop.is_set():
-                budget.check_available()
+                if budget is not None:
+                    budget.check_available()
                 try:
                     binding = await central.claim(graph_versions[next_graph])
                     next_graph = (next_graph + 1) % len(graph_versions)

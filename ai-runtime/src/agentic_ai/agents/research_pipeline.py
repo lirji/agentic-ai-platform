@@ -133,7 +133,7 @@ class ResearchPipeline(GenerationWorkPipeline):
                     {"role": "user", "content": self.request.question},
                 ],
                 [convert_to_openai_tool(tool) for tool in tools],
-                f"research-plan:{self.binding.task.task_id}:{self.binding.epoch}",
+                f"research-plan:{self.binding.task.task_id}",
             )
         )
         try:

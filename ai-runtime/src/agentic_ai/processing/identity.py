@@ -11,6 +11,9 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.models import OwnedRequest
+from agentic_ai.usage.context import UsageContext
+from agentic_ai.usage.knowledge import verify_context
+from agentic_ai.usage.models import Purpose
 
 INTERNAL_HEADER = "X-Internal-Token"
 SERVICE_ISSUER = "urn:agentic-ai:knowledge"
@@ -44,6 +47,23 @@ class ServiceVerifier:
         if public_key.key_size < 2048:
             raise ProcessingError(ProcessingCode.CONFIGURATION_INVALID)
         self._key = public_key
+
+    def usage_context(
+        self,
+        token: str | None,
+        identity: ServiceIdentity,
+        purpose: Purpose,
+        context_id: str | None = None,
+    ) -> UsageContext:
+        """复用Knowledge既有公钥，独立验签usage受众，防止把普通服务JWT当预算证明。"""
+        return verify_context(
+            token,
+            self._key,
+            tenant_id=identity.tenant_id,
+            owner_id=identity.owner_id,
+            purpose=purpose,
+            context_id=context_id,
+        )
 
     @classmethod
     def from_file(cls, path: Path) -> "ServiceVerifier":

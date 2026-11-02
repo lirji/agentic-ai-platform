@@ -97,7 +97,7 @@ class ContextualQaPipeline(GenerationQaPipeline):
             self.chat,
             self.question,
             context,
-            f"qa-rewrite:{self.binding.task.task_id}:{self.binding.epoch}",
+            f"qa-rewrite:{self.binding.task.task_id}",
         )
         await self.assert_active()
         await self._context()

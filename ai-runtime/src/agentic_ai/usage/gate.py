@@ -11,7 +11,7 @@ from types import MappingProxyType
 from pydantic import ValidationError
 
 from agentic_ai.usage.client import CentralUsageClient
-from agentic_ai.usage.context import current_usage
+from agentic_ai.usage.context import current_usage, scoped_operation
 from agentic_ai.usage.models import (
     Attempt,
     Kind,
@@ -68,6 +68,9 @@ class MeteredAttempt:
     def observe(self, usage: object, provider_request_id: object = None) -> None:
         """SSE尾块或JSON响应可带usage；没有可靠字段时维持UNKNOWN。"""
         parsed = provider_usage(self.attempt.kind, usage)
+        if usage is not None and parsed is None:
+            # 末尾计量互相矛盾或格式无效时不能挑选较有利的一份；空缺中间块不作计量。
+            self.inconsistent = True
         if parsed is not None:
             if self.tokens is not None and self.tokens != parsed:
                 self.inconsistent = True
@@ -125,7 +128,7 @@ class UsageGate:
             context,
             kind=kind,
             profile=profile,
-            scope=scope,
+            scope=scoped_operation(scope),
             body=body,
             max_output_tokens=max_output_tokens,
             query_bytes=query_bytes,

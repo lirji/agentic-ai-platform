@@ -12,6 +12,7 @@ from pydantic import Field, ValidationError
 from starlette.requests import ClientDisconnect
 
 from agentic_ai.api.processing import EMBEDDING_HTTP_STATUS, Admission, until_disconnect
+from agentic_ai.api.usage_context import knowledge_usage
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.identity import INTERNAL_HEADER, ServiceIdentity, ServiceVerifier
 from agentic_ai.rag.errors import EmbeddingError
@@ -25,6 +26,7 @@ from agentic_ai.retrieval.models import (
 )
 from agentic_ai.retrieval.rerank_client import RerankPort
 from agentic_ai.retrieval.retriever import CandidatePort
+from agentic_ai.usage.models import Purpose
 
 RETRIEVE_SCOPE = "knowledge:retrieve"
 MAX_SEARCH_BODY = 32 * 1024
@@ -120,14 +122,15 @@ def retrieval_router(
                         body.extend(chunk)
                     command = SearchCommand.from_wire(bytes(body))
                     deadline = min(deadline, started + command.timeout_ms / 1000)
-                    async with clients(owner) as knowledge:
-                        result = await until_disconnect(
-                            request,
-                            use_case.execute(
-                                command.query_input(), knowledge, root_deadline=deadline
-                            ),
-                        )
-                    content = result.public().model_dump(mode="json", by_alias=True)
+                    with knowledge_usage(request, verifier, owner, Purpose.SEARCH):
+                        async with clients(owner) as knowledge:
+                            result = await until_disconnect(
+                                request,
+                                use_case.execute(
+                                    command.query_input(), knowledge, root_deadline=deadline
+                                ),
+                            )
+                        content = result.public().model_dump(mode="json", by_alias=True)
                 else:
                     reason: RetrievalCode | None = RetrievalCode.RERANK_DISABLED
                     if reranker is not None:

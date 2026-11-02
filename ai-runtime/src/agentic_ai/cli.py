@@ -32,6 +32,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         from agentic_ai.qa.errors import QaError
         from agentic_ai.qa.worker import WorkerConfig, run_worker
         from agentic_ai.tasks.errors import TaskRuntimeError
+        from agentic_ai.usage.models import UsageError
 
         logging.basicConfig(level=logging.INFO, format="%(message)s")
         try:
@@ -41,7 +42,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     check_only=args.command == "check-qa-worker",
                 )
             )
-        except (QaError, TaskRuntimeError) as error:
+        except (QaError, TaskRuntimeError, UsageError) as error:
             print(json.dumps({"code": error.code.value}), file=sys.stderr)
             return EXIT_CONFIGURATION_ERROR
         return 0

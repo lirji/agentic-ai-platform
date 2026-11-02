@@ -1,9 +1,9 @@
-# S15B 共享预算核心实施证据
+# S15B 共享预算实施批次证据
 
-当前仅核心逻辑批次验证通过，S15B仍IN_PROGRESS，完整51项未完成。这份记录支持同一任务分批提交，不代替UA01–UA16最终TEST_RESULT、浏览器验收或生产启用。
+当前核心与模型出口/归因批次验证通过，S15B仍IN_PROGRESS，完整51项未完成。这份记录支持同一任务分批提交，不代替UA01–UA16最终TEST_RESULT、浏览器验收或生产启用。
 
-- 已实现：Tasks持久用量/短事务/身份与安全查询、V6/V7、非Web受控账户配置及冻结旧账本导入、Python共享许可客户端/上下文/计量、Embedding逐批接入；所有默认权威仍为LEGACY_LOCAL。当前CENTRAL未接好的入口会失败，不能自动回退付费旧账本。
-- 尚未完成：Chat/Agent/Rerank出口、Task入口与稳定scope装配、Knowledge业务证明签发/转发、React本人用量、完整故障/联合验收及Git main交付。
+- 已实现：Tasks持久用量/短事务/身份与安全查询、V6/V7、非Web受控账户配置及冻结旧账本导入、Python全部现有模型出口、Task稳定上下文和Knowledge独立短时证明签发/验签/转发；默认LEGACY_LOCAL，CENTRAL故障不能自动回退旧账本。
+- 尚未完成：React本人用量、完整UA矩阵归档/运行验收及Git main交付。Judge当前仍未实现/启用；缺Judge配置的共用许可请求已验证拒绝。
 - Git基线：后端1e41545，原目录分支feat/shared-usage-budget-20261102；前端main6a18e72尚未修改。源文件摘要：[core-source-evidence.json](core-source-evidence.json)。
 
 | 验证 | 实际结果 / 证据 |
@@ -22,3 +22,20 @@
 数据库表/字段注释齐全，V6/V7只应用test并固定摘要，后续改动须新迁移。原Chat与Embedding付费账本字节未变，累计占额仍为0.957092/1与0.781784/1 CNY；没有新增付费调用、Rerank/Judge授权或生产迁移。未清理测试记录、源/索引、忽略配置、密钥、日志或旧预览。
 
 保留的失败证据：初次HTTP验证的URN issuer解析错误已修复；一次Python测试文件名拼错为0执行、随后正确路径通过；mypy首次新增类型错误与修正日志均保留；原卫生工具误判及有依据的范围修正分别留存，不将失败日志覆盖成成功。
+
+
+## 模型出口与归因批次（核心5531976之后）
+
+Chat/ToolChat/Rerank与Embedding统一先预留再取一次dispatch；流式只读末尾计量，缺失/部分/矛盾计量UNKNOWN。格式不合法但已有可信计量仍结算真实成本，取消不会退额。CENTRAL实际运行工厂不访问旧预算；任务和usage使用同一受控workerId。稳定阶段/题目/补充搜索/批次scope不含epoch，输入摘要绑定实际外发字节；上下文随协程隔离并恢复。
+
+Knowledge原处理密钥签发独立usage受众的30秒证明。入库由原领取重新检查活跃文档意图及租约，旧prepare入口在CENTRAL拒绝绕过；搜索归因当前已认证的读者。证明不授予正文权限，也不包含资金池、金额和模型凭据；过期只阻止新发送，迟到计量由原attempt身份处理。没有续签或隐式模型重试接口。新配置详见[USAGE_RUNTIME](../../design/knowledge-first-20261020/USAGE_RUNTIME.md)。
+
+| 验证 | 实际结果 / 证据 |
+| --- | --- |
+| Python全量默认回归 | 733通过/97条件跳过/34警告；`.logs/s15b-outlets-python-all.log` |
+| 后续保守计量和工厂/context检查 | 120通过，Ruff144文件检查及mypy88源码通过；`.logs/s15b-outlets-final-python.log`、`.logs/s15b-outlets-final-mypy.log` |
+| Knowledge单元与真实集成 | Knowledge126单元、关联Security10单元、35真实MySQL/HTTP/双索引IT全部通过且无跳过；`.logs/s15b-knowledge-usage-it-r2.log`。原领取/错worker/撤下/租约过期均验证 |
+| 实际Java→Python→Tasks/MySQL | 两个用户共享同一合成账户，各自10token、0.000020 CNY结算；他人查询404；停止Tasks后Knowledge返回503、模型调用数保持2。提供方仅本地HTTPX传输替身，无付费；[收据](knowledge-joint-result.json) |
+| source/hygiene | [出口批次摘要](outlets-source-evidence.json)、[卫生逐项审查](outlets-hygiene-review.json)。同原范围修正，零阻断项，Java工具限制保留 |
+
+此批次仍不等于S15B最终验收。历史核心摘要保留5531976时的版本，不覆盖为新源码证据。新增失败诊断原样保留：两项旧factory替身参数未跟随装配签名后已修复；新增Java测试误引未引入Mockito后改JDK接口替身，r2全通过；卫生CLI参数顺序首次错误，修正后通过。没有修改或新增数据库迁移，原付费账本摘要保持一致。

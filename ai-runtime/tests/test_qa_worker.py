@@ -232,6 +232,15 @@ def test_v2_routes_are_explicit_and_require_shared_retrieval(monkeypatch, kind):
         seen = []
 
         async def routed(current, _checkpoints):
+            from agentic_ai.usage.context import current_usage
+            from agentic_ai.usage.models import ContextType, Purpose
+
+            context = current_usage()
+            assert context.context_type == ContextType.TASK
+            assert context.context_id == current.binding.task.task_id
+            assert context.tenant_id == current.binding.tenant_id
+            assert context.epoch == current.binding.epoch
+            assert context.purpose == (Purpose.QA if kind == "KNOWLEDGE_QA" else Purpose.RESEARCH)
             seen.append(current)
             return current.binding.task
 

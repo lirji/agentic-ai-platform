@@ -3,6 +3,7 @@ package com.lrj.agentic.knowledge.domain.processing;
 import com.lrj.agentic.knowledge.domain.Ingestion;
 import com.lrj.agentic.knowledge.domain.IngestionStatus;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
+import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.contract.knowledge.Extraction;
 import com.lrj.agentic.security.Caller;
 import java.util.List;
@@ -14,6 +15,10 @@ public interface ProcessingRepository {
     Optional<ProcessingClaim> claim(String worker, int leaseSeconds, String tenantScope);
     /** 续租必须仍拥有有效 epoch，超时后不能自行复活。 */
     boolean heartbeat(ProcessingClaim claim, int leaseSeconds);
+    /** 签发新用量证明前重验当前文档意图与原领取，不能仅凭旧job快照续签。 */
+    default void authorizeUsage(ProcessingClaim claim) {
+        throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED);
+    }
     /** 首次接受不可变准备包与规范块；旧 owner 或重复替换均拒绝。 */
     default ProcessingClaim prepared(ProcessingClaim claim, ProcessingClaim.PreparedReference reference,
             PreparedDocument document) { return prepared(claim, reference, document, null); }

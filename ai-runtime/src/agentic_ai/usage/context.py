@@ -55,15 +55,37 @@ class UsageContext:
 
 
 _CONTEXT: ContextVar[UsageContext | None] = ContextVar("model_usage_context", default=None)
+_SCOPE: ContextVar[str] = ContextVar("model_usage_scope", default="root")
+
+
+@contextmanager
+def usage_scope(scope: str) -> Iterator[None]:
+    """绑定稳定业务阶段/题目/工具序号；与租约无关，协程退出后恢复父级。"""
+    if not re.fullmatch(r"[A-Za-z0-9._:-]{1,128}", scope):
+        raise UsageError(UsageCode.PROFILE_INVALID)
+    token = _SCOPE.set(scoped_operation(scope))
+    try:
+        yield
+    finally:
+        _SCOPE.reset(token)
+
+
+def scoped_operation(scope: str) -> str:
+    """阶段与适配器批号一起参与身份；摘要限制长度，不使用进程计数或随机值。"""
+    if not re.fullmatch(r"[A-Za-z0-9._:-]{1,128}", scope):
+        raise UsageError(UsageCode.PROFILE_INVALID)
+    return hashlib.sha256((_SCOPE.get() + ":" + scope).encode()).hexdigest()
 
 
 @contextmanager
 def bind_usage(context: UsageContext) -> Iterator[None]:
     """必须成对恢复，避免共享HTTP模型客户端沿用上一请求的组织或证明。"""
     token = _CONTEXT.set(context)
+    scope_token = _SCOPE.set("root")
     try:
         yield
     finally:
+        _SCOPE.reset(scope_token)
         _CONTEXT.reset(token)
 
 

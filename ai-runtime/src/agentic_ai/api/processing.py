@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from starlette.requests import ClientDisconnect
 
+from agentic_ai.api.usage_context import knowledge_usage
 from agentic_ai.processing.errors import ProcessingCode, ProcessingError
 from agentic_ai.processing.generation import GenerationRequest
 from agentic_ai.processing.identity import (
@@ -23,6 +24,7 @@ from agentic_ai.processing.pipeline import PreparationPipeline
 from agentic_ai.processing.structured import StructuredRequest
 from agentic_ai.rag.errors import EmbeddingError, EmbeddingErrorCode
 from agentic_ai.runtime.processing_config import ProcessingConfig
+from agentic_ai.usage.models import Purpose
 
 EMBEDDING_HTTP_STATUS = {
     EmbeddingErrorCode.CONFIGURATION_INVALID: 503,
@@ -112,27 +114,37 @@ def processing_router(
                 if generation:
                     generation_command = GenerationRequest.from_wire(body)
                     identity.require_owner(generation_command)
-                    generation_result = await until_disconnect(
-                        request, pipeline.prepare_generation(generation_command)
-                    )
-                    content = generation_result.model_dump(mode="json", by_alias=True)
+                    with knowledge_usage(
+                        request, verifier, identity, Purpose.INGESTION, generation_command.job_id
+                    ):
+                        generation_result = await until_disconnect(
+                            request, pipeline.prepare_generation(generation_command)
+                        )
+                        content = generation_result.model_dump(mode="json", by_alias=True)
                 elif structured:
                     structured_command = StructuredRequest.from_wire(body)
                     identity.require_owner(structured_command)
-                    structured_result = await until_disconnect(
-                        request, pipeline.prepare_structured(structured_command)
-                    )
-                    content = structured_result.model_dump(mode="json", by_alias=True)
+                    with knowledge_usage(
+                        request, verifier, identity, Purpose.INGESTION, structured_command.job_id
+                    ):
+                        structured_result = await until_disconnect(
+                            request, pipeline.prepare_structured(structured_command)
+                        )
+                        content = structured_result.model_dump(mode="json", by_alias=True)
                 elif prepare:
                     command = PrepareRequest.model_validate_json(body, by_name=False)
                     identity.require_owner(command)
-                    result = await until_disconnect(request, pipeline.prepare(command))
-                    content = result.model_dump(mode="json", by_alias=True)
+                    with knowledge_usage(
+                        request, verifier, identity, Purpose.INGESTION, command.job_id
+                    ):
+                        result = await until_disconnect(request, pipeline.prepare(command))
+                        content = result.model_dump(mode="json", by_alias=True)
                 else:
                     query = QueryRequest.model_validate_json(body, by_name=False)
                     identity.require_owner(query)
-                    response = await until_disconnect(request, pipeline.query(query.query))
-                    content = response.model_dump(mode="json", by_alias=True)
+                    with knowledge_usage(request, verifier, identity, Purpose.SEARCH):
+                        response = await until_disconnect(request, pipeline.query(query.query))
+                        content = response.model_dump(mode="json", by_alias=True)
                 return JSONResponse(content, headers={"X-Request-Id": trace_id})
         except ProcessingError as failure:
             code, message, status = failure.code, failure.message, failure.status

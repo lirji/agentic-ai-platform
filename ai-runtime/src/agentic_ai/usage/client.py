@@ -93,6 +93,11 @@ class CentralUsageClient:
             ),
         )
 
+    @property
+    def worker_id(self) -> str:
+        """Task与usage必须使用同一受控执行身份；调用方不能在请求级覆写。"""
+        return self._worker
+
     @classmethod
     def from_file(cls, endpoint: str, worker_id: str, path: Path) -> "CentralUsageClient":
         """只读私密普通文件，错误不保留私钥内容或原始解析异常。"""

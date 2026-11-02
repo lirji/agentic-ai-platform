@@ -47,6 +47,20 @@ class KnowledgeProcessingIT {
     @Autowired SearchIndex searchIndex;
     @Autowired JdbcTemplate jdbc;
 
+    @Test void usageProofRequiresCurrentLeaseAndActiveDocumentIntent() {
+        Ingestion job = job();
+        var claim = repository.claim("usage-proof-worker", 60, job.tenantId()).orElseThrow();
+        repository.authorizeUsage(claim);
+        var forged = new ProcessingClaim(claim.job(), "another-worker", claim.epoch(), claim.attempt(),
+                claim.prepared(), claim.vectorState(), claim.keywordState(), claim.extraction());
+        assertThatThrownBy(() -> repository.authorizeUsage(forged)).isInstanceOf(KnowledgeFailure.class);
+        jdbc.update("UPDATE knowledge_document SET lifecycle = 'WITHDRAWN' WHERE document_id = ?", job.documentId());
+        assertThatThrownBy(() -> repository.authorizeUsage(claim)).isInstanceOf(KnowledgeFailure.class);
+        jdbc.update("UPDATE knowledge_document SET lifecycle = 'ACTIVE' WHERE document_id = ?", job.documentId());
+        jdbc.update("UPDATE knowledge_ingestion SET lease_until = TIMESTAMPADD(SECOND, -1, UTC_TIMESTAMP(6)) WHERE job_id = ?", job.jobId());
+        assertThatThrownBy(() -> repository.authorizeUsage(claim)).isInstanceOf(KnowledgeFailure.class);
+    }
+
     @Test
     void databaseRejectsIncompletePreparedMetadataEvenWhenCheckWouldBeUnknown() {
         Ingestion job = job();

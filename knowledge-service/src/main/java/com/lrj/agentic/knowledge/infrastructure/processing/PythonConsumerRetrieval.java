@@ -6,11 +6,16 @@ import com.lrj.agentic.knowledge.domain.retrieval.ConsumerRetrieval;
 import com.lrj.agentic.knowledge.domain.retrieval.RetrievalProtocol;
 import com.lrj.agentic.security.Caller;
 import com.lrj.agentic.security.IdentityProtocol;
+import com.lrj.agentic.contract.ModelUsageProtocol;
+import com.lrj.agentic.contract.knowledge.RetrievalStrategy;
+import com.lrj.agentic.knowledge.infrastructure.processing.KnowledgeUsageProperties.Purpose;
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.propagation.Propagator;
 import jakarta.annotation.PreDestroy;
 import java.time.Duration;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -38,11 +43,16 @@ public class PythonConsumerRetrieval implements ConsumerRetrieval {
     @Override public Result search(Caller caller, Search input, Duration remaining) {
         long started = System.nanoTime();
         String token = identity.token(caller, SCOPE);
+        // 每次已认证搜索生成一个请求上下文；没有模型自动重试，步骤身份不使用traceId。
+        String proof = identity.usage(caller, UUID.randomUUID().toString(), Purpose.SEARCH,
+                RetrievalStrategy.RERANK.code().equals(input.strategy()));
         Duration budget = remaining.minusNanos(System.nanoTime() - started);
         long millis = Math.min(budget.toMillis(), QUERY_SECONDS * 1000L);
         if (millis < 1) { throw new KnowledgeFailure(KnowledgeError.INDEX_UNAVAILABLE); }
         var payload = new InternalSearch(input.schemaVersion(), input.query(), input.documentIds(), input.topK(), input.strategy(), millis);
-        var reply = http.exchange("POST", properties.aiEndpoint().resolve(SEARCH_PATH), headers(token), json.write(payload),
+        var requestHeaders = new HashMap<>(headers(token));
+        if (proof != null) { requestHeaders.put(ModelUsageProtocol.CONTEXT_HEADER, proof); }
+        var reply = http.exchange("POST", properties.aiEndpoint().resolve(SEARCH_PATH), Map.copyOf(requestHeaders), json.write(payload),
                 Duration.ofMillis(millis), KnowledgeError.INDEX_UNAVAILABLE);
         return json.read(accepted(reply), Result.class, KnowledgeError.RETRIEVAL_RESULT_INVALID);
     }

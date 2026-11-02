@@ -2,18 +2,18 @@
 
 ## 当前任务：S15B 共享预算实施
 
-- 继续capability-delivery-20261021完整51项，parallel=no；用户“自行处理”“继续把”。指定同组织成员只读可撤回的共享决策已落实S13B。授权任务分支、分批提交、正常合并/push main；不生产部署、不清理、不强推、不新增付费预算，无子Agent。
-- 已交付：S14D产品与归档两仓分支/main CI全PASS；后端d9b0c79、前端6a18e72。S15A设计验证PASS，后端1e41545已合并推main，分支/main CI41374866174/41375067172全PASS，收据`.local/s15a-delivery.json`；历史设计证据仍对应原revision，不重算覆盖。
-- 当前Git：后端原目录`feat/shared-usage-budget-20261102`，基线/HEAD/main/origin-main为1e41545；S15B尚未提交。前端main6a18e72干净未开始S15B。复用原main工作树，无新worktree。
-- 已实现核心：Tasks usage八表、CNY计价、同库Task公开fence、原子预留/一次dispatch/释放/未知/迟到结算、失租恢复lookup、本人分页及Gateway身份路由；Knowledge证明验证器已实现，业务签发/转发尚未接入。新增非Web BOOTSTRAP/CONFIGURE/IMPORT CLI，固定原grant/价格，命令摘要及源/条目防重；三类旧预算与旧验收脚本遵守原锁内冻结标记。
-- Java当前验证PASS：52相关单元、Tasks全部60项真实MySQL/HTTP IT，无跳过，`.logs/s15b-task-regression-it.log`；其中usage20项含7导入管理、13核心/HTTP（含签名/过期/跨租户/委托/范围拒绝）。既有Task默认模式回归通过。V6/V7仅应用agentic_tasks_test，不可改写；摘要`.local/s15b-migration-applied.json`、`.local/s15b-v7-applied.json`。dev/生产未迁移。
-- CLI真实jar验证PASS：合成账本原额导入及重复重放，`.local/s15b-admin-cli.json`、`.logs/s15b-admin-cli-*.log`。冻结/旧预算128 Python回归曾通过；原付费账本SHA未变。CLI/冻结说明见[运行说明](USAGE_RUNTIME.md)。
-- Python当前实现：usage严格DTO、隔离上下文、签名HTTP客户端、lookup恢复、一次许可gate、完整/未知计量、关闭默认配置；Embedding每批已接gate且摘要/字节数/外发复用同一JSON。聊天/Agent/Rerank出口、入口装配、Task稳定scope和Knowledge上下文尚未接入。最近87项用量+Embedding测试、mypy85源码通过；全Python回归677通过/97条件跳过（`.logs/s15b-core-python-all.log`）。卫生初检发现领域裸字符串及同名状态枚举，已统一显式code并区分资金池状态，复验206项通过，mypy86源码通过。原卫生规则误扫忽略的第三方venv；仅校正venv扫描边界后通过并保留限制与原报告，证据`docs/qa/shared-usage-budget-20261102/`。首次测试路径拼错导致0项执行已保留失败日志，正确路径r2全PASS。
-- 跨语言证据：中文实际请求摘要及结算报文共用`async-task-service/src/test/resources/usage-golden.json`，Java/Python测试与CI文档检查已登记。真实Python→签名JavaHTTP→MySQL的预留/恢复/未知/迟到/错误证明拒绝PASS：`.local/s15b-python-java-usage.json`；仅合成fixture证明，不能当Knowledge业务签发完成。
-- 下一步：核心批次验证PASS：受影响Java52单元/20IT、Python206、跨语言真实联合复验及范围校正后的卫生检查均通过；先保存本地逻辑提交（S15B未整体验收，不先合并main），继续Chat/Agent/Rerank、运行入口和Knowledge签发，再做本人前端与UA01–UA16完整验收/交付。S15B IN_PROGRESS、完整51项未完成。技术续接`.local/s15b-next-notes.md`。
-- 运行中：本轮验证进程均已完成，无运行中测试；日志如上。真实联合临时Tasks已正常停止，无在途模型/导入。保留28246恢复预览session84365及28236/28226/28216/28206/28196和28086原Docker。
-- 保留：随机test记录/源/索引/待处理作业、`.local`凭据/预算/合成CLI账本、`.logs`、`.idea`及旧工作树；不清理。Knowledge V16/V17/V18和Tasks V6/V7已在test应用，不可修改。真实Chat0.957092/1 CNY、Embedding0.781784/1 CNY不变，新增付费调用0，Rerank/Judge无新增授权。
-- 采用规范：架构业务建模/持久化/接口/安全/容量/发布章节；既有实施/Runtime/验证/进度/Git/CI/持续交付技能。人工审查不冒充独立子Agent或Runtime Gate；Java格式化/专用静态分析工具缺失限制继续如实记录。
+- 当前capability-delivery-20261021，parallel=no。用户最新明确要求“当前任务做完之后先停一下”：完成当前S15B（前端、UA验收、Git交付）后停止，不启动S15C；完整51项不宣称完成。S13B同组织指定成员只读可撤回决策已落实。授权任务分支、分批提交、正常合并/push main；不生产部署、不清理、不强推、不新增付费预算，无子Agent。
+- 已交付：S14D产品/归档两仓分支与main CI全PASS；后端d9b0c79、前端6a18e72。S15A设计1e41545已推main，CI41374866174/41375067172全PASS，`.local/s15a-delivery.json`。旧设计证据保留原revision。
+- 当前Git：后端原目录feat/shared-usage-budget-20261102，main/origin-main1e41545；核心本地提交55319763c6bb7d0f15cbcd80f3dac81f2853a20b，当前模型出口/Knowledge批次已验证，准备同分支逻辑提交，尚未合并/推送。前端main6a18e72干净，S15B前端未开始。复用原main工作树，无新worktree。
+- 核心已实现/验证：Tasks八表、CNY/共享绑定/短事务、Task公开fence、预留/一次dispatch/释放/未知/迟到结算、恢复lookup、本人分页、Gateway；受控非Web CLI与旧文件冻结。52相关Java单元/Tasks全60IT及20usageIT复验PASS；真实CLI合成原额导入/重放PASS。V6/V7仅agentic_tasks_test已应用，不可改写；摘要`.local/s15b-migration-applied.json`、`.local/s15b-v7-applied.json`。
+- 新批次已实现/验证：Chat/ToolChat/Embedding/Rerank中央出口、完整/未知计量、稳定阶段/题目/搜索序号/批次scope（不含epoch）、Task可信上下文及worker/HTTP装配。中央模式不触碰旧预算。Python全量733通过/97条件跳过/34警告；后续保守计量与factory/context120通过，Ruff144文件/mypy88源码PASS；`.logs/s15b-outlets-python-all.log`、`.logs/s15b-outlets-final-{python,mypy}.log`。
+- Knowledge签发/转发及Python双重验签已实现：原job/owner，签发前重验原租约与活跃文档意图，旧prepare方法CENTRAL不可绕过；搜索归因实际调用用户，30秒独立usage证明。Knowledge126单元+Security10单元+35真实MySQL/HTTP/双索引IT全PASS无跳过，`.logs/s15b-knowledge-usage-it-r2.log`。Java新增测试首次误引未引入Mockito后改为JDK接口替身，失败日志保留。
+- 实际联合PASS：Java Knowledge→Python产品API→Tasks/MySQL，两个用户同一合成账户分别结算10token/0.000020 CNY，跨用户读取404；停Tasks后503且模型替身调用数保持2。`.local/s15b-knowledge-joint.json`及[收据](../../qa/shared-usage-budget-20261102/knowledge-joint-result.json)。提供方只本地传输替身，真实付费调用0。此前Python→Tasks恢复/未知/迟到/错误证明证据仍适用核心。
+- 实施/卫生证据：[IMPLEMENTATION_EVIDENCE](../../qa/shared-usage-budget-20261102/IMPLEMENTATION_EVIDENCE.md)、同目录outlets-source-evidence.json/outlets-hygiene-review.json。只修正原规则误扫忽略venv的边界，源码检测规则不变，全局skill未改；零阻断项。Java专用formatter/static缺失限制保留，人工事务核对不冒称独立Agent或Runtime Gate。
+- 下一步：保存已验证模型出口/归因批次本地提交；开始前端现有任务/资料入口本人用量（真实usage-v1），然后完整UA01–UA16验收/文档/正常Git交付；依用户最新要求，S15B完成后停止，不启动S15C。S15B IN_PROGRESS、完整51项未完成；不能将本批次或合成联调当生产启用。
+- 运行中：本批次验证均已结束；联合临时Java/Python全部正常停止，无在途模型/导入。保留28246恢复预览session84365及28236/28226/28216/28206/28196和28086原Docker。
+- 保留：随机test记录/源/索引/待处理作业、.local凭据/旧预算/合成CLI与joint目录、.logs、.idea及旧工作树；不清理。Knowledge V16/V17/V18和Tasks V6/V7已应用不可改。原Chat0.957092/1、Embedding0.781784/1 CNY不变，Rerank/Judge无新增授权，dev/生产未迁移。
+- 运行与规范：[USAGE_RUNTIME](USAGE_RUNTIME.md)记录配置、30秒过期/恢复及迁移顺序；架构业务建模/持久化/接口/安全/容量/发布章节，既有实施/Runtime/进度/Git/CI/持续交付技能。技术续接.local/s15b-next-notes.md。
 
 ## 历史：20 项差距的框架化实施计划
 

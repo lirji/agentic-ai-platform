@@ -4,6 +4,7 @@ import asyncio
 import codecs
 import json
 from collections.abc import AsyncGenerator, AsyncIterator, Sequence
+from contextlib import nullcontext
 from typing import Literal, Protocol
 
 import httpx
@@ -14,6 +15,9 @@ from agentic_ai.qa.chat_config import MAX_INPUT_BYTES, ChatConfig
 from agentic_ai.qa.errors import QaCode, QaError
 from agentic_ai.qa.models import MAX_ANSWER, MAX_RESPONSE
 from agentic_ai.tasks.models import WireModel
+from agentic_ai.usage.config import require_gate
+from agentic_ai.usage.gate import UsageGate
+from agentic_ai.usage.models import Kind, UsageCode, UsageError
 
 MAX_EVENT_BYTES = 32 * 1024
 MAX_MESSAGES = 3
@@ -42,11 +46,16 @@ class ChatClient:
     def __init__(
         self,
         config: ChatConfig,
-        budget: ChatBudget,
+        budget: ChatBudget | None,
         *,
         transport: httpx.AsyncBaseTransport | None = None,
+        usage: UsageGate | None = None,
     ) -> None:
-        self._config, self._budget = config, budget
+        try:
+            require_gate(usage)
+        except UsageError:
+            raise QaError(QaCode.CONFIG_INVALID) from None
+        self._config, self._budget, self._usage = config, budget, usage
         self._slot = asyncio.Semaphore(1)
         self._http = httpx.AsyncClient(
             base_url=config.base_url + "/",
@@ -63,12 +72,19 @@ class ChatClient:
         """完整响应期限包含所有分片；DONE 和正常 finish_reason 都确认后才结束成功。"""
         if not 1 <= len(messages) <= MAX_MESSAGES:
             raise QaError(QaCode.INPUT_REJECTED)
+        if self._usage is not None:
+            self._config.check_pricing()
         try:
             body = json.dumps(
                 {
                     "model": self._config.route,
                     "messages": [message.model_dump() for message in messages],
                     "stream": True,
+                    **(
+                        {"stream_options": {"include_usage": True}}
+                        if self._usage is not None
+                        else {}
+                    ),
                     "n": 1,
                     "max_tokens": self._config.max_tokens,
                 },
@@ -82,9 +98,22 @@ class ChatClient:
         if self._slot.locked():
             raise QaError(QaCode.CAPACITY_EXCEEDED)
         async with self._slot:
-            self._budget.reserve(operation_id, len(body))
+            if self._usage is None:
+                if self._budget is None:
+                    raise QaError(QaCode.CONFIG_INVALID)
+                self._budget.reserve(operation_id, len(body))
+            permit = (
+                self._usage.permit(
+                    Kind.CHAT,
+                    scope=operation_id,
+                    body=body,
+                    max_output_tokens=self._config.max_tokens,
+                )
+                if self._usage is not None
+                else nullcontext(None)
+            )
             try:
-                async with asyncio.timeout(self._config.deadline_seconds):
+                async with asyncio.timeout(self._config.deadline_seconds), permit as meter:
                     async with self._http.stream(
                         "POST",
                         "chat/completions",
@@ -111,6 +140,8 @@ class ChatClient:
                                 raise QaError(QaCode.MODEL_UNAVAILABLE)
                             choices = value.get("choices")
                             if choices == [] and isinstance(value.get("usage"), dict):
+                                if meter is not None:
+                                    meter.observe(value["usage"], value.get("id"))
                                 continue
                             if not isinstance(choices, list) or len(choices) != 1:
                                 raise QaError(QaCode.ANSWER_INVALID)
@@ -147,11 +178,20 @@ class ChatClient:
                                     yield text
                             reason = choice.get("finish_reason")
                             if reason is not None:
+                                if meter is not None:
+                                    # 只取末尾计量，不能把逐块累计usage当作完整费用。
+                                    meter.observe(value.get("usage"), value.get("id"))
                                 if reason != "stop" or stopped:
                                     raise QaError(QaCode.ANSWER_INVALID)
                                 stopped = True
                         if not done or not stopped or size == 0:
                             raise QaError(QaCode.ANSWER_INVALID)
+            except UsageError as failure:
+                raise QaError(
+                    QaCode.BUDGET_EXCEEDED
+                    if failure.code == UsageCode.BUDGET_EXCEEDED
+                    else QaCode.MODEL_UNAVAILABLE
+                ) from None
             except (httpx.HTTPError, TimeoutError):
                 raise QaError(QaCode.MODEL_UNAVAILABLE) from None
             except (ValueError, TypeError, UnicodeError):

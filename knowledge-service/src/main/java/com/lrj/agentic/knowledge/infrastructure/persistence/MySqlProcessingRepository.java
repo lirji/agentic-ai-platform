@@ -97,6 +97,14 @@ public class MySqlProcessingRepository implements ProcessingRepository {
         return access(() -> mapper.heartbeat(claim, leaseSeconds) == 1);
     }
 
+    /** 短事务只做现时授权，不在文档锁内签名或等待模型；证明的有效窗另由usage限定。 */
+    @Override public void authorizeUsage(ProcessingClaim claim) {
+        inTransaction(() -> {
+            requireIntent(claim);
+            if (mapper.current(claim) == null) { throw new KnowledgeFailure(KnowledgeError.STATE_CONFLICT); }
+        });
+    }
+
     /** 指针与规范块同事务；任何一行失败都会回滚整个准备接收。 */
     @Override
     public ProcessingClaim prepared(ProcessingClaim claim, ProcessingClaim.PreparedReference reference,

@@ -11,9 +11,17 @@ import jwt
 import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+from test_qa_chat import config_at
+from test_rerank import config_and_ledger, provider_reply
 
 from agentic_ai.adapters.openai_embedding import OpenAIEmbeddingAdapter
+from agentic_ai.agents.chat import ToolChatClient
+from agentic_ai.qa.chat import ChatClient, ChatMessage
+from agentic_ai.qa.errors import QaError
 from agentic_ai.rag.errors import EmbeddingError
+from agentic_ai.retrieval.deadline import RetrievalDeadline
+from agentic_ai.retrieval.errors import RetrievalError
+from agentic_ai.retrieval.rerank_client import RerankClient
 from agentic_ai.runtime.embedding_config import EmbeddingConfig
 from agentic_ai.usage.client import CONTEXT_HEADER, INTERNAL_HEADER, CentralUsageClient
 from agentic_ai.usage.config import load_gate
@@ -482,3 +490,495 @@ def test_runtime_central_configuration_is_explicit_and_fail_closed(
             await gate.client.aclose()
 
         asyncio.run(scenario())
+
+
+@pytest.mark.parametrize(
+    "mode", ["usage-tail", "finish-usage", "missing", "partial", "cancelled", "denied"]
+)
+def test_streaming_chat_requires_central_permission_and_only_final_usage(
+    key, tmp_path, monkeypatch, mode
+):
+    monkeypatch.setenv("AI_USAGE_MODE", "CENTRAL")
+
+    async def scenario():
+        server = Server(key)
+        server.granted = mode != "denied"
+        central = CentralUsageClient(
+            "http://localhost", "fixture-worker", key, transport=httpx.MockTransport(server)
+        )
+        gate = UsageGate(central, {Kind.CHAT: "fixture-chat"})
+        requests = []
+
+        def event(payload):
+            return "data: " + json.dumps(payload, ensure_ascii=False) + "\n\n"
+
+        async def upstream(request):
+            requests.append(request.content)
+            assert server.latest["state"] == "DISPATCHED"
+            assert json.loads(request.content)["stream_options"] == {"include_usage": True}
+            data = event(
+                {
+                    "choices": [
+                        {"index": 0, "delta": {"content": "合成回答"}, "finish_reason": None}
+                    ],
+                    "usage": {"prompt_tokens": 999, "completion_tokens": 1, "total_tokens": 1000},
+                }
+            )
+            usage = {"prompt_tokens": 10, "completion_tokens": 3, "total_tokens": 13}
+            data += event(
+                {
+                    "id": "fixture-stream",
+                    "choices": [{"index": 0, "delta": {}, "finish_reason": "stop"}],
+                    **({"usage": usage} if mode == "finish-usage" else {}),
+                }
+            )
+            if mode in {"usage-tail", "partial"}:
+                data += event(
+                    {
+                        "id": "fixture-stream",
+                        "choices": [],
+                        "usage": usage if mode == "usage-tail" else {"prompt_tokens": 10},
+                    }
+                )
+            return httpx.Response(
+                200,
+                headers={"content-type": "text/event-stream"},
+                content=(data + "data: [DONE]\n\n").encode(),
+            )
+
+        chat = ChatClient(
+            config_at(tmp_path), None, usage=gate, transport=httpx.MockTransport(upstream)
+        )
+        try:
+            with bind_usage(CONTEXT):
+                stream = chat.stream([ChatMessage(role="user", content="合成问题")], "qa:stable")
+                if mode == "denied":
+                    with pytest.raises(QaError):
+                        await anext(stream)
+                    assert not requests and not server.reports
+                    return
+                if mode == "cancelled":
+                    assert await anext(stream) == "合成回答"
+                    await stream.aclose()
+                else:
+                    assert "".join([part async for part in stream]) == "合成回答"
+            assert len(requests) == 1
+            reserve = next(body for path, body, *_ in server.requests if path.endswith("/attempts"))
+            assert reserve["inputDigest"] == input_digest("fixture-chat", requests[0])
+            assert reserve["inputBytes"] == len(requests[0])
+            report = server.reports[0]
+            assert report["status"] == (
+                "COMPLETE" if mode in {"usage-tail", "finish-usage"} else "UNKNOWN"
+            )
+            assert report["outcome"] == ("CANCELLED" if mode == "cancelled" else "SUCCEEDED")
+            if report["status"] == "COMPLETE":
+                assert report["usage"]["totalTokens"] == 13
+        finally:
+            await chat.aclose()
+            await central.aclose()
+
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize("mode", ["complete", "missing", "bad-answer", "denied"])
+def test_tool_model_retains_usage_even_when_answer_validation_fails(
+    key, tmp_path, monkeypatch, mode
+):
+    monkeypatch.setenv("AI_USAGE_MODE", "CENTRAL")
+
+    async def scenario():
+        server = Server(key)
+        server.granted = mode != "denied"
+        central = CentralUsageClient(
+            "http://localhost", "fixture-worker", key, transport=httpx.MockTransport(server)
+        )
+        gate = UsageGate(central, {Kind.CHAT: "fixture-chat"})
+        requests = []
+
+        async def upstream(request):
+            requests.append(request.content)
+            assert server.latest["state"] == "DISPATCHED"
+            payload = {
+                "id": "fixture-tool",
+                "choices": [
+                    {
+                        "index": 0,
+                        "message": {
+                            "role": "user" if mode == "bad-answer" else "assistant",
+                            "content": "合成回答",
+                        },
+                        "finish_reason": "stop",
+                    }
+                ],
+            }
+            if mode != "missing":
+                payload["usage"] = {"prompt_tokens": 10, "completion_tokens": 3, "total_tokens": 13}
+            return httpx.Response(200, json=payload)
+
+        chat = ToolChatClient(
+            config_at(tmp_path), None, usage=gate, transport=httpx.MockTransport(upstream)
+        )
+        try:
+            with bind_usage(CONTEXT):
+                if mode in {"bad-answer", "denied"}:
+                    with pytest.raises(QaError):
+                        await chat.complete(
+                            [{"role": "user", "content": "合成问题"}], [], "work:stable:1"
+                        )
+                else:
+                    assert (
+                        await chat.complete(
+                            [{"role": "user", "content": "合成问题"}], [], "work:stable:1"
+                        )
+                    ).content == "合成回答"
+            if mode == "denied":
+                assert not requests and not server.reports
+            else:
+                assert len(requests) == 1
+                assert server.reports[0]["status"] == (
+                    "UNKNOWN" if mode == "missing" else "COMPLETE"
+                )
+                assert server.reports[0]["outcome"] == (
+                    "FAILED" if mode == "bad-answer" else "SUCCEEDED"
+                )
+                reserve = next(
+                    body for path, body, *_ in server.requests if path.endswith("/attempts")
+                )
+                assert reserve["inputDigest"] == input_digest("fixture-chat", requests[0])
+        finally:
+            await chat.aclose()
+            await central.aclose()
+
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize(
+    "mode", ["complete", "missing", "partial", "bad-score", "overrun", "denied"]
+)
+def test_rerank_central_usage_survives_protocol_failure(key, tmp_path, monkeypatch, mode):
+    monkeypatch.setenv("AI_USAGE_MODE", "CENTRAL")
+
+    async def scenario():
+        server = Server(key)
+        server.granted = mode != "denied"
+        central = CentralUsageClient(
+            "http://localhost", "fixture-worker", key, transport=httpx.MockTransport(server)
+        )
+        config = config_and_ledger(tmp_path)
+        before = config.budget_file.read_bytes()
+        # 有冻结标记的旧账本不能阻止或参与CENTRAL；实际预算由中央决定。
+        config.budget_file.with_suffix(".json.frozen.json").write_text("frozen")
+        gate = UsageGate(central, {Kind.RERANK: "fixture-rerank"})
+        requests = []
+
+        async def upstream(request):
+            requests.append(request.content)
+            assert server.latest["state"] == "DISPATCHED"
+            payload = provider_reply()
+            if mode == "missing":
+                del payload["usage"]
+            elif mode == "partial":
+                payload["usage"] = {"prompt_tokens": 10}
+            elif mode == "bad-score":
+                payload["output"]["results"][0]["relevance_score"] = -1
+            elif mode == "overrun":
+                payload["usage"]["total_tokens"] = 100000
+            return httpx.Response(200, json=payload)
+
+        client = RerankClient(config, usage=gate, transport=httpx.MockTransport(upstream))
+        query, documents = "中文查询", ("第一份文档", "第二份文档")
+        try:
+            await client.check_available()
+            assert not server.requests
+            with bind_usage(CONTEXT):
+                if mode == "complete":
+                    result = await client.score(query, documents, RetrievalDeadline.start(None))
+                    assert result.usage.reservation_id == server.latest["attemptId"]
+                    assert result.usage.total_tokens == 10
+                else:
+                    with pytest.raises(RetrievalError):
+                        await client.score(query, documents, RetrievalDeadline.start(None))
+            if mode == "denied":
+                assert not requests and not server.reports
+            else:
+                assert len(requests) == 1 and len(server.reports) == 1
+                reservation = next(
+                    body for path, body, *_ in server.requests if path.endswith("/attempts")
+                )
+                assert reservation["inputDigest"] == input_digest("fixture-rerank", requests[0])
+                assert reservation["inputBytes"] == len(requests[0])
+                assert reservation["queryBytes"] == len(query.encode())
+                assert reservation["documentBytes"] == sum(len(doc.encode()) for doc in documents)
+                assert reservation["documentCount"] == 2
+                assert server.reports[0]["status"] == (
+                    "UNKNOWN" if mode in {"missing", "partial"} else "COMPLETE"
+                )
+                assert server.reports[0]["outcome"] == (
+                    "SUCCEEDED" if mode == "complete" else "FAILED"
+                )
+            assert config.budget_file.read_bytes() == before
+        finally:
+            await client.aclose()
+            await central.aclose()
+
+    asyncio.run(scenario())
+
+
+def test_stable_scopes_distinguish_identical_business_calls_and_recover_without_epoch():
+    from agentic_ai.usage.context import scoped_operation, usage_scope
+
+    async def child(scope):
+        with usage_scope(scope):
+            await asyncio.sleep(0)
+            return scoped_operation("embedding:0")
+
+    async def scenario():
+        with bind_usage(CONTEXT):
+            first, second = await asyncio.gather(child("work:retrieve"), child("work:search:1"))
+            root = scoped_operation("embedding:0")
+        with bind_usage(replace(CONTEXT, epoch=2)):
+            restored = await child("work:retrieve")
+            assert scoped_operation("embedding:0") == root
+        assert first == restored and len({first, second, root}) == 3
+
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize("route", ["prepare", "query", "search"])
+@pytest.mark.parametrize(
+    "problem",
+    [
+        None,
+        "missing",
+        "duplicate",
+        "ordinary-token",
+        "signature",
+        "tenant",
+        "actor",
+        "purpose",
+        "context",
+        "expired",
+        "ttl",
+        "prefix",
+        "kinds",
+    ],
+)
+def test_http_model_context_requires_signed_knowledge_origin(key, monkeypatch, route, problem):
+    import time
+
+    from test_processing import TestEmbedding, command, token
+    from test_processing import api as processing_api
+    from test_retrieval_http import api as search_api
+    from test_retrieval_http import command as search_command
+    from test_retrieval_http import headers
+
+    from agentic_ai.usage.models import ContextType, Purpose
+
+    monkeypatch.setenv("AI_USAGE_MODE", "CENTRAL")
+    expected = command()
+    now = int(time.time())
+    purpose = Purpose.INGESTION if route == "prepare" else Purpose.SEARCH
+    context_id = expected.job_id if route == "prepare" else str(uuid4())
+    claims = {
+        "iss": "urn:agentic-ai:knowledge-usage",
+        "aud": "agentic-ai-usage-context",
+        "azp": "knowledge-service",
+        "delegate_azp": "ai-runtime-worker",
+        "scope": "usage:context",
+        "sub": "owner-a",
+        "tenant_id": "tenant-a",
+        "iat": now,
+        "nbf": now,
+        "exp": now + 30,
+        "jti": str(uuid4()),
+        "context_id": context_id,
+        "purpose": purpose.value,
+        "step_prefix": "knowledge:",
+        "kinds": ["EMBEDDING"],
+        "profiles": [PROFILE],
+    }
+    changes = {
+        "tenant": {"tenant_id": "someone-else"},
+        "actor": {"sub": "someone-else"},
+        "purpose": {"purpose": "QA"},
+        "context": {"context_id": "invalid id"},
+        "expired": {"iat": now - 40, "nbf": now - 40, "exp": now - 10},
+        "ttl": {"exp": now + 31},
+        "prefix": {"step_prefix": "invalid prefix"},
+        "kinds": {"kinds": ["UNRESTRICTED"]},
+    }
+    claims.update(changes.get(problem, {}))
+    signer = (
+        rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        if problem == "signature"
+        else key
+    )
+    proof = (
+        token(key) if problem == "ordinary-token" else jwt.encode(claims, signer, algorithm="RS256")
+    )
+    observed = []
+
+    class ScopedEmbedding(TestEmbedding):
+        async def embed(self, texts):
+            observed.append(current_usage())
+            return await super().embed(texts)
+
+    async def scenario():
+        embedding = ScopedEmbedding()
+        if route == "search":
+            app, *_ = search_api(key, embedding)
+            selected = headers(key)
+            path, body = "/internal/v2/knowledge/search", search_command()
+        else:
+            app = processing_api(embedding, key)
+            selected = {INTERNAL_HEADER: token(key)}
+            path = "/internal/v1/knowledge/" + ("prepare" if route == "prepare" else "embed-query")
+            body = (
+                expected.model_dump(mode="json", by_alias=True)
+                if route == "prepare"
+                else {"tenantId": "tenant-a", "ownerId": "owner-a", "query": "问题"}
+            )
+        selected = list(selected.items())
+        if problem != "missing":
+            selected.append((CONTEXT_HEADER, proof))
+        if problem == "duplicate":
+            selected.append((CONTEXT_HEADER, proof))
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        ) as client:
+            response = await client.post(path, headers=selected, json=body)
+        if problem is None:
+            assert response.status_code == 200, response.text
+            assert len(observed) == 1
+            context = observed[0]
+            assert context.context_type == ContextType.KNOWLEDGE
+            assert context.context_id == context_id and context.purpose == purpose
+            assert context.tenant_id == "tenant-a" and context.knowledge_proof == proof
+            assert proof not in repr(context)
+        else:
+            assert response.status_code == 403, response.text
+            assert not observed and not embedding.inputs
+        with pytest.raises(UsageError):
+            current_usage()
+
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize("invalid", [{"prompt_tokens": 10}, {"total_tokens": -1}, "invalid"])
+def test_invalid_final_measurement_does_not_override_conservative_unknown(key, invalid):
+    from agentic_ai.usage.gate import MeteredAttempt
+
+    async def scenario():
+        server = Server(key)
+        central = CentralUsageClient(
+            "http://localhost", "fixture-worker", key, transport=httpx.MockTransport(server)
+        )
+        try:
+            attempt = await central.begin(
+                CONTEXT,
+                kind=Kind.CHAT,
+                profile="fixture-chat",
+                scope="chat",
+                body=BODY,
+                max_output_tokens=10,
+            )
+            meter = MeteredAttempt(attempt)
+            meter.observe({"prompt_tokens": 10, "completion_tokens": 1, "total_tokens": 11})
+            meter.observe(invalid)
+            assert meter.report(Outcome.SUCCEEDED).status == ReportStatus.UNKNOWN
+        finally:
+            await central.aclose()
+
+    asyncio.run(scenario())
+
+
+def test_worker_factory_uses_one_central_identity_and_never_opens_local_budgets(
+    key, tmp_path, monkeypatch
+):
+    from contextlib import asynccontextmanager
+
+    from test_qa_worker import UNUSED_PG
+
+    import agentic_ai.qa.worker as worker
+    from agentic_ai.retrieval.rerank_config import RerankConfig
+    from agentic_ai.runtime.embedding_budget import EmbeddingBudget
+
+    monkeypatch.setenv("AI_USAGE_MODE", "CENTRAL")
+    chat_config = config_at(tmp_path)
+    rerank_config = config_and_ledger(tmp_path)
+    monkeypatch.setattr(worker.ChatConfig, "from_file", lambda _path: chat_config)
+    monkeypatch.setattr(RerankConfig, "from_file", lambda _path: rerank_config)
+    monkeypatch.setattr(
+        EmbeddingConfig,
+        "from_environment",
+        lambda: EmbeddingConfig(base_url="https://synthetic.invalid/v1", api_key="synthetic-only"),
+    )
+
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("CENTRAL factory touched legacy budget")
+
+    monkeypatch.setattr(worker, "ChatBudget", forbidden)
+    monkeypatch.setattr(EmbeddingBudget, "from_environment", forbidden)
+    events = []
+
+    class Ready:
+        async def verify_ready(self):
+            events.append("pg-ready")
+
+    @asynccontextmanager
+    async def checkpoints(_config):
+        yield Ready()
+
+    monkeypatch.setattr(worker.PostgresCheckpoints, "open", checkpoints)
+
+    class UnusedClient:
+        async def aclose(self):
+            events.append("closed")
+
+    def task_client(endpoint, tenant, identity, path):
+        assert identity == "fixture-worker"
+        events.append("task-identity")
+        return UnusedClient()
+
+    monkeypatch.setattr(worker.CentralTaskClient, "from_file", task_client)
+    monkeypatch.setattr(worker.KnowledgeClient, "from_file", lambda *_args: UnusedClient())
+
+    async def scenario():
+        server = Server(key)
+        central = CentralUsageClient(
+            "http://localhost", "fixture-worker", key, transport=httpx.MockTransport(server)
+        )
+        gate = UsageGate(
+            central,
+            {
+                kind: "fixture-" + kind.value.lower()
+                for kind in (Kind.CHAT, Kind.EMBEDDING, Kind.RERANK)
+            },
+        )
+
+        def load(models):
+            assert models == {
+                Kind.CHAT: chat_config.approved_model,
+                Kind.EMBEDDING: "text-embedding-v4",
+                Kind.RERANK: "qwen3-rerank",
+            }
+            return gate
+
+        monkeypatch.setattr(worker, "load_gate", load)
+        config = worker.WorkerConfig(
+            tenant_id="fixture-tenant",
+            tasks_endpoint="http://localhost",
+            knowledge_endpoint="http://localhost",
+            task_private_key=tmp_path / "unused-task.pem",
+            knowledge_private_key=tmp_path / "unused-knowledge.pem",
+            chat_config=tmp_path / "chat.json",
+            checkpoints=UNUSED_PG,
+            retrieval_enabled=True,
+            rerank_config=tmp_path / "rerank.json",
+        )
+        await worker.run_worker(config, check_only=True)
+        assert events == ["task-identity", "closed", "pg-ready", "closed"]
+        assert central._http.is_closed
+        assert not server.requests
+
+    asyncio.run(scenario())

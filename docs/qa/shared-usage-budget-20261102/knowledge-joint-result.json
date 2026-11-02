@@ -1,0 +1,75 @@
+{
+  "status": "PASS",
+  "accountId": "b54e27f8-3968-4ff1-b6dd-7ed696afc3e6",
+  "tenantId": "usage-joint-b54e27f8-3968-4ff1-b6dd-7ed696afc3e6",
+  "receipts": [
+    {
+      "actor": "reader-a",
+      "contextId": "efd0cfa8-d71e-4b7c-80fb-adbdbc7a59b9",
+      "attempt": {
+        "schemaVersion": "usage-v1",
+        "attemptId": "5be737e0-4463-47c7-9086-06c51896a8ce",
+        "operationId": "8b00deb7-862e-459a-af50-78916db85009",
+        "contextType": "KNOWLEDGE",
+        "contextId": "efd0cfa8-d71e-4b7c-80fb-adbdbc7a59b9",
+        "stepKey": "knowledge:embedding:be771bc13cde3379:55998db8977786339745b4adbff982ed50d32c154255de07716aba33835b3aa8",
+        "purpose": "SEARCH",
+        "kind": "EMBEDDING",
+        "profileId": "joint-b54e27f8-3968-4ff1-b6dd-7ed696afc3e6",
+        "priceVersion": "joint-b54e27f8-3968-4ff1-b6dd-7ed696afc3e6",
+        "currency": "CNY",
+        "state": "SETTLED",
+        "reservedAmount": "0.010000",
+        "settledAmount": "0.000020",
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "totalTokens": 10
+        },
+        "usageSource": "PROVIDER_REPORTED",
+        "outcome": "SUCCEEDED",
+        "retryOf": null,
+        "overrun": false,
+        "createdAt": "2026-11-02T03:01:41.941997Z",
+        "updatedAt": "2026-11-02T03:01:42.033281Z"
+      }
+    },
+    {
+      "actor": "reader-b",
+      "contextId": "fad6b1de-7498-44f0-bfbd-3d166a49dfc6",
+      "attempt": {
+        "schemaVersion": "usage-v1",
+        "attemptId": "bd2b7a93-d457-4a3d-baf5-6c29ce6233f3",
+        "operationId": "b4322d6d-1ecd-41c1-ae9e-bb4a4ab91b04",
+        "contextType": "KNOWLEDGE",
+        "contextId": "fad6b1de-7498-44f0-bfbd-3d166a49dfc6",
+        "stepKey": "knowledge:embedding:be771bc13cde3379:55998db8977786339745b4adbff982ed50d32c154255de07716aba33835b3aa8",
+        "purpose": "SEARCH",
+        "kind": "EMBEDDING",
+        "profileId": "joint-b54e27f8-3968-4ff1-b6dd-7ed696afc3e6",
+        "priceVersion": "joint-b54e27f8-3968-4ff1-b6dd-7ed696afc3e6",
+        "currency": "CNY",
+        "state": "SETTLED",
+        "reservedAmount": "0.010000",
+        "settledAmount": "0.000020",
+        "usage": {
+          "inputTokens": null,
+          "outputTokens": null,
+          "totalTokens": 10
+        },
+        "usageSource": "PROVIDER_REPORTED",
+        "outcome": "SUCCEEDED",
+        "retryOf": null,
+        "overrun": false,
+        "createdAt": "2026-11-02T03:01:42.397536Z",
+        "updatedAt": "2026-11-02T03:01:42.464023Z"
+      }
+    }
+  ],
+  "syntheticProviderCalls": 2,
+  "centralUnavailable": "denied before provider",
+  "realLedgerSha256Unchanged": {
+    "/Users/liruijun/personal/LLM/agentic-ai-platform/.local/chat-budget-20261020.json": "69ce3f7679582ee2a6f506125e99abd22af8c5f47fb93d3b579b7b33e6af77b1",
+    "/Users/liruijun/personal/LLM/agentic-ai-platform/.local/embedding-budget-20261020.json": "e39835470384ed8a6d785be9a23cd5e1c7db636a596d80972aafab67e101bed8"
+  }
+}
