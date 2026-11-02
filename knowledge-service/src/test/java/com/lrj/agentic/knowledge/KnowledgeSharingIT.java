@@ -109,6 +109,14 @@ class KnowledgeSharingIT {
                 Integer.class,reader.tenantId(),reader.userId())).isEqualTo(1);
         assertThat(sharing.received(reader,id).documentId()).isEqualTo(id);
     }
+    /** 即使共享功能已开启，私有校验副本也不能从通用共享入口授权。 */
+    @Test void operationsPreviewCannotBeShared() {
+        String id=published().documentId();
+        jdbc.update("UPDATE knowledge_document SET purpose='OPERATIONS_PREVIEW',candidate_id=?,candidate_revision=1 WHERE document_id=?",key(),id);
+        error(KnowledgeError.NOT_FOUND,()->sharing.access(owner,id));
+        error(KnowledgeError.NOT_FOUND,()->sharing.change(owner,id,key(),reader.userId(),Operation.GRANT_READ,0));
+        assertThat(sharing.received(reader,20,null).items()).isEmpty();
+    }
     @Test void replayAndUnknownResultCannotResurrectRevokedGrant() {
         String id=published().documentId(), original=key();
         var grant=sharing.change(owner,id,original,reader.userId(),Operation.GRANT_READ,0);

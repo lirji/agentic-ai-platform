@@ -98,6 +98,7 @@ def prepare(args: argparse.Namespace) -> None:
         "identity": args.identity_mode,
         "sharing": args.sharing,
         "feedback": args.feedback,
+        "operations": args.operations,
         "parsing": args.parsing,
         "pdf": args.pdf,
         "docx": args.docx,
@@ -214,6 +215,8 @@ def prepare(args: argparse.Namespace) -> None:
     source_env.update(sharing_local.environment(browser, args.sharing))
     import feedback_local
     source_env.update(feedback_local.environment(source_env, args.feedback))
+    import operations_local
+    source_env.update(operations_local.environment(args.operations))
 
     def transform(value: str, service: str) -> str:
         """仅替换本项目已知地址；内部服务保留共享网络内 loopback。"""
@@ -446,6 +449,7 @@ def main() -> None:
     parser.add_argument("--identity-mode", choices=("local", "oidc"), default="local")
     parser.add_argument("--sharing", action="store_true", help="仅与oidc一起启用已验收的只读共享")
     parser.add_argument("--feedback", action="store_true", help="启用所有者反馈及任务引用证明")
+    parser.add_argument("--operations", action="store_true", help="启用所有者候选修订；不会自动开启处理worker")
     parser.add_argument("--committed-only", action="store_true")
     parser.add_argument(
         "--structured-profile", choices=("BLOCK_V2", "STRUCTURE_V3"), default="BLOCK_V2"

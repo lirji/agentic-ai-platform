@@ -80,6 +80,7 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
                 if (state == null) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
                 var replay = command(caller, input.key(), input.fingerprint());
                 if (replay.isPresent()) { return replay.get(); }
+                com.lrj.agentic.knowledge.domain.DocumentPurpose.requireStandard(state.purpose());
                 if (!state.lifecycleReady() || !Lifecycle.ACTIVE.code().equals(state.lifecycle())
                         || state.revision() != input.expectedRevision() || state.revision() >= Integer.MAX_VALUE
                         || state.version() >= Integer.MAX_VALUE || state.lastGeneration() >= Integer.MAX_VALUE
@@ -124,6 +125,7 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
                 if (state == null) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
                 var replay = command(caller, input.key(), input.fingerprint());
                 if (replay.isPresent()) { return replay.get(); }
+                com.lrj.agentic.knowledge.domain.DocumentPurpose.requireStandard(state.purpose());
                 if (Lifecycle.DELETED.code().equals(state.lifecycle())) {
                     throw new KnowledgeFailure(KnowledgeError.NOT_FOUND);
                 }
@@ -171,6 +173,7 @@ public class MySqlLifecycleRepository implements LifecycleRepository {
                 if (state == null) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
                 var replay = command(caller, input.key(), input.fingerprint());
                 if (replay.isPresent()) { return replay.get(); }
+                com.lrj.agentic.knowledge.domain.DocumentPurpose.requireStandard(state.purpose());
                 if (Lifecycle.DELETED.code().equals(state.lifecycle())) { throw new KnowledgeFailure(KnowledgeError.NOT_FOUND); }
                 if (!state.lifecycleReady() || !Lifecycle.ACTIVE.code().equals(state.lifecycle())
                         || state.revision() != input.expectedRevision() || state.revision() >= Integer.MAX_VALUE

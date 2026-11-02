@@ -47,7 +47,12 @@ public interface ProcessingMapper {
     int event(@Param("caller") Caller caller, @Param("id") String id, @Param("eventId") String eventId,
             @Param("actor") String actor, @Param("action") String action);
     /** 检索候选仍须通过发布和所有者约束。 */
-    List<PublishedChunk> published(@Param("caller") Caller caller, @Param("ids") List<String> ids, @Param("shared") boolean shared);
+    List<PublishedChunk> published(@Param("caller") Caller caller, @Param("ids") List<String> ids,
+            @Param("shared") boolean shared, @Param("documentIds") List<String> documentIds);
+    /** null表示显式引用读取，搜索空范围必须用空列表而非null。 */
+    default List<PublishedChunk> published(Caller caller, List<String> ids, boolean shared) {
+        return published(caller, ids, shared, null);
+    }
     /** 旧调用保持owner范围；共享入口必须显式携带已核验标志。 */
     default List<PublishedChunk> published(Caller caller, List<String> ids) { return published(caller, ids, false); }
     /** 引用同样不信任索引正文。 */

@@ -7,6 +7,7 @@
             j.processor_version, c.chunk_id, c.batch_digest, c.text, c.text_hash,
             c.start_byte, c.end_byte, r.display_name, c.source_locator
         <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingMapper.publishedScope"/>
+        <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.ProcessingMapper.searchScope"/>
         AND c.chunk_id IN
         <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
     </select>

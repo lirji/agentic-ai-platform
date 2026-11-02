@@ -2,6 +2,8 @@ package com.lrj.agentic.knowledge.infrastructure.processing;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.lrj.agentic.knowledge.domain.ContentDigest;
+import com.lrj.agentic.knowledge.domain.DocumentPurpose;
+import com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleMapper;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.processing.PreparedBatch;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConditionalOnProperty(name = "knowledge.processing.enabled", havingValue = "true")
 public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
+    private final LifecycleMapper documents;
     private final ProcessingProperties properties;
     private final ProcessingJson json;
     private final BoundedHttp http;
@@ -38,9 +41,15 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
         this(properties, json, http, null);
     }
     /** 仅正式搜索注入共享范围，索引写入仍保持原owner。 */
-    @org.springframework.beans.factory.annotation.Autowired
     public DualSearchIndex(ProcessingProperties properties, ProcessingJson json, BoundedHttp http,
             com.lrj.agentic.knowledge.infrastructure.sharing.SharedReadAccess sharing) {
+        this(properties, json, http, sharing, null);
+    }
+    /** 正式写入从数据库读取目的，模型批次不能把私有副本伪装成普通资料。 */
+    @org.springframework.beans.factory.annotation.Autowired
+    public DualSearchIndex(ProcessingProperties properties, ProcessingJson json, BoundedHttp http,
+            com.lrj.agentic.knowledge.infrastructure.sharing.SharedReadAccess sharing, LifecycleMapper documents) {
+        this.documents = documents;
         this.sharing = sharing;
         this.properties = properties;
         this.json = json;
@@ -50,12 +59,14 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
     /** 双目标分别确认，不能将一个 HTTP 200 当作所有 Bulk 项目完成。 */
     @Override
     public void write(Sink sink, PreparedBatch document) {
-        if (sink == Sink.VECTOR) { vectors(document); }
-        else { keywords(document); }
+        String purpose = purpose(document);
+        if (sink == Sink.VECTOR) { vectors(document, purpose); }
+        else { keywords(document, purpose); }
     }
 
     /** 回读整批稳定身份和摘要，禁止凭写入响应或抽样把新代次切为当前发布。 */
     @Override public void verify(Sink sink, PreparedBatch document) {
+        String purpose = purpose(document);
         require(!document.chunks().isEmpty() && document.chunks().size() <= ProcessingProtocol.MAX_CHUNKS);
         var expected = new java.util.HashMap<String, PreparedBatch.Chunk>();
         for (var chunk : document.chunks()) {
@@ -76,7 +87,7 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
             require(chunk != null);
             if (!vector) { require(item.path("found").isBoolean() && item.path("found").asBoolean() && !item.has("error")); }
             var actual = item.path(vector ? "payload" : "_source");
-            for (var field : payload(document, chunk).entrySet()) {
+            for (var field : payload(document, chunk, purpose).entrySet()) {
                 var value = actual.path(field.getKey());
                 require(field.getValue() instanceof Number number
                         ? value.isIntegralNumber() && value.canConvertToLong() && value.longValue() == number.longValue()
@@ -101,10 +112,10 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
         } catch (KnowledgeFailure unavailable) { return false; }
     }
 
-    private void vectors(PreparedBatch document) {
+    private void vectors(PreparedBatch document, String purpose) {
         var points = document.chunks().stream().map(chunk -> Map.of(
                 "id", pointId(chunk.chunkId(), document.batchDigest()),
-                "vector", chunk.vector(), "payload", payload(document, chunk))).toList();
+                "vector", chunk.vector(), "payload", payload(document, chunk, purpose))).toList();
         JsonNode result = request(Sink.VECTOR, "PUT",
                 "/collections/" + properties.collection() + "/points?wait=true",
                 json.write(Map.of("points", points)), "application/json");
@@ -112,12 +123,12 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
                 && "completed".equals(result.path("result").path("status").asText()));
     }
 
-    private void keywords(PreparedBatch document) {
+    private void keywords(PreparedBatch document, String purpose) {
         var body = new ByteArrayOutputStream();
         for (var chunk : document.chunks()) {
             body.writeBytes(json.write(Map.of("index", Map.of("_id", chunk.chunkId() + ":" + document.batchDigest()))));
             body.write('\n');
-            var payload = new java.util.HashMap<String, Object>(payload(document, chunk));
+            var payload = new java.util.HashMap<String, Object>(payload(document, chunk, purpose));
             payload.put("text", chunk.text());
             body.writeBytes(json.write(payload));
             body.write('\n');
@@ -184,13 +195,18 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
             }
             JsonNode response = request(sink, "POST",
                     "/collections/" + properties.collection() + "/points/query",
-                    json.write(Map.of("query", vector, "filter", Map.of("must", filters),
+                    json.write(Map.of("query", vector, "filter", documentIds.isEmpty()
+                            ? Map.of("must", filters, "must_not", List.of(Map.of("key", "purpose", "match",
+                                    Map.of("value", DocumentPurpose.OPERATIONS_PREVIEW.code()))))
+                            : Map.of("must", filters),
                             "limit", limit,
                             "with_payload", List.of("chunkId", "batchDigest"), "with_vector", false)),
                     "application/json", timeout);
             require("ok".equals(response.path("status").asText()));
             return response.path("result").path("points");
         }
+        if (documentIds.isEmpty()) filters.add(Map.of("bool", Map.of("must_not",
+                Map.of("term", Map.of("purpose", DocumentPurpose.OPERATIONS_PREVIEW.code())))));
         identity.forEach((key, value) -> filters.add(Map.of("term", Map.of(key, value))));
         if (!shared.isEmpty()) filters.add(Map.of("bool", Map.of("minimum_should_match", 1, "should", List.of(
                 Map.of("term", Map.of("ownerId", caller.userId())), Map.of("terms", Map.of("documentId", shared))))));
@@ -239,11 +255,22 @@ public class DualSearchIndex implements SearchIndex, RankedSearchIndex {
         return json.read(bytes, JsonNode.class, KnowledgeError.INDEX_UNAVAILABLE);
     }
 
-    private static Map<String, Object> payload(PreparedBatch document, PreparedBatch.Chunk chunk) {
-        return Map.of("tenantId", document.tenantId(), "ownerId", document.ownerId(),
+    /** 旧普通索引缺少目的字段时仍兼容；校验副本必须写入并在回读中核实标记。 */
+    private static Map<String, Object> payload(PreparedBatch document, PreparedBatch.Chunk chunk, String purpose) {
+        var result = new java.util.HashMap<String, Object>(Map.of("tenantId", document.tenantId(), "ownerId", document.ownerId(),
                 "documentId", document.documentId(), "version", document.documentVersion(),
                 "processorVersion", document.processorVersion(), "chunkId", chunk.chunkId(),
-                "batchDigest", document.batchDigest());
+                "batchDigest", document.batchDigest()));
+        if (DocumentPurpose.OPERATIONS_PREVIEW.code().equals(purpose)) { result.put("purpose", purpose); }
+        return result;
+    }
+
+    private String purpose(PreparedBatch document) {
+        // 无数据库的构造器只用于原有端口测试；正式Bean必须注入资料Mapper。
+        String value = documents == null ? DocumentPurpose.STANDARD.code()
+                : documents.purpose(new Caller(document.tenantId(), document.ownerId()), document.documentId());
+        require(DocumentPurpose.STANDARD.code().equals(value) || DocumentPurpose.OPERATIONS_PREVIEW.code().equals(value));
+        return value;
     }
 
     /** Qdrant 接受 UUID；不同批次使用不同 ID，不依赖无效的跨服务锁。 */

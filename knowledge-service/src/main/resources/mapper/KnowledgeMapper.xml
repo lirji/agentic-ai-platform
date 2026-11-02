@@ -59,7 +59,7 @@
     <select id="pageDocuments" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.DocumentRow">
         SELECT <include refid="documentColumns"/> FROM knowledge_document
         WHERE tenant_id = #{tenantId} AND owner_id = #{ownerId} AND document_id &gt; #{afterId}
-            AND lifecycle = 'ACTIVE'
+            AND lifecycle = 'ACTIVE' AND purpose='STANDARD'
         ORDER BY document_id ASC LIMIT #{limit}
     </select>
     <select id="findVisibleIngestion" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.IngestionRow">

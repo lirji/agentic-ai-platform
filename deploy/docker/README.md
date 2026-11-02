@@ -74,3 +74,5 @@ docker compose --env-file /absolute/path/agentic-ai-platform/.local/docker-runti
 历史部署记录保留在[20261027部署](../../docs/deployment/docker-20261027/PROGRESS_STATE.md)。本轮日志/私密备份位于`.logs/docker-identity-20261101/`、`.local/docker-identity-20261101/`；源码/镜像收据在`.local/docker-runtime/`。无清理授权时保留这些恢复材料。
 
 S14A反馈可在后续获授权部署的prepare阶段显式添加`--feedback`，默认关闭，选项纳入快照指纹；需要现有Tasks引用签名配置。详见[反馈Runtime](../../docs/design/knowledge-first-20261020/OPERATIONS_RUNTIME.md)。本片仅接线，未更新已运行镜像。
+
+S14B候选修订使用独立`--operations`，默认关闭；仅派生候选入口，不隐式启用处理/评测worker。准备私有校验副本前须对明确目标追加purpose搜索映射，步骤见同一Runtime文档。本片未执行prepare/build/up或更新运行镜像。

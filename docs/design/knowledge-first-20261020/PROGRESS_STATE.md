@@ -1,106 +1,16 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S14B 候选修订与内容绑定评估（实施中）
+## 当前任务：S14B 本地验收完成，Git 交付进行中
 
-- 两仓原目录新分支feat/knowledge-candidates-20261102，起点后端906a974/前端5e90700，开始时干净；S14A产品及归档分支/main CI全部PASS，归档收据.local/s14a-archive-delivery.json。无新worktree，无S14B产品/迁移/模型调用。
-- 本片计划：①沿C-OPERATIONS冻结候选修订、隔离评估副本、当前内容与真实质量运行的绑定；②追加V16与后端候选/私有副本/共享检索边界；③React编辑与已有质量界面连接；④真实DB/双索引/质量链路和浏览器验证/审查；⑤正常Git交付后继续S14C。①契约与有界架构增量已完成；②开始前发现共享/反馈身份列使用utf8mb4_0900_ai_ci（真实information_schema已核实），独立补修已本地验证通过并合入当前分支，分支CI运行中；继续V16候选迁移。②–⑤尚无产品改动。
-- 技术事实：现有质量执行只读取当前索引发布身份，未入索引的候选不能靠旧原文评估过关。采用owner私有校验副本复用同一入库/检索/质量管线，隔离默认检索/普通列表/共享与直接生命周期写；原资料及ACL在S14C实际发布前保持原事实。编辑使当前修订与旧评估绑定不符，不能复用旧批准。
-- 输入范围拟沿已有TXT/PDF/DOCX上传边界：TXT可编辑完整替换文本，附件上传完整修正版；不把反馈选中片段当完整原文件。requiredText仅对精确提取片段做局部字面检查，语义/检索仍由S8真实运行和人工评分提供。
-- C-OPERATIONS增量operations-candidate-v1与BACKEND_ARCHITECTURE D-OPS-04–07已冻结。调查笔记.local/s14a-next-slice-notes.md仅历史草案（评测用途实际为BUSINESS，非QUALITY）；以下按正式契约实施。下一操作V16候选/修订/回执及preview目的隔离。采用的技能/授权/付费边界与下方S14A一致，parallel=no。
-
-### 共享/反馈精确身份补修（交付中）
-
-- S14B设计已在后端feat/knowledge-candidates-20261102@a43bff0、前端同名分支@3120d90保存；尚无S14B产品改动。其契约/计划仍有效，补修交付后合并回该分支继续，候选迁移顺延V16。
-- 后端原目录独立fix/knowledge-identity-comparison-20261102，基线906a974；前端保留S14B分支，本补修不改前端产品。真实information_schema确认V13/V14身份列继承utf8mb4_0900_ai_ci，会折叠大小写/重音。需要身份逐字匹配，不能依赖当前IdP碰巧使用小写UUID。
-- 计划：①真实DB回归重现；②新增V15将共享ACL/共享命令/反馈表改为utf8mb4_0900_bin，保留字节/数据/注释和旧迁移；③真实共享/反馈/HTTP回归；④文档与正常Git/CI交付；⑤回S14B。①真实回归已FAIL，证明错大小写tenant读取未被拒绝（.logs/s14-identity-comparison-before.log）；②V15已在隔离test库验证；③19项中16项执行PASS、3项联合浏览器按配置跳过；原287条记录逐行摘要及列注释摘要全部保留，Flyway15成功。验证会话26037已结束；证据见[补修验收](../../qa/identity-comparison-20261102/TEST_RESULT.md)。④7cd82c7已提交推补修分支，分支CI41365252899运行中；通过后从原main工作树ff合并推main并核对CI；无S14B产品代码混入。
-- 原授权不变：仅测试库必要迁移/验证；不更新运行服务，不清理数据，不新增模型调用。S14A产品及归档两仓分支/main CI均PASS，见.local/s14a-archive-delivery.json。本补修真实失败与复验均另记，不沿旧证据假称该边界已经覆盖。
-
-### S14A 已交付（历史）
-
-- 用户2026-11-02授权“自行处理”，本轮按既有资料所有权采用owner处理反馈与编辑/审批修正，不新增组织运营管理员。沿capability-delivery-20261021共51项，parallel=no，整体未完成；下一片S14B候选编辑与内容绑定评估，其后S14C真实审批发布、S14D精确探测/补偿。
-- S14A契约、实现、验证、审查与产品Git交付DONE。后端009f141/前端5f597b2已正常ff合并推main；分支CI41363910246/41363911648和main CI41364091686/41364105004全部精确SHA PASS，见[交付收据](../../qa/feedback-20261102/delivery-result.json)。当前feat/knowledge-feedback-20261102仅归档收据/状态；归档精确HEAD和CI写.local/s14a-archive-delivery.json，避免递归记录自身hash。
-- 验证：[TEST_RESULT](../../qa/feedback-20261102/TEST_RESULT.md)、[REVIEW](../../qa/feedback-20261102/REVIEW.md)。真实Knowledge DB/HTTP7项（含实际Tasks联合）和Tasks专项1项PASS；前端202单元，最终12定向/格式/类型/静态/构建/真实浏览器及5张截图实看PASS。原键未知恢复、当前权限/完整引用、严格协议、收发隔离、私有taskId隐去、撤权后保留记录均有证据。
-- 失败已修：TXT夹具定位为空、测试按钮文案错误、截图过渡时机、测试启动连接错误吞掉；日志保留。后端代码卫生COMPLETE_WITH_LIMITATIONS（无独立Java格式器，短事务/常量人工复核），前端COMPLETE（PNG单独实看，文本全部扫描）。无新模型/中间件/依赖。
-- 运行与边界：所有本片测试已结束，临时Tasks已正常退出。28216反馈预览使用.local/feedback-dist（session78095）；原28086Docker、28196身份、28206共享预览保持，未部署。测试库V14与随机tenant记录保留，不删除数据；两仓.local凭据/预算/.logs/.idea和原main工作树保留。
-- 授权/规范：本地有界设计实现/验证、独立任务分支正常提交/合并/推main持续授权；无生产部署、强推、清理、子Agent、新付费预算。Chat/Embedding原累计0.957092/0.781784元不变，本片付费调用0。采用continue-approved-delivery、contracts/backend/frontend/runtime/validation/progress/Git/CI；架构建模、持久化、接口、并发安全、容量和发布治理。
-- 恢复下一步：先核对归档提交/CI及两仓状态，随后原目录新建S14B任务分支。候选不能把requiredText或旧资料评估当质量通过；需绑定当前候选内容/真实统一质量运行且编辑后失效。只读调查笔记.local/s14a-next-slice-notes.md不是冻结契约；先完成有界设计，再落地，不引入第二套评测/调度系统。
-
-### S13B/C 已交付（历史）
-
-- 完整任务capability-delivery-20261021共51项，parallel=no，整体未完成。用户2026-11-02确认同组织指定成员只读；owner逐份授权/撤回，reader不编辑/转授；无团队或运营管理员。S13A和Docker原部署已交付，未被本片更新。
-- 当前清单：①恢复及矩阵DONE；②[C-SHARING](SHARING_CONTRACTS.md)DONE；③授权/目录/API/UI及消费路径DONE；④必要验证PASS；⑤文档与产品Git/CI交付PASS。S13B/C已交付；完整计划未完成。
-- 两仓原目录feat/knowledge-sharing-20261101；后端80cd247、前端6da97b8已正常ff合并推origin/main。分支CI41328517516/41328520845、main CI41328683147/41328735735全部精确SHA PASS；见[交付收据](../../qa/sharing-20261102/delivery-result.json)。本次产品及补修收据均已确认；最后收据/恢复入口归档的精确HEAD与CI保存.local/s13bc-archive-delivery.json，不递归写自身提交hash。后端原Docker main工作树保留，无新worktree。
-- 收尾发现并立即整改：前端SharingPanel在功能关闭时隐藏整个面板，access读取失败也遮住原键查询按钮。服务端原回执GET仍可用，因此补UI只读恢复路径（不读目录/不发新命令）。原产品交付记录保留；该后续修复8项定向单元/格式/类型/静态/构建PASS，最终构建真实浏览器复验PASS（.logs/s13c-recovery-browser-final.log）；前端cbe1088已正常ff合并推main，分支CI 41329703941/main CI 41329938057均精确SHA PASS（196项单元）。源码/截图/日志摘要已同步，修复已交付。S14角色现已按上方用户答复解除阻塞。
-- 实现：Knowledge V13共享修订/ACL/不可变命令回执，Casdoor当前成员只读适配；短事务CAS/审计，原key恢复；统一可读摘要、检索/引用/评测权威SQL与索引预过滤。React共享设置、共享给我、只读详情、所有消费选择器及准确私有/共享文案。公开共享默认关闭。
-- 证据：[TEST_RESULT](../../qa/sharing-20261102/TEST_RESULT.md)、[REVIEW](../../qa/sharing-20261102/REVIEW.md)。48个必要Java集成最终通过（首次全跑1个故障夹具漏SQL失败，补装配后8项复验PASS）；Java140单元；Python620通过/97默认跳过；前端196单元、真实共享浏览器1、旧浏览器17。真实Tasks/PG联合覆盖共享QA/研究/评测、历史404/报告抑制、恢复无新调用、生成中拒绝交付、精排外发前撤权。最后历史事件断言也已通过，日志.logs/s13c-events-joint-final.log；本轮测试全部结束。
-- 代码卫生：后端COMPLETE_WITH_LIMITATIONS（Java无独立格式器，命名常量/事务建议人工复核），前端COMPLETE；格式、类型、静态、构建、12注册契约文档验证均PASS。5张共享截图实际核对，18张本轮回归图归档前端当前QA，原历史图已恢复。
-- Runtime：[SHARING_RUNTIME](SHARING_RUNTIME.md)，新增显式--sharing，仅同次OIDC配置派生，不复制第二成员目录。V13仅隔离test库；不得改写。无prepare/up、IAM写、开发/生产迁移或付费调用。Casdoor当前三账号只读核对与两成员准入已复验，脱敏日志.logs/s13c-casdoor-readonly.log。
-- 下一片S14A运营反馈的权限范围尚未确认，已异步询问“资料owner处理自己资料反馈”或“指定组织运营成员”。此选择决定其他人的反馈/审批可见性，不能从S13B只读矩阵推定。完成S13B/C交付后按答复冻结C-OPERATIONS，未答复时仅做不依赖角色的只读核对。已核对没有反馈模块/运营角色；Tasks私有读取与GenerationCitationRead完整发布身份可复用，不能把私有任务正文默认转交他人；本地事实摘要.local/s14-feedback-readiness.json。
-- 运行/保留：本轮Java/Python/浏览器服务随测试结束回收；前端28206预览exec87576/PID29033保留.local/sharing-dist。原28086Docker及28196身份预览、原main工作树、两仓.local凭据/账本、.logs与用户.idea保留；没有删除/清理。5个本轮隔离测试租户中保留1条失败尝试的过期RUNNING行，无活跃租约；记录.logs/s13bc-test-task-state.txt，不自动重发或清空。
-- 授权：已批准计划的本地实施、验证、按完整逻辑提交/正常合并/推main；无生产部署/强推/清理/子Agent。原Chat/Embedding保守累计0.957092/0.781784元保持，各1元上限，本片付费0。
-- 规范：session-handoff/continue-approved-delivery、backend/frontend-implementation、validation、runtime、progress、Git/CI；架构业务建模/持久化/接口/并发安全/容量/发布。沿既有手工专业pass，不冒称工程Runtime机器Gate或独立Agent审查。
-
-### S12D 已交付
-
-- 完整任务capability-delivery-20261021：51项已批准，parallel=no；用户持续授权继续，整体未完成。
-- S12D实现/必需验收/分支和main CI全部PASS。后端a29bf0d9153c58b8619fa6aaace9e69f1b79d845、前端847555970abd5a003bc2f0a177f424216bf284d6已正常ff合并推main；两仓原目录分支feat/research-stage-recovery-20261101，无新worktree。
-- [恢复契约](RESEARCH_RECOVERY_CONTRACTS.md)：v4显式受理/输入/根图，结果复用v3；retrieve/plan/analyze/verify同步确认；默认关闭，不扩大预算/租约，不启用内部saver/子Agent/shell。
-- [TEST_RESULT](../../qa/research-recovery-20261101/TEST_RESULT.md)、REVIEW/validation.json：Tasks真实MySQL29、契约11/security10，网关8；Python620通过/96默认跳过、6根图/12真实PG（含旧v1三项）及v3七项；前端179、旧浏览器3、真实联合浏览器3、Docker代理13。10联合截图已查看，3回归截图保留；32后端/12前端源文件摘要。Java独立格式器缺失与旧工具提示如实记录，无阻断Finding。
-- 修复历史：恢复输入匹配中央；计划端口无工具；SSE历史状态整批仅刷新一次，解决权限重验503；事件语义常量统一。真实联合.logs/s12d-full-joint-r2.log及.logs/s11e-joint-17660250053019201289/；最终Java/Python/PG日志见validation。
-- [交付收据](../../qa/research-recovery-20261101/delivery-result.json)：分支CI41293703524/41293708775、main CI41294071764/41294073626均精确SHA PASS。交付归档后端60da76d/前端8ebc5fa已正常ff合并推main；归档main CI41294516380/41294517374均PASS；产品精确main CI也已PASS。
-- S13A前置只读核对已完成：本机Casdoor公开discovery可达、auth-platform参考存在，但未找到本项目组织/客户端登记证据；当前前端仍是本地会话。U03身份范围已异步询问，答复前不写IAM或冻结真实成员权限。前置报告已保存为IDENTITY_READINESS.md；按用户答复冻结C-IDENTITY。
-- 运行：测试已结束；前端28186既有预览PID49541、日志前端.logs/s12b-preview.log保留。无付费/迁移/部署。原Docker main工作树、.local凭据/预算、.logs证据及.idea用户文件保留；缓存可在无需复现且获清理授权后处理，本轮未清理。
-- 授权：本地实施验证、按任务提交及正常合并推main；不含生产部署/强推/清理/子Agent。Chat/Embedding各1元，累计保守预留0.957092/0.781784保持，本片付费0，旧探针不可重跑。账户40%余量旧目标未核实，不替代最新开发要求。
-- 规范：session-handoff/continue-approved-delivery、Contracts Stage、backend/frontend-implementation、validation、progress/docs、Git/CI；架构建模/持久化/接口/并发安全/容量/发布。既有Runtime漂移沿手工专业pass，不冒称机器Gate或独立Agent审查。
-
-### S12C 已交付
-
-
-
-- 完整任务`capability-delivery-20261021`，51项已批准，parallel=no；用户最新“继续执行任务吧”。S12B已交付，S12C实现、必需验收和Git/CI交付PASS，整体未完成；接续S12D。
-- 两仓原目录`feat/research-coverage-20261101`，起点后端891c553fcdf9a2e4c64a5f4304afa45431961ef2、前端da4b7d914b4349684d6d1a55cb32870b8429433c；本片后端275eeb5fa8f6dcef25ffd6a0fa467d13081dd949、前端e29292b00f1e6f454c5a5b4268916597b71077dc已正常ff合并推origin/main，无新worktree。后端main工作树仍在~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027，当前干净。
-- 实现与契约：[RESEARCH_COVERAGE_CONTRACTS](RESEARCH_COVERAGE_CONTRACTS.md)，v3研究计划/逐项证据/缺口，Tasks行锁持久额度（跨epoch模型3/工具5/检索3），Python受控只读工具与原文验证，React真实选择/报告/引用。受理默认关闭、v1/v2保留；无新表/迁移/依赖或部署。S12D再拆根图阶段。
-- [TEST_RESULT](../../qa/research-coverage-20261101/TEST_RESULT.md)、[REVIEW](../../qa/research-coverage-20261101/REVIEW.md)、validation.json绑定两仓源码/日志/截图。Tasks真实MySQL28、契约11/security10；Python612 passed/83 skipped与真实PG7；前端169单元/旧浏览器9/真实联合2；Docker proxy11条路由PASS。最终联合.logs/s12c-full-joint-final.log及.logs/s11e-joint-8095304605098515968/，完成PG接管、真实发布/索引/HTTP、旧v2、空资料、提交取消、撤下后404。
-- 修复记录：详情有序读取解决本轮权限重验503；开发模式目录429通过既有重试恢复；来源名/引用编号篡改拒绝；PLANNING仅白名单进度可见；Java裸RESEARCH值改WorkKind后契约重测PASS。两仓卫生通过，Java缺少独立格式器保留限制。8张联合截图已查看；旧回归覆盖的3张历史图已移存本片并还原原版本。
-- [交付收据](../../qa/research-coverage-20261101/delivery-result.json)：任务分支CI41290801572/41290827838、main CI41291226506/41291525174全部PASS，分别核对提交SHA。下一操作：归档本交付记录，然后在原目录新建S12D任务分支，冻结根图分阶段恢复增量后实施；不等待再次确认。
-- 运行：最终测试已结束，前端28186既有预览PID49541保留。无在途付费/迁移/部署，原开发/生产容器未更新。两仓.local/.logs/缓存和原Docker工作树保留，无清理。
-- 授权：本地实施验证、按逻辑提交及正常合并推main；无生产部署/清理/子Agent/新增模型额度。Chat/Embedding各1元累计保守预留0.957092/0.781784，本片付费0，旧探针不可重跑。原账户保留40%目标余量不可读，未宣称达成，不把它替代最新继续开发要求。
-- 规范：session-handoff/continue-approved-delivery、Contracts Stage、backend/frontend-implementation、validation、progress/docs、Git/CI；架构建模/持久化/接口/并发安全/容量/发布。既有Runtime漂移按手工专业pass，非机器Gate或独立Agent审查。
-
-### S12B 已完成与交付
-
-- 完整任务`capability-delivery-20261021`，51项已批准，parallel=no；整体未完成。S12B实现和必需验收PASS，两仓交付与CI已PASS，接续S12C。
-- 两仓原目录分支`feat/answer-quality-20261101`，后端起点7ad8d4659db52213bade145f545075f140af744f，前端起点628b4b6de0fedfc772da0a8eb3df6e8a73ccdc35。本片后端81ada761/前端028bab65已正常fast-forward合并推origin/main；后端仅校准测试/夹具/文档，前端已保存评分解释及相应验证。无schema、产品后端或Runtime改动。
-- 用户于2026-11-01明确“认可五项”，人工校准阻塞已解除。固定夹具`knowledge-service/src/test/resources/answer-quality-calibration.json`；原calibration-draft仅历史保留。额外维度与合成样本由Codex补齐，不冒称用户认可生产质量。
-- [TEST_RESULT](../../qa/answer-quality-20261101/TEST_RESULT.md)、[REVIEW](../../qa/answer-quality-20261101/REVIEW.md)、validation.json绑定当前两仓源码/日志/10截图。真实MySQL9项（五样本HTTP校准+既有E03八项）、真实浏览器1、协议浏览器1、前端147单元/格式/静态/类型/构建全部PASS；10截图实际查看。已保存值与草稿隔离，失败/未评审不能通过。
-- 本片执行清单①已有契约/真实M04反例②评分解释③用户五项校准④真实持久/API/页面⑤独立验收/文档均DONE；⑥正常提交/分支CI/合并推main均DONE；分支CI41271503315/41271504995及main CI41271660470/41271660916全部PASS，见delivery-result.json。无阻断Finding。Java格式器缺失、Vite既有警告保留。
-- 失败记录：测试缺少Mockito/类型错误、非法全失败清单、语义拒答混用空召回协议均已按现有契约修正；旧日志保留。AQ04保留不含餐补事实的实际引用，拒答独立评审。没有为过测试放宽产品规则。
-- 运行：前端28186预览（exec2083、PID49541、前端.logs/s12b-preview.log）保留；本轮测试全部结束，无在途付费/迁移/部署。最终日志后端.logs/s12b-calibration-final.log及.logs/s12b-calibration-13338031860308415131/browser.log；前端.logs/s12b-{final-verified,real-test-static,contract-final}.log。
-- 授权：本地实施验证、按任务提交及正常合并推main；无子Agent/强推/清理/生产部署。沿用户架构规范业务建模、持久化、接口、并发安全、容量与发布章节。既有Runtime漂移沿手工专业pass，不宣称机器Gate。
-- 预算：原chat/Embedding各1元，保守累计预留0.957092/0.781784元，非账单。S12B新增调用0，在线裁判未启用；S12A探针不可重跑，U04无新预算授权。
-- 下一步：归档本片收据后新任务分支继续S12C；已定位现有C-WORK2待冻结、WorkPipeline与GenerationWorkPipeline、Tasks WorkRequests及前端WorkResult。保留旧图/旧输入输出，先补齐版本化契约和任务级调用预算，再实施/验收，不重复询问继续。
-
-### S12A 已完成与交付
-
-- 产品后端18d66a7/前端52ca7d3与文档归档7ad8d46/628b4b6均已正常fast-forward合并推main，远程头已核对。产品分支CI41267832644/41267863013、main CI41268597688/41268628560及归档main CI41268793111/41268794768均PASS。
-- [TEST_RESULT](../../qa/contextual-qa-20261030/TEST_RESULT.md)、REVIEW.md、validation.json、delivery-result.json。Java169/Python590（75默认跳过）/前端143；MySQL/HTTP41、PG6、协议浏览器3、旧浏览器14、真实联合浏览器1、容器9路由通过；8截图已复核。
-- 9份合成资料3题真实改写/召回：2改善/1不变/0退化/0改写失败，3次chat/5次Embedding，未新生成答案；不代表生产答案质量。仅隔离Conversation测试库迁移V3，新受理默认关闭，原运行容器未更新。
-- 同owner/会话/范围完整证据前文、全部依赖上限10、历史答案2000码点；预算/配置/权限/取消硬失败。Java格式器缺失、旧saver/Vite/包大小警告保留。
-
-### S11E 已完成与证据
-
-- 契约/完整8分量证据、QA/work/evaluation v2、旧版本恢复、默认关闭公开受理及前端真实策略/引用已实现；各逻辑单元bea8c02、70a33c0、6b35d0a、f303f4a、825c6d1及前端967fb40均通过对应CI。权威汇总`docs/qa/retrieval-consumers-20261028/TEST_RESULT.md`、REVIEW.md和各增量JSON。
-- Java最终165单元；Python550通过/68默认跳过，Ruff113文件/mypy71源码；真实数据库/HTTP/PG恢复专项、两Python进程容量/超时/取消、四消费者相同身份与输入对照PASS。评测真实报告逐题接管不重跑已完成题；撤下隐藏报告并拒绝正文读取。仅模型是协议替身。
-- 前端132单元、专项与旧浏览器回归、格式/ESLint/类型/构建PASS。17张协议与真实页面截图已查看；真实生产构建浏览器直接代理实际业务响应。前端证据`docs/qa/retrieval-consumers-20261030/`。
-- Docker网页代理漏v2/tasks与v2/conversations已补，候选web ba449282a95548d2镜像内静态/132测试/构建和断网代理smoke七路由/临时RSA/跨站拒绝PASS；后台候选01e494b1d3e59376及AI默认关闭/新图导入PASS。镜像ID和复用源摘要见container-evidence.json。
-- 两次Docker失去响应后经用户授权正常重启；恢复原两搜索容器。原9应用容器全部healthy，10项只读页面/API通过。worker原价格核验日期到期，核对官方价格后只刷新私密配置日期；仍原单价/1元/账本，见pricing-revalidation.json。无迁移/新镜像部署。
-
-### 当前运行与保留项
-
-- 原9应用容器全部healthy（本轮用户询问部署进度时已实时复核），仍S11D快照01a95560586ee526；两搜索容器已按原配置恢复。候选后台01e494b1d3e59376、web ba449282a95548d2只用于验证。没有新部署或开发库迁移，测试库Knowledge V12/Tasks V5/Conversation V3。
-- S12A收尾时进程核对：当时28186/28187预览进程已退出，当前S12B预览见顶部；无进行中的重启/模型任务，既有截图与日志保留。最终检查已结束，Python/Java/前端日志为.logs/s12a-final-{python,java}.log及前端.logs/s12a-final-web.log，无本轮运行中测试。S11E证据在后端docs/qa/retrieval-consumers-20261028及前端docs/qa/retrieval-consumers-20261030，日志.logs/s11e-*。
-- 原任务/预算/.local/.logs/缓存及Docker main工作树全部保留，不清理、不重复付费探针。Java格式化器缺失、Deep Agents既有saver警告、前端包大小与U04真实质量限制不隐瞒。
-- 采用规范：用户AGENTS约定；架构建模、持久化、接口、并发安全、容量和发布章节；现有个人栈兼容约束；Contracts、backend/frontend-implementation、implementation-validation、runtime-and-deploy、update-progress-docs、task-git-delivery/ci-cd-gate。
+- 原计划 capability-delivery-20261021，51项、parallel=no；用户“自行处理”。S14B DONE / Validation PASS，完整计划未完成；交付完成后立即进入 S14C 审核与真实入库发布。
+- 两仓原目录 feat/knowledge-candidates-20261102，提交前基线后端 fa76188、前端3120d90；本片修改均属当前范围。已合入身份逐字匹配补修7cd82c7（分支/main CI PASS），本片同时归档其交付收据。
+- 业务边界：owner负责反馈、编辑和审批；同组织指定成员只读、逐份授权可撤回、不得编辑或再分享。候选完整不可变修订、原资料/候选CAS、owner私有校验副本、真实S8定义/报告/人工评分绑定，编辑后失效。requiredText仅字面检查。回执摘要支持原键恢复，普通K07仍13字段，preview追加3字段。
+- 已实现：后端候选API/V16、完整S3源/解析/双索引私有副本、默认检索排除及共享/通用写保护；前端完整正文/附件/历史、摘要原键恢复、冲突草稿保留与显式换基线、质量关联及原编辑器固定副本范围。Runtime显式--operations且默认关闭。
+- 验证PASS：[TEST_RESULT](../../qa/candidates-20261102/TEST_RESULT.md)、[REVIEW](../../qa/candidates-20261102/REVIEW.md)、[摘要](../../qa/candidates-20261102/validation.json)。130项知识单元、27项核心真实IT、共享/HTTP/质量回归；前端211项单元、类型/静态/格式/构建通过。最终实际Tasks联合1项及浏览器2条通过，.logs/s14b-joint-browser-final.log与.logs/s14b-joint-4473254010354186463/browser.log；7张1440/414截图已检查。最终副本READY文案/报告返回路径复验PASS；paid calls=0。
+- 验证限制：确定性质量报告证明流程，不代表真实模型效果；Java无格式器/独立静态工具，人工审查后COMPLETE_WITH_LIMITATIONS；前端卫生IMPLEMENTATION_COMPLETE；新Python Ruff PASS，旧Runtime5条提示与HEAD一致。历史失败保留在日志，均已修正复验。
+- 数据/运行：V16已应用隔离test，不得改写；test索引仅追加purpose。测试Tasks/桥/浏览器已退出；28226预览session63670使用.local/candidates-dist。无在途测试或付费调用。原28216/28206/28196预览与28086 Docker保留。
+- 下一步：核对暂存源码摘要→正常提交推送两仓任务分支→精确SHA CI→fast-forward main与main CI→归档→立即冻结/实施S14C。S14C须在真实审批时复核内容、原资料和质量事实，不能直接信任B读模型中的资格标志。
+- 授权/保留：正常Git交付已授权；不部署、不新增付费调用、不清理。保留test数据/源/索引/待处理副本作业、.local凭据与账本、.logs、.idea及已有main工作树。采用架构规范业务建模/持久化/接口/并发安全/容量/发布章节，以及既有实施、验证、进度、Git/CI、持续交付技能；无子Agent。
 
 ## 历史：20 项差距的框架化实施计划
 

@@ -214,13 +214,22 @@ public class MySqlProcessingRepository implements ProcessingRepository {
     /** 空候选直接返回，禁止生成空 IN 或无条件全量查询。 */
     @Override
     public List<PublishedChunk> published(Caller caller, List<String> chunkIds) {
+        return readPublished(caller, chunkIds, null);
+    }
+
+    /** 用户搜索范围进入最终SQL，不能仅依赖可滞后的索引目的标记。 */
+    @Override public List<PublishedChunk> searchPublished(Caller caller, List<String> chunkIds, List<String> documentIds) {
+        return readPublished(caller, chunkIds, List.copyOf(documentIds));
+    }
+
+    private List<PublishedChunk> readPublished(Caller caller, List<String> chunkIds, List<String> documentIds) {
         if (chunkIds.isEmpty()) { return List.of(); }
         if (chunkIds.size() > 2 * ProcessingProtocol.CANDIDATES) {
             throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
         }
-        var own = access(() -> mapper.published(caller, chunkIds));
+        var own = access(() -> mapper.published(caller, chunkIds, false, documentIds));
         if (own.size() == chunkIds.size() || sharing == null || !sharing.permitted(caller, List.of())) return own;
-        return access(() -> mapper.published(caller, chunkIds, true));
+        return access(() -> mapper.published(caller, chunkIds, true, documentIds));
     }
 
     /** 直接引用不依赖搜索服务可用性，但仍由当前发布版本授权。 */

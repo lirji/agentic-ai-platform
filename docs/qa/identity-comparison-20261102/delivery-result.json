@@ -1,0 +1,427 @@
+{
+  "status": "PASS",
+  "productCommit": "7cd82c73530f5c66f55183ff0b22b6c42f47ec24",
+  "branch": "fix/knowledge-identity-comparison-20261102",
+  "branchRun": 41365252899,
+  "mainRun": 41365378147,
+  "merged": "ff-only",
+  "pushed": "origin/main",
+  "branchCi": {
+    "conclusion": "success",
+    "headSha": "7cd82c73530f5c66f55183ff0b22b6c42f47ec24",
+    "jobs": [
+      {
+        "completedAt": "2026-11-02T00:06:28Z",
+        "conclusion": "success",
+        "databaseId": 125023938181,
+        "name": "java",
+        "startedAt": "2026-11-02T00:05:19Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-02T00:05:21Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-02T00:05:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:05:22Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 2,
+            "startedAt": "2026-11-02T00:05:21Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:05:26Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad",
+            "number": 3,
+            "startedAt": "2026-11-02T00:05:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:27Z",
+            "conclusion": "success",
+            "name": "Build and test Java contracts",
+            "number": 4,
+            "startedAt": "2026-11-02T00:05:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:27Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad",
+            "number": 7,
+            "startedAt": "2026-11-02T00:06:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:27Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 8,
+            "startedAt": "2026-11-02T00:06:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:27Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 9,
+            "startedAt": "2026-11-02T00:06:27Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41365252899/job/125023938181"
+      },
+      {
+        "completedAt": "2026-11-02T00:06:24Z",
+        "conclusion": "success",
+        "databaseId": 125023938511,
+        "name": "python",
+        "startedAt": "2026-11-02T00:05:20Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-02T00:05:21Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-02T00:05:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:05:23Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 2,
+            "startedAt": "2026-11-02T00:05:21Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:05:24Z",
+            "conclusion": "success",
+            "name": "Run astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9",
+            "number": 3,
+            "startedAt": "2026-11-02T00:05:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:05:26Z",
+            "conclusion": "success",
+            "name": "Install locked dependencies",
+            "number": 4,
+            "startedAt": "2026-11-02T00:05:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:01Z",
+            "conclusion": "success",
+            "name": "Format and static checks",
+            "number": 5,
+            "startedAt": "2026-11-02T00:05:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:22Z",
+            "conclusion": "success",
+            "name": "Unit and shared wire contracts",
+            "number": 6,
+            "startedAt": "2026-11-02T00:06:01Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:22Z",
+            "conclusion": "success",
+            "name": "Post Run astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9",
+            "number": 11,
+            "startedAt": "2026-11-02T00:06:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:22Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 12,
+            "startedAt": "2026-11-02T00:06:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:22Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 13,
+            "startedAt": "2026-11-02T00:06:22Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41365252899/job/125023938511"
+      },
+      {
+        "completedAt": "2026-11-02T00:05:25Z",
+        "conclusion": "success",
+        "databaseId": 125023938528,
+        "name": "documents",
+        "startedAt": "2026-11-02T00:05:20Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-02T00:05:21Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-02T00:05:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:05:22Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 2,
+            "startedAt": "2026-11-02T00:05:21Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:05:22Z",
+            "conclusion": "success",
+            "name": "Check registered contract evidence",
+            "number": 3,
+            "startedAt": "2026-11-02T00:05:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:05:22Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 6,
+            "startedAt": "2026-11-02T00:05:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:05:23Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 7,
+            "startedAt": "2026-11-02T00:05:22Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41365252899/job/125023938528"
+      }
+    ],
+    "status": "completed"
+  },
+  "mainCi": {
+    "conclusion": "success",
+    "headSha": "7cd82c73530f5c66f55183ff0b22b6c42f47ec24",
+    "jobs": [
+      {
+        "completedAt": "2026-11-02T00:07:53Z",
+        "conclusion": "success",
+        "databaseId": 125024309116,
+        "name": "java",
+        "startedAt": "2026-11-02T00:06:43Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-02T00:06:45Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-02T00:06:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:46Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 2,
+            "startedAt": "2026-11-02T00:06:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:52Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad",
+            "number": 3,
+            "startedAt": "2026-11-02T00:06:46Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:07:51Z",
+            "conclusion": "success",
+            "name": "Build and test Java contracts",
+            "number": 4,
+            "startedAt": "2026-11-02T00:06:52Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:07:51Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad",
+            "number": 7,
+            "startedAt": "2026-11-02T00:07:51Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:07:51Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 8,
+            "startedAt": "2026-11-02T00:07:51Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:07:51Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 9,
+            "startedAt": "2026-11-02T00:07:51Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41365378147/job/125024309116"
+      },
+      {
+        "completedAt": "2026-11-02T00:07:45Z",
+        "conclusion": "success",
+        "databaseId": 125024309347,
+        "name": "python",
+        "startedAt": "2026-11-02T00:06:44Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-02T00:06:45Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-02T00:06:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:46Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 2,
+            "startedAt": "2026-11-02T00:06:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:48Z",
+            "conclusion": "success",
+            "name": "Run astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9",
+            "number": 3,
+            "startedAt": "2026-11-02T00:06:46Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:50Z",
+            "conclusion": "success",
+            "name": "Install locked dependencies",
+            "number": 4,
+            "startedAt": "2026-11-02T00:06:48Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:07:24Z",
+            "conclusion": "success",
+            "name": "Format and static checks",
+            "number": 5,
+            "startedAt": "2026-11-02T00:06:50Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:07:44Z",
+            "conclusion": "success",
+            "name": "Unit and shared wire contracts",
+            "number": 6,
+            "startedAt": "2026-11-02T00:07:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:07:44Z",
+            "conclusion": "success",
+            "name": "Post Run astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9",
+            "number": 11,
+            "startedAt": "2026-11-02T00:07:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:07:44Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 12,
+            "startedAt": "2026-11-02T00:07:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:07:44Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 13,
+            "startedAt": "2026-11-02T00:07:44Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41365378147/job/125024309347"
+      },
+      {
+        "completedAt": "2026-11-02T00:06:50Z",
+        "conclusion": "success",
+        "databaseId": 125024309388,
+        "name": "documents",
+        "startedAt": "2026-11-02T00:06:44Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-02T00:06:45Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-02T00:06:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:47Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 2,
+            "startedAt": "2026-11-02T00:06:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:47Z",
+            "conclusion": "success",
+            "name": "Check registered contract evidence",
+            "number": 3,
+            "startedAt": "2026-11-02T00:06:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:47Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "number": 6,
+            "startedAt": "2026-11-02T00:06:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-02T00:06:47Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 7,
+            "startedAt": "2026-11-02T00:06:47Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41365378147/job/125024309388"
+      }
+    ],
+    "status": "completed"
+  },
+  "productionDeployment": "NOT_EXECUTED",
+  "frontend": "unchanged by fix; S14B branch preserved"
+}

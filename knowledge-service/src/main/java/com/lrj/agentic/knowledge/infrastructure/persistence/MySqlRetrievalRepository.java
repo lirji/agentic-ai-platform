@@ -26,10 +26,19 @@ public class MySqlRetrievalRepository implements RetrievalRepository {
 
     /** 空候选免查询；非空时由共享发布SQL按可信身份逐项授权。 */
     @Override public List<PublishedChunk> published(Caller caller, List<String> chunkIds) {
+        return readPublished(caller, chunkIds, null);
+    }
+
+    /** 用户搜索范围进入最终SQL，不能仅依赖可滞后的索引目的标记。 */
+    @Override public List<PublishedChunk> searchPublished(Caller caller, List<String> chunkIds, List<String> documentIds) {
+        return readPublished(caller, chunkIds, List.copyOf(documentIds));
+    }
+
+    private List<PublishedChunk> readPublished(Caller caller, List<String> chunkIds, List<String> documentIds) {
         if (chunkIds.isEmpty()) { return List.of(); }
         try {
-            var own = mapper.published(caller, chunkIds);
-            return List.copyOf(own.size() == chunkIds.size() || sharing == null || !sharing.permitted(caller, List.of()) ? own : mapper.published(caller, chunkIds, true));
+            var own = mapper.published(caller, chunkIds, false, documentIds);
+            return List.copyOf(own.size() == chunkIds.size() || sharing == null || !sharing.permitted(caller, List.of()) ? own : mapper.published(caller, chunkIds, true, documentIds));
         }
         catch (DataAccessException | TransactionException unavailable) {
             throw new KnowledgeFailure(KnowledgeError.DATABASE_UNAVAILABLE);

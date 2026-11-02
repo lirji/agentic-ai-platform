@@ -37,7 +37,10 @@ public final class LifecycleModels {
     /** 内容字段属于最新受理修订；已发布修订单独显示。 */
     public record DocumentView(String documentId, long revision, String lifecycle, long latestContentRevision,
             Long publishedRevision, Long publishedGeneration, String activeJobId, String displayName,
-            String contentType, long sizeBytes, String contentHash, Instant createdAt, Instant updatedAt) { }
+            String contentType, long sizeBytes, String contentHash, Instant createdAt, Instant updatedAt,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) String purpose,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) String candidateId,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) Long candidateRevision) { }
 
     /** 历史仅返回元数据，不通过版本列表提供旧原文旁路。 */
     public record RevisionView(long contentRevision, String displayName, String contentType, long sizeBytes,

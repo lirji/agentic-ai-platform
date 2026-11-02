@@ -32,6 +32,12 @@ public interface ProcessingRepository {
     Ingestion retry(Caller caller, String jobId, long revision);
     /** 从权威块及发布记录读取，避免直接返回可伪造的搜索正文。 */
     List<PublishedChunk> published(Caller caller, List<String> chunkIds);
+
+    /** 搜索必须显式传范围；空范围排除私有校验副本，直接引用沿原方法授权。 */
+    default List<PublishedChunk> searchPublished(Caller caller, List<String> chunkIds, List<String> documentIds) {
+        return published(caller, chunkIds).stream()
+                .filter(row -> documentIds.isEmpty() || documentIds.contains(row.documentId())).toList();
+    }
     /** 引用读取再次授权，版本过期与不可见都返回空。 */
     Optional<PublishedChunk> citation(Caller caller, String documentId, long version, String chunkId);
     /** 与引用同一当前发布范围，不返回未接受或未发布的解析告警。 */

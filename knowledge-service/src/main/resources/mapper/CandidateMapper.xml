@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.CandidateMapper">
+    <sql id="owned">tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId}</sql>
+    <sql id="rootColumns">candidate_id,tenant_id,owner_id,feedback_id,document_id,revision,created_at,updated_at</sql>
+    <select id="document" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleRows$State">
+        SELECT <include refid="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleMapper.stateColumns"/>
+        FROM knowledge_document WHERE <include refid="owned"/> AND document_id=#{id}
+        <if test="lock">FOR UPDATE</if>
+    </select>
+    <select id="feedbackDocument" resultType="string">
+        SELECT document_id FROM knowledge_feedback WHERE <include refid="owned"/> AND feedback_id=#{id}
+    </select>
+    <select id="root" resultType="com.lrj.agentic.knowledge.domain.operations.CandidateModels$Root">
+        SELECT <include refid="rootColumns"/> FROM knowledge_candidate WHERE <include refid="owned"/> AND candidate_id=#{id}
+        <if test="lock">FOR UPDATE</if>
+    </select>
+    <select id="byFeedback" resultType="com.lrj.agentic.knowledge.domain.operations.CandidateModels$Root">
+        SELECT <include refid="rootColumns"/> FROM knowledge_candidate WHERE <include refid="owned"/> AND feedback_id=#{id}
+    </select>
+    <select id="revision" resultType="com.lrj.agentic.knowledge.domain.operations.CandidateModels$Revision">
+        SELECT candidate_id,revision,tenant_id,owner_id,base_revision,display_name,content_type,size_bytes,content_hash,
+            source_bucket,source_key,text_body,required_text_json,content_digest,created_at
+        FROM knowledge_candidate_revision WHERE <include refid="owned"/> AND candidate_id=#{id} AND revision=#{revision}
+    </select>
+    <insert id="create">
+        INSERT INTO knowledge_candidate (<include refid="rootColumns"/>)
+        VALUES (#{row.candidateId},#{row.tenantId},#{row.ownerId},#{row.feedbackId},#{row.documentId},#{row.revision},#{row.createdAt},#{row.updatedAt})
+    </insert>
+    <update id="advance">
+        UPDATE knowledge_candidate SET revision=revision+1,updated_at=#{at}
+        WHERE <include refid="owned"/> AND candidate_id=#{id} AND revision=#{revision} AND revision &lt; 2147483647
+    </update>
+    <insert id="save">
+        INSERT INTO knowledge_candidate_revision (candidate_id,revision,tenant_id,owner_id,base_revision,display_name,content_type,
+            size_bytes,content_hash,source_bucket,source_key,text_body,required_text_json,content_digest,created_at)
+        VALUES (#{row.candidateId},#{row.revision},#{row.tenantId},#{row.ownerId},#{row.baseRevision},#{row.displayName},#{row.contentType},
+            #{row.sizeBytes},#{row.contentHash},#{row.sourceBucket},#{row.sourceKey},#{row.textBody},#{row.requiredTextJson},#{row.contentDigest},#{row.createdAt})
+    </insert>
+    <select id="command" resultType="com.lrj.agentic.knowledge.domain.operations.CandidateModels$Command">
+        SELECT fingerprint,receipt_json FROM knowledge_candidate_command WHERE <include refid="owned"/> AND idempotency_key=#{key}
+    </select>
+    <insert id="record">
+        INSERT INTO knowledge_candidate_command (command_id,tenant_id,owner_id,idempotency_key,fingerprint,operation,candidate_id,receipt_json,created_at)
+        VALUES (#{receipt.commandId},#{caller.tenantId},#{caller.userId},#{key},#{fingerprint},#{receipt.operation},#{receipt.candidateId},#{json},#{receipt.acceptedAt})
+    </insert>
+    <select id="preparation" resultType="com.lrj.agentic.knowledge.domain.operations.CandidateModels$Preparation">
+        SELECT candidate_id,revision,document_id,job_id,created_at FROM knowledge_candidate_preparation
+        WHERE <include refid="owned"/> AND candidate_id=#{id} AND revision=#{revision}
+    </select>
+    <insert id="previewDocument">
+        INSERT INTO knowledge_document (<include refid="com.lrj.agentic.knowledge.infrastructure.persistence.KnowledgeMapper.documentColumns"/>,purpose,candidate_id,candidate_revision)
+        VALUES (#{row.documentId},#{row.tenantId},#{row.ownerId},#{row.displayName},#{row.version},#{row.publishedVersion},#{row.status},
+            #{row.contentType},#{row.sizeBytes},#{row.contentHash},#{row.ingestionJobId},#{row.createdAt},#{row.updatedAt},
+            'OPERATIONS_PREVIEW',#{candidateId},#{revision})
+    </insert>
+    <insert id="prepare">
+        INSERT INTO knowledge_candidate_preparation (candidate_id,revision,tenant_id,owner_id,document_id,job_id,created_at)
+        VALUES (#{row.candidateId},#{row.revision},#{caller.tenantId},#{caller.userId},#{row.documentId},#{row.jobId},#{row.createdAt})
+    </insert>
+    <select id="publication" resultType="com.lrj.agentic.knowledge.domain.operations.CandidateModels$Publication">
+        SELECT d.document_id,d.published_version AS version,d.published_generation AS index_generation,d.published_job_id AS job_id,
+            j.processor_version,j.batch_digest,j.content_hash AS source_hash
+        FROM knowledge_candidate_preparation p
+        JOIN knowledge_candidate_revision r ON r.candidate_id=p.candidate_id AND r.revision=p.revision AND r.tenant_id=p.tenant_id AND r.owner_id=p.owner_id
+        JOIN knowledge_document d ON d.document_id=p.document_id AND d.tenant_id=p.tenant_id AND d.owner_id=p.owner_id
+            AND d.candidate_id=p.candidate_id AND d.candidate_revision=p.revision AND d.purpose='OPERATIONS_PREVIEW'
+        JOIN knowledge_ingestion j ON j.job_id=d.published_job_id AND j.document_id=d.document_id AND j.tenant_id=d.tenant_id AND j.owner_id=d.owner_id
+            AND j.document_version=d.published_version AND j.index_generation=d.published_generation
+        WHERE p.tenant_id=#{caller.tenantId} AND p.owner_id=#{caller.userId} AND p.candidate_id=#{id} AND p.revision=#{revision}
+            AND d.lifecycle='ACTIVE' AND d.lifecycle_ready=TRUE AND j.status='READY' AND j.batch_digest IS NOT NULL
+            AND j.content_hash=r.content_hash AND j.content_type=r.content_type AND j.size_bytes=r.size_bytes
+    </select>
+    <select id="contains" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM knowledge_chunk WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId}
+            AND document_id=#{publication.documentId} AND document_version=#{publication.version} AND job_id=#{publication.jobId}
+            AND batch_digest=#{publication.batchDigest} AND LOCATE(CAST(#{text} AS BINARY),CAST(text AS BINARY)) &gt; 0)
+    </select>
+    <select id="datasets" resultType="com.lrj.agentic.knowledge.domain.operations.CandidateModels$DatasetRow">
+        SELECT candidate_id,revision,dataset_id,dataset_revision,created_at FROM knowledge_candidate_dataset
+        WHERE <include refid="owned"/> AND candidate_id=#{id} AND revision=#{revision} ORDER BY created_at,dataset_id,dataset_revision LIMIT 11
+    </select>
+    <insert id="associate">
+        INSERT INTO knowledge_candidate_dataset (candidate_id,revision,tenant_id,owner_id,dataset_id,dataset_revision,created_at)
+        VALUES (#{row.candidateId},#{row.revision},#{caller.tenantId},#{caller.userId},#{row.datasetId},#{row.datasetRevision},#{row.createdAt})
+    </insert>
+    <select id="evaluation" resultType="com.lrj.agentic.knowledge.domain.operations.CandidateModels$EvaluationBinding">
+        SELECT candidate_id,revision,content_digest,run_id,manifest_digest,review_digest,publication_json,created_at
+        FROM knowledge_candidate_evaluation WHERE <include refid="owned"/> AND candidate_id=#{id} AND revision=#{revision}
+    </select>
+    <insert id="bind">
+        INSERT INTO knowledge_candidate_evaluation (candidate_id,revision,tenant_id,owner_id,content_digest,run_id,manifest_digest,review_digest,publication_json,created_at)
+        VALUES (#{row.candidateId},#{row.revision},#{caller.tenantId},#{caller.userId},#{row.contentDigest},#{row.runId},#{row.manifestDigest},#{row.reviewDigest},#{row.publicationJson},#{row.createdAt})
+        ON DUPLICATE KEY UPDATE content_digest=#{row.contentDigest},run_id=#{row.runId},manifest_digest=#{row.manifestDigest},
+            review_digest=#{row.reviewDigest},publication_json=#{row.publicationJson},created_at=#{row.createdAt}
+    </insert>
+</mapper>

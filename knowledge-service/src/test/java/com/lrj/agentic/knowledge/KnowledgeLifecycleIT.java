@@ -555,14 +555,7 @@ class KnowledgeLifecycleIT {
         return generation(job, source, Collections.nCopies(ProcessingProtocol.DIMENSIONS, 0.125));
     }
     private static GenerationPreparedDocument generation(Ingestion job, byte[] source, List<Double> vector) {
-        var request = GenerationPreparedDocument.Request.of(job, source, null);
-        String text = new String(source, StandardCharsets.UTF_8), hash = Extraction.digest(source);
-        String sources = GenerationPreparedDocument.textSourceDigest(hash, 0, source.length);
-        var chunks = List.of(new GenerationPreparedDocument.Chunk(0, GenerationPreparedDocument.chunkIdentity(request, 0, hash, sources),
-                text, hash, 0, source.length, null, sources, vector, PreparedDocument.vectorHash(vector)));
-        return new GenerationPreparedDocument(ProcessingProtocol.GENERATION_SCHEMA, job.tenantId(), job.ownerId(), job.documentId(), job.jobId(),
-                job.documentVersion(), job.indexGeneration(), hash, null, job.profile().processor(), ProcessingProtocol.MODEL,
-                ProcessingProtocol.DIMENSIONS, chunks, GenerationPreparedDocument.batchIdentity(request, chunks)).validated(job, source, null);
+        return ProcessingFixture.generation(job, source, vector);
     }
     private static final class Model implements KnowledgeProcessor {
         final AtomicInteger calls = new AtomicInteger();

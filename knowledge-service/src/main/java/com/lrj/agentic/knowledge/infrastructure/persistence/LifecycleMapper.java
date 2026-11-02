@@ -8,6 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 /** 生命周期手写SQL统一在XML；锁序始终document→ingestion→修订/事件。 */
 public interface LifecycleMapper {
+    /** 索引目的来自已受理资料，不能信任模型或调用者自报。 */
+    String purpose(@Param("caller") Caller caller, @Param("id") String id);
+
     /** 全身份加文档锁，不把任务查询返回当作并发保护。 */
     LifecycleRows.State lockDocument(@Param("caller") Caller caller, @Param("id") String id);
     /** 系统领取跳过正在管理的文档，避免在候选扫描中排队或先持job锁。 */

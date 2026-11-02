@@ -47,7 +47,8 @@ public class LifecycleService {
                 Long.toString(expectedRevision), upload.hash(), upload.contentType(), upload.displayName()).getBytes(StandardCharsets.UTF_8));
         var replay = repository.command(caller, key, fingerprint);
         if (replay.isPresent()) { return replay.get(); }
-        document(caller, id);
+        var document = document(caller, id);
+        if (document.purpose() != null) com.lrj.agentic.knowledge.domain.DocumentPurpose.requireStandard(document.purpose());
         if (!properties.updatesEnabled()) { throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED); }
         var source = storage.put(caller, upload.hash(), upload.contentType(), upload.bytes());
         return repository.update(caller, new Update(UUID.randomUUID().toString(), key, fingerprint, id,

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleMapper">
+    <select id="purpose" resultType="string">
+        SELECT purpose FROM knowledge_document WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId} AND document_id=#{id}
+    </select>
     <select id="migrationChunks" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.PreparedChunkRow">
         SELECT chunk_id,ordinal,text,text_hash,start_byte,end_byte,preparation_schema,source_locator,
             source_json,source_digest,extraction_digest FROM knowledge_chunk
@@ -9,7 +12,7 @@
     </select>
     <sql id="stateColumns">document_id, tenant_id, owner_id, lifecycle, revision, version, last_generation,
         published_version, published_generation, published_job_id, active_job_id, lifecycle_ready, ingestion_job_id,
-        display_name, content_type, size_bytes, content_hash, status, created_at, updated_at</sql>
+        display_name, content_type, size_bytes, content_hash, status, created_at, updated_at, purpose</sql>
     <select id="lockDocument" resultType="com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleRows$State">
         SELECT <include refid="stateColumns"/> FROM knowledge_document
         WHERE tenant_id = #{caller.tenantId} AND owner_id = #{caller.userId} AND document_id = #{id} FOR UPDATE
@@ -117,7 +120,7 @@
     <sql id="viewFrom">
         SELECT d.document_id, d.revision, d.lifecycle, d.version AS latest_content_revision,
             d.published_version AS published_revision, d.published_generation, d.active_job_id,
-            r.display_name, r.content_type, r.size_bytes, r.content_hash, d.created_at, d.updated_at
+            r.display_name, r.content_type, r.size_bytes, r.content_hash, d.created_at, d.updated_at, CASE WHEN d.purpose='OPERATIONS_PREVIEW' THEN d.purpose ELSE NULL END AS purpose, d.candidate_id, d.candidate_revision
         FROM knowledge_document d JOIN knowledge_document_revision r
             ON r.tenant_id = d.tenant_id AND r.owner_id = d.owner_id AND r.document_id = d.document_id AND r.content_revision = d.version
         WHERE d.tenant_id = #{caller.tenantId} AND d.owner_id = #{caller.userId}
@@ -127,7 +130,7 @@
         <include refid="viewFrom"/> AND d.document_id = #{id}
     </select>
     <select id="documents" resultType="com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels$DocumentView">
-        <include refid="viewFrom"/> AND d.document_id &gt; #{after} ORDER BY d.document_id LIMIT #{limit}
+        <include refid="viewFrom"/> AND d.purpose='STANDARD' AND d.document_id &gt; #{after} ORDER BY d.document_id LIMIT #{limit}
     </select>
     <sql id="effectiveRetryable">
         j.status = 'FAILED' AND j.retryable = TRUE AND j.retry_count &lt; #{maximumRetries}
@@ -143,7 +146,7 @@
         JOIN knowledge_document_revision r ON r.tenant_id = j.tenant_id AND r.owner_id = j.owner_id
             AND r.document_id = j.document_id AND r.content_revision = j.document_version
         WHERE d.tenant_id = #{caller.tenantId} AND d.owner_id = #{caller.userId}
-            AND d.lifecycle = 'ACTIVE' AND d.lifecycle_ready = TRUE AND d.document_id &gt; #{after}
+            AND d.lifecycle = 'ACTIVE' AND d.purpose='STANDARD' AND d.lifecycle_ready = TRUE AND d.document_id &gt; #{after}
         <if test="filter.status != null">AND j.status = #{filter.status}</if>
         <if test="filter.stage != null">AND j.stage = #{filter.stage}</if>
         <if test="filter.retryable != null">AND (<include refid="effectiveRetryable"/>) = #{filter.retryable}</if>

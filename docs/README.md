@@ -92,3 +92,4 @@ S12B答案支撑、覆盖和拒答已通过[校准与验收](qa/answer-quality-2
 - [S13B/C 指定成员只读共享](design/knowledge-first-20261020/SHARING_CONTRACTS.md)：逐份授权、原键恢复与全链路撤权；[运行说明](design/knowledge-first-20261020/SHARING_RUNTIME.md)、[验收与边界](qa/sharing-20261102/TEST_RESULT.md)。
 
 - [S14A 资料反馈](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md)：本人记录、所有者收件箱和任务引用证明；[运行说明](design/knowledge-first-20261020/OPERATIONS_RUNTIME.md)。
+- [S14B 候选修正](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md#s14b-候选修订与内容绑定评估)：完整修订、私有校验副本及真实质量绑定；[审查](qa/candidates-20261102/REVIEW.md)。实际完成与 Git 门禁见进度。

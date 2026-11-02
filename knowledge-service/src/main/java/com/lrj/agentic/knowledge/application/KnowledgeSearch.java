@@ -66,7 +66,7 @@ public class KnowledgeSearch {
                 }
                 remaining(deadline);
                 List<String> ids = scores.keySet().stream().map(SearchIndex.Candidate::chunkId).distinct().toList();
-                var authorized = repository.published(caller, ids).stream()
+                var authorized = repository.searchPublished(caller, ids, valid.documentIds()).stream()
                         .filter(chunk -> valid.documentIds().isEmpty() || valid.documentIds().contains(chunk.documentId()))
                         .filter(chunk -> scores.containsKey(new SearchIndex.Candidate(chunk.chunkId(), chunk.batchDigest())))
                         .toList();

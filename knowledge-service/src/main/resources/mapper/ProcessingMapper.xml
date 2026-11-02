@@ -145,6 +145,17 @@
             AND j.processor_version IN
             <foreach collection="compatibleProfiles" item="profile" open="(" close=")" separator=",">#{profile}</foreach>
     </sql>
+    <!-- 默认检索与显式引用不同：没有用户选择范围时不能送出任何候选校验正文。 -->
+    <sql id="searchScope">
+        <if test="documentIds != null">
+            <choose>
+                <when test="documentIds.isEmpty()">AND d.purpose='STANDARD'</when>
+                <otherwise>AND d.document_id IN
+                    <foreach collection="documentIds" item="documentId" open="(" close=")" separator=",">#{documentId}</foreach>
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
     <sql id="publishedFrom">
         SELECT c.document_id, c.document_version AS version, c.chunk_id, c.batch_digest, c.text,
             c.start_byte, c.end_byte, r.display_name, j.content_hash AS source_hash,
@@ -152,7 +163,7 @@
         <include refid="publishedScope"/>
     </sql>
     <select id="published" resultType="com.lrj.agentic.knowledge.domain.processing.ProcessingRepository$PublishedChunk">
-        <include refid="publishedFrom"/> AND c.chunk_id IN
+        <include refid="publishedFrom"/><include refid="searchScope"/> AND c.chunk_id IN
         <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
     </select>
     <select id="citation" resultType="com.lrj.agentic.knowledge.domain.processing.ProcessingRepository$PublishedChunk">

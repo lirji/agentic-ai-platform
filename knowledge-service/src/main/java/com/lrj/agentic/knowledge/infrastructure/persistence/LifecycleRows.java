@@ -11,7 +11,7 @@ public final class LifecycleRows {
             long version, long lastGeneration, Long publishedVersion, Long publishedGeneration,
             String publishedJobId, String activeJobId, boolean lifecycleReady, String ingestionJobId,
             String displayName, String contentType, long sizeBytes, String contentHash, String status,
-            Instant createdAt, Instant updatedAt) { }
+            Instant createdAt, Instant updatedAt, String purpose) { }
     /** 指纹仅内部比较，公开回执不暴露输入摘要。 */
     public record Command(String commandId, String operation, String documentId, long acceptedRevision,
             Long contentRevision, Long indexGeneration, String jobId, Instant acceptedAt, String requestFingerprint) {

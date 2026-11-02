@@ -59,7 +59,7 @@ public class AuthorizedRetrieval {
                 var ids = identities.stream().map(SearchIndex.Candidate::chunkId).distinct().toList();
                 remaining(deadline);
                 Map<SearchIndex.Candidate, Hit> authorized = new HashMap<>();
-                for (var row : repository.published(caller, ids)) {
+                for (var row : repository.searchPublished(caller, ids, documents)) {
                     var key = new SearchIndex.Candidate(row.chunkId(), row.batchDigest());
                     if (!identities.contains(key) || (!documents.isEmpty() && !documents.contains(row.documentId()))) { continue; }
                     if (authorized.putIfAbsent(key, hit(row)) != null) { unavailable(); }
@@ -94,7 +94,7 @@ public class AuthorizedRetrieval {
             remaining(deadline);
             Map<Identity, Hit> current = new HashMap<>();
             var ids = requested.stream().map(Identity::chunkId).distinct().toList();
-            for (var row : repository.published(caller, ids)) {
+            for (var row : repository.searchPublished(caller, ids, documents)) {
                 if (!documents.isEmpty() && !documents.contains(row.documentId())) { continue; }
                 Hit value = hit(row);
                 if (current.putIfAbsent(value.identity(), value) != null) { unavailable(); }

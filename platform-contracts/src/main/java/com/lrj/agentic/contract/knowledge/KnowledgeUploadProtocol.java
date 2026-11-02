@@ -11,7 +11,9 @@ public final class KnowledgeUploadProtocol {
 
     /** 新旧上传入口共用实际字节上限，不能从K07绕过网关流量约束。 */
     public static boolean isUploadPath(String path) {
-        return PATH.equals(path) || path != null && path.matches("/api/v2/knowledge/documents/[^/]+/updates");
+        return PATH.equals(path) || path != null && (path.matches("/api/v2/knowledge/documents/[^/]+/updates")
+                || path.matches("/api/v1/knowledge/operations/feedback/[^/]+/candidate")
+                || path.matches("/api/v1/knowledge/operations/candidates/[^/]+/revisions"));
     }
 
     /** 网关和领域共用相同错误定义，避免代理拒绝时改变已发布错误契约。 */

@@ -226,7 +226,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S13B | 个人/团队资料共享与撤权 | S13A, S10B | IMPLEMENT | DONE |
 | S13C | 撤权贯穿检索、在途与历史结果 | S13B, S11E, S12D | IMPLEMENT | DONE |
 | S14A | 问题反馈与运营收件箱 | S8B, S7 | IMPLEMENT | DONE |
-| S14B | 候选知识编辑与内容绑定评估 | S14A, S8D, S10B, S13A | IMPLEMENT | PLANNED |
+| S14B | 候选知识编辑与内容绑定评估 | S14A, S8D, S10B, S13A | IMPLEMENT | DONE |
 | S14C | 审核与真实入库发布 | S14B, S13B | IMPLEMENT | PLANNED |
 | S14D | 发布后探测与补偿版本 | S14C, S8D, S10C | IMPLEMENT | PLANNED |
 | S15A | 统一模型用量与预算语义 | S8A, S11A | DESIGN | PLANNED |
@@ -573,7 +573,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-OPERATIONS、C-EVAL；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 编辑后旧评估/审批失效；并发冲突保留草稿；requiredText 仅局部检查；语义与检索评估走统一质量能力；无权限不可编辑。
 - **Pass / Runtime：** IMPLEMENT；现有知识库/质量执行能力。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G09 G01 G18。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G09 G01 G18。本地真实DB/源/双索引/Tasks/浏览器验收PASS，[验收](../../qa/candidates-20261102/TEST_RESULT.md)；Git/远程CI尚待交付收据。
 
 ### S14C · 审核与真实入库发布
 

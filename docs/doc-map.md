@@ -150,3 +150,4 @@ S9D基线backend `79368c0` / frontend `cdf7e47`：[实现证据](qa/structured-c
 - S13B/C：SharingService/SharingMapper/V13、CasdoorSharingMembers、发布权威SQL与双索引过滤对应[C-SHARING](design/knowledge-first-20261020/SHARING_CONTRACTS.md)；React共享设置/共享给我/只读详情/统一消费摘要对应[验收](qa/sharing-20261102/TEST_RESULT.md)。Tasks与Python沿既有最终/恢复证据校验；本片以真实共享ACL补联合验证，没有新增模型或生产部署。
 
 - S14A：FeedbackService/FeedbackMapper/V14、TaskFeedbackProof和FeedbackProofVerifier对应[反馈契约](design/knowledge-first-20261020/OPERATIONS_CONTRACTS.md)；React引用反馈、原键恢复与收件箱对应同契约F01–F06；[Runtime](design/knowledge-first-20261020/OPERATIONS_RUNTIME.md)说明默认开关和隔离验收。
+- S14B：CandidateService/CandidateQuality/CandidateMapper/V16、检索目的过滤与同事务副本归属对应 C-OPERATIONS C01–C04；React CandidatePage/operations 与既有质量编辑器对应 C05；candidate_smoke.py 的真实 Tasks/Knowledge/字节流浏览器验证对应 C06。局部文字检查仅提供字面状态，不替代现有质量报告或人工评分。

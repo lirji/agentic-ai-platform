@@ -3,7 +3,7 @@
 <mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.SharingMapper">
     <select id="owned" resultType="com.lrj.agentic.knowledge.domain.sharing.SharingModels$State">
         SELECT document_id, sharing_revision AS revision, lifecycle, published_version FROM knowledge_document
-        WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId} AND document_id=#{id}
+        WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId} AND document_id=#{id} AND purpose='STANDARD'
         <if test="lock">FOR UPDATE</if>
     </select>
     <select id="command" resultType="com.lrj.agentic.knowledge.domain.sharing.SharingModels$Command">
@@ -30,7 +30,7 @@
     </insert>
     <!-- 公共读取只接受当前授权；owner不从此分支获得共享管理权。 -->
     <sql id="shared">
-        EXISTS (SELECT 1 FROM knowledge_document_share share WHERE share.tenant_id=d.tenant_id AND share.document_id=d.document_id
+        d.purpose='STANDARD' AND EXISTS (SELECT 1 FROM knowledge_document_share share WHERE share.tenant_id=d.tenant_id AND share.document_id=d.document_id
             AND share.owner_id=d.owner_id AND share.recipient_id=#{caller.userId} AND share.active=TRUE)
     </sql>
     <sql id="receivedFrom">
@@ -44,7 +44,7 @@
     <select id="received" resultType="com.lrj.agentic.knowledge.domain.sharing.SharingModels$Published">
         SELECT d.document_id,r.display_name,d.published_version AS version,d.published_generation AS index_generation,r.content_type,r.size_bytes
         <include refid="receivedFrom"/>
-        <if test="id != null">AND d.document_id=#{id}</if>
+        <choose><when test="id != null">AND d.document_id=#{id}</when><otherwise>AND d.purpose='STANDARD'</otherwise></choose>
         AND d.document_id &gt; #{after} ORDER BY d.document_id LIMIT #{limit}
     </select>
     <select id="readable" resultType="com.lrj.agentic.knowledge.domain.sharing.SharingModels$ReadableDocument">
@@ -58,7 +58,7 @@
                 AND EXISTS (SELECT 1 FROM knowledge_ingestion j WHERE j.job_id=d.published_job_id AND j.tenant_id=d.tenant_id
                     AND j.owner_id=d.owner_id AND j.document_id=d.document_id AND j.document_version=d.published_version
                     AND j.index_generation=d.published_generation AND j.status='READY' AND j.content_hash=r.content_hash))</if>)
-        <if test="id != null">AND d.document_id=#{id}</if>
+        <choose><when test="id != null">AND d.document_id=#{id}</when><otherwise>AND d.purpose='STANDARD'</otherwise></choose>
         AND d.document_id &gt; #{after} ORDER BY d.document_id LIMIT #{limit}
     </select>
     <select id="sharedIds" resultType="string">

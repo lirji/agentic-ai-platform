@@ -156,7 +156,8 @@ def init() -> None:
                 },
             )
         elif (
-            current[index]["mappings"].get("properties") != properties
+            {k: v for k, v in current[index]["mappings"].get("properties", {}).items() if k != "purpose"} != properties
+            or current[index]["mappings"].get("properties", {}).get("purpose") not in (None, {"type": "keyword"})
             or current[index]["mappings"].get("dynamic") != "strict"
         ):
             raise RuntimeError("已有搜索 mapping 不兼容，未覆盖")

@@ -32,8 +32,8 @@ class AdaptiveKnowledgeSearchTest {
     private int databaseCalls;
     private final ProcessingRepository repository = (ProcessingRepository) Proxy.newProxyInstance(
             ProcessingRepository.class.getClassLoader(), new Class<?>[]{ProcessingRepository.class}, (proxy, method, args) -> {
-                if (!method.getName().equals("published")) { throw new AssertionError(method.getName()); }
-                assertThat(args[0]).isEqualTo(owner); databaseCalls++;
+                if (!method.getName().equals("searchPublished")) { throw new AssertionError(method.getName()); }
+                assertThat(args[0]).isEqualTo(owner); assertThat(args[2]).isEqualTo(List.of()); databaseCalls++;
                 @SuppressWarnings("unchecked") List<String> ids = (List<String>) args[1];
                 return authority.apply(ids);
             });

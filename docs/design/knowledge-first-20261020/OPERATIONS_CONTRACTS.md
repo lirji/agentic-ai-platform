@@ -65,7 +65,7 @@ F06 必需单元/真实MySQL/真实Tasks与Knowledge联合/静态类型构建/�
 
 - 一个反馈关联一个长期候选标识，候选可以有多份不可变修订；只允许反馈对应资料的当前owner操作。reader、他人和跨tenant统一404。原资料必须仍可由owner处理，删除后不能新建/修改候选；原反馈记录仍保留。
 - 每次保存绑定当前候选expectedRevision和原资料baseRevision，保存新修订而不覆盖旧内容。修订包含完整源对象的hash/type/size、标题、局部requiredText、内容摘要与创建时间；源指针不返回浏览器。更新同时确认当前原资料修订，原资料在用户编辑期间变化时409，草稿必须保留供用户核对。
-- TXT可编辑完整替换文本；PDF/DOCX通过上传完整修正文件，沿UploadRules和已有格式开关/大小/容器验证。没有新增文件类型。TXT编辑内容可随候选详情返回给owner，附件只返回安全元数据；所有附件实际存入现有S3，不在页面写死内容。
+- TXT/Markdown可编辑完整替换文本；PDF/DOCX通过上传完整修正文件，沿UploadRules和已有格式开关/大小/容器验证。没有新增文件类型。TXT/Markdown编辑内容可随候选详情返回给owner，附件只返回安全元数据；所有附件实际存入现有S3，不在页面写死内容。
 - requiredText最多10个唯一、非空、合法UTF-8短句，每句最多200码点；它只检查精确校验副本中是否有单个提取片段包含该字面串，区分NOT_READY/PRESENT/MISSING。不能用包含检查替代语义、引用、检索或质量评估。
 - `contentDigest`覆盖schema、标题、源hash/type/size、requiredText、baseRevision；即使仅修改要求或标题也产生新修订，旧评估/批准不能自动沿用。明确的历史修订仍可查看，不自动把旧报告改标成新内容通过。
 
@@ -73,7 +73,7 @@ F06 必需单元/真实MySQL/真实Tasks与Knowledge联合/静态类型构建/�
 
 - 准备副本是显式操作。复用Knowledge SourceStore、已有ingestion worker、处理profile和双索引；新增目的编码STANDARD/OPERATIONS_PREVIEW，默认STANDARD。preview与候选具体修订在同一数据库短事务关联，不能先作为普通资料发布后再补隐藏标记。
 - 每份候选修订最多一份副本；固定提交身份及同事务唯一约束处理并发/未知结果。S3写入不在事务内，副本准备失败显示真实job错误，重试沿已有入库作业状态，不新建通用调度器。
-- 副本仅owner可读，普通资料列表/上传查重/默认无范围搜索与问答检索排除副本；双索引提前过滤且MySQL最终复核。显式选择该副本的owner质量评测/核对读取可用，资料详情显式返回目的与owner可见的候选关联，前端把副本标为只读校验材料并回到候选编辑；不把READY展示成原资料修正已生效。标准文档的原行为保持。共享授权、直接资料更新/撤下/删除/重索引和对副本再建反馈均拒绝；专用候选流程控制其生命周期。
+- 副本仅owner可读，普通资料列表/上传查重/默认无范围搜索与问答检索排除副本；双索引提前过滤且MySQL最终复核。显式选择该副本的owner质量评测/核对读取可用，资料详情显式返回目的与owner可见的候选关联，前端把副本标为只读校验材料并回到候选编辑；不把READY展示成原资料修正已生效。标准文档的原行为保持：K07普通详情仍是原13字段；仅副本详情追加purpose、candidateId、candidateRevision，三者同时存在。共享授权、直接资料更新/撤下/删除/重索引和对副本再建反馈均拒绝；专用候选流程控制其生命周期。
 - 源相同的副本不挤占STANDARD资料的活跃内容查重槽；新增迁移调整生成列条件，不改V11历史。旧索引没有目的字段时按STANDARD兼容，PREVIEW由服务端可信资料行提供索引元数据，不接受模型或客户端自报。
 - “副本准备完成”只表示校验语料已可用，不代表原资料已修正、生效或获批准。S14C批准后仍通过原资料的真实生命周期更新发布，保留原ACL与历史。
 
@@ -102,6 +102,8 @@ F06 必需单元/真实MySQL/真实Tasks与Knowledge联合/静态类型构建/�
 | GET /commands/{key} | 只查当前owner原命令回执，关闭功能后仍可恢复，不创建副本或模型任务 |
 
 全部POST携带UUID Idempotency-Key；唯一域tenant+owner+key，请求指纹包含操作、目标、预期修订及完整内容摘要/参数，同键异内容409。同键重放/回执不因后续编辑失效而变成新的保存；回执只陈述原接受事实，当前状态另读详情。客户端原键恢复确认摘要，冲突/超时保留当前输入；不把未确认的保存换key重发。文件/文本草稿只在当前编辑会话内保存，不隐式持久化到浏览器。统一KnowledgeError扩展OPERATIONS_DISABLED、CANDIDATE_CONFLICT、CANDIDATE_EVALUATION_INVALID等语义，沿既有错误体系。
+
+回执增量：`requestFingerprint`是服务器按`Intent(operation,target,expectedRevision,expectedDocumentRevision,contentDigest,parameters)`计算的SHA256（记录字段顺序、UTF-8 JSON、显式null）。它与原不可变回执同事务保存，仅供当前owner核对；不返回源对象位置。浏览器用相同规范算摘要，并沿现有session意图机制只存`{requestFingerprint}`的摘要与原键，不存文本、文件或评分正文。刷新后对照回执摘要确认原意图；当前状态仍需另读详情。
 
 ### 可观察验收
 

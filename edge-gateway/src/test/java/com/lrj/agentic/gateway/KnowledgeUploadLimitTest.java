@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lrj.agentic.contract.knowledge.KnowledgeUploadProtocol;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
@@ -18,16 +20,18 @@ class KnowledgeUploadLimitTest {
     private final GatewayErrors errors = new GatewayErrors(new ObjectMapper());
     private final KnowledgeUploadLimit limit = new KnowledgeUploadLimit(errors);
 
-    @Test void rejectsDeclaredOversizeWithoutForwarding() {
-        var exchange = MockServerWebExchange.from(MockServerHttpRequest.post(KnowledgeUploadProtocol.PATH)
+    @ParameterizedTest @ValueSource(strings={"/api/v1/knowledge/ingestions", "/api/v2/knowledge/documents/id/updates", "/api/v1/knowledge/operations/feedback/id/candidate", "/api/v1/knowledge/operations/candidates/id/revisions"})
+    void rejectsDeclaredOversizeWithoutForwarding(String path) {
+        var exchange = MockServerWebExchange.from(MockServerHttpRequest.post(path)
                 .header("Content-Length", Integer.toString(KnowledgeUploadProtocol.MAX_REQUEST_BYTES + 1)));
         limit.filter(exchange, ignored -> { throw new AssertionError("超限请求不得转发"); }).block();
         assertTooLarge(exchange);
     }
 
-    @Test void chunkedOverflowStopsAtBoundaryAndMapsWrappedFailure() {
+    @ParameterizedTest @ValueSource(strings={"/api/v1/knowledge/ingestions", "/api/v2/knowledge/documents/id/updates", "/api/v1/knowledge/operations/feedback/id/candidate", "/api/v1/knowledge/operations/candidates/id/revisions"})
+    void chunkedOverflowStopsAtBoundaryAndMapsWrappedFailure(String path) {
         AtomicInteger forwarded = new AtomicInteger();
-        var exchange = MockServerWebExchange.from(MockServerHttpRequest.post(KnowledgeUploadProtocol.PATH)
+        var exchange = MockServerWebExchange.from(MockServerHttpRequest.post(path)
                 .body(Flux.just(buffer(KnowledgeUploadProtocol.MAX_REQUEST_BYTES), buffer(1))));
         limit.filter(exchange, request -> request.getRequest().getBody().doOnNext(value -> {
             forwarded.addAndGet(value.readableByteCount()); DataBufferUtils.release(value);

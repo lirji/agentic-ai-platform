@@ -3,7 +3,7 @@
 <mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.FeedbackMapper">
     <sql id="columns">feedback_id,tenant_id,owner_id,reporter_id,idempotency_key,fingerprint,document_id,reference_json,task_id,category,message,status,created_at</sql>
     <select id="lockDocument" resultType="com.lrj.agentic.knowledge.domain.feedback.FeedbackModels$Document">
-        SELECT document_id,owner_id FROM knowledge_document WHERE tenant_id=#{caller.tenantId} AND document_id=#{id} FOR UPDATE
+        SELECT document_id,owner_id FROM knowledge_document WHERE tenant_id=#{caller.tenantId} AND document_id=#{id} AND purpose='STANDARD' FOR UPDATE
     </select>
     <select id="byKey" resultType="com.lrj.agentic.knowledge.domain.feedback.FeedbackModels$Row">
         SELECT <include refid="columns"/> FROM knowledge_feedback
