@@ -50,6 +50,8 @@ public enum KnowledgeError implements ErrorCode {
     CANDIDATE_NOT_READY("KNOWLEDGE_CANDIDATE_NOT_READY", "校验副本尚未准备完成，请查看准备状态。", 409),
     CANDIDATE_EVALUATION_INVALID("KNOWLEDGE_CANDIDATE_EVALUATION_INVALID", "该评估未绑定当前候选内容及确认报告，请重新核对。", 409),
     CANDIDATE_DATASET_LIMIT("KNOWLEDGE_CANDIDATE_DATASET_LIMIT", "本修订已达到评测定义关联上限。", 409),
+    CANDIDATE_PUBLICATION_DISABLED("KNOWLEDGE_CANDIDATE_PUBLICATION_DISABLED", "修正资料的批准入库尚未启用。", 503),
+    CANDIDATE_APPROVAL_INVALID("KNOWLEDGE_CANDIDATE_APPROVAL_INVALID", "当前内容或评估不满足批准条件，请刷新后重新核对。", 409),
     BUSY("KNOWLEDGE_BUSY", "知识服务当前繁忙，请稍后重试。", 429);
 
     private final String code;

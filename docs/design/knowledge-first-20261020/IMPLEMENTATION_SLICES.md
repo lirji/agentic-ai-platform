@@ -227,7 +227,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S13C | 撤权贯穿检索、在途与历史结果 | S13B, S11E, S12D | IMPLEMENT | DONE |
 | S14A | 问题反馈与运营收件箱 | S8B, S7 | IMPLEMENT | DONE |
 | S14B | 候选知识编辑与内容绑定评估 | S14A, S8D, S10B, S13A | IMPLEMENT | DONE |
-| S14C | 审核与真实入库发布 | S14B, S13B | IMPLEMENT | IN_PROGRESS |
+| S14C | 审核与真实入库发布 | S14B, S13B | IMPLEMENT | DONE |
 | S14D | 发布后探测与补偿版本 | S14C, S8D, S10C | IMPLEMENT | PLANNED |
 | S15A | 统一模型用量与预算语义 | S8A, S11A | DESIGN | PLANNED |
 | S15B | 共享额度预留、结算与调用归因 | S15A, S13A | IMPLEMENT | PLANNED |
@@ -583,7 +583,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-OPERATIONS、C-LIFECYCLE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 并发审批/发布、内容变更、未知提交、worker失败重试；固定内容摘要；角色/权限复核；不把图 interrupt 或模型文本当批准。
 - **Pass / Runtime：** IMPLEMENT；复用 Knowledge 入库作业；不增加通用工作流引擎。
-- **状态 / 并行 / 对应缺口：** IN_PROGRESS；parallel=no；G09 G10 G18。operations-publication-v1已冻结，实施/验证进行中。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G09 G10 G18。operations-publication-v1实现与本地验收PASS，见[验收](../../qa/publication-approval-20261102/TEST_RESULT.md)；正常Git/CI交付进行中。
 
 ### S14D · 发布后探测与补偿版本
 

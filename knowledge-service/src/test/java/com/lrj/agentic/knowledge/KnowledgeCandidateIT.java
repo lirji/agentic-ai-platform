@@ -16,6 +16,8 @@ import java.time.Instant;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import com.lrj.agentic.knowledge.domain.feedback.FeedbackModels.Category;
 import com.lrj.agentic.knowledge.domain.operations.CandidateModels.*;
+import com.lrj.agentic.knowledge.domain.operations.PublicationModels;
+import com.lrj.agentic.knowledge.domain.operations.PublicationModels.Approve;
 import com.lrj.agentic.knowledge.domain.processing.*;
 import com.lrj.agentic.knowledge.domain.retrieval.RetrievalModels.CandidateRequest;
 import com.lrj.agentic.knowledge.domain.retrieval.RetrievalProtocol;
@@ -50,7 +52,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT,properties={"management.server.port=0","spring.main.banner-mode=off", "knowledge.processing.worker-enabled=false",
         "knowledge.retrieval.enabled=true", "knowledge.lifecycle.generation-enabled=true",
         "knowledge.lifecycle.updates-enabled=true", "knowledge.lifecycle.deletions-enabled=true",
-        "knowledge.feedback.enabled=true", "knowledge.operations.enabled=true", "knowledge.parsing.enabled=true",
+        "knowledge.feedback.enabled=true", "knowledge.operations.enabled=true", "knowledge.operations.publication-enabled=true", "knowledge.parsing.enabled=true",
         "knowledge.parsing.pdf-upload-enabled=true", "knowledge.parsing.docx-upload-enabled=true"})
 class KnowledgeCandidateIT {
     @LocalServerPort int port;
@@ -298,6 +300,145 @@ class KnowledgeCandidateIT {
                 .issuedAt(now).expiresAt(now.plusSeconds(300)).claim(IdentityProtocol.TENANT_CLAIM,owner.tenantId()).claim(IdentityProtocol.SCOPE_CLAIM,scope).build();
         return encoder.encode(JwtEncoderParameters.from(JwsHeader.with(SignatureAlgorithm.RS256).build(),claims)).getTokenValue();
     }
+    /** 批准与原UPDATE原子受理，真实worker失败/重试/发布不改变批准或共享审计。 */
+    @Test void approvalCreatesOneRealUpdateAndTracksFailureRetryAndPublication() throws Exception {
+        var f=publicationFixture("BUSINESS",List.of("新事实"));var service=publicationService(f.quality(),true,bean(PublicationMapper.class));
+        String recipient=key();
+        jdbc.update("INSERT INTO knowledge_document_share (tenant_id,document_id,owner_id,recipient_id,active,revision,command_id,updated_at) VALUES (?,?,?,?,TRUE,1,?,UTC_TIMESTAMP(6))",
+                owner.tenantId(),f.original().documentId(),owner.userId(),recipient,key());
+        var acl=jdbc.queryForMap("SELECT * FROM knowledge_document_share WHERE tenant_id=? AND document_id=?",owner.tenantId(),f.original().documentId());
+        String key=key();var results=race(4,i->service.approve(owner,f.candidate().candidateId(),key,f.input()));
+        assertThat(results).allMatch(Receipt.class::isInstance).allMatch(results.getFirst()::equals);
+        var accepted=(Receipt)results.getFirst();String id=f.candidate().candidateId();
+        assertThat(service.get(owner,id,null).status()).isEqualTo("QUEUED");
+        assertThat(knowledge.document(owner,f.original().documentId()).publishedVersion()).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_candidate_approval WHERE candidate_id=?",Integer.class,id)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_ingestion WHERE document_id=?",Integer.class,f.original().documentId())).isEqualTo(2);
+        var job=knowledge.ingestion(owner,accepted.jobId());
+        assertThat(job.source()).isEqualTo(bean(CandidateMapper.class).revision(owner,id,1).source());
+        var claim=processing.claim("approval-failure",60,owner.tenantId()).orElseThrow();
+        assertThat(claim.job().jobId()).isEqualTo(job.jobId());
+        var unavailable=new KnowledgeProcessor() {
+            public PreparedDocument prepare(Ingestion input,byte[] bytes) { throw new AssertionError("代次协议"); }
+            public GenerationPreparedDocument prepareGeneration(Ingestion input,byte[] bytes,com.lrj.agentic.contract.knowledge.Extraction extraction) {
+                throw new KnowledgeFailure(KnowledgeError.PROCESSOR_UNAVAILABLE);
+            }
+            public List<Double> query(Caller caller,String query) { throw new AssertionError("未请求查询"); }
+        };
+        error(KnowledgeError.PROCESSOR_UNAVAILABLE,()->new IngestionRunner(processing,storage,unavailable,index,bean(com.lrj.agentic.knowledge.infrastructure.processing.ParserProcess.class)).run(claim));
+        processing.fail(claim,KnowledgeError.PROCESSOR_UNAVAILABLE,true);
+        var failed=service.get(owner,id,null);assertThat(failed.status()).isEqualTo("FAILED");assertThat(failed.retryable()).isTrue();
+        assertThat(failed.publication()).isNull();
+        processing.retry(owner,accepted.jobId(),failed.jobRevision());publish(knowledge.ingestion(owner,accepted.jobId()));
+        var published=service.get(owner,id,null);assertThat(published.status()).isEqualTo("PUBLISHED");
+        assertThat(published.publication().jobId()).isEqualTo(accepted.jobId());assertThat(published.publication().version()).isEqualTo(2);
+        assertThat(jdbc.queryForMap("SELECT * FROM knowledge_document_share WHERE tenant_id=? AND document_id=?",owner.tenantId(),f.original().documentId())).isEqualTo(acl);
+        assertThat(publicationService(f.quality(),false,bean(PublicationMapper.class)).approve(owner,id,key,f.input())).isEqualTo(accepted);
+        error(KnowledgeError.CANDIDATE_CONFLICT,()->service.approve(owner,id,key(),f.input()));
+        String next=key();var document=lifecycle.document(owner,f.original().documentId());
+        lifecycle.update(owner,document.documentId(),next,document.revision(),UploadRules.validate(next,"next.txt","下一修正",("下一版本"+key()).getBytes(StandardCharsets.UTF_8)));
+        assertThat(service.get(owner,id,null).status()).isEqualTo("PUBLISHED"); // 新受理尚未取代旧发布事实。
+        publish(knowledge.ingestion(owner,lifecycle.document(owner,document.documentId()).activeJobId()));
+        assertThat(service.get(owner,id,null).status()).isEqualTo("SUPERSEDED");
+        lifecycle.visibility(owner,document.documentId(),key(),lifecycle.document(owner,document.documentId()).revision(),com.lrj.agentic.knowledge.domain.lifecycle.LifecycleModels.Operation.DELETE);
+        assertThat(service.get(owner,id,null).status()).isEqualTo("INACTIVE");
+        assertThat(service.approve(owner,id,key,f.input())).isEqualTo(accepted);
+    }
+    /** 迟到的审计写失败必须回滚已经执行的生命周期INSERT和资料修订。 */
+    @Test void approvalRollsBackWholeUpdateAndRejectsConcurrentDistinctCommands() throws Exception {
+        var f=publicationFixture("BUSINESS",List.of("新事实"));var mapper=bean(PublicationMapper.class);
+        var failing=(PublicationMapper)java.lang.reflect.Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{PublicationMapper.class},(proxy,method,args)->{
+            if(method.getName().equals("create")) throw new org.springframework.dao.DataIntegrityViolationException("approval fault fixture");
+            try { return method.invoke(mapper,args); } catch(java.lang.reflect.InvocationTargetException failure) { throw failure.getCause(); }
+        });
+        var before=lifecycle.document(owner,f.original().documentId());String key=key();
+        error(KnowledgeError.DATABASE_UNAVAILABLE,()->publicationService(f.quality(),true,failing).approve(owner,f.candidate().candidateId(),key,f.input()));
+        assertThat(lifecycle.document(owner,before.documentId())).isEqualTo(before);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_ingestion WHERE document_id=?",Integer.class,before.documentId())).isEqualTo(1);
+        error(KnowledgeError.NOT_FOUND,()->candidates.command(owner,key));
+        var service=publicationService(f.quality(),true,mapper);var accepted=race(2,i->service.approve(owner,f.candidate().candidateId(),key(),f.input()));
+        assertThat(accepted.stream().filter(Receipt.class::isInstance).count()).isEqualTo(1);
+        assertThat(accepted).contains(KnowledgeError.CANDIDATE_CONFLICT);
+    }
+    /** 锁外核对后发生真实评分修改，事务护栏必须拒绝旧摘要，不能只相信页面资格。 */
+    @Test void approvalRechecksReviewUnderLockAndRejectsUnqualifiedOrUnauthorizedInput() throws Exception {
+        var f=publicationFixture("BUSINESS",List.of("新事实"));
+        var changed=new CandidateQuality(bean(EvaluationService.class),f.runs(),f.reviews()) {
+            @Override public CandidateQuality.Assessment assessment(Caller caller,String run,String manifest,String review,Publication publication,List<DatasetRow> associations) {
+                var observed=super.assessment(caller,run,manifest,review,publication,associations);
+                f.reviews().review(owner,run,f.question(),key(),new ReviewCommand(manifest,1L,new com.lrj.agentic.knowledge.domain.evaluation.DecisionModels.Assessment(Judgement.PASS,Judgement.FAIL,Judgement.PASS,null),"审批前复核不通过"));
+                return observed;
+            }
+        };
+        String id=f.candidate().candidateId(),key=key();
+        error(KnowledgeError.CANDIDATE_APPROVAL_INVALID,()->publicationService(changed,true,bean(PublicationMapper.class)).approve(owner,id,key,f.input()));
+        error(KnowledgeError.NOT_FOUND,()->candidates.command(owner,key));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_ingestion WHERE document_id=?",Integer.class,f.original().documentId())).isEqualTo(1);
+        var service=publicationService(f.quality(),true,bean(PublicationMapper.class));
+        error(KnowledgeError.NOT_FOUND,()->service.approve(new Caller(owner.tenantId(),key()),id,key(),f.input()));
+        error(KnowledgeError.NOT_FOUND,()->service.approve(new Caller(owner.tenantId().toUpperCase(Locale.ROOT),owner.userId()),id,key(),f.input()));
+        var mechanism=publicationFixture("MECHANISM",List.of("新事实"));
+        error(KnowledgeError.CANDIDATE_APPROVAL_INVALID,()->publicationService(mechanism.quality(),true,bean(PublicationMapper.class)).approve(owner,mechanism.candidate().candidateId(),key(),mechanism.input()));
+        var missing=publicationFixture("BUSINESS",List.of("不存在的文字要求"));
+        error(KnowledgeError.CANDIDATE_APPROVAL_INVALID,()->publicationService(missing.quality(),true,bean(PublicationMapper.class)).approve(owner,missing.candidate().candidateId(),key(),missing.input()));
+        error(KnowledgeError.CANDIDATE_PUBLICATION_DISABLED,()->publicationService(missing.quality(),false,bean(PublicationMapper.class)).approve(owner,missing.candidate().candidateId(),key(),missing.input()));
+        String path="/candidates/"+id+"/publication";
+        assertThat(http("POST",path,token(owner,"knowledge:read"),key(),json.write(f.input())).statusCode()).isEqualTo(403);
+        assertThat(http("POST",path,token(new Caller(owner.tenantId(),key()),"knowledge:read knowledge:write"),key(),json.write(f.input())).statusCode()).isEqualTo(404);
+        assertThat(http("POST",path,token(owner,"knowledge:read knowledge:write"),key(),json.write(f.input()).replace("\"note\":","\"approved\":true,\"note\":" )).statusCode()).isEqualTo(400);
+    }
+    /** 锁外观察后编辑候选或更新原资料不能沿用旧批准意图，依赖故障也不能留下发布副作用。 */
+    @Test void approvalRejectsChangedContentOriginalAndUnavailableQuality() {
+        var f=publicationFixture("BUSINESS",List.of("新事实"));String id=f.candidate().candidateId();
+        var unavailable=new CandidateQuality(bean(EvaluationService.class),f.runs(),f.reviews()) {
+            @Override public CandidateQuality.Assessment assessment(Caller caller,String run,String manifest,String review,Publication publication,List<DatasetRow> associations) {
+                throw new KnowledgeFailure(KnowledgeError.EVALUATION_TASK_UNAVAILABLE);
+            }
+        };
+        String unknown=key();
+        error(KnowledgeError.EVALUATION_TASK_UNAVAILABLE,()->publicationService(unavailable,true,bean(PublicationMapper.class)).approve(owner,id,unknown,f.input()));
+        error(KnowledgeError.NOT_FOUND,()->candidates.command(owner,unknown));
+        var changed=new CandidateQuality(bean(EvaluationService.class),f.runs(),f.reviews()) {
+            @Override public CandidateQuality.Assessment assessment(Caller caller,String run,String manifest,String review,Publication publication,List<DatasetRow> associations) {
+                var observed=super.assessment(caller,run,manifest,review,publication,associations);
+                String edit=key();var input=save(1L,f.original().documentRevision(),"批准前再次修改",List.of());
+                candidates.save(owner,id,edit,input,upload(edit,input,"批准前已改变的完整内容"),false);
+                return observed;
+            }
+        };
+        error(KnowledgeError.CANDIDATE_CONFLICT,()->publicationService(changed,true,bean(PublicationMapper.class)).approve(owner,id,key(),f.input()));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_candidate_approval WHERE candidate_id=?",Integer.class,id)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_ingestion WHERE document_id=?",Integer.class,f.original().documentId())).isEqualTo(1);
+        var original=publicationFixture("BUSINESS",List.of("新事实"));String update=key();
+        lifecycle.update(owner,original.original().documentId(),update,original.original().documentRevision(),
+                UploadRules.validate(update,"new.txt","另一处资料更新","并发更新后的完整内容".getBytes(StandardCharsets.UTF_8)));
+        error(KnowledgeError.CANDIDATE_CONFLICT,()->publicationService(original.quality(),true,bean(PublicationMapper.class)).approve(owner,original.candidate().candidateId(),key(),original.input()));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM knowledge_candidate_approval WHERE candidate_id=?",Integer.class,original.candidate().candidateId())).isZero();
+    }
+    private CandidatePublicationService publicationService(CandidateQuality quality,boolean enabled,PublicationMapper mapper) {
+        return new CandidatePublicationService(bean(CandidateMapper.class),mapper,bean(KnowledgeMapper.class),candidates,quality,
+                bean(EvaluationDecisionRepository.class),lifecycle,json,new CandidateProperties(true,enabled),bean(LifecycleProperties.class),
+                bean(ProcessingAdmissionProperties.class),bean(PlatformTransactionManager.class),5,true);
+    }
+    private PublicationFixture publicationFixture(String purpose,List<String> terms) {
+        var original=fixture();var candidate=create(original,"新事实：完整修正内容"+key(),terms);
+        var preparation=candidates.prepare(owner,candidate.candidateId(),key(),new Prepare(1L,candidate.contentDigest()));publish(knowledge.ingestion(owner,preparation.jobId()));
+        var definitions=bean(EvaluationService.class);var reports=bean(EvaluationRunRepository.class);var central=new Central();
+        var runs=new EvaluationRunService(bean(EvaluationRepository.class),definitions,reports,central,bean(EvaluationJson.class),bean(GenerationCitationCheck.class),true);
+        var reviews=new EvaluationDecisionService(bean(EvaluationDecisionRepository.class),reports,runs,definitions,bean(EvaluationJson.class));
+        var quality=new CandidateQuality(definitions,runs,reviews);var service=configured(true,quality);
+        var definition=definition(preparation.previewDocumentId(),purpose);var dataset=definitions.create(owner,key(),definition);
+        service.associate(owner,candidate.candidateId(),key(),new Associate(1L,candidate.contentDigest(),dataset.datasetId(),dataset.revision()));
+        var run=finish(central,runs,reports,dataset,definition);String question=definition.questions().getFirst().questionId();
+        reviews.review(owner,run.summary().runId(),question,key(),new ReviewCommand(run.report().manifestDigest(),0L,new Assessment(Judgement.PASS,Judgement.PASS,Judgement.PASS,null),""));
+        var score=reviews.reviews(owner,run.summary().runId());
+        service.bind(owner,candidate.candidateId(),key(),new Bind(1L,candidate.contentDigest(),run.summary().runId(),run.report().manifestDigest(),score.reviewDigest()));
+        var input=new Approve(1L,original.documentRevision(),candidate.contentDigest(),run.summary().runId(),run.report().manifestDigest(),score.reviewDigest(),"已核对完整原文件和当前评估，批准入库。");
+        return new PublicationFixture(original,candidate,input,quality,runs,reviews,question);
+    }
+    private record PublicationFixture(Fixture original,Receipt candidate,Approve input,CandidateQuality quality,
+            EvaluationRunService runs,EvaluationDecisionService reviews,String question) { }
+
     private CandidateService disabled() { return configured(false,bean(CandidateQuality.class)); }
     private CandidateService configured(boolean enabled,CandidateQuality quality) {
         return new CandidateService(bean(CandidateMapper.class),bean(KnowledgeMapper.class),bean(LifecycleInitialization.class),bean(SourceStore.class),json,
@@ -307,6 +448,14 @@ class KnowledgeCandidateIT {
     /** 真实Tasks中央完成与React操作共用随机租户；评估结果仅为机制夹具，不调用模型。 */
     @Test void realTasksAndBrowserCandidateWorkflow() throws Exception {
         org.junit.jupiter.api.Assumptions.assumeTrue("1".equals(System.getenv("AGENTIC_CANDIDATE_BROWSER")));
+        realBrowser(false);
+    }
+    /** 真实中央报告、显式批准、原作业失败重试及双索引发布在浏览器同一闭环核对。 */
+    @Test void realTasksAndBrowserPublicationWorkflow() throws Exception {
+        org.junit.jupiter.api.Assumptions.assumeTrue("1".equals(System.getenv("AGENTIC_CANDIDATE_PUBLICATION_BROWSER")));
+        realBrowser(true);
+    }
+    private void realBrowser(boolean publication) throws Exception {
         var empty=fixture();var ready=fixture();var candidate=create(ready,"新事实：完整修正内容",List.of("新事实"));
         var preparation=candidates.prepare(owner,candidate.candidateId(),key(),new Prepare(1L,candidate.contentDigest()));
         publish(knowledge.ingestion(owner,preparation.jobId()));
@@ -318,18 +467,35 @@ class KnowledgeCandidateIT {
         bean(EvaluationTaskGateway.class).submit(owner,run);
         var evidence=bean(EvaluationRepository.class).publishedEvidence(owner,List.of(definition.questions().getFirst().evidence().getFirst().chunkId())).getFirst();
         var root=java.nio.file.Path.of("").toAbsolutePath().getParent();
-        var directory=java.nio.file.Files.createTempDirectory(root.resolve(".logs"),"s14b-joint-");
+        var directory=java.nio.file.Files.createTempDirectory(root.resolve(".logs"),publication?"s14c-joint-":"s14b-joint-");
         var value=new LinkedHashMap<String,Object>();
         value.put("endpoint","http://127.0.0.1:"+port);value.put("taskEndpoint",System.getenv("KNOWLEDGE_EVALUATION_TASK_ENDPOINT"));
         value.put("tenant",owner.tenantId());value.put("owner",owner.userId());value.put("stranger",key());value.put("backendRoot",root.toString());
         value.put("empty",empty);value.put("ready",candidates.get(owner,candidate.candidateId(),null));
         value.put("dataset",dataset);value.put("question",definition.questions().getFirst());value.put("evidence",evidence);
-        value.put("runId",run.summary().runId());value.put("taskId",run.taskId());
+        value.put("runId",run.summary().runId());value.put("taskId",run.taskId());value.put("publicationWorkflow",publication);
         var fixture=directory.resolve("fixture.json");java.nio.file.Files.writeString(fixture,json.write(value));
         var process=new ProcessBuilder(root.resolve("ai-runtime/.venv/bin/python").toString(),root.resolve("deploy/candidate_smoke.py").toString(),"browser",fixture.toString())
                 .directory(root.toFile()).redirectErrorStream(true).redirectOutput(directory.resolve("joint.log").toFile()).start();
-        try { assertThat(process.waitFor(240,TimeUnit.SECONDS)).isTrue();assertThat(process.exitValue()).as(directory.resolve("joint.log").toString()).isZero(); }
-        finally { if(process.isAlive()) { process.destroy();process.waitFor(15,TimeUnit.SECONDS); } }
+        try(var worker=Executors.newSingleThreadExecutor()) {
+            var completed=worker.submit(()->{
+                if(!publication) return null;
+                boolean failed=false;
+                while(process.isAlive()) {
+                    var claim=processing.claim("publication-browser",60,owner.tenantId());
+                    if(claim.isEmpty()) { Thread.sleep(50);continue; }
+                    assertThat(claim.get().job().documentId()).isEqualTo(ready.documentId());
+                    if(!failed) {
+                        // 仅测试故障注入：让界面观察真实PROCESSING，随后沿既有worker失败协议持久化。
+                        Thread.sleep(8000);processing.fail(claim.get(),KnowledgeError.PROCESSOR_UNAVAILABLE,true);failed=true;
+                    } else processingRunner().run(claim.get());
+                }
+                return null;
+            });
+            try { assertThat(process.waitFor(240,TimeUnit.SECONDS)).isTrue();assertThat(process.exitValue()).as(directory.resolve("joint.log").toString()).isZero(); }
+            finally { if(process.isAlive()) { process.destroy();process.waitFor(15,TimeUnit.SECONDS); } }
+            completed.get(15,TimeUnit.SECONDS);
+        }
     }
     private <T> T bean(Class<T> type) { return context.getBean(type); }
     private Receipt create(Fixture fixture,String text,List<String> terms) {
@@ -350,7 +516,16 @@ class KnowledgeCandidateIT {
         return new com.lrj.agentic.knowledge.domain.feedback.FeedbackModels.Create(FeedbackProtocol.SCHEMA,ref,null,null,Category.CONTENT_ERROR,message);
     }
     private void publish(Ingestion job) {
-        var claim=processing.claim("candidate-test",60,owner.tenantId()).orElseThrow();assertThat(claim.job().jobId()).isEqualTo(job.jobId());
+        ProcessingClaim claim=null;long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(10);
+        while(claim==null && System.nanoTime()<deadline) {
+            claim=processing.claim("candidate-test",60,owner.tenantId()).orElse(null);
+            if(claim==null) try { Thread.sleep(50); } catch(InterruptedException interrupted) { Thread.currentThread().interrupt();throw new AssertionError(interrupted); }
+        }
+        assertThat(claim).isNotNull();assertThat(claim.job().jobId()).isEqualTo(job.jobId());
+        processingRunner().run(claim);
+        assertThat(knowledge.document(owner,job.documentId()).publishedVersion()).isEqualTo(job.documentVersion());
+    }
+    private IngestionRunner processingRunner() {
         var model=new KnowledgeProcessor() {
             public PreparedDocument prepare(Ingestion job,byte[] bytes) { throw new AssertionError("候选使用代次协议"); }
             public GenerationPreparedDocument prepareGeneration(Ingestion job,byte[] bytes,com.lrj.agentic.contract.knowledge.Extraction extraction) {
@@ -359,8 +534,7 @@ class KnowledgeCandidateIT {
             }
             public List<Double> query(Caller caller,String query) { throw new AssertionError("测试直接给定向量"); }
         };
-        new IngestionRunner(processing,storage,model,index,bean(com.lrj.agentic.knowledge.infrastructure.processing.ParserProcess.class)).run(claim);
-        assertThat(knowledge.document(owner,job.documentId()).publishedVersion()).isEqualTo(1);
+        return new IngestionRunner(processing,storage,model,index,bean(com.lrj.agentic.knowledge.infrastructure.processing.ParserProcess.class));
     }
     private List<String> shownDocuments() { return lifecycle.documents(owner,20,null).items().stream().map(row->row.documentId()).toList(); }
     private static Save save(Long revision,long original,String title,List<String> terms) { return new Save(revision,original,title,terms); }

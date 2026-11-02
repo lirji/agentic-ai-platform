@@ -3,9 +3,14 @@
 import search_local
 
 
-def environment(enabled: bool = False) -> dict[str, str]:
+def environment(enabled: bool = False, publication: bool = False) -> dict[str, str]:
     """只开启候选用例；处理/代次/worker与模型额度保持原配置，不隐式启动付费工作。"""
-    return {"KNOWLEDGE_OPERATIONS_ENABLED": "true" if enabled else "false"}
+    if publication and not enabled:
+        raise ValueError("批准入库要求同时显式启用候选功能")
+    return {
+        "KNOWLEDGE_OPERATIONS_ENABLED": "true" if enabled else "false",
+        "KNOWLEDGE_OPERATIONS_PUBLICATION_ENABLED": "true" if publication else "false",
+    }
 
 
 def prepare_preview_index(mode: str) -> None:

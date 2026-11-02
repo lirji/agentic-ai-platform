@@ -48,6 +48,7 @@ public class KnowledgeSecurity {
                                 "/api/v1/knowledge/operations/candidates/*/preparation",
                                 "/api/v1/knowledge/operations/candidates/*/datasets",
                                 "/api/v1/knowledge/operations/candidates/*/evaluation",
+                                "/api/v1/knowledge/operations/candidates/*/publication",
                                 "/api/v2/knowledge/documents/*/updates",
                                 "/api/v2/knowledge/documents/*/withdrawals",
                                 "/api/v2/knowledge/documents/*/deletions",

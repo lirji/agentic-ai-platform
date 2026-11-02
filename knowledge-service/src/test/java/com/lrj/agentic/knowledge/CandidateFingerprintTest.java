@@ -16,4 +16,12 @@ class CandidateFingerprintTest {
         assertThat(json.digest(mapper.treeToValue(golden.get("identity"),ContentIdentity.class))).isEqualTo(golden.get("contentDigest").asText());
         assertThat(json.digest(mapper.treeToValue(golden.get("intent"),Intent.class))).isEqualTo(golden.get("requestFingerprint").asText());
     }
+    @Test void approvalCommandMatchesSharedUtf8Golden() throws Exception {
+        var mapper=new ObjectMapper().findAndRegisterModules();var json=new CandidateJson(mapper);
+        var golden=mapper.readTree(Files.readString(Path.of("../docs/qa/publication-approval-20261102/intent-golden.json")));
+        var input=mapper.treeToValue(golden.get("intent").get("parameters"),com.lrj.agentic.knowledge.domain.operations.PublicationModels.Approve.class);
+        var intent=new Intent(Operation.APPROVE_PUBLISH.code(),golden.get("intent").get("target").asText(),input.expectedRevision(),
+                input.expectedDocumentRevision(),input.contentDigest(),input);
+        assertThat(json.digest(intent)).isEqualTo(golden.get("requestFingerprint").asText());
+    }
 }

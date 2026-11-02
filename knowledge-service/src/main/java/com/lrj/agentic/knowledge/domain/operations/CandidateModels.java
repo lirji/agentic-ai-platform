@@ -15,7 +15,7 @@ public final class CandidateModels {
     public static final int MAX_DATASETS = 10;
     public enum Operation {
         CREATE("CREATE"), REVISE("REVISE"), PREPARE("PREPARE"),
-        ASSOCIATE_DATASET("ASSOCIATE_DATASET"), BIND_EVALUATION("BIND_EVALUATION");
+        ASSOCIATE_DATASET("ASSOCIATE_DATASET"), BIND_EVALUATION("BIND_EVALUATION"), APPROVE_PUBLISH("APPROVE_PUBLISH");
         private final String code;
         Operation(String code) { this.code=code; }
         /** 显式编码不依赖ordinal或Java枚举名称。 */

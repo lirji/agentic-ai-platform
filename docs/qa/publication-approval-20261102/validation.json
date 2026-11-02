@@ -1,0 +1,90 @@
+{
+  "slice": "S14C",
+  "status": "PASS",
+  "git": "PENDING",
+  "backend": {
+    "base": "155adc2",
+    "files": {
+      "deploy/candidate_browser_bridge.py": "70313b041fc50d902ae0cee0a8e0d1bf75a4d6f6e5b8522d852f14e1fbee8374",
+      "deploy/candidate_smoke.py": "a5e291e7a4d8e6a9f6b2b70de6b944a7baf3f12f3af9a4163c343fe0a98262be",
+      "deploy/docker/README.md": "d8198223a638c899381f6ffb6dbf9875f9eda4aeb76bdfe5db5925ba69f04555",
+      "deploy/docker/runtime.py": "0a32eb95a0ff586d7845c8f44e63b28322db89b55dd648bedcb55161e52bd232",
+      "deploy/env.example": "f2ea86c9f9803ac5650274435cf4c8378982ef39b5df70a4e3d92006b2d56b95",
+      "deploy/identity_runtime.py": "505e442fbb276af1d7dd77d4043c1a81a51830b864e8b7d46bfc8cb728d024dd",
+      "deploy/operations_local.py": "41dc32dd58b050ac1d40c1baa34841d72042aae2022ba237a0d7cf7f93233668",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/api/CandidatePublicationController.java": "f47caa812bd67dd42e52fc0c1a72c40466ac2974940382d8b6043aeb50f1652d",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/CandidatePublicationService.java": "aca9068ceac4fae589b6c4830859a8ed480a9bcb07cb65374aaeb866e2a540a1",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/application/LifecycleService.java": "575a9e05a458abd280d53a89d04c788598f94cfe05e0ed877e4e89867abedaaf",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/CandidateProperties.java": "deb446dc7a05baadf0d48cfd90359f115ca8fe40b59aab9633f3a7f38573db02",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/config/KnowledgeSecurity.java": "7a5178fbf923a29e700ffc335433396bb14934ee5edf83bb99d5928863a55f2e",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/KnowledgeError.java": "3f9938a9329abf82e8891cd51097a6e4504f3805b52a2e1b278a82536a051281",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/evaluation/EvaluationDecisionRepository.java": "3ead005a0dc04c181e3d414c07ff0dabe1ba2a4228c629c7e952bf1bb76b7a10",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/operations/CandidateModels.java": "e20bb9e0d9b46114f1056d9202e3a994092fe454390fdebdb5265ac8f42a01c5",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/domain/operations/PublicationModels.java": "fdc3717d02a50496884fefbdb9f3243d76919aad1bbc4b5e8ba3c4127e70693e",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlEvaluationDecisionRepository.java": "d2d0b5af4e6cf516b426f77231f6c00b576fe2bc59f74f3bef06e66f310957be",
+      "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/PublicationMapper.java": "7a2fad736952f7d080d47d63ec548a611d60d032f749d9c755f274049637cca5",
+      "knowledge-service/src/main/resources/application.yml": "887862bb50b43b8483a8324c510581d48e096cd88866837906fb9f9029aa9da5",
+      "knowledge-service/src/main/resources/db/migration/V17__candidate_approval_publication.sql": "1790f5052e2328d293f035cee4ad3537d2fa2f2fcb7ec02f1c9aad4e0bf763a9",
+      "knowledge-service/src/main/resources/mapper/PublicationMapper.xml": "c5f9023fefd91081d8f37eebe7ad0d1ebdcf6ac5825ca6d64322821575223f83",
+      "knowledge-service/src/test/java/com/lrj/agentic/knowledge/CandidateFingerprintTest.java": "8d5b9fb43ecf685578e610c2213305cd7c44d0ffedefdfbd1ba705c4867305df",
+      "knowledge-service/src/test/java/com/lrj/agentic/knowledge/KnowledgeCandidateIT.java": "34b87effc8309d67f03330c14813e4798b24115eac06ea7927ce79db8105886a"
+    }
+  },
+  "frontend": {
+    "base": "7623885",
+    "files": {
+      "src/features/operations/CandidatePublicationPanel.tsx": "209d4e077f5508f857c918638a888247e2324fe7c8c1291859c48d49b6bbcf0e",
+      "src/features/operations/Publication.test.tsx": "5ca33f5a113f5e87c45c23cfb10c80eaf0e5b76aea2ee87ad338c2a08f2c9065",
+      "src/features/operations/api.ts": "81a31c2d94250eea9bd80cfa46c698b6f6711b5215848ab59982b0c79d0956fc",
+      "src/features/operations/messages.ts": "d4c940e712fbce862807cb727f59b5d23295a9494ab1272d5b883387978b514f",
+      "src/features/operations/model.ts": "fde9aa0c25fdf536fd6f2ff70bb5fdaa5b465c57c8d17e58d41289ea85ed659a",
+      "src/features/operations/publication-intent-golden.json": "cf42d81e2cdba430b1dd9478ee5808298ecc0254f68b9d40939298df17931278",
+      "src/pages/CandidatePage.tsx": "5126511977a532ec8debb98b6918cee6247c56f8f160bd17c754e22a8a7b0edd",
+      "src/shared/api/errors.ts": "64c9bf6cf1120080f64c5fad57264d2b7d389529665c6c9adf0570cea41721c1",
+      "tests/publication-real.spec.ts": "21778b6200d8fab6dde017c977d1ee87807c096b7cfe1af2492b4f570632b826"
+    }
+  },
+  "checks": {
+    "javaUnits": 131,
+    "relatedIntegration": {
+      "executedPass": 48,
+      "conditionalSkipped": 4
+    },
+    "staleApprovalIntegration": 1,
+    "realTasksJoint": 1,
+    "browserWorkflow": 1,
+    "frontendUnit": 215,
+    "visualStates": 6,
+    "contracts": 13,
+    "wireFixtures": 14,
+    "paidCalls": 0,
+    "productionDeployment": false
+  },
+  "logs": {
+    "agentic-ai-platform/.logs/s14c-final-regression.log": "ffb084ec41e0c0a064a31b1e99df523eb7f219530a1117a6042006d278a67394",
+    "agentic-ai-platform/.logs/s14c-stale-approval-it.log": "f1d9be31ee7bf624c3e045c2d0fc31f0abacd4b2b20ad2fe0c95e7f03f8d5f0a",
+    "agentic-ai-platform/.logs/s14c-joint-browser-visual-final.log": "25c04715d9ea56f63d3e0909d63eabfb1647dd430fed690f4f2d2bd8cec80c8f",
+    "agentic-ai-platform/.logs/s14c-contract-docs.log": "007592e42ef6f6a81b257294661371ec64be3fec0cf348647eb3f1c60fdf3699",
+    "agentic-ai-platform/.logs/s14c-backend-hygiene.log": "ab97948909b9374d1408ce918db574983a4eb270f6a13f9e0ca7649c21ace9fb",
+    "agentic-ai-platform-web/.logs/s14c-full-unit.log": "2ca92614ce53c6bbbfbedffb67b150f69d2a11204e8471f39914b5c294afee8f",
+    "agentic-ai-platform-web/.logs/s14c-types-final.log": "8366207267355d3e3d5bf3bf6e8c94c5f93f6078c34f08973fa2b38cdda6cc92",
+    "agentic-ai-platform-web/.logs/s14c-lint-final.log": "050c69da23536758722729aeda55a8d0fb9d557495ef6d33d70873a3b64a71c1",
+    "agentic-ai-platform-web/.logs/s14c-build-preview.log": "c74997d5c92a78ec212e4ebbdb62b482f878512b6f2c11013a068ef99788d076",
+    "agentic-ai-platform-web/.logs/s14c-browser-format.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+    "agentic-ai-platform/.logs/s14c-joint-6331607576901284829/joint.log": "00e7f407723b126f93cd071cec1e142a832373515bd043be819490ca6a88dda4",
+    "agentic-ai-platform/.logs/s14c-joint-6331607576901284829/browser.log": "2e10018dcccbced6fd1fc4292c7f58cec75dc401d9f23f5bed3f9aaa4d6a2375"
+  },
+  "screenshots": {
+    "accepted-narrow.png": "3244c92d725d104805d1cad5faf1222eda95755521c5a94ee909c197c92b276e",
+    "confirmation-desktop.png": "5a7dec10065d143f1f2e3875c1e4738aad9d20dae446f88b84ed159bf2e616f8",
+    "failed-narrow.png": "54c21a6411e7bac18fe03a9ff2be5c3bd87598a95e72b7ffddb25116471c1732",
+    "history-narrow.png": "fd2b113d7bd6f2faa55868c97e2a8efa9fc0cd901f16af08913e6e048a305db3",
+    "published-desktop.png": "09fec44cbd6964306976c006814c5d009514c8ccd70c45b68317cbcd242d8af6",
+    "retry-task-narrow.png": "3a50aa87cb92a070ecc42c55a049f2d411a0283acdd9fbf23c6b36b340860f84"
+  },
+  "limitations": [
+    "Java formatter unavailable; independent static analyzer not configured",
+    "Existing Runtime Ruff findings unchanged",
+    "Deterministic processing and quality fixtures do not prove model quality"
+  ]
+}

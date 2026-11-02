@@ -1,0 +1,27 @@
+{
+  "deploy/docker/runtime.py": {
+    "before": 1,
+    "after": 1,
+    "new": []
+  },
+  "deploy/identity_runtime.py": {
+    "before": 3,
+    "after": 3,
+    "new": []
+  },
+  "deploy/operations_local.py": {
+    "before": 0,
+    "after": 0,
+    "new": []
+  },
+  "deploy/candidate_smoke.py": {
+    "before": 0,
+    "after": 0,
+    "new": []
+  },
+  "deploy/candidate_browser_bridge.py": {
+    "before": 0,
+    "after": 0,
+    "new": []
+  }
+}

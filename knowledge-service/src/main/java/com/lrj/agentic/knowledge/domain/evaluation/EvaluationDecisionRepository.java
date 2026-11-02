@@ -22,6 +22,8 @@ public interface EvaluationDecisionRepository {
     /** 加锁后重验当前报告、资料绑定和CAS；历史和命令原子提交。 */
     DecisionReceipt review(Caller owner, String keyHash, String fingerprint, RunView observed,
             RevisionDetail definition, Question question, ReportFact fact, ReviewCommand input);
+    /** 在调用方已开启的短事务内锁运行/owner资料并复核业务评分，禁止远程读取。 */
+    void requireBusinessApproval(Caller owner, RunView observed, RevisionDetail definition, String reviewDigest);
     /** 单个不可变基线及其冻结评分，仅属于当前调用者。 */
     Optional<BaselineRecord> baseline(Caller owner, String baselineId);
     /** 本定义修订的当前指针。 */

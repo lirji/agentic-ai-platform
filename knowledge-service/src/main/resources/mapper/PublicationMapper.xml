@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.knowledge.infrastructure.persistence.PublicationMapper">
+    <sql id="columns">approval_id,tenant_id,owner_id,candidate_id,revision,document_id,base_revision,content_digest,
+        run_id,manifest_digest,review_digest,preview_document_id,preview_publication_json,content_revision,index_generation,
+        job_id,lifecycle_command_id,command_id,note,approved_at</sql>
+    <select id="get" resultType="com.lrj.agentic.knowledge.domain.operations.PublicationModels$Row">
+        SELECT <include refid="columns"/> FROM knowledge_candidate_approval
+        WHERE tenant_id=#{caller.tenantId} AND owner_id=#{caller.userId} AND candidate_id=#{id} AND revision=#{revision}
+    </select>
+    <insert id="create">
+        INSERT INTO knowledge_candidate_approval (<include refid="columns"/>)
+        VALUES (#{row.approvalId},#{row.tenantId},#{row.ownerId},#{row.candidateId},#{row.revision},#{row.documentId},
+            #{row.baseRevision},#{row.contentDigest},#{row.runId},#{row.manifestDigest},#{row.reviewDigest},
+            #{row.previewDocumentId},#{row.previewPublicationJson},#{row.contentRevision},#{row.indexGeneration},#{row.jobId},
+            #{row.lifecycleCommandId},#{row.commandId},#{row.note},#{row.approvedAt})
+    </insert>
+    <select id="published" resultType="com.lrj.agentic.knowledge.domain.operations.CandidateModels$Publication">
+        SELECT d.document_id,d.published_version AS version,d.published_generation AS index_generation,d.published_job_id AS job_id,
+            j.processor_version,j.batch_digest,j.content_hash AS source_hash
+        FROM knowledge_document d JOIN knowledge_ingestion j ON j.job_id=d.published_job_id
+            AND j.tenant_id=d.tenant_id AND j.owner_id=d.owner_id AND j.document_id=d.document_id
+            AND j.document_version=d.published_version AND j.index_generation=d.published_generation
+        WHERE d.tenant_id=#{caller.tenantId} AND d.owner_id=#{caller.userId} AND d.document_id=#{id}
+            AND d.lifecycle='ACTIVE' AND d.purpose='STANDARD' AND d.lifecycle_ready=TRUE
+            AND j.status='READY' AND j.batch_digest IS NOT NULL
+    </select>
+</mapper>

@@ -56,6 +56,27 @@ public class LifecycleService {
                 admission.profile(source.contentType()), Instant.now().truncatedTo(ChronoUnit.MICROS)));
     }
 
+    /** 候选批准仅复用已持久化的可信完整源；必须加入调用方事务，不能产生孤立发布任务。 */
+    @org.springframework.transaction.annotation.Transactional(propagation=org.springframework.transaction.annotation.Propagation.MANDATORY)
+    public CommandReceipt updateStored(Caller caller, String id, String key, long expectedRevision,
+            String displayName, com.lrj.agentic.knowledge.domain.SourceReference source, ProcessingProfile profile) {
+        uuid(id); key(key);
+        if (expectedRevision < 0 || expectedRevision >= Integer.MAX_VALUE) { invalid(); }
+        String fingerprint = ContentDigest.sha256(String.join("\0", Operation.UPDATE.code(), id,
+                Long.toString(expectedRevision), source.hash(), source.contentType(), displayName).getBytes(StandardCharsets.UTF_8));
+        var replay = repository.command(caller, key, fingerprint);
+        if (replay.isPresent()) { return replay.get(); }
+        if (!properties.updatesEnabled() || !properties.generationEnabled()) {
+            throw new KnowledgeFailure(KnowledgeError.PROCESSING_DISABLED);
+        }
+        if (!admission.profile(source.contentType()).equals(profile)) {
+            throw new KnowledgeFailure(KnowledgeError.CANDIDATE_APPROVAL_INVALID);
+        }
+        return repository.update(caller, new Update(UUID.randomUUID().toString(), key, fingerprint, id,
+                expectedRevision, UUID.randomUUID().toString(), displayName, source, profile,
+                Instant.now().truncatedTo(ChronoUnit.MICROS)));
+    }
+
     /** 命令回执只属于当前tenant/owner，不包含原文或对象键。 */
     public CommandReceipt command(Caller caller, String key) {
         key(key);

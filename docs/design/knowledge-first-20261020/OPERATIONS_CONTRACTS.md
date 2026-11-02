@@ -150,10 +150,12 @@ C06 必需静态/单元/DB/双索引/质量联合、审查/文档/Git/CI；本�
 
 ### 页面、开关与验收
 
-- 当前候选展示批准说明、原资料与目标修订/摘要摘要、质量关联及“批准并入库”确认；明确源将替换原资料全文并保留其已有共享。资格不足/历史/只读主体/功能关闭禁用提交；服务器仍重新验证。
+- 当前候选展示批准说明、原资料入口、修正稿标题与修订、质量关联及“批准并入库”确认；内容摘要由协议准确绑定，明确源将替换原资料全文并保留其已有共享。资格不足/历史/只读主体/功能关闭禁用提交；服务器仍重新验证。
 - 复用B原键恢复；刷新或响应未知优先查原键，不换键重发。保存说明不进入sessionStorage。接受成功显示“已批准，等待入库”，轮询真实发布状态；FAILED显示作业错误与现有重试入口，只有精确发布事实显示“已生效”。
 - 新knowledge.operations.publication-enabled默认false，显式Runtime开关；不隐式开启worker、模型预算或部署。GET历史和原回执不依赖写开关。
 - P01 真实DB并发批准、同键恢复/异内容冲突、候选/原文/评分变更与owner拒绝、失败事务不留审批或孤立job。
 - P02 真实S3源→原UPDATE→真实worker双索引发布，受理/失败/重试/精确PUBLISHED/后续SUPERSEDED/撤下INACTIVE，原ACL保留；没有把preview READY冒充原资料发布。
 - P03 真实质量事实和评分并发锁裁决，外部依赖故障不可批准；默认关闭和严格HTTP/权限/no-store。
 - P04 真实React/HTTP完整批准与未知恢复、异步状态、错误重试、历史/窄屏；静态/类型/单元/集成/审查/文档与两仓分支/main CI。确定性模型夹具验证流程，付费调用0，生产部署0。
+
+S14C发布读模型形状：`{approval,status,errorCode,retryable,jobRevision,publication}`；approval固定`{approvalId,candidateId,revision,documentId,baseRevision,contentDigest,runId,manifestDigest,reviewDigest,previewDocumentId,contentRevision,indexGeneration,jobId,note,approvedAt}`。publication只有PUBLISHED时为B中7字段完整发布元组，其他状态为null；retryable只允许FAILED且原作业仍可重试。新受理尚未替换当前发布指针时，原已生效批准仍保持PUBLISHED，直到真实新发布取代或撤下。

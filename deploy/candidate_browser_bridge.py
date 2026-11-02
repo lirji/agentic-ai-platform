@@ -59,7 +59,11 @@ def serve(fixture: dict):
             target = (
                 fixture["taskEndpoint" if task else "endpoint"]
                 if api
-                else "http://127.0.0.1:28226"
+                else (
+                    "http://127.0.0.1:28236"
+                    if fixture.get("publicationWorkflow")
+                    else "http://127.0.0.1:28226"
+                )
             )
             headers = {}
             for name in ("Content-Type", "Idempotency-Key", "X-Workbench-Request"):
@@ -97,7 +101,11 @@ def serve(fixture: dict):
                 # 只丢真实已受理的首次响应，服务端请求和后续原键恢复不替换为mock。
                 if (
                     self.command == "POST"
-                    and self.path.endswith("/candidate")
+                    and self.path.endswith(
+                        "/publication"
+                        if fixture.get("publicationWorkflow")
+                        else "/candidate"
+                    )
                     and response.status_code == 200
                     and self.headers.get("X-Candidate-Lose-First") == "1"
                 ):

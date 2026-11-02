@@ -1,6 +1,6 @@
 # 资料反馈运行说明
 
-S14A/B 契约见 [OPERATIONS_CONTRACTS](OPERATIONS_CONTRACTS.md)。主动反馈、本人记录、所有者收件箱与候选编辑/内容绑定评估沿同一所有权；审批和修正发布由 S14C/D 继续实现。共享接收者没有资料编辑或转授能力。
+S14A/B/C 契约见 [OPERATIONS_CONTRACTS](OPERATIONS_CONTRACTS.md)。主动反馈、本人记录、所有者收件箱与候选编辑/内容绑定评估沿同一所有权；S14C提供显式批准与真实入库发布；发布后探测与补偿由S14D继续。共享接收者没有资料编辑或转授能力。
 
 ## 配置与身份
 
@@ -31,3 +31,11 @@ V16 增加候选根、不可变完整修订、准备关联、精确定义关联�
 浏览器从所有者反馈详情进入修正稿，TXT/Markdown 使用完整正文，PDF/DOCX 提供完整修正版。正文与文件只留在当前编辑页面，刷新后需重新提供；sessionStorage 只保存原键、摘要、操作/目标/修订等恢复基线。未知结果先查原回执，同键不同内容不能重新提交。冲突保留草稿，采用新基线必须是显式操作。
 
 `deploy/candidate_smoke.py verify` 启动本轮动态端口 Tasks，运行 Java 随机租户夹具及真实浏览器；模型端口为确定性机制输入，中央 worker 完成、质量报告与人工评分走真实服务协议。前端先构建 `.local/candidates-dist` 并在 28226 预览；截图与日志位置见本片 QA。该命令会向隔离 test 库/桶/索引写测试记录，结束终止本轮 Tasks，保留记录及日志。当前验收状态以 PROGRESS_STATE 为准，不把机制输入或副本 READY 宣称为模型质量达标、原资料已发布。
+
+## S14C 批准入库
+
+追加V17不可变批准审计；V16不改写。`KNOWLEDGE_OPERATIONS_PUBLICATION_ENABLED=false`安全默认关闭；本地身份/Compose入口显式`--operations --operations-publication`才配置批准开关。原operations开关不隐式授权发布。服务端还要求既有updates/generation/processing开启，worker是否运行沿原配置；准备入口不自动启动worker或新增模型额度。
+
+批准与原资料UPDATE受理同一数据库事务。真实worker仍使用原固定源/处理profile及租约、双索引校验；原job的失败与重试由既有任务页面处理。历史批准及原回执关闭入口后可读，原文访问仍遵守当前ACL/lifecycle。既有索引不增加新字段；本片不执行生产部署或清理。
+
+C片联合入口：`ai-runtime/.venv/bin/python deploy/candidate_smoke.py verify-publication`。先用前端既有pnpm构建`.local/approval-dist`并在28236预览；测试启动独立动态端口Tasks、Knowledge随机租户、夹具限定worker与固定本机桥。模拟首次原UPDATE处理失败和真实受理响应丢失，浏览器通过原键恢复和原任务重试，实际双索引发布后核对版本；结束只退出本轮进程，保留随机记录/源/索引。V17已在test应用，dev/生产未迁移。

@@ -1,0 +1,19 @@
+{
+  "intent": {
+    "operation": "APPROVE_PUBLISH",
+    "target": "93a08cae-58d2-4f71-ae30-6017c683c5cd",
+    "expectedRevision": 2,
+    "expectedDocumentRevision": 4,
+    "contentDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "parameters": {
+      "expectedRevision": 2,
+      "expectedDocumentRevision": 4,
+      "contentDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "runId": "93a08cae-58d2-4f71-ae30-6017c683c5cd",
+      "manifestDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "reviewDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "note": "已核对完整修正稿、引用与人工评分。"
+    }
+  },
+  "requestFingerprint": "246358277c4df902b93e66b74ca1e896a1fe22036cbf40cde7d30c0ea3047ff5"
+}

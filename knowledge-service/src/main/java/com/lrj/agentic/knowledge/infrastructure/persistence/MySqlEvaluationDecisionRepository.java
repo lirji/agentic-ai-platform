@@ -142,6 +142,31 @@ public class MySqlEvaluationDecisionRepository implements EvaluationDecisionRepo
         });
     }
 
+    /** 发布批准复用同一评分规则；运行锁阻止并发评分/恢复改变已核对的摘要。 */
+    @Override
+    @org.springframework.transaction.annotation.Transactional(propagation=org.springframework.transaction.annotation.Propagation.MANDATORY)
+    public void requireBusinessApproval(Caller owner, RunView observed, RevisionDetail definition, String reviewDigest) {
+        var locked = lockRun(owner, observed);
+        if (observed.report() == null) { throw conflict(); }
+        String manifest = observed.report().manifestDigest();
+        checkRun(locked, observed, manifest);
+        // 运营候选只允许owner私有副本，不能在事务内调用共享成员服务。
+        lockBindings(owner, definition, false);
+        if (!EvaluationProtocol.Purpose.BUSINESS.code().equals(definition.summary().purpose())) {
+            throw failure(KnowledgeError.CANDIDATE_APPROVAL_INVALID);
+        }
+        var stored = runs.manifest(owner, observed.summary().runId(), observed.report().epoch());
+        if (stored == null || !manifest.equals(stored.digest())) { throw conflict(); }
+        var report = json.stored(stored.body(), Manifest.class);
+        var facts = facts(owner, observed.summary().runId(), report.questions());
+        var scores = ReviewRules.summaries(definition.definition(), facts,
+                reviews(owner, observed.summary().runId(), manifest), false);
+        if (!reviewDigest.equals(json.digest(ReviewRules.identity(manifest, scores)))
+                || !ReviewRules.eligibility(observed, definition.definition(), facts, scores).eligible()) {
+            throw failure(KnowledgeError.CANDIDATE_APPROVAL_INVALID);
+        }
+    }
+
     private Run lockRun(Caller owner, RunView observed) {
         var row = runs.get(owner, observed.summary().runId(), true);
         if (row == null) { throw failure(KnowledgeError.NOT_FOUND); }

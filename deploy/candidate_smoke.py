@@ -200,9 +200,13 @@ def browser(fixture: Path) -> None:
                 "node",
                 str(web / "node_modules/@playwright/test/cli.js"),
                 "test",
-                "tests/candidates-real.spec.ts",
+                "tests/publication-real.spec.ts"
+                if value.get("publicationWorkflow")
+                else "tests/candidates-real.spec.ts",
                 "--reporter=list",
-                "--output=.logs/s14b-browser-artifacts",
+                "--output=.logs/s14c-browser-artifacts"
+                if value.get("publicationWorkflow")
+                else "--output=.logs/s14b-browser-artifacts",
             ],
             cwd=web,
             env=env,
@@ -217,7 +221,7 @@ def browser(fixture: Path) -> None:
     )
 
 
-def verify() -> None:
+def verify(publication: bool = False) -> None:
     """动态端口启动本轮测试Tasks，结束只终止所启动进程，保留测试数据/日志。"""
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
@@ -228,9 +232,12 @@ def verify() -> None:
         TASK_PORT=str(port),
         TASK_MANAGEMENT_PORT="0",
         KNOWLEDGE_EVALUATION_TASK_ENDPOINT=endpoint,
-        AGENTIC_CANDIDATE_BROWSER="1",
+        AGENTIC_CANDIDATE_BROWSER="0" if publication else "1",
+        AGENTIC_CANDIDATE_PUBLICATION_BROWSER="1" if publication else "0",
     )
-    with (local.LOGS / "s14b-joint-tasks.log").open("w") as log:
+    with (
+        local.LOGS / ("s14c-joint-tasks.log" if publication else "s14b-joint-tasks.log")
+    ).open("w") as log:
         process = subprocess.Popen(
             [
                 "java",
@@ -269,7 +276,9 @@ def verify() -> None:
                     "knowledge-service",
                     "-am",
                     "-Pintegration",
-                    "-Dit.test=KnowledgeCandidateIT#realTasksAndBrowserCandidateWorkflow",
+                    "-Dit.test=KnowledgeCandidateIT#realTasksAndBrowserPublicationWorkflow"
+                    if publication
+                    else "-Dit.test=KnowledgeCandidateIT#realTasksAndBrowserCandidateWorkflow",
                     "-Dfailsafe.failIfNoSpecifiedTests=false",
                     "verify",
                 ],
@@ -286,7 +295,7 @@ def verify() -> None:
 if __name__ == "__main__":
     if sys.argv[1] == "browser":
         browser(Path(sys.argv[2]))
-    elif sys.argv[1] == "verify":
-        verify()
+    elif sys.argv[1] in {"verify", "verify-publication"}:
+        verify(sys.argv[1] == "verify-publication")
     else:
         raise ValueError("需要browser或verify")
