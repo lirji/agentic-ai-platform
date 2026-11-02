@@ -1,0 +1,34 @@
+{
+  "oldBusinessFieldsUnchanged": true,
+  "tables": {
+    "agentic_knowledge.knowledge_chunk": true,
+    "agentic_knowledge.knowledge_document": true,
+    "agentic_knowledge.knowledge_document_revision": true,
+    "agentic_knowledge.knowledge_evaluation_baseline": true,
+    "agentic_knowledge.knowledge_evaluation_baseline_head": true,
+    "agentic_knowledge.knowledge_evaluation_candidate": true,
+    "agentic_knowledge.knowledge_evaluation_command": true,
+    "agentic_knowledge.knowledge_evaluation_dataset": true,
+    "agentic_knowledge.knowledge_evaluation_decision_command": true,
+    "agentic_knowledge.knowledge_evaluation_manifest": true,
+    "agentic_knowledge.knowledge_evaluation_review_head": true,
+    "agentic_knowledge.knowledge_evaluation_review_revision": true,
+    "agentic_knowledge.knowledge_evaluation_revision": true,
+    "agentic_knowledge.knowledge_evaluation_run": true,
+    "agentic_knowledge.knowledge_ingestion": true,
+    "agentic_knowledge.knowledge_ingestion_event": true,
+    "agentic_knowledge.knowledge_lifecycle_command": true,
+    "agentic_knowledge.knowledge_lifecycle_event": true,
+    "agentic_tasks.ai_task": true,
+    "agentic_tasks.ai_task_event": true,
+    "agentic_tasks.ai_task_knowledge_evidence": true,
+    "agentic_conversations.knowledge_conversation": true,
+    "agentic_conversations.knowledge_turn": true
+  },
+  "budgetsUnchanged": true,
+  "schemaVersions": {
+    "agentic_knowledge": "19",
+    "agentic_tasks": "8",
+    "agentic_conversations": "3"
+  }
+}

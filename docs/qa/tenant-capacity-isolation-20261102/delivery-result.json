@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "slice": "S16B",
+  "branch": "feat/tenant-capacity-isolation-20261102",
+  "commit": "ea339ee853958f37783476201d212b91f37f1984",
+  "remoteMain": "ea339ee853958f37783476201d212b91f37f1984",
+  "merge": "normal fast-forward",
+  "ci": {
+    "branchCi": {
+      "databaseId": 41409113451,
+      "headSha": "ea339ee853958f37783476201d212b91f37f1984",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41409113451"
+    },
+    "mainCi": {
+      "databaseId": 41409300564,
+      "headSha": "ea339ee853958f37783476201d212b91f37f1984",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41409300564"
+    }
+  },
+  "frontendChanged": false,
+  "forcePush": false,
+  "worktreeCreated": false
+}

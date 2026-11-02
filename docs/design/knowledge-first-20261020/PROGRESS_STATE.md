@@ -2,13 +2,14 @@
 
 ## 当前任务：S16B交付后部署最新Docker
 
-- 最新授权：当前任务做完后把最新代码部署到现有本地Docker；先完成S16B Git/CI，再部署desktop-linux/agentic-ai-app（28086）。不先启动S16C；不删除数据/卷、不新增付费额度、不远程生产部署。goal active，parallel=no。完整51项未完成。
+- 最新授权：当前任务做完后把最新代码部署到现有本地Docker；先完成S16B Git/CI，再部署desktop-linux/agentic-ai-app（28086）。不先启动S16C；不删除数据/卷、不新增付费额度、不远程生产部署。部署验收PASS，剩余归档Git/CI；parallel=no。完整51项未完成。
 - S16B DONE / 本地CI01–CI06 PASS：[验收](../../qa/tenant-capacity-isolation-20261102/TEST_RESULT.md)、[源码/日志摘要](../../qa/tenant-capacity-isolation-20261102/source-evidence.json)。静态不借用份额、跨实例两域DB准入、全部入库入口/候选批准、查询分lane、独立有界循环/解析、Python显式HTTP容量已完成。默认未启用；U06未定，无生产SLO承诺。
-- Git：原目录feat/tenant-capacity-isolation-20261102，起点26a306e；待提交本片产品和证据，再branch CI→正常ff main/push→main CI。前端未改，原main工作树复用，无新增worktree。S16A产品7a2edc2/归档26a306e全部CI已PASS，最终收据.local/s16a-final-delivery.json。
+- Git：原目录feat/tenant-capacity-isolation-20261102，起点26a306e；产品ea339ee已提交并正常ff合并推main，分支CI41409113451/main CI41409300564全PASS；[交付收据](../../qa/tenant-capacity-isolation-20261102/delivery-result.json)。当前已切feat/docker-capacity-20261102执行部署。前端未改，原main工作树复用，无新增worktree。S16A产品7a2edc2/归档26a306e全部CI已PASS，最终收据.local/s16a-final-delivery.json。
 - 验证：Java全8模块verify PASS；最后命名常量整理后Knowledge130/Tasks21及依赖单元再次PASS；Tasks双实例4/首次启用1/旧兼容29 IT，Knowledge最终10/首次启用1、旧回归87通过5条件跳过及最终候选17通过3条件跳过。Python771通过/100条件跳过/34既有警告，Ruff153文件/mypy92源码通过。代码卫生WITH_LIMITATIONS（无Java专用formatter/static）；所有必需新增验收无跳过。
 - 决策与修复：锁顺序capacity→task/document→job，候选批准capacity→run→document；单槽执行器/解析/转发池已按启用份额求和；候选副本共用队列。旧固定Python最大2断言改为显式最大8边界后全量PASS，默认1保留。两次测试编译失败（Mockito/错误Reference包）均修复复验，原日志保留。详见TEST_RESULT。
-- 数据/运行：V8/V19已在独立test库和原test库正常应用，文件不可改写；原test策略仍NULL。新schema以.local/s16b-*-it-*.json收据为准，全部保留。本轮临时Spring/HTTP/worker/解析进程退出；原Chat/Embedding账本摘要不变，付费0。旧Docker/预览仍原版本，无进行中构建/迁移/测试。
-- 下一步：完成产品Git/CI收据；按deployment-execution读取原Docker进度、核对9容器/当前快照/已交付前端、正常停本项目应用后备份三库，保持OIDC与现有开关，固定已提交快照build/up/readiness/真实浏览器只读smoke，比较旧字段与账本。部署状态另存docs/deployment/docker-capacity-20261102/PROGRESS_STATE.md；旧记录保留，不把prepare当上线。
+- 数据/运行：V8/V19已在独立test库和原test库正常应用，文件不可改写；原test策略仍NULL。新schema以.local/s16b-*-it-*.json收据为准，全部保留。本轮临时Spring/HTTP/worker/解析进程退出；原Chat/Embedding账本摘要不变，付费0。现有Docker已更新到release6b6adccd4f4f997f，9容器健康，旧预览保留；无进行中构建/迁移/测试。
+- Docker已完成：[部署进度](../../deployment/docker-capacity-20261102/PROGRESS_STATE.md)、[收据](../../deployment/docker-capacity-20261102/deployment-result.json)。9容器healthy/restartCount=0，固定快照Java及前端246项通过，两普通账号只读/CSRF/退出/旧租户与用量边界通过，3截图已查看。23业务表2714行原字段和两账本摘要相同；三库备份保留。OIDC/原开关保留，容量策略NULL，未扩费用。
+- 下一步：完成部署归档分支Git/CI，精确收据.local/docker-capacity-20261102/delivery-final.json；本次部署目标完成后结束本轮。后续计划从S16C开始，完整51项、生产容量/SLO与S17恢复演练未完成。
 - 规范：架构建模/持久化/接口/并发安全/容量/发布、个人线程/追踪；session-handoff、continue-approved-delivery、backend-architecture-design、backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate；部署使用deployment-execution。私密.local、.logs、旧worktree/.idea保留，未清理。
 
 ## 上一检查点：S16A交付完成，继续S16B

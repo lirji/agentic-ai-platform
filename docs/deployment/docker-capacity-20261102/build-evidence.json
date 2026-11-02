@@ -1,0 +1,39 @@
+{
+  "release": "6b6adccd4f4f997f",
+  "backend": "ea339ee853958f37783476201d212b91f37f1984",
+  "frontend": "c2d12feac3ad5f6d58f1bfd13a8a16476f6c8980",
+  "includesUncommitted": false,
+  "options": {
+    "identity": "oidc",
+    "sharing": false,
+    "feedback": false,
+    "operations": false,
+    "operationsPublication": false,
+    "operationsRecovery": false,
+    "parsing": true,
+    "pdf": true,
+    "docx": true,
+    "structuredProfile": "STRUCTURE_V3"
+  },
+  "smokeSourceSha256": "6c5c6d54625e9f7aeeb4f2068ea76d724a79acd9d14bde01677238ae95c9d05d",
+  "originalSmokeSha256": "e80146f3578d0aa5f2c747b09eb34264658d3b684ec2e1e9166ed95491f7aeb4",
+  "scope": "same existing local environment; no new paid model calls or capacity activation",
+  "status": "PASS",
+  "javaVerify": "PASS",
+  "frontendUnitTests": 246,
+  "frontendTestFiles": 42,
+  "frontendFormatStaticBuild": "PASS",
+  "screenshotsReviewed": [
+    "login.png",
+    "workspace-desktop.png",
+    "workspace-mobile.png"
+  ],
+  "logs": {
+    "prepare.log": "a8b51419c8f3ae4fd722e614379bc0d72880966518768503ee1025766da1b2e8",
+    "stop.log": "ce9e32665824bc3e4bbc3e71d17d57f58105e3e2e87026a0ac4873f0de13535e",
+    "build.log": "5f1138ec2043134dd6c8ee978bd43b552d3c5c4c5f234d1dffcf5057946b4135",
+    "up.log": "1fc89d94a4f86f9368030f37f0bdb7ca8bec9573071ebe815f51857089df4c9b",
+    "browser.log": "00149f7f4b8f02f7389d8e4f5cda7aa7e4efb986e622b15215605288c7380643",
+    "data-after.log": "827d27869ff85c67036b73bd7fc67f4f7f0acf90fe0e6c504c3e9c617c5bf180"
+  }
+}

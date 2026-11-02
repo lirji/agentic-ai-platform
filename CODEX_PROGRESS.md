@@ -1,9 +1,9 @@
 # Codex Progress
 
-- 用户 2026-11-02 已恢复后续计划；S16A产品7a2edc2已推main且分支/main CI全PASS，当前S16B租户公平与后台隔离已通过本地验收，Git/CI交付后，按用户最新要求部署最新代码到现有Docker，完整51项未完成。
-- 唯一权威入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。先核对该文件、Git 和运行任务，从未完成项继续。
-- 分支 feat/tenant-capacity-isolation-20261102；S15B已交付，旧停止要求已由最新“继续”解除。
-- Docker任务独立保留：[部署进度](docs/deployment/docker-identity-20261101/PROGRESS_STATE.md)；当前S16B交付后更新现有本地Docker。
+- 当前S16B已完成并交付main（ea339ee，分支/main CI全PASS）；按用户追加要求，最新后端ea339ee/前端c2d12fe已部署到现有Docker，release6b6adccd4f4f997f，9容器健康、真实浏览器及数据/账本核对PASS。
+- 唯一能力进度入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。完整51项未完成，S16C尚未启动。
+- 当前分支feat/docker-capacity-20261102仅归档部署证据，最终commit/CI收据在.local/docker-capacity-20261102/delivery-final.json；原main工作树复用。
+- 当前部署：[进度与恢复](docs/deployment/docker-capacity-20261102/PROGRESS_STATE.md)。本次未清理数据/卷、未新增模型费用；新容量模式保留默认关闭。
 
 ## 前期可行性任务记录
 

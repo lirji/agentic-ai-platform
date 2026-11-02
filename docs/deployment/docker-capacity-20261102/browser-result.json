@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "origin": "http://localhost:28086",
+  "checks": {
+    "anonymousAndLegacyIdentityRejected": true,
+    "agentic-user": {
+      "login": true,
+      "session": true,
+      "readonlyApis": 8,
+      "usageOwnerBoundaries": 2,
+      "csrf": true,
+      "logoutRevokesSession": true,
+      "legacyTenantIsolated": true
+    },
+    "agentic-peer": {
+      "login": true,
+      "session": true,
+      "readonlyApis": 8,
+      "usageOwnerBoundaries": 2,
+      "csrf": true,
+      "logoutRevokesSession": true,
+      "legacyTenantIsolated": true
+    },
+    "unassignedMemberRejected": true
+  },
+  "paidCalls": 0,
+  "writes": "login/logout only; no business writes"
+}
