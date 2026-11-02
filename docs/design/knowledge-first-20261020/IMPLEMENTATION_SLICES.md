@@ -228,7 +228,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S14A | 问题反馈与运营收件箱 | S8B, S7 | IMPLEMENT | DONE |
 | S14B | 候选知识编辑与内容绑定评估 | S14A, S8D, S10B, S13A | IMPLEMENT | DONE |
 | S14C | 审核与真实入库发布 | S14B, S13B | IMPLEMENT | DONE |
-| S14D | 发布后探测与补偿版本 | S14C, S8D, S10C | IMPLEMENT | PLANNED |
+| S14D | 发布后探测与补偿版本 | S14C, S8D, S10C | IMPLEMENT | IN_PROGRESS |
 | S15A | 统一模型用量与预算语义 | S8A, S11A | DESIGN | PLANNED |
 | S15B | 共享额度预留、结算与调用归因 | S15A, S13A | IMPLEMENT | PLANNED |
 | S15C | 跨语言诊断和业务审计 | S8F, S11E | IMPLEMENT | PLANNED |
@@ -593,7 +593,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-OPERATIONS、C-EVAL、C-LIFECYCLE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 探测必须命中新发布版本；旧命中不能冒充生效；失败不改成成功；补偿生成新版本或明确撤下，保留审计；权限变化仍生效。
 - **Pass / Runtime：** IMPLEMENT；现有检索/评测链路和额度。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G09 G01 G04 G18。
+- **状态 / 并行 / 对应缺口：** IN_PROGRESS；parallel=no；G09 G01 G04 G18。operations-recovery-v1已冻结，复用现有检索和base_published源快照；待实现与验证。
 
 ### S15A · 统一模型用量与预算语义
 

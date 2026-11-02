@@ -1,17 +1,14 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S14C 已交付，继续S14D
+## 当前任务：S14D 发布后探测与补偿版本（实施中）
 
-- 目标：继续 capability-delivery-20261021 完整51项，parallel=no。用户“自行处理”，owner处理反馈/编辑/审批；指定同组织成员只读可撤回，不得编辑或再分享。完整计划未完成。
-- S14B DONE，后端cd3e753/前端7623885已正常合并推送main，精确分支/main CI全部PASS；[验收](../../qa/candidates-20261102/TEST_RESULT.md)、[收据](../../qa/candidates-20261102/delivery-result.json)。后端证据归档155adc2已合并推main，分支CI PASS，main CI41369178371 PASS，归档完整交付，不影响产品已通过事实。
-- 两仓原目录 feat/knowledge-publication-approval-20261102，后端起点155adc2、前端7623885；无新worktree。S14C方案已在[C-OPERATIONS](OPERATIONS_CONTRACTS.md)冻结：显式“批准并入库”，审批审计/原UPDATE作业/双回执同事务，质量当前性锁内复核；无新角色/队列/模型预算。
-- 实施清单：①V17审批审计与质量事务护栏；②复用生命周期UPDATE、精确发布读模型/API/default-off开关；③React批准/原键恢复/真实状态与原作业重试入口；④真实DB并发/回滚/权限、S3/worker/双索引/质量与浏览器；⑤审查/文档/正常两仓Git及精确CI；随后S14D。
-- 后端核心3项真实IT及131项Java单元PASS（Knowledge121+Security10）；最终相关回归48项实际执行PASS/4项条件跳过，候选编辑/原文变化/依赖故障补充1项PASS。日志.logs/s14c-{approval-core-it-r5,final-regression,stale-approval-it}.log；V17已应用test，不得改写。
-- 前端215项/39文件单元、格式/ESLint/类型/构建PASS；最终真实Tasks/Knowledge/React联合、Esc关闭/焦点返回与6状态视觉检查PASS（.logs/s14c-joint-browser-visual-final.log，夹具6331607576901284829）。[验收](../../qa/publication-approval-20261102/TEST_RESULT.md)与[审查](../../qa/publication-approval-20261102/REVIEW.md)。S14C DONE；后端5887bae/前端83b793f已正常合并推main，分支CI全部PASS；main CI41370984823/41371018081也全部PASS，产品已交付；当前归档[交付收据](../../qa/publication-approval-20261102/delivery-result.json)，随后立即S14D。D只读调查/契约草稿在.local/s14d-{design-notes,contract-draft}.md：原job记录base_published快照可精确生成补偿草稿，尚未实施。Java卫生限制明确保留。无测试在途，预览28236/.local/approval-dist（session7570）。
-
-- 关键约束：锁序run→preview→original→candidate；远程Tasks/IAM/S3在事务外。每候选修订审批唯一，内容/原资料/质量摘要准确绑定。HTTP受理只显示等待入库，唯有ACTIVE原资料精确发布元组匹配才为PUBLISHED。编辑后旧批准不沿用；失败沿原job重试，历史不改写。
-- 运行/保留：28226候选预览session63670/.local/candidates-dist；原28216/28206/28196及28086Docker不动。无测试或付费调用在途；V16/V17已应用test不得改写。保留随机test记录/源/索引/待处理作业、.local凭据预算、.logs、.idea和旧main工作树。原Chat0.957092/1元、Embedding0.781784/1元，本片新增付费调用0。
-- 授权：现有计划本地设计/实现/必要验证与正常Git提交合并push main；不生产部署、不清理、不强推、不新增付费预算，无子Agent。采用架构规范业务建模/持久化/接口/安全/容量/发布；沿现有切片实施/验证/Runtime/进度/Git/CI与持续交付技能。
+- 目标：继续capability-delivery-20261021完整51项，parallel=no；用户“自行处理”“继续把”。owner处理/编辑/审批，指定同组织成员只读可撤回；全计划未完成。
+- S14C DONE并已交付：后端5887bae/前端83b793f，精确分支与main CI全部PASS（41370765356/41370773675/41370984823/41371018081）。[验收](../../qa/publication-approval-20261102/TEST_RESULT.md)/[收据](../../qa/publication-approval-20261102/delivery-result.json)。后端证据归档dd86c5d已推C分支，归档CI/合并main待核对；先完成它再交付D，产品交付事实不变。
+- 当前两仓原目录feat/knowledge-publication-recovery-20261102；后端起点dd86c5d（依赖C归档提交）、前端83b793f，无新worktree。D契约operations-recovery-v1已在[OPERATIONS_CONTRACTS](OPERATIONS_CONTRACTS.md)冻结，方案尚未实现/验证。
+- 关键决定：显式探测复用现有ConsumerKnowledgeSearch/Python/LlamaIndex RRF/原预算，前后准确核对C发布元组，只报告本次MATCHED/MISSED或真实错误，不自动轮询调用模型。补偿从原UPDATE已保存base_published快照取真实以前发布的完整源，不推断上一内容序号；仅生成新草稿，重新评估/批准；有新稿/新任务则拒绝覆盖。明确撤下沿既有生命周期入口。
+- 实施清单：①V18不可变补偿审计、源查询及MANDATORY候选stored-source入口；②精确探测/补偿原子用例/API/default-off recovery开关；③React探测/确认/原键恢复/来源历史/撤下入口；④真实DB/S3/检索/并发/权限/浏览器验证；⑤审查/QA/进度/正常两仓Git及精确CI；随后S15A。下一步先实现后端领域/Mapper/服务，补充必要真实验收。
+- 运行/保留：28236批准预览session7570/.local/approval-dist、28226候选、28216反馈、28206共享、28196身份及28086原Docker不动。无本轮测试/付费调用在途；V16/V17已应用test不可改写。保留随机test记录/源/索引/待处理作业、.local凭据预算、.logs、.idea及原main工作树。原Chat0.957092/1元、Embedding0.781784/1元，C新增付费调用0。
+- 授权：既有计划本地设计/实现/必要验证与正常Git提交合并push main；不生产部署、不清理、不强推、不新增付费预算，无子Agent。采用架构规范业务建模/持久化/接口/安全/容量/发布，沿既有实施/验证/Runtime/进度/Git/CI/持续交付技能。C最后Java卫生限制保留；D验证尚未执行。
 
 ## 历史：20 项差距的框架化实施计划
 

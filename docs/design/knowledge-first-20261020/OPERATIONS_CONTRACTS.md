@@ -159,3 +159,40 @@ C06 必需静态/单元/DB/双索引/质量联合、审查/文档/Git/CI；本�
 - P04 真实React/HTTP完整批准与未知恢复、异步状态、错误重试、历史/窄屏；静态/类型/单元/集成/审查/文档与两仓分支/main CI。确定性模型夹具验证流程，付费调用0，生产部署0。
 
 S14C发布读模型形状：`{approval,status,errorCode,retryable,jobRevision,publication}`；approval固定`{approvalId,candidateId,revision,documentId,baseRevision,contentDigest,runId,manifestDigest,reviewDigest,previewDocumentId,contentRevision,indexGeneration,jobId,note,approvedAt}`。publication只有PUBLISHED时为B中7字段完整发布元组，其他状态为null；retryable只允许FAILED且原作业仍可重试。新受理尚未替换当前发布指针时，原已生效批准仍保持PUBLISHED，直到真实新发布取代或撤下。
+
+## S14D 发布后探测与补偿版本
+
+增量版本`operations-recovery-v1`；沿用户自行处理授权和S14D既定验收，不新增角色、检索引擎、队列、模型预算或部署目标。
+
+### 精确发布后探测
+
+- 只有资料owner可对指定已批准修订显式执行；API维持knowledge:read，服务端逐次验证owner。GET页面不会自动调用检索或模型。
+- POST `/api/v1/knowledge/operations/candidates/{id}/publication/probe`：严格JSON `{revision,approvalId,query}`；revision正整数、approvalId规范UUID；query沿现有ConsumerKnowledgeSearch非空UTF8/长度限制。新recovery写开关控制入口，实际检索仍服从既有运行配置/配额。
+- 服务器读取此修订真实PUBLISHED元组，固定原documentId、RRF、topK=5调用现有ConsumerKnowledgeSearch/Python/LlamaIndex链路，不接受客户端任意documentIds/向量/模型/策略。返回前重新确认同一审批的精确当前发布身份；并发更新/重建/撤下导致变化返回现有RETRIEVAL_EVIDENCE_STALE，不返旧命中成功。
+- 返回`{approvalId,revision,publication,query,status,checkedAt,hits}`。publication为C的完整7字段元组；hits沿现有ConsumerRetrieval.Hit，仅保留完整document/version/generation/job/processor/batch与目标相等的命中；status为MATCHED或MISSED，checkedAt为服务器UTC。MISSED只表示本次查询未命中，不等于索引损坏。下游异常原样映射现有错误，无假成功/回退/自动重试。只读观察不建立另一套任务/用量账本，也不承诺搜索调用exactly-once。
+
+### 补偿只生成新草稿
+
+- 先从批准所用原UPDATE job读取其同事务冻结的base_published_version/generation/job_id；再owner/tenant/document精确关联READY历史job与不可变源修订。禁止推断“目标内容版本减一”，禁止从chunk拼旧全文。
+- 只有原资料ACTIVE且其当前发布/active job仍为该批准job、候选最新revision仍是该批准revision时可创建。无先前发布、源hash与当前相同、已有新草稿/新任务/已补偿时禁止新命令；用户可以查看原资料使用既有撤下操作。旧源真实S3大小/hash校验在事务外；存储失败不产生新草稿。
+- POST `/api/v1/knowledge/operations/candidates/{id}/compensations`需要knowledge:write及Idempotency-Key；严格JSON `{approvalId,expectedRevision,expectedDocumentRevision,contentDigest,note}`，contentDigest指已批准修订，note沿C非空UTF8、无NUL、<=2000码点。
+- canonicalIntent使用`COMPENSATE`、candidateId、expectedRevision/expectedDocumentRevision、原contentDigest、上述完整输入。相同键返回原回执，异意图409。已有成功回执不受后来关闭功能/撤下/编辑影响；未受理的冲突无成功回执。
+- 短事务original→candidate锁内重验全部状态/源快照/CAS，MANDATORY候选stored-source入口创建新不可变revision、命令回执，并追加补偿审计；任何一步失败整体回滚。完整源复用可信原对象，TXT/Markdown保留完整textBody；PDF/DOCX保持完整附件。新稿基线为当前原资料revision、标题沿前发布源，requiredText清空，评估/准备/批准为空；绝不自动发布或复用旧批准。
+- 回执沿B固定12字段，operation=COMPENSATE，revision/contentDigest指新稿，其余preview/job/dataset/run字段null。历史批准、内容修订和原发布记录不覆盖。
+- V18仅增加`knowledge_candidate_compensation`不可变审计，包含可信tenant/owner、candidate、sourceApprovalId、approvedRevision、sourcePublication快照、createdRevision、commandId、note与UTC时间。sourceApprovalId、candidate/createdRevision、commandId唯一；表和所有字段中文注释。迁移为追加，不修改V17或旧历史。
+
+### 当前可用性与历史
+
+- GET `/candidates/{id}/recovery?revision=n`按当前owner返回`{enabled,canCompensate,reason,source,compensation}`，revision省略取最新。source为空或`{publication,title,contentType,sizeBytes}`，不含bucket/key。compensation可按源批准修订或生成修订取得同条审计`{compensationId,sourceApprovalId,approvedRevision,sourcePublication,createdRevision,commandId,note,createdAt}`。
+- reason使用显式机器枚举：NOT_PUBLISHED、NEWER_DRAFT、DOCUMENT_CHANGED、NO_PREVIOUS_PUBLICATION、ALREADY_COMPENSATED、DISABLED，或可创建时null；读取存储故障返回真实503，不能伪装成无记录。
+- 新`knowledge.operations.recovery-enabled`默认false，显式Runtime `--operations --operations-recovery`启用；依赖operations，独立于是否允许新批准，以便暂停批准时仍处理已发生问题。历史读取不依赖入口开关。
+- 新错误沿KnowledgeError目录：CANDIDATE_RECOVERY_DISABLED(503)、CANDIDATE_RECOVERY_UNAVAILABLE(409)。owner不存在/陌生人404，查询体/字段400，CAS沿CANDIDATE_CONFLICT；no-store。
+
+### 页面与验收
+
+现有批准区后提供显式探测、带时间的本次结果/真实错误、前发布版本信息与“生成补偿草稿”说明/确认；明确生成后仍需重新评估和批准。新稿/旧稿都能看同条补偿来源与历史链接；说明不写sessionStorage。未知提交沿B原键核对，禁止换键重发。撤下跳转现有原资料页面，复用原确认、CAS与审计。
+
+- R01 精确新版本检索：真实授权与索引/现有检索链路，旧命中/并发发布变化/权限变化不成功，空命中和依赖故障分开。
+- R02 真实DB/S3补偿：隔着失败版本仍恢复更新前实际发布完整源，同键并发、不同键冲突、迟到审计失败全事务回滚；不可覆盖新稿或新任务，owner与UTF8边界。
+- R03 新稿不继承准备/评估/批准，原历史保持；可按源/结果修订读取审计；明确撤下后检索/探测拒绝，原键恢复仍可。
+- R04 真实React/HTTP完整探测、错误、确认、未知恢复与历史/窄屏；格式/类型/构建/测试/审查/文档/正常两仓Git与精确CI。确定性模型夹具验证机制，付费调用0，生产部署0。
