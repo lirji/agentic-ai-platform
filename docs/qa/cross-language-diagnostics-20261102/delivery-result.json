@@ -1,0 +1,19 @@
+{
+  "slice": "S15C",
+  "status": "PRODUCT_DELIVERED_CI_PASS",
+  "commit": "1111e88e02806f72b576aa3ffa4850411987ae31",
+  "taskBranch": "feat/cross-language-diagnostics-20261102",
+  "target": "origin/main",
+  "merge": "fast-forward",
+  "branchCI": 41401987120,
+  "mainCI": 41402229149,
+  "checks": [
+    "java",
+    "python",
+    "documents"
+  ],
+  "frontendChanged": false,
+  "productionDeploy": false,
+  "cleanup": false,
+  "archiveRef": "see Git history; archive CI recorded in .local/s15c-final-delivery.json"
+}

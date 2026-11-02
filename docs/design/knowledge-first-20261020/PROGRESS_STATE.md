@@ -1,14 +1,14 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前任务：S15C验收通过，Git/CI交付中
+## 当前任务：S15C已交付，继续S16A
 
 - 用户2026-11-02“继续做后续任务”恢复capability-delivery-20261021完整既有计划；parallel=no，无子Agent。完整51项未完成。
 - S15C DONE/本地Validation PASS：[OB01–OB07](../../qa/cross-language-diagnostics-20261102/TEST_RESULT.md)、[源码/日志摘要](../../qa/cross-language-diagnostics-20261102/source-evidence.json)。Python W3C/固定阶段/受控OTLP、共享与预算owner审计API及网关精确路由完成；发布/补偿沿原审计事实，无新库或迁移。
-- 当前Git：原目录feat/cross-language-diagnostics-20261102，起点29303aa；产品/测试/文档待提交，main原worktree干净。前端main未改；无新worktree。
+- Git：S15C产品1111e88已在feat/cross-language-diagnostics-20261102提交并正常fast-forward合并推main；分支CI41401987120/mainCI41402229149的java/python/documents全PASS。[交付收据](../../qa/cross-language-diagnostics-20261102/delivery-result.json)。当前文档为交付归档，末次ref见Git历史，归档CI见.local/s15c-final-delivery.json。前端main未改，原main工作树复用，无新worktree。
 - 验证：Java reactor verify PASS；KnowledgeSharingIT14项中12通过/2既有条件跳过，UsageBudgetIT14项全过；新增跨语言/审计必需项无跳过。Python749通过/97条件跳过/34既有警告，最终错误目录整理后61相关项及Ruff/mypy复验PASS；前端4组36消费者PASS。卫生WITH_LIMITATIONS：Java无专用formatter/static，Python工具已实际执行。
 - 失败修正与依赖/采集风险见TEST_RESULT：真实追踪测试初次因测试默认关闭观测失败，启用后通过；类型装饰器和分页常量编译问题已修正复验。无未修复必需失败。10个OTel相关包PyPI元数据无已报告漏洞，非全面安全审计。
 - 运行/边界：本轮测试已全部结束，临时Java/Python socket已退出；原长期服务与Docker不变。原Chat/Embedding账本摘要未变，付费调用0；未切中央预算/生产采集、未部署或清理。
-- 下一步：校验当前摘要与源文件→独立提交/push任务分支→CI PASS→正常fast-forward合并推main→main CI；随后立即继续S16A（前置S15B/S12D/S13C均DONE）。S16A仅核对了现有单在途worker/按graph领取与Tasks SKIP LOCKED，不声称已实现。
+- 下一步：归档Git交付状态后立即继续S16A（前置S15B/S12D/S13C均DONE），原计划不暂停。S16A已核对现有单在途worker/按graph领取与Tasks SKIP LOCKED；待冻结C-CAPACITY、显式图版本选择与受控两进程/连接预算、真实PG接管验证。工作草稿.local/s16a-plan-draft.md不是第二套权威状态。
 - 规范：session-handoff、continue-approved-delivery、backend-architecture-design、backend-implementation、runtime-and-deploy、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate；架构建模/持久化/契约/安全/容量/发布与个人追踪/并发要求。
 
 ## 上一检查点：S15B 已交付，按用户要求停止
