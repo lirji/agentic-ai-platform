@@ -27,6 +27,9 @@ EXTRACTION_SCHEMA = "knowledge-extraction-v1"
 STRUCTURED_SCHEMA: Final = "knowledge-preparation-v2"
 PDF_PARSER = "pdfbox-3.0.8-native-text-v1"
 PDF_PROCESSOR = "pdf-v2-pdfbox3.0.8-char512-overlap64-embedding-v4-1024"
+OCR_PARSER = "pdfbox-3.0.8-tesseract-5.5.4-chi_sim-eng-v1"
+OCR_PROCESSOR = "pdf-v4-tesseract5.5.4-pages512-overlap64-embedding-v4-1024"
+MAX_OCR_PAGES = 10
 DOCX_PARSER = "poi-6.0.0-body-v1"
 DOCX_PROCESSOR = "docx-v2-poi6.0.0-char512-overlap64-embedding-v4-1024"
 FORMAT_PROFILES: Final = {"PDF": (PDF_PARSER, PDF_PROCESSOR), "DOCX": (DOCX_PARSER, DOCX_PROCESSOR)}
@@ -58,16 +61,22 @@ class StructuredProfile(StrEnum):
     DOCX_BLOCK = DOCX_PROCESSOR
     PDF_STRUCTURE = "pdf-v3-pdfbox3.0.8-pages512-overlap64-embedding-v4-1024"
     DOCX_STRUCTURE = "docx-v3-poi6.0.0-structure512-overlap64-ctx256-embedding-v4-1024"
+    PDF_OCR = OCR_PROCESSOR
 
     @property
     def structural(self) -> bool:
         """跨块和增强只对新版本开放，不能让旧golden静默改变。"""
-        return self in (self.PDF_STRUCTURE, self.DOCX_STRUCTURE)
+        return self in (self.PDF_STRUCTURE, self.DOCX_STRUCTURE, self.PDF_OCR)
 
     @property
     def source_format(self) -> str:
         """同一个模型并不表示解析来源格式可以互换。"""
-        return "PDF" if self in (self.PDF_BLOCK, self.PDF_STRUCTURE) else "DOCX"
+        return "PDF" if self in (self.PDF_BLOCK, self.PDF_STRUCTURE, self.PDF_OCR) else "DOCX"
+
+    @property
+    def parser_profile(self) -> str:
+        """完整绑定提取算法，禁止拿同格式旧包冒充OCR输出。"""
+        return OCR_PARSER if self is self.PDF_OCR else FORMAT_PROFILES[self.source_format][0]
 
     @classmethod
     def parse(cls, value: object) -> Self:
@@ -187,6 +196,8 @@ class ExtractionWarning(WireModel):
         "PAGE_NO_TEXT",
         "PDF_LAYOUT_APPROXIMATE",
         "PDF_NON_TEXT_CONTENT_OMITTED",
+        "PDF_OCR_APPLIED",
+        "PDF_OCR_LOW_CONFIDENCE",
         "DOCX_HEADER_FOOTER_OMITTED",
         "DOCX_COMMENTS_OMITTED",
         "DOCX_FOOTNOTES_ENDNOTES_OMITTED",
@@ -204,7 +215,11 @@ class Extraction(WireModel):
 
     schema_version: Literal["knowledge-extraction-v1"]
     format: Literal["PDF", "DOCX"]
-    parser_profile: Literal["pdfbox-3.0.8-native-text-v1", "poi-6.0.0-body-v1"]
+    parser_profile: Literal[
+        "pdfbox-3.0.8-native-text-v1",
+        "poi-6.0.0-body-v1",
+        "pdfbox-3.0.8-tesseract-5.5.4-chi_sim-eng-v1",
+    ]
     source_hash: Digest
     source_size: int = Field(ge=1, le=MAX_BINARY_BYTES)
     blocks: tuple[ExtractionBlock, ...] = Field(min_length=1, max_length=MAX_BLOCKS)
@@ -215,8 +230,11 @@ class Extraction(WireModel):
     def valid_manifest(self) -> Self:
         """顺序、空页告警与来源摘要全部复核，错误在任何模型调用之前拒绝。"""
         expected = ["PDF_LAYOUT_APPROXIMATE:-", "PDF_NON_TEXT_CONTENT_OMITTED:-"]
-        if self.parser_profile != FORMAT_PROFILES[self.format][0]:
+        ocr = self.format == "PDF" and self.parser_profile == OCR_PARSER
+        if not ocr and self.parser_profile != FORMAT_PROFILES[self.format][0]:
             raise ValueError(INVALID_STRUCTURE)
+        if ocr:
+            expected.extend(validate_ocr_warnings(self.blocks, self.warnings))
         if self.format == "DOCX":
             validate_docx_structure(self.blocks, self.warnings)
         elif len(self.blocks) > MAX_PAGES:
@@ -270,6 +288,27 @@ class Extraction(WireModel):
         ):
             raise ValueError(INVALID_STRUCTURE)
         return self
+
+
+def validate_ocr_warnings(
+    blocks: tuple[ExtractionBlock, ...], warnings: tuple[ExtractionWarning, ...]
+) -> list[str]:
+    """OCR告警必须属于真实页，低置信页必须有相应识别事实；旧profile不走本分支。"""
+    keys = [warning.key() for warning in warnings]
+    if len(blocks) > MAX_OCR_PAGES or keys != sorted(set(keys)):
+        raise ValueError(INVALID_STRUCTURE)
+    locations = {f"pdf:{index + 1}" for index in range(len(blocks))}
+    additional = []
+    for warning in warnings:
+        if warning.code not in ("PDF_OCR_APPLIED", "PDF_OCR_LOW_CONFIDENCE"):
+            continue
+        if warning.location_key not in locations or (
+            warning.code == "PDF_OCR_LOW_CONFIDENCE"
+            and f"PDF_OCR_APPLIED:{warning.location_key}" not in keys
+        ):
+            raise ValueError(INVALID_STRUCTURE)
+        additional.append(warning.key())
+    return additional
 
 
 def validate_docx_structure(
@@ -359,7 +398,10 @@ class StructuredRequest(OwnedRequest):
     @model_validator(mode="after")
     def profile_matches_format(self) -> Self:
         """已注册但属于另一格式的版本也拒绝，不给错误版本生成向量。"""
-        if self.processor_version.source_format != self.extraction.format:
+        if (
+            self.processor_version.source_format != self.extraction.format
+            or self.processor_version.parser_profile != self.extraction.parser_profile
+        ):
             raise ValueError(INVALID_STRUCTURE)
         return self
 

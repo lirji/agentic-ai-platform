@@ -72,6 +72,39 @@ class KnowledgeStructuredProcessingIT {
     @Autowired JdbcTemplate jdbc;
     @Autowired com.lrj.agentic.knowledge.infrastructure.persistence.LifecycleMapper lifecycleMapper;
 
+    @Test @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named = "ocr.executable", matches = ".+")
+    void scannedPdfPublishesRealExtractionWithAuthorizedPageSources() throws Exception {
+        Caller owner = owner();
+        var selected = new KnowledgeService(registrations, sourceStore,
+                new ProcessingAdmissionProperties(ProcessingAdmissionProperties.Mode.OCR_V4),
+                new com.lrj.agentic.knowledge.config.LifecycleProperties(true, false, false, false, false, false, false));
+        String key = UUID.randomUUID().toString();
+        byte[] bytes = Files.readAllBytes(Path.of("../docs/qa/scanned-pdf-20261109/fixtures/mixed-scan.pdf"));
+        var job = selected.submit(owner, key, UploadRules.validate(key, "中英扫描.pdf", null, bytes, "application/pdf", true));
+        assertThat(job.profile()).isEqualTo(ProcessingProfile.PDF_OCR_V4);
+        var model = new Model(); runner(model, index, parser).run(claim(job, "ocr-it"));
+        assertThat(knowledge.ingestion(owner, job.jobId()).status()).isEqualTo(IngestionStatus.READY);
+        var search = search(model, index); var sources = new KnowledgeSources(repository, search, json);
+        var metadata = sources.metadata(owner, job.documentId(), 1);
+        assertThat(metadata.parserProfile()).isEqualTo(com.lrj.agentic.contract.knowledge.OcrProtocol.PARSER);
+        assertThat(metadata.warnings()).contains(new Extraction.Warning(
+                com.lrj.agentic.contract.knowledge.ExtractionProtocol.WarningCode.PDF_OCR_APPLIED, "pdf:2"));
+        String chunk = jdbc.queryForObject("SELECT chunk_id FROM knowledge_chunk WHERE job_id=?", String.class, job.jobId());
+        assertThat(sources.source(owner, job.documentId(), 1, chunk).segments()).hasSize(2);
+        assertThat(search.citation(owner, job.documentId(), 1, chunk).source().locator()).isEqualTo("pdf-pages:1,2");
+        for (var sink : ProcessingClaim.Sink.values()) {
+            assertThat(index.search(sink, owner, "Original", model.query(owner, "Original"), List.of(job.documentId()),
+                    10, java.time.Duration.ofSeconds(8))).isNotEmpty();
+        }
+        for (Caller denied : List.of(new Caller(owner.tenantId(), "other"), new Caller("other-tenant", owner.userId()))) {
+            error(KnowledgeError.NOT_FOUND, () -> sources.metadata(denied, job.documentId(), 1));
+            error(KnowledgeError.NOT_FOUND, () -> sources.source(denied, job.documentId(), 1, chunk));
+        }
+        assertThatThrownBy(() -> jdbc.update("UPDATE knowledge_ingestion SET parser_profile=? WHERE job_id=?",
+                com.lrj.agentic.contract.knowledge.ExtractionProtocol.PDF_PARSER, job.jobId()))
+                .isInstanceOf(org.springframework.dao.DataAccessException.class);
+    }
+
     @Test void structuralAndLegacyProfilesCoexistWithRealSourcesAndIndependentAdmissionSwitch() throws Exception {
         Caller owner = owner();
         var model = new Model();
@@ -106,7 +139,7 @@ class KnowledgeStructuredProcessingIT {
             }
         }
         assertThat(evaluations.bindings(owner, accepted.stream().map(Ingestion::documentId).toList()))
-                .extracting(value -> value.processorVersion()).containsExactlyInAnyOrderElementsOf(ProcessingProfile.compatibleVersions());
+                .extracting(value -> value.processorVersion()).containsExactlyInAnyOrderElementsOf(accepted.stream().map(jobValue -> jobValue.profile().processor()).toList());
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM flyway_schema_history WHERE version='9' AND success=1", Integer.class)).isOne();
         var job = accepted.get(2);
         var upload = structureUpload(DocumentFormat.DOCX, job.idempotencyKey());
@@ -457,6 +490,7 @@ class KnowledgeStructuredProcessingIT {
                 case PDF_V2 -> "/structured-processing-chinese-golden.json";
                 case DOCX_V3 -> "/structured-v3-long-docx-golden.json";
                 case PDF_V3 -> "/structured-v3-pdf-golden.json";
+                case PDF_OCR_V4 -> "/structured-v3-ocr-golden.json";
                 case TEXT_V1 -> throw new AssertionError("v1不能进入结构准备");
             };
             try (var input = getClass().getResourceAsStream(fixture)) {

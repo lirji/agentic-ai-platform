@@ -70,7 +70,7 @@ public record Extraction(@JsonProperty(required = true) String schemaVersion,
     /** 父进程传入从原对象独立计算的摘要和大小，不信任返回包里的自报值。 */
     public Extraction validated(String expectedHash, long expectedSize) {
         require(ExtractionProtocol.SCHEMA.equals(schemaVersion) && format != null
-                && format.parser().equals(parserProfile));
+                && (format.parser().equals(parserProfile) || format == Format.PDF && OcrProtocol.PARSER.equals(parserProfile)));
         require(sourceHash != null && sourceHash.matches("[0-9a-f]{64}")
                 && sourceHash.equals(expectedHash) && sourceSize == expectedSize
                 && sourceSize > 0 && sourceSize <= ExtractionProtocol.MAX_SOURCE_BYTES);
@@ -97,6 +97,10 @@ public record Extraction(@JsonProperty(required = true) String schemaVersion,
             if (blank(block.text())) { expectedWarnings.add(new Warning(WarningCode.PAGE_NO_TEXT, block.location().key())); }
             else { meaningful = true; }
         }
+        if (OcrProtocol.PARSER.equals(parserProfile)) {
+            require(blocks.size() <= OcrProtocol.MAX_PAGES);
+            validateOcrWarnings(warnings, expectedWarnings, blocks.size());
+        }
         require(meaningful && warnings != null && (format != Format.PDF || warnings.equals(sorted(expectedWarnings))));
         require(Objects.equals(manifest(schemaVersion, format, parserProfile, sourceHash,
                 sourceSize, blocks, warnings), extractionDigest));
@@ -105,22 +109,49 @@ public record Extraction(@JsonProperty(required = true) String schemaVersion,
 
     /** 解析器通过同一规范构造包；接收方仍会重新计算并校验全部字段。 */
     public static Extraction pdf(byte[] source, List<String> pages) {
+        return pdf(source, pages, ExtractionProtocol.PDF_PARSER, List.of());
+    }
+
+    /** OCR仅扩展固定profile和页告警，原PDF方法保持字节级输出兼容。 */
+    public static Extraction ocrPdf(byte[] source, List<String> pages, List<Warning> warnings) {
+        return pdf(source, pages, OcrProtocol.PARSER, warnings);
+    }
+
+    private static Extraction pdf(byte[] source, List<String> pages, String parser, List<Warning> additional) {
         String hash = digest(source);
         List<Block> blocks = new ArrayList<>();
         List<Warning> warnings = new ArrayList<>(List.of(new Warning(WarningCode.PDF_LAYOUT_APPROXIMATE, null),
                 new Warning(WarningCode.PDF_NON_TEXT_CONTENT_OMITTED, null)));
+        warnings.addAll(additional);
         for (int index = 0; index < pages.size(); index++) {
             String text = pages.get(index);
             PdfLocation location = new PdfLocation(index + 1);
             String textHash = digest(text);
-            blocks.add(new Block(index, blockIdentity(ExtractionProtocol.PDF_PARSER, hash, index, location, textHash),
+            blocks.add(new Block(index, blockIdentity(parser, hash, index, location, textHash),
                     Kind.PDF_PAGE, text, textHash, null, location));
             if (blank(text)) { warnings.add(new Warning(WarningCode.PAGE_NO_TEXT, location.key())); }
         }
         List<Warning> ordered = sorted(warnings);
-        return new Extraction(ExtractionProtocol.SCHEMA, Format.PDF, ExtractionProtocol.PDF_PARSER,
+        return new Extraction(ExtractionProtocol.SCHEMA, Format.PDF, parser,
                 hash, source.length, List.copyOf(blocks), ordered, manifest(ExtractionProtocol.SCHEMA, Format.PDF,
-                ExtractionProtocol.PDF_PARSER, hash, source.length, blocks, ordered)).validated(hash, source.length);
+                parser, hash, source.length, blocks, ordered)).validated(hash, source.length);
+    }
+
+    /** 只接受实际页上的OCR告警；低置信必须有同页识别事实，摘要不能替代语义检查。 */
+    private static void validateOcrWarnings(List<Warning> warnings, List<Warning> expected, int pages) {
+        require(warnings != null && warnings.size() <= ExtractionProtocol.MAX_WARNINGS);
+        require(warnings.stream().allMatch(warning -> warning != null && warning.code() != null));
+        require(warnings.equals(sorted(warnings.stream().distinct().toList())));
+        for (Warning warning : warnings) {
+            if (warning.code() != WarningCode.PDF_OCR_APPLIED && warning.code() != WarningCode.PDF_OCR_LOW_CONFIDENCE) { continue; }
+            require(warning.locationKey() != null && warning.locationKey().matches("pdf:[1-9][0-9]*"));
+            int page = Integer.parseInt(warning.locationKey().substring(4));
+            require(page <= pages);
+            if (warning.code() == WarningCode.PDF_OCR_LOW_CONFIDENCE) {
+                require(warnings.contains(new Warning(WarningCode.PDF_OCR_APPLIED, warning.locationKey())));
+            }
+            expected.add(warning);
+        }
     }
 
     /** DOCX适配器提供已经按实际正文顺序构建的块，接受前仍校验完整结构。 */

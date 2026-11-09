@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 public record ProcessingAdmissionProperties(@NotNull @DefaultValue("BLOCK_V2") Mode structuredProfile) {
     /** 显式配置code与算法注册表分离，未知code由类型化绑定拒绝启动。 */
     public enum Mode {
-        BLOCK_V2("BLOCK_V2"), STRUCTURE_V3("STRUCTURE_V3");
+        BLOCK_V2("BLOCK_V2"), STRUCTURE_V3("STRUCTURE_V3"), OCR_V4("OCR_V4");
         private final String code;
         Mode(String code) { this.code = code; }
         /** 持久或显示配置时只使用稳定code。 */
@@ -25,7 +25,7 @@ public record ProcessingAdmissionProperties(@NotNull @DefaultValue("BLOCK_V2") M
         DocumentFormat format = DocumentFormat.fromContentType(contentType);
         if (structuredProfile == Mode.BLOCK_V2) { return format.profile(); }
         return switch (format) {
-            case PDF -> ProcessingProfile.PDF_V3;
+            case PDF -> structuredProfile == Mode.OCR_V4 ? ProcessingProfile.PDF_OCR_V4 : ProcessingProfile.PDF_V3;
             case DOCX -> ProcessingProfile.DOCX_V3;
             case TEXT, MARKDOWN -> ProcessingProfile.TEXT_V1;
         };

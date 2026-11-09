@@ -1,0 +1,10 @@
+{
+  "links": 470,
+  "sliceStates": {
+    "DONE": 41,
+    "PLANNED": 6,
+    "CONDITIONAL": 4
+  },
+  "result": "PASS",
+  "note": "初次计数未识别S11D的DONE限定语；按正式状态前缀复验通过"
+}

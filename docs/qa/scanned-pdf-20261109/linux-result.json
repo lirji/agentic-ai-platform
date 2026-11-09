@@ -1,0 +1,16 @@
+{
+  "imageId": "sha256:c0f6678af204706639a595d87396161275a8db50b5835583b5ea2e94df8ced0f",
+  "platform": "linux",
+  "architecture": "arm64",
+  "container": "agentic-s9e-parser-probe",
+  "inputSha256": "904cf907a1bff4d97b42a8d4869b2add527e029f33eac91e4e2cfc762c2d942a",
+  "extractionDigest": "c342ed2d5dd565a6b9fe6aa1092e19f087a7f7c6871dbf56bd59eb8ed02afd3c",
+  "seconds": 4.830914332997054,
+  "memoryPeakBytes": 312926208,
+  "memoryLimitBytes": 402653184,
+  "network": "none",
+  "readOnly": true,
+  "exitCode": 0,
+  "oomKilled": false,
+  "sharedGoldenExact": true
+}

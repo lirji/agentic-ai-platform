@@ -3,6 +3,7 @@ package com.lrj.agentic.knowledge.infrastructure.processing;
 import com.lrj.agentic.contract.knowledge.Extraction;
 import com.lrj.agentic.contract.knowledge.ExtractionProtocol;
 import com.lrj.agentic.contract.knowledge.ExtractionProtocol.Exit;
+import com.lrj.agentic.contract.knowledge.OcrProtocol;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.processing.DocumentExtractor;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
 import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,8 +77,18 @@ public class ParserProcess implements DocumentExtractor {
 
     /** 返回前验证原字节绑定；失败时先回收已知进程，再归还槽位。 */
     public Extraction extract(byte[] source, ExtractionProtocol.Format format) {
+        return extract(source, format, format == null ? null : format.parser());
+    }
+
+    /** 命令和返回包都绑定持久profile，禁止恢复时跟随当前配置换算法。 */
+    @Override public Extraction extract(byte[] source, ExtractionProtocol.Format format, String parserProfile) {
         if (!properties.enabled() || closed.get()) { throw new KnowledgeFailure(KnowledgeError.PARSER_UNAVAILABLE); }
         if (format == null) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
+        boolean ocr = format == ExtractionProtocol.Format.PDF && OcrProtocol.PARSER.equals(parserProfile);
+        if (!ocr && !format.parser().equals(parserProfile)) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
+        if (ocr && (properties.ocrExecutable() == null || properties.ocrData() == null)) {
+            throw new KnowledgeFailure(KnowledgeError.PARSER_UNAVAILABLE);
+        }
         if (source.length < 1 || source.length > ExtractionProtocol.MAX_SOURCE_BYTES) {
             throw new KnowledgeFailure(KnowledgeError.PARSE_RESOURCE_LIMIT);
         }
@@ -95,7 +107,7 @@ public class ParserProcess implements DocumentExtractor {
             }
             temporary = Files.createTempDirectory("knowledge-parser-",
                     PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------")));
-            var builder = new ProcessBuilder(command(temporary, source.length, format)).directory(temporary.toFile());
+            var builder = new ProcessBuilder(command(temporary, source.length, format, parserProfile, ocr)).directory(temporary.toFile());
             builder.environment().clear();
             builder.environment().putAll(Map.of("LANG", "C.UTF-8", "TZ", "UTC"));
             process = new ManagedChild(builder.start());
@@ -111,9 +123,7 @@ public class ParserProcess implements DocumentExtractor {
                 try (var stdin = child.process.getOutputStream()) { stdin.write(source); }
                 return null;
             });
-            if (!child.process.waitFor(remaining(deadline), TimeUnit.NANOSECONDS)) {
-                throw new KnowledgeFailure(KnowledgeError.PARSE_RESOURCE_LIMIT);
-            }
+            child.awaitTracked(deadline);
             byte[] bytes = await(output, deadline);
             await(errors, deadline);
             if (exceeded.get()) { throw new KnowledgeFailure(KnowledgeError.PARSE_RESOURCE_LIMIT); }
@@ -122,7 +132,9 @@ public class ParserProcess implements DocumentExtractor {
             try {
                 Extraction extraction = json.read(bytes, Extraction.class, KnowledgeError.SOURCE_INVALID)
                         .validated(Extraction.digest(source), source.length);
-                if (extraction.format() != format) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
+                if (extraction.format() != format || !parserProfile.equals(extraction.parserProfile())) {
+                    throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
+                }
                 return extraction;
             } catch (IllegalArgumentException invalid) { throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID); }
         } catch (KnowledgeFailure failure) {
@@ -162,11 +174,17 @@ public class ParserProcess implements DocumentExtractor {
         }
     }
 
-    private List<String> command(Path temporary, int size, ExtractionProtocol.Format format) {
-        return List.of(properties.javaExecutable().toString(), "-Xmx128m", "-XX:MaxDirectMemorySize=32m",
+    private List<String> command(Path temporary, int size, ExtractionProtocol.Format format, String parser, boolean ocr) {
+        var command = new ArrayList<>(List.of(properties.javaExecutable().toString(), "-Xmx128m", "-XX:MaxDirectMemorySize=32m",
                 "-XX:MaxMetaspaceSize=96m", "-XX:ActiveProcessorCount=2", "-Djava.awt.headless=true",
-                "-Djava.io.tmpdir=" + temporary, "-Duser.home=" + temporary, "-Dpdfbox.fontcache=" + temporary,
-                "-jar", properties.jar().toString(), format.code(), Integer.toString(size));
+                "-Djava.io.tmpdir=" + temporary, "-Duser.home=" + temporary, "-Dpdfbox.fontcache=" + temporary));
+        if (ocr) {
+            command.add("-D" + OcrProtocol.EXECUTABLE_PROPERTY + "=" + properties.ocrExecutable());
+            command.add("-D" + OcrProtocol.DATA_PROPERTY + "=" + properties.ocrData());
+        }
+        command.addAll(List.of("-jar", properties.jar().toString(), format.code(), Integer.toString(size)));
+        if (ocr) { command.add(parser); }
+        return List.copyOf(command);
     }
 
     private static byte[] read(ManagedChild process, InputStream input, int limit, boolean retain,
@@ -210,9 +228,19 @@ public class ParserProcess implements DocumentExtractor {
 
     /** 跟踪终止前可见的子孙句柄，父 JVM 退出后仍等待已知后代，避免遗留进程释放槽位。 */
     private static final class ManagedChild {
+        private static final int POLL_MILLIS = 20;
         private final Process process;
         private final Set<ProcessHandle> descendants = ConcurrentHashMap.newKeySet();
         ManagedChild(Process process) { this.process = process; }
+        // OCR新增原生后代；运行期间记录句柄，父JVM意外退出后仍能回收已经观察到的引擎。
+        void awaitTracked(long deadline) throws InterruptedException, TimeoutException {
+            while (true) {
+                process.descendants().forEach(descendants::add);
+                if (process.waitFor(Math.min(remaining(deadline), TimeUnit.MILLISECONDS.toNanos(POLL_MILLIS)), TimeUnit.NANOSECONDS)) {
+                    return;
+                }
+            }
+        }
         void terminate(boolean force) {
             process.descendants().forEach(descendants::add);
             descendants.forEach(child -> { if (force) { child.destroyForcibly(); } else { child.destroy(); } });
@@ -221,7 +249,7 @@ public class ParserProcess implements DocumentExtractor {
         boolean reap() {
             boolean interrupted = Thread.interrupted();
             try {
-                if (process.isAlive()) { terminate(false); }
+                terminate(false);
                 if (!awaitExit(REAP_WAIT)) {
                     terminate(true);
                     return awaitExit(REAP_WAIT);
@@ -237,7 +265,7 @@ public class ParserProcess implements DocumentExtractor {
             long deadline = System.nanoTime() + timeout.toNanos();
             if (!process.waitFor(timeout.toMillis(), TimeUnit.MILLISECONDS)) { return false; }
             while (descendants.stream().anyMatch(ProcessHandle::isAlive) && System.nanoTime() < deadline) {
-                TimeUnit.MILLISECONDS.sleep(20);
+                TimeUnit.MILLISECONDS.sleep(POLL_MILLIS);
             }
             return descendants.stream().noneMatch(ProcessHandle::isAlive);
         }

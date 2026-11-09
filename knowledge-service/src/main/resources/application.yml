@@ -82,6 +82,8 @@ knowledge:
     docx-upload-enabled: ${KNOWLEDGE_DOCX_UPLOAD_ENABLED:false}
     java-executable: ${KNOWLEDGE_PARSER_JAVA:}
     jar: ${KNOWLEDGE_PARSER_JAR:}
+    ocr-executable: ${KNOWLEDGE_OCR_EXECUTABLE:}
+    ocr-data: ${KNOWLEDGE_OCR_DATA:}
   evaluation:
     enabled: ${KNOWLEDGE_EVALUATION_ENABLED:false}
     task-endpoint: ${KNOWLEDGE_EVALUATION_TASK_ENDPOINT:http://127.0.0.1:28087}

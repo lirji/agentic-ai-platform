@@ -73,6 +73,10 @@ def source_contents(root: Path, revision: str | None = None) -> dict[str, bytes]
 
 def prepare(args: argparse.Namespace) -> None:
     """根据真实本机 helper 生成各服务最小配置，制作可追溯的源码副本。"""
+    if args.ocr and not args.parsing:
+        raise ValueError("OCR需要同时启用--parsing")
+    if args.structured_profile == "OCR_V4" and not args.ocr:
+        raise ValueError("OCR_V4受理模式需要同时启用--ocr")
     backend, frontend = args.backend.resolve(), args.frontend.resolve()
     state = backend / ".local"
     store = state / "docker-runtime"
@@ -97,6 +101,7 @@ def prepare(args: argparse.Namespace) -> None:
         "operationsRecovery": args.operations_recovery,
         "operationalMetrics": args.operational_metrics,
         "parsing": args.parsing,
+        "ocr": args.ocr,
         "pdf": args.pdf,
         "docx": args.docx,
         "structuredProfile": args.structured_profile,
@@ -108,7 +113,7 @@ def prepare(args: argparse.Namespace) -> None:
     context, runtime = release / "context", release / "runtime"
     manifest_path = release / "manifest.json"
     if not manifest_path.exists():
-        for kind, root in (("backend", backend), ("frontend", frontend)):
+        for kind, _root in (("backend", backend), ("frontend", frontend)):
             destination = context if kind == "backend" else context / "frontend"
             for name, digest in files[kind].items():
                 data = contents[kind][name]
@@ -277,6 +282,15 @@ def prepare(args: argparse.Namespace) -> None:
                     "KNOWLEDGE_EVALUATION_WORKER_TENANT": tenant,
                 }
             )
+        if service == "knowledge":
+            # 宿主OCR绝对路径不能带入Linux容器；能力与镜像一起冻结，关闭时也移除继承值。
+            selected.pop("KNOWLEDGE_OCR_EXECUTABLE", None)
+            selected.pop("KNOWLEDGE_OCR_DATA", None)
+            if args.ocr:
+                selected.update(
+                    KNOWLEDGE_OCR_EXECUTABLE="/opt/ocr/bin/tesseract",
+                    KNOWLEDGE_OCR_DATA="/opt/ocr/tessdata",
+                )
         if service == "conversations":
             selected["CONVERSATION_WORKER_TENANT"] = tenant
         selected["OTEL_EXPORT_ENABLED"] = "false"
@@ -329,6 +343,7 @@ def prepare(args: argparse.Namespace) -> None:
         "BUILD_CONTEXT": str(context),
         "RUNTIME_DIR": str(runtime),
         "DOCKER_FILES": str(context / "deploy/docker"),
+        "KNOWLEDGE_DOCKERFILE": "Ocr.Dockerfile" if args.ocr else "Java.Dockerfile",
         "IDENTITY_MODE": args.identity_mode,
         "LOCAL_UID": str(os.getuid()),
         "LOCAL_GID": str(os.getgid()),
@@ -494,6 +509,7 @@ def main() -> None:
     parser.add_argument("--backend", type=Path, required=True)
     parser.add_argument("--frontend", type=Path)
     parser.add_argument("--parsing", action="store_true")
+    parser.add_argument("--ocr", action="store_true", help="构建固定中英OCR引擎，需--parsing")
     parser.add_argument("--pdf", action="store_true")
     parser.add_argument("--docx", action="store_true")
     parser.add_argument("--identity-mode", choices=("local", "oidc"), default="local")
@@ -518,7 +534,7 @@ def main() -> None:
     parser.add_argument("--validation-id", help="复用8位十六进制隔离验证ID，不操作原开发项目")
     parser.add_argument("--committed-only", action="store_true")
     parser.add_argument(
-        "--structured-profile", choices=("BLOCK_V2", "STRUCTURE_V3"), default="BLOCK_V2"
+        "--structured-profile", choices=("BLOCK_V2", "STRUCTURE_V3", "OCR_V4"), default="BLOCK_V2"
     )
     args = parser.parse_args()
     state = args.backend.resolve() / ".local/docker-runtime"

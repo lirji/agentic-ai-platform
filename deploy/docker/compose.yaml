@@ -83,7 +83,7 @@ services:
     image: agentic-ai/knowledge-service:${RELEASE_ID}
     build:
       context: ${BUILD_CONTEXT}
-      dockerfile: ${DOCKER_FILES}/Java.Dockerfile
+      dockerfile: ${DOCKER_FILES}/${KNOWLEDGE_DOCKERFILE:-Java.Dockerfile}
       args: {MODULE: knowledge-service, SOURCE_FINGERPRINT: '${SOURCE_FINGERPRINT}'}
     mem_limit: 1024m
     network_mode: service:gateway

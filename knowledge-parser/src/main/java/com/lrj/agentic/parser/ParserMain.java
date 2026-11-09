@@ -3,7 +3,9 @@ package com.lrj.agentic.parser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lrj.agentic.contract.knowledge.ExtractionProtocol;
 import com.lrj.agentic.contract.knowledge.ExtractionProtocol.Exit;
+import com.lrj.agentic.contract.knowledge.OcrProtocol;
 import java.io.IOException;
+import java.nio.file.Path;
 
 /** 一次性 P03 入口；stdout 仅是协议输出，异常正文和内部路径不进入响应。 */
 public final class ParserMain {
@@ -13,11 +15,14 @@ public final class ParserMain {
     public static void main(String[] args) {
         int exit = Exit.INTERNAL.code();
         try {
-            if (args.length != 2) {
+            if (args.length != 2 && args.length != 3) {
                 System.exit(Exit.INVALID.code());
                 return;
             }
             ExtractionProtocol.Format format = ExtractionProtocol.Format.fromCode(args[0]);
+            String parser = args.length == 3 ? args[2] : format.parser();
+            boolean ocr = format == ExtractionProtocol.Format.PDF && OcrProtocol.PARSER.equals(parser);
+            if (!ocr && !format.parser().equals(parser)) { throw new IllegalArgumentException(); }
             int size = Integer.parseInt(args[1]);
             if (size < 1 || size > ExtractionProtocol.MAX_SOURCE_BYTES) {
                 System.exit(Exit.RESOURCE_LIMIT.code());
@@ -29,7 +34,8 @@ public final class ParserMain {
                 return;
             }
             var extraction = switch (format) {
-                case PDF -> new PdfExtractor().extract(source);
+                case PDF -> ocr ? new OcrPdfExtractor(configuredPath(OcrProtocol.EXECUTABLE_PROPERTY),
+                        configuredPath(OcrProtocol.DATA_PROPERTY)).extract(source) : new PdfExtractor().extract(source);
                 case DOCX -> new DocxExtractor().extract(source);
             };
             byte[] json = new ObjectMapper().writeValueAsBytes(extraction);
@@ -51,5 +57,11 @@ public final class ParserMain {
             exit = Exit.INTERNAL.code();
         }
         System.exit(exit);
+    }
+
+    /** 未配置路径按不可用处理，不能隐式搜索PATH执行不确定版本。 */
+    private static Path configuredPath(String key) {
+        String value = System.getProperty(key);
+        return value == null || value.isBlank() ? null : Path.of(value);
     }
 }

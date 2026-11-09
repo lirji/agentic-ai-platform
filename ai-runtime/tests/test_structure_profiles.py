@@ -110,7 +110,7 @@ def forged(request, ranges, overrides=None):
     )
 
 
-@pytest.mark.parametrize("name", ["docx", "long-docx", "pdf"])
+@pytest.mark.parametrize("name", ["docx", "long-docx", "pdf", "ocr"])
 def test_actual_parser_node_shared_goldens_preserve_raw_and_capture_separate_model_input(name):
     value = json.loads((FIXTURES / f"structured-v3-{name}-golden.json").read_text())
     request = StructuredRequest.from_wire(json.dumps(value["request"]).encode())
@@ -288,3 +288,39 @@ def test_structure_http_uses_same_identity_and_rejects_oversized_context_before_
             assert len(embedding.inputs) == 1
 
     asyncio.run(scenario())
+
+
+def test_ocr_profile_and_page_warnings_cannot_be_downgraded_or_forged():
+    """攻击者即使重签摘要，也不能把未识别页伪造为低置信OCR页。"""
+    value = json.loads((FIXTURES / "structured-v3-ocr-golden.json").read_text())["request"]
+    value["processorVersion"] = StructuredProfile.PDF_STRUCTURE
+    with pytest.raises(ValidationError):
+        StructuredRequest.from_wire(json.dumps(value).encode())
+    value["processorVersion"] = StructuredProfile.PDF_OCR
+    value["extraction"]["warnings"] = [
+        warning
+        for warning in value["extraction"]["warnings"]
+        if warning["code"] != "PDF_OCR_APPLIED"
+    ]
+    extraction = value["extraction"]
+    extraction["extractionDigest"] = digest(
+        "\n".join(
+            [
+                extraction["schemaVersion"],
+                extraction["format"],
+                extraction["parserProfile"],
+                extraction["sourceHash"],
+                str(extraction["sourceSize"]),
+                "blocks",
+                "\n".join(
+                    f"{block['blockId']}:{block['textHash']}" for block in extraction["blocks"]
+                ),
+                "warnings",
+                "\n".join(
+                    w["code"] + ":" + (w["locationKey"] or "-") for w in extraction["warnings"]
+                ),
+            ]
+        ).encode()
+    )
+    with pytest.raises(ValidationError):
+        StructuredRequest.from_wire(json.dumps(value).encode())

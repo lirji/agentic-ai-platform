@@ -30,19 +30,11 @@ public final class PdfExtractor {
             int count = document.getNumberOfPages();
             if (count > ExtractionProtocol.MAX_PAGES) { throw new Rejected(Exit.RESOURCE_LIMIT); }
             if (count < 1) { throw new Rejected(Exit.INVALID); }
-            PDFTextStripper stripper = new MappedTextStripper();
-            stripper.setSortByPosition(true);
-            stripper.setWordSeparator(" ");
-            stripper.setLineSeparator("\n");
             var pages = new ArrayList<String>();
             int remaining = ExtractionProtocol.MAX_TEXT_BYTES;
             boolean meaningful = false;
             for (int page = 1; page <= count; page++) {
-                stripper.setStartPage(page);
-                stripper.setEndPage(page);
-                BoundedText writer = new BoundedText(remaining);
-                stripper.writeText(document, writer);
-                String text = writer.text().replace("\r\n", "\n").replace('\r', '\n');
+                String text = pageText(document, page, remaining);
                 if (!Extraction.validText(text)) { throw new Rejected(Exit.INVALID); }
                 remaining -= text.getBytes(StandardCharsets.UTF_8).length;
                 meaningful |= !Extraction.blank(text);
@@ -53,6 +45,19 @@ public final class PdfExtractor {
         } catch (Rejected rejected) { throw rejected; }
         catch (InvalidPasswordException encrypted) { throw new Rejected(Exit.ENCRYPTED); }
         catch (IOException | IllegalArgumentException malformed) { throw new Rejected(Exit.INVALID); }
+    }
+
+    /** OCR混合文档复用同一原生页规则，避免纯文字页因进入新profile改变提取顺序。 */
+    static String pageText(PDDocument document, int page, int maximum) throws IOException {
+        PDFTextStripper stripper = new MappedTextStripper();
+        stripper.setSortByPosition(true);
+        stripper.setWordSeparator(" ");
+        stripper.setLineSeparator("\n");
+        stripper.setStartPage(page);
+        stripper.setEndPage(page);
+        BoundedText writer = new BoundedText(maximum);
+        stripper.writeText(document, writer);
+        return writer.text().replace("\r\n", "\n").replace('\r', '\n');
     }
 
     /** 字形无法映射为文字时拒绝整份输入，避免跳过中文后把剩余拉丁文字当作完整提取。 */

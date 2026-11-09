@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务：capability-delivery-20261021的进度同步（progress-sync-20261109）；S16D、S17A已验收并交付，51项中40项DONE、3项PLANNED、8项CONDITIONAL。
-- 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；S17A两仓Git/CI证据已归档为[交付收据](docs/qa/isolated-release-validation-20261102/delivery-result.json)。
-- 最新范围：用户要求“先同步进度”；本轮只同步文档并按既有授权交付。后续实施入口为S17B，本轮不启动；分支、验证、保留资源和未验证边界见唯一状态文档。
+- 当前任务：capability-delivery-20261021，用户优先指定S9E、S9F、S18B、S18C；当前S9E本地验收PASS，待两仓Git/CI交付后继续S9F。
+- 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。已确认格式范围与90天可调整的用户确认记忆规则，详见该文档。
+- 顺序：S9E → S9F → S18B → S18C，连续验证和Git交付；parallel=no。本轮不启动S17B–D，未完成项不标DONE。
 
 ## 前期可行性任务记录
 

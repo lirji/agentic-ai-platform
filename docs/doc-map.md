@@ -173,3 +173,5 @@ S16B：Tasks V8/Knowledge V19及各自容量Mapper、全部新增/恢复入口�
 2026-11-02 S16C后Docker更新：固定后端7863ae3/前端c2d12fe，release6b7bf063f040da7a，见[部署验收](deployment/docker-latest-20261102/TEST_RESULT.md)和[实际制品收据](deployment/docker-latest-20261102/deployment-result.json)。9健康、45业务表2716行及预算不变；前端相同源码制品复用及文件层核对见[复用证据](deployment/docker-latest-20261102/frontend-reuse.json)。
 
 S17A：`deploy/docker`制品门禁/隔离入口、Knowledge ProcessingProperties命名空间、本地身份桥origin及可读资料分页对应[C-RELEASE](design/knowledge-first-20261020/RELEASE_CONTRACTS.md)与[验收](qa/isolated-release-validation-20261102/TEST_RESULT.md)。只读/合成隔离验证通过，原九应用恢复；未生产部署。2026-11-09从原`.local/s17a-delivery.json`归档[两仓交付收据](qa/isolated-release-validation-20261102/delivery-result.json)，并复核远程main及四次CI运行；进度同步未改产品源码或验证制品。
+
+- S9E OCR：`platform-contracts/.../OcrProtocol.java`、`knowledge-parser/.../OcrPdfExtractor.java`、`TesseractProcess.java`、Knowledge V20及profile、Python structured → [增量契约](design/knowledge-first-20261020/OCR_CONTRACTS.md)；`deploy/docker/Ocr.Dockerfile`与runtime/compose → [运行与复验](qa/scanned-pdf-20261109/RUNTIME.md)。前端扫描选项/告警与浏览器证据在前端仓同日QA目录。

@@ -90,6 +90,13 @@ class ParserProcessTest {
         }
     }
 
+    @Test void unexpectedParentExitStillReapsObservedOcrDescendants() throws Exception {
+        try (Fixture fixture = fixture(Duration.ofSeconds(4))) {
+            failure(fixture, "orphan", KnowledgeError.PARSER_UNAVAILABLE);
+            assertDead(directory.resolve("orphan.pid.child"));
+        }
+    }
+
     @Test void reservedParserSlotsRunTogetherAndCloseReapsEveryChild() throws Exception {
         try (Fixture fixture = fixture(Duration.ofSeconds(10), true)) {
             Path first = directory.resolve("first.pid"), second = directory.resolve("second.pid");

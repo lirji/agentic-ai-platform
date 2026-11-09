@@ -19,10 +19,11 @@ public final class ParserFaultMain {
         if (!environment.equals(java.util.Set.of("LANG", "TZ"))) { System.exit(90); }
         switch (request[0]) {
             case "hang" -> Thread.sleep(60_000);
-            case "descendant" -> {
+            case "descendant", "orphan" -> {
                 Process child = new ProcessBuilder(Path.of(System.getProperty("java.home"), "bin", "java").toString(),
                         "-jar", System.getProperty("java.class.path"), "PDF", "1").start();
                 try (var input = child.getOutputStream()) { input.write(("hang|" + request[1] + ".child").getBytes(StandardCharsets.UTF_8)); }
+                if (request[0].equals("orphan")) { Thread.sleep(500); System.exit(70); }
                 child.waitFor();
             }
             case "stdout" -> { while (true) { System.out.write(new byte[8192]); } }

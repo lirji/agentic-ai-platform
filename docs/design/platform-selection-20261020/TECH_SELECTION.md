@@ -271,3 +271,7 @@ S9C传递依赖补丁：Boot3.5.16默认Commons Lang3.17.0覆盖了Compress所�
 | 策略/用量 | REUSE_EXISTING不可变任务与独立累计账本机制，BUILD有界策略目录 | 不新增持久批引擎或另一个全局预算系统；后续S15统一语义另验 | S11D/E |
 
 2026-10-28核对[百炼重排官方页面](https://help.aliyun.com/zh/model-studio/rerank)：示例仍给出qwen3-rerank及独立重排协议，当前示例端点包含业务空间与地域。只记录候选，不能沿用旧模型名/端点/价格假定账号可用；S11D须核对真实账号配置、价格日期与独立累计额度。S11A不扩大现有Embedding或聊天预算，不宣称真实重排有效或已启用。
+
+## S9E：本地中英扫描PDF
+
+用户已启用扫描/混合页范围。现有PDFBox3.0.8负责光栅与真实页序，Tesseract5.5.4 + tessdata_fast固定提交识别中英；可选Knowledge镜像使用Leptonica1.87.0。均为CPU本地执行，新增版本保持旧profile兼容；不新增云解析或付费模型。选择、官方来源、依赖摘要、边界与限制见[OCR契约](../knowledge-first-20261020/OCR_CONTRACTS.md)及[运行说明](../../qa/scanned-pdf-20261109/RUNTIME.md)。

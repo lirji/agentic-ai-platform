@@ -1,5 +1,8 @@
 # 结构化知识准备契约 v2
 
+S9E增量：[扫描PDF OCR契约](OCR_CONTRACTS.md)规定独立parser/processor、页级质量告警、V20持久化约束与资源边界；原生PDF及DOCX旧profile继续遵循本文。
+
+
 2026-10-24，S9A / C-PARSE，设计冻结；实现从S9B开始。选型/所有权见 [解析设计](PARSING_DESIGN.md)。原 [P01/P02/v1发布](PROCESSING_CONTRACTS.md)、K04/K05、E01/E02/E03继续有效，仅按本文件显式扩展格式、来源与读取接口。
 
 ## 1. 闭合类型和初始profile

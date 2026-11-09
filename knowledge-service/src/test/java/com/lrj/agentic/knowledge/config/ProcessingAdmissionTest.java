@@ -29,7 +29,14 @@ class ProcessingAdmissionTest {
             assertThat(properties.profile(DocumentFormat.TEXT.contentType())).isEqualTo(ProcessingProfile.TEXT_V1);
             assertThat(properties.profile(DocumentFormat.MARKDOWN.contentType())).isEqualTo(ProcessingProfile.TEXT_V1);
         });
-        assertThat(ProcessingProfile.compatibleVersions()).hasSize(5).doesNotHaveDuplicates();
+        runner.withPropertyValues("knowledge.admission.structured-profile=OCR_V4").run(context -> {
+            assertThat(context).hasNotFailed();
+            var properties = context.getBean(ProcessingAdmissionProperties.class);
+            assertThat(properties.profile(DocumentFormat.PDF.contentType())).isEqualTo(ProcessingProfile.PDF_OCR_V4);
+            assertThat(properties.profile(DocumentFormat.DOCX.contentType())).isEqualTo(ProcessingProfile.DOCX_V3);
+            assertThat(properties.profile(DocumentFormat.TEXT.contentType())).isEqualTo(ProcessingProfile.TEXT_V1);
+        });
+        assertThat(ProcessingProfile.compatibleVersions()).hasSize(6).doesNotHaveDuplicates();
         for (ProcessingProfile profile : ProcessingProfile.values()) {
             assertThat(ProcessingProfile.stored(profile.schema(), profile.processor(), profile.parser())).isEqualTo(profile);
         }

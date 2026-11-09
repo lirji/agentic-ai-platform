@@ -1,0 +1,5 @@
+{
+  "guards": 2,
+  "result": "PASS",
+  "effects": "rejected before source snapshot/current pointer or service mutation"
+}

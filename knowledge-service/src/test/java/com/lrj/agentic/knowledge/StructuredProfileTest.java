@@ -32,7 +32,7 @@ class StructuredProfileTest {
     private final ProcessingJson json = new ProcessingJson(mapper);
 
     @ParameterizedTest
-    @ValueSource(strings = {"docx", "long-docx", "pdf"})
+    @ValueSource(strings = {"docx", "long-docx", "pdf", "ocr"})
     void realExtractionAndNodesRoundTripWithAllSources(String name) throws Exception {
         JsonNode tree = fixture(name);
         var request = request(tree);
@@ -45,7 +45,7 @@ class StructuredProfileTest {
         for (var chunk : result.chunks()) {
             var details = ChunkSources.details(chunk, request.extraction());
             assertThat(details).hasSize(chunk.segments().size());
-            assertThat(ChunkSources.structuredLocator(details)).startsWith(name.equals("pdf") ? "pdf-pages:" : "docx-blocks:");
+            assertThat(ChunkSources.structuredLocator(details)).startsWith(request.extraction().format() == com.lrj.agentic.contract.knowledge.ExtractionProtocol.Format.PDF ? "pdf-pages:" : "docx-blocks:");
             assertThat(chunk.text()).doesNotContain("章节：", "表头：");
         }
         if (name.equals("pdf")) {

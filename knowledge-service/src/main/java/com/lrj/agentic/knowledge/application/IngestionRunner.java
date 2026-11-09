@@ -43,7 +43,10 @@ public class IngestionRunner {
         Extraction extraction = null;
         if (claim.job().profile().structured()) {
             if (claim.extraction() == null) {
-                extraction = extractor.extract(source, claim.job().profile().format());
+                var profile = claim.job().profile();
+                extraction = profile == com.lrj.agentic.knowledge.domain.processing.ProcessingProfile.PDF_OCR_V4
+                        ? extractor.extract(source, profile.format(), profile.parser())
+                        : extractor.extract(source, profile.format());
                 checkInterrupted();
                 var reference = storage.saveExtraction(claim.job(), extraction);
                 checkInterrupted();

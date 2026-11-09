@@ -1,0 +1,61 @@
+{
+  "schemaVersion" : "knowledge-extraction-v1",
+  "format" : "PDF",
+  "parserProfile" : "pdfbox-3.0.8-tesseract-5.5.4-chi_sim-eng-v1",
+  "sourceHash" : "904cf907a1bff4d97b42a8d4869b2add527e029f33eac91e4e2cfc762c2d942a",
+  "sourceSize" : 62845,
+  "blocks" : [ {
+    "ordinal" : 0,
+    "blockId" : "152b1f1182253e0b43004450cbb3a253f4a8b1a7ec342d67ffd2e00f1b5cfb4a",
+    "kind" : "PDF_PAGE",
+    "text" : "知识资料处理说明\n审批记录必须绑定资料版本，引用使用真实页序。\nOriginal bytes and extracted text have separate hashes.\n",
+    "textHash" : "3349ae90503af613d0b66689d5b2a3fed2d62fd8c813b2b6e1123fe8523a57fb",
+    "headingLevel" : null,
+    "location" : {
+      "page" : 1
+    }
+  }, {
+    "ordinal" : 1,
+    "blockId" : "d491c776ef282d32bef13d027778992b52fab709761d0a1ef5f7a0dd61c456a5",
+    "kind" : "PDF_PAGE",
+    "text" : "知识 资料 处 理 说 明\n审批 记录 必须 绑 定 资料 版 本 ， 引 用 使 用 真实 页 序 。\nOriginal bytes and extracted text have separate hashes.",
+    "textHash" : "8e46c162bc01c2b49728eb68577c1b73c7445586fdf9792afd7c5f60ede997c1",
+    "headingLevel" : null,
+    "location" : {
+      "page" : 2
+    }
+  }, {
+    "ordinal" : 2,
+    "blockId" : "533e412aa8280ed2d34a474ca3c7abf0415d82dee85dbfacc487883d8eea2a5c",
+    "kind" : "PDF_PAGE",
+    "text" : "",
+    "textHash" : "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "headingLevel" : null,
+    "location" : {
+      "page" : 3
+    }
+  } ],
+  "warnings" : [ {
+    "code" : "PAGE_NO_TEXT",
+    "locationKey" : "pdf:3"
+  }, {
+    "code" : "PDF_LAYOUT_APPROXIMATE",
+    "locationKey" : null
+  }, {
+    "code" : "PDF_NON_TEXT_CONTENT_OMITTED",
+    "locationKey" : null
+  }, {
+    "code" : "PDF_OCR_APPLIED",
+    "locationKey" : "pdf:2"
+  }, {
+    "code" : "PDF_OCR_APPLIED",
+    "locationKey" : "pdf:3"
+  }, {
+    "code" : "PDF_OCR_LOW_CONFIDENCE",
+    "locationKey" : "pdf:2"
+  }, {
+    "code" : "PDF_OCR_LOW_CONFIDENCE",
+    "locationKey" : "pdf:3"
+  } ],
+  "extractionDigest" : "c342ed2d5dd565a6b9fe6aa1092e19f087a7f7c6871dbf56bd59eb8ed02afd3c"
+}

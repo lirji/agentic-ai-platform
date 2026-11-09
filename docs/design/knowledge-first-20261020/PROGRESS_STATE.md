@@ -1,6 +1,21 @@
 # 知识优先工作台：进度与恢复入口
 
-## 当前状态：S17A已交付，下一实施项S17B
+## 当前任务：优先交付S9E、S9F、S18B、S18C
+
+- 最新授权：用户要求“先做S9E S9F和S18B S18C”，已明确选择中英扫描PDF（含原生/扫描混合页）、XLSX、CSV，保留DOCX；记忆用于个人偏好和项目背景，用户确认后生效，支持编辑/停用/遗忘，默认90天过期且可调整。此要求替代先做S17B的顺序；不启动S17B–D或其他扩展。
+- 执行顺序/清单：S9E扫描PDF OCR → S9F表格来源与引用 → S18B持久记忆治理 → S18C受控提议与注入。逐片补契约、实现前后端/Runtime、验证、更新进度及正常两仓Git交付，完成一片后继续下一片；parallel=no，无子Agent。
+- 当前阶段：S9E本地必需验收PASS，待两仓正常Git/CI交付，之后立刻继续S9F。契约[OCR_CONTRACTS](OCR_CONTRACTS.md)，验收[TEST_RESULT](../../qa/scanned-pdf-20261109/TEST_RESULT.md)；Java/Python/前端与固定依赖可选镜像齐备。全任务当前41 DONE/6 PLANNED/4 CONDITIONAL，四项优先任务尚未全部完成。
+- 已确认/待验证：两组业务选项由用户明确答复确认；受控中英/低清/混合页及表格机制样本用于验证，不冒充真实业务准确率。OCR采用Tesseract5.5.4，语言包固定官方提交和SHA-256；边界见[OCR_CONTRACTS](OCR_CONTRACTS.md)；实际新增模型费用未授权，不复用或重置旧预算。
+- Git：后端原目录`/Users/liruijun/personal/LLM/agentic-ai-platform`，当前`feat/scanned-pdf-ocr-20261109`，基线efa1864；前端`/Users/liruijun/personal/LLM/agentic-ai-platform-web`当前feat/scanned-pdf-ocr-20261109，基线120ba1e；两仓当前未提交改动均为S9E。正常提交/合并推main按既有授权；无新worktree。
+- 边界：不改变现有运行容器/共享基础设施，不部署生产，不清理用户文件/数据库/卷；本次本地验证用独立测试资源，保留原预算。S17A有效验收与交付不重做。
+- 已验证：真实Tesseract中英/混合/36DPI低清/空页、版本/语言、超时/管道/取消回收通过；清晰受控样本78字归一CER=0，非真实业务准确率。Java全仓package228项及最新解析29/父进程/空配置绑定定向复验、Python76、前端全仓251单元/types/lint/build通过；新旧Java/Python共享金标已验证。日志`.logs/s9e/`和前端`.logs/s9e-*`，样本`docs/qa/scanned-pdf-20261109/`。
+- 数据/Runtime：新增V20仅扩展固定profile CHECK，test库迁移已成功；原dev/生产未迁移。首轮25项IT的11项因原搜索两容器已于3天前停止而失败；改用隔离实例后25项真实IT全PASS，最新2项核心链路复验PASS。另建本任务隔离搜索容器agentic-s9e-qdrant/elastic（28333/29300），不重启原容器。当前原knowledge unhealthy、qa-worker重启，现场问题不归此次OCR改动，不擅自修复。
+- 最终Runtime：Linux/ARM64 Knowledge OCR镜像c0f6678af204（完整digest见linux-result.json），无网络/只读/384MiB限制下4.83秒、峰值312926208字节，输出与共享金标完全相同。版本、语言hash、构建源码摘要已留证；仅隔离探针，没有部署。
+- 在途/保留：本任务隔离搜索两容器均已停止（不删数据）；engine/library/rpm/parser探针均退出；前端28306预览14875仍运行供截图复核。所有构建/测试已成功退出，当前两仓fetch用于正常交付。`.local/s9e`、`.logs/s9e`、镜像、退出容器和test租户证据保留，无新增worktree。
+- 下一步：两仓只暂存本片路径，提交feat/scanned-pdf-ocr-20261109、分支CI通过后正常合并推main并检查main CI；记录收据后原目录建S9F分支，冻结XLSX/CSV工作表/表头/行列与公式缓存契约并实现。随后S18B→S18C，不等待用户重复继续。
+- 采用规范：continue-approved-delivery、backend-architecture-design、backend-implementation及后续前端/验证/Runtime/Git Owner；architecture-standards业务建模/持久化/分布式/并发安全/中间件/容量/发布，personal-tech-stack相关并发/日志/状态规则。本轮无受治理Run，沿既有手工有界pass。
+
+## 上一检查点：2026-11-09进度同步已交付
 
 - 最新要求：2026-11-09用户“先同步进度”；本轮progress-sync-20261109仅同步进度、清单和证据入口，完成正常Git提交/合并推main后结束，不启动S17B。capability-delivery-20261021完整目标保留；parallel=no、无子Agent，无新增生产部署、付费扩额或清理授权。
 - 完成口径：51项中40项DONE、3项PLANNED（S17B–D）、8项CONDITIONAL（S9E/F、S18A–F）。DONE按各片已验收范围计，不代表真实业务质量、真实精排效果或生产容量/SLO全部达标。
