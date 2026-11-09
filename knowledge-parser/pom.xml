@@ -10,6 +10,7 @@
         <commons-lang3.version>3.21.0</commons-lang3.version>
     </properties>
     <dependencies>
+        <dependency><groupId>org.apache.commons</groupId><artifactId>commons-csv</artifactId><version>${commons-csv.version}</version></dependency>
         <dependency><groupId>com.lrj.agentic</groupId><artifactId>platform-contracts</artifactId></dependency>
         <dependency><groupId>org.apache.pdfbox</groupId><artifactId>pdfbox</artifactId><version>${pdfbox.version}</version>
             <exclusions><exclusion><groupId>commons-logging</groupId><artifactId>commons-logging</artifactId></exclusion></exclusions>

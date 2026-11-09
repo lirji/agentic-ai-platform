@@ -22,6 +22,7 @@ from agentic_ai.processing.models import (
     digest,
     vector_digest,
 )
+from agentic_ai.processing.sheet_protocol import MAX_SHEET_NAME, MAX_SHEET_ROWS, MAX_SHEETS
 
 EXTRACTION_SCHEMA = "knowledge-extraction-v1"
 STRUCTURED_SCHEMA: Final = "knowledge-preparation-v2"
@@ -32,7 +33,16 @@ OCR_PROCESSOR = "pdf-v4-tesseract5.5.4-pages512-overlap64-embedding-v4-1024"
 MAX_OCR_PAGES = 10
 DOCX_PARSER = "poi-6.0.0-body-v1"
 DOCX_PROCESSOR = "docx-v2-poi6.0.0-char512-overlap64-embedding-v4-1024"
-FORMAT_PROFILES: Final = {"PDF": (PDF_PARSER, PDF_PROCESSOR), "DOCX": (DOCX_PARSER, DOCX_PROCESSOR)}
+XLSX_PARSER = "poi-6.0.0-sheets-v1"
+CSV_PARSER = "commons-csv-1.14.1-rfc4180-v1"
+XLSX_PROCESSOR = "xlsx-v1-poi6.0.0-rows512-overlap64-ctx256-embedding-v4-1024"
+CSV_PROCESSOR = "csv-v1-commons1.14.1-rows512-overlap64-ctx256-embedding-v4-1024"
+FORMAT_PROFILES: Final = {
+    "PDF": (PDF_PARSER, PDF_PROCESSOR),
+    "DOCX": (DOCX_PARSER, DOCX_PROCESSOR),
+    "XLSX": (XLSX_PARSER, XLSX_PROCESSOR),
+    "CSV": (CSV_PARSER, CSV_PROCESSOR),
+}
 MAX_BINARY_BYTES = 10 * 1024 * 1024
 MAX_TEXT_BYTES = 1024 * 1024
 MAX_PAGES = 200
@@ -62,15 +72,21 @@ class StructuredProfile(StrEnum):
     PDF_STRUCTURE = "pdf-v3-pdfbox3.0.8-pages512-overlap64-embedding-v4-1024"
     DOCX_STRUCTURE = "docx-v3-poi6.0.0-structure512-overlap64-ctx256-embedding-v4-1024"
     PDF_OCR = OCR_PROCESSOR
+    XLSX = XLSX_PROCESSOR
+    CSV = CSV_PROCESSOR
 
     @property
     def structural(self) -> bool:
         """跨块和增强只对新版本开放，不能让旧golden静默改变。"""
-        return self in (self.PDF_STRUCTURE, self.DOCX_STRUCTURE, self.PDF_OCR)
+        return self in (self.PDF_STRUCTURE, self.DOCX_STRUCTURE, self.PDF_OCR, self.XLSX, self.CSV)
 
     @property
     def source_format(self) -> str:
         """同一个模型并不表示解析来源格式可以互换。"""
+        if self is self.XLSX:
+            return "XLSX"
+        if self is self.CSV:
+            return "CSV"
         return "PDF" if self in (self.PDF_BLOCK, self.PDF_STRUCTURE, self.PDF_OCR) else "DOCX"
 
     @property
@@ -92,6 +108,7 @@ class BlockKind(StrEnum):
     PDF_PAGE = "PDF_PAGE"
     PARAGRAPH = "PARAGRAPH"
     TABLE_CELL = "TABLE_CELL"
+    SHEET_CELL = "SHEET_CELL"
 
 
 def hash_lines(*fields: str) -> str:
@@ -146,6 +163,37 @@ class TableLocation(WireModel):
         )
 
 
+class SheetLocation(WireModel):
+    """真实工作表和稀疏行列坐标，不将CSV记录号当文件物理行号。"""
+
+    sheet_index: int = Field(ge=1, le=MAX_SHEETS)
+    sheet_name: str = Field(min_length=1, max_length=MAX_SHEET_NAME)
+    row: int = Field(ge=1, le=MAX_SHEET_ROWS)
+    column: int = Field(ge=1, le=MAX_COLUMNS)
+    row_span: int = Field(ge=1, le=MAX_SHEET_ROWS)
+    column_span: int = Field(ge=1, le=MAX_COLUMNS)
+    header: bool
+
+    @model_validator(mode="after")
+    def valid_location(self) -> Self:
+        """先约束跨度与名称，后续矩形比较不分配二维网格。"""
+        self.sheet_name.encode("utf-8")
+        if (
+            not self.sheet_name.strip()
+            or any(ord(c) < 32 or 127 <= ord(c) <= 159 for c in self.sheet_name)
+            or self.row + self.row_span > MAX_SHEET_ROWS + 1
+            or self.column + self.column_span > MAX_COLUMNS + 1
+        ):
+            raise ValueError(INVALID_STRUCTURE)
+        return self
+
+    def key(self) -> str:
+        return (
+            f"sheet:{self.sheet_index}:{digest(self.sheet_name.encode('utf-8'))}:{self.row}:{self.column}:"
+            f"{self.row_span}:{self.column_span}:{int(self.header)}"
+        )
+
+
 class ExtractionBlock(WireModel):
     """空页、空段和空格也占有稳定顺序与身份，不压缩原结构。"""
 
@@ -155,7 +203,7 @@ class ExtractionBlock(WireModel):
     text: str = Field(max_length=MAX_TEXT_BYTES, repr=False)
     text_hash: Digest
     heading_level: Annotated[int, Field(ge=1, le=9)] | None
-    location: PdfLocation | ParagraphLocation | TableLocation
+    location: PdfLocation | ParagraphLocation | TableLocation | SheetLocation
 
     @field_validator("kind", mode="before")
     @classmethod
@@ -172,6 +220,7 @@ class ExtractionBlock(WireModel):
             BlockKind.PDF_PAGE: PdfLocation,
             BlockKind.PARAGRAPH: ParagraphLocation,
             BlockKind.TABLE_CELL: TableLocation,
+            BlockKind.SHEET_CELL: SheetLocation,
         }
         if not isinstance(self.location, expected[self.kind]) or (
             self.kind != BlockKind.PARAGRAPH and self.heading_level is not None
@@ -193,6 +242,12 @@ class ExtractionWarning(WireModel):
     """限定安全 code 与真实位置，不携带解析异常正文。"""
 
     code: Literal[
+        "SHEET_HEADER_INFERRED",
+        "SHEET_MERGED_CELLS",
+        "SHEET_WIDE_ROW",
+        "SHEET_FORMULA_CACHED",
+        "SHEET_HIDDEN_CONTENT",
+        "SHEET_EXTERNAL_LINK_TEXT_ONLY",
         "PAGE_NO_TEXT",
         "PDF_LAYOUT_APPROXIMATE",
         "PDF_NON_TEXT_CONTENT_OMITTED",
@@ -214,10 +269,12 @@ class Extraction(WireModel):
     """原文件 hash 是 Java 委托事实；此处独立验证结构、正文和提取摘要。"""
 
     schema_version: Literal["knowledge-extraction-v1"]
-    format: Literal["PDF", "DOCX"]
+    format: Literal["PDF", "DOCX", "XLSX", "CSV"]
     parser_profile: Literal[
         "pdfbox-3.0.8-native-text-v1",
         "poi-6.0.0-body-v1",
+        "poi-6.0.0-sheets-v1",
+        "commons-csv-1.14.1-rfc4180-v1",
         "pdfbox-3.0.8-tesseract-5.5.4-chi_sim-eng-v1",
     ]
     source_hash: Digest
@@ -237,6 +294,8 @@ class Extraction(WireModel):
             expected.extend(validate_ocr_warnings(self.blocks, self.warnings))
         if self.format == "DOCX":
             validate_docx_structure(self.blocks, self.warnings)
+        elif self.format in ("XLSX", "CSV"):
+            validate_sheet_structure(self.format, self.blocks, self.warnings)
         elif len(self.blocks) > MAX_PAGES:
             raise ValueError(INVALID_STRUCTURE)
         total = 0
@@ -288,6 +347,67 @@ class Extraction(WireModel):
         ):
             raise ValueError(INVALID_STRUCTURE)
         return self
+
+
+def validate_sheet_structure(
+    source_format: str, blocks: tuple[ExtractionBlock, ...], warnings: tuple[ExtractionWarning, ...]
+) -> None:
+    """独立复核有序稀疏坐标、名称、首行表头、合并范围和确定性告警。"""
+    names: dict[int, str] = {}
+    headers: dict[int, int] = {}
+    rows: dict[tuple[int, int], int] = {}
+    cells: list[SheetLocation] = []
+    previous = (0, 0, 0)
+    for block in blocks:
+        cell = block.location
+        if not isinstance(cell, SheetLocation) or not block.text.strip():
+            raise ValueError(INVALID_STRUCTURE)
+        position = (cell.sheet_index, cell.row, cell.column)
+        if position <= previous or cell.header != (
+            cell.row == headers.setdefault(cell.sheet_index, cell.row)
+        ):
+            raise ValueError(INVALID_STRUCTURE)
+        previous = position
+        if cell.sheet_index not in names and cell.sheet_name in names.values():
+            raise ValueError(INVALID_STRUCTURE)
+        if names.setdefault(cell.sheet_index, cell.sheet_name) != cell.sheet_name:
+            raise ValueError(INVALID_STRUCTURE)
+        if source_format == "CSV" and (
+            cell.sheet_index != 1
+            or cell.sheet_name != "CSV"
+            or cell.row_span != 1
+            or cell.column_span != 1
+        ):
+            raise ValueError(INVALID_STRUCTURE)
+        for prior in cells:
+            if (
+                prior.sheet_index == cell.sheet_index
+                and prior.row < cell.row + cell.row_span
+                and cell.row < prior.row + prior.row_span
+                and prior.column < cell.column + cell.column_span
+                and cell.column < prior.column + prior.column_span
+            ):
+                raise ValueError(INVALID_STRUCTURE)
+        cells.append(cell)
+        key = (cell.sheet_index, cell.row)
+        rows[key] = rows.get(key, 0) + 1
+    expected = {"SHEET_HEADER_INFERRED"}
+    if any(c.row_span > 1 or c.column_span > 1 for c in cells):
+        expected.add("SHEET_MERGED_CELLS")
+    if any(n > MAX_SEGMENTS for n in rows.values()):
+        expected.add("SHEET_WIDE_ROW")
+    optional = (
+        {"SHEET_FORMULA_CACHED", "SHEET_HIDDEN_CONTENT", "SHEET_EXTERNAL_LINK_TEXT_ONLY"}
+        if source_format == "XLSX"
+        else set()
+    )
+    actual = {w.code for w in warnings}
+    if (
+        any(w.location_key is not None for w in warnings)
+        or actual - optional != expected
+        or [w.key() for w in warnings] != sorted({w.key() for w in warnings})
+    ):
+        raise ValueError(INVALID_STRUCTURE)
 
 
 def validate_ocr_warnings(
@@ -602,6 +722,22 @@ def structure_groups(extraction: Extraction) -> tuple[SourceGroup, ...]:
             ]
             if prior:
                 parts.extend(["表头：", *prior])
+        if isinstance(first, SheetLocation):
+            parts.extend(["工作表：", first.sheet_name])
+            prior = [
+                block.text
+                for block in headers.get(first.sheet_index, [])
+                if isinstance(block.location, SheetLocation)
+                and block.location.row < first.row
+                and any(
+                    isinstance(item.location, SheetLocation)
+                    and block.location.column < item.location.column + item.location.column_span
+                    and item.location.column < block.location.column + block.location.column_span
+                    for item in pending
+                )
+            ]
+            if prior:
+                parts.extend(["表头：", *prior])
         # 先计算长度再连接，不能让超长标题复制进每个Node耗尽内存。
         if sum(map(len, parts)) + max(0, len(parts) - 1) > MAX_CONTEXT:
             raise ProcessingError(ProcessingCode.INPUT_TOO_LARGE)
@@ -622,6 +758,8 @@ def structure_groups(extraction: Extraction) -> tuple[SourceGroup, ...]:
         current: tuple[object, ...] = (block.kind,)
         if isinstance(location, TableLocation):
             current = (block.kind, location.body_index, location.table_index, location.row)
+        if isinstance(location, SheetLocation):
+            current = (block.kind, location.sheet_index, location.row)
         if current != key or len(pending) == MAX_SEGMENTS:
             flush()
         key = current
@@ -638,6 +776,8 @@ def structure_groups(extraction: Extraction) -> tuple[SourceGroup, ...]:
                 flush()
         if block.text.strip():
             pending.append(block)
+            if isinstance(location, SheetLocation) and location.header:
+                headers.setdefault(location.sheet_index, []).append(block)
             if isinstance(location, TableLocation) and location.header:
                 headers.setdefault(location.table_index, []).append(block)
     flush()

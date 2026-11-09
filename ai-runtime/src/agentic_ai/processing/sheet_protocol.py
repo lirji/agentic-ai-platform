@@ -1,0 +1,6 @@
+"""S9F固定行列边界；解析消费者和引用消费者共用，不引入业务框架依赖。"""
+
+MAX_SHEETS = 20
+MAX_SHEET_ROWS = 10000
+MAX_SHEET_COLUMNS = 100
+MAX_SHEET_NAME = 31

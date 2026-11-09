@@ -49,7 +49,7 @@ def fixture(name="text"):
     return json.loads((FIXTURES / f"generation-{name}-golden.json").read_text())["generations"]
 
 
-@pytest.mark.parametrize("name", ["text", "pdf-v2", "docx-v2", "pdf-v3", "docx-v3"])
+@pytest.mark.parametrize("name", ["text", "pdf-v2", "docx-v2", "pdf-v3", "docx-v3", "xlsx", "csv"])
 def test_shared_two_generation_goldens_run_actual_algorithms(name):
     cases = fixture(name)
     ids = []

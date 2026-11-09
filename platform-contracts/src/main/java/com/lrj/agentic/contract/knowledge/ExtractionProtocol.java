@@ -30,7 +30,7 @@ public final class ExtractionProtocol {
 
     /** 闭合格式与固定处理版本绑定；新受理由服务开关在完整验收后启用。 */
     public enum Format {
-        PDF("PDF"), DOCX("DOCX");
+        PDF("PDF"), DOCX("DOCX"), XLSX("XLSX"), CSV("CSV");
         private final String code;
         Format(String code) { this.code = code; }
         @JsonValue public String code() { return code; }
@@ -40,14 +40,14 @@ public final class ExtractionProtocol {
             throw new IllegalArgumentException(INVALID_MESSAGE);
         }
         /** 不让调用方任意拼接解析版本或混用二进制格式。 */
-        public String parser() { return this == PDF ? PDF_PARSER : DOCX_PARSER; }
+        public String parser() { return switch (this) { case PDF -> PDF_PARSER; case DOCX -> DOCX_PARSER; case XLSX -> SheetProtocol.XLSX_PARSER; case CSV -> SheetProtocol.CSV_PARSER; }; }
         /** 相同向量空间内仍用不同版本绑定来源和分块身份。 */
-        public String processor() { return this == PDF ? PDF_PROCESSOR : DOCX_PROCESSOR; }
+        public String processor() { return switch (this) { case PDF -> PDF_PROCESSOR; case DOCX -> DOCX_PROCESSOR; case XLSX -> SheetProtocol.XLSX_PROCESSOR; case CSV -> SheetProtocol.CSV_PROCESSOR; }; }
     }
 
     /** 页块保持真实文件顺序，不能将二进制位置冒充提取文本偏移。 */
     public enum Kind {
-        PDF_PAGE("PDF_PAGE"), PARAGRAPH("PARAGRAPH"), TABLE_CELL("TABLE_CELL");
+        PDF_PAGE("PDF_PAGE"), PARAGRAPH("PARAGRAPH"), TABLE_CELL("TABLE_CELL"), SHEET_CELL("SHEET_CELL");
         private final String code;
         Kind(String code) { this.code = code; }
         @JsonValue public String code() { return code; }
@@ -62,7 +62,10 @@ public final class ExtractionProtocol {
         DOCX_COMMENTS_OMITTED("DOCX_COMMENTS_OMITTED"),
         DOCX_FOOTNOTES_ENDNOTES_OMITTED("DOCX_FOOTNOTES_ENDNOTES_OMITTED"),
         DOCX_NON_TEXT_CONTENT_OMITTED("DOCX_NON_TEXT_CONTENT_OMITTED"),
-        DOCX_EXTERNAL_LINK_TEXT_ONLY("DOCX_EXTERNAL_LINK_TEXT_ONLY");
+        DOCX_EXTERNAL_LINK_TEXT_ONLY("DOCX_EXTERNAL_LINK_TEXT_ONLY"),
+        SHEET_HEADER_INFERRED("SHEET_HEADER_INFERRED"), SHEET_MERGED_CELLS("SHEET_MERGED_CELLS"),
+        SHEET_WIDE_ROW("SHEET_WIDE_ROW"), SHEET_FORMULA_CACHED("SHEET_FORMULA_CACHED"),
+        SHEET_HIDDEN_CONTENT("SHEET_HIDDEN_CONTENT"), SHEET_EXTERNAL_LINK_TEXT_ONLY("SHEET_EXTERNAL_LINK_TEXT_ONLY");
         private final String code;
         WarningCode(String code) { this.code = code; }
         @JsonValue public String code() { return code; }

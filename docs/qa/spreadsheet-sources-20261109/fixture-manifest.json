@@ -1,0 +1,34 @@
+[
+  {
+    "source": "docs/qa/spreadsheet-sources-20261109/fixtures/multi-sheet.xlsx",
+    "sourceHash": "2b073589c2dc3800a115834ff6235d0cacb8f0abf42d7170a4c8325bda85be1b",
+    "blocks": 11,
+    "golden": "knowledge-service/src/test/resources/structured-sheet-xlsx-golden.json",
+    "goldenHash": "4f83aacc15004c63c8f6f975c032383a4ef3e97184d7d3cc37f06449f5853616",
+    "chunks": 5,
+    "segments": [
+      3,
+      3,
+      1,
+      2,
+      2
+    ],
+    "embeddingInputs": 5,
+    "realModelCalls": 0
+  },
+  {
+    "source": "docs/qa/spreadsheet-sources-20261109/fixtures/quoted.csv",
+    "sourceHash": "75c831ce9d4fb8073994fd067f0b79481c199a639af52963d610a898cef494df",
+    "blocks": 9,
+    "golden": "knowledge-service/src/test/resources/structured-sheet-csv-golden.json",
+    "goldenHash": "95e9c1608f9ffd9f12418e89475a42e809b48216d7f19a0583161ca410048571",
+    "chunks": 3,
+    "segments": [
+      3,
+      3,
+      3
+    ],
+    "embeddingInputs": 3,
+    "realModelCalls": 0
+  }
+]

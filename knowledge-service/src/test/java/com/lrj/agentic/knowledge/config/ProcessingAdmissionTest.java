@@ -36,7 +36,7 @@ class ProcessingAdmissionTest {
             assertThat(properties.profile(DocumentFormat.DOCX.contentType())).isEqualTo(ProcessingProfile.DOCX_V3);
             assertThat(properties.profile(DocumentFormat.TEXT.contentType())).isEqualTo(ProcessingProfile.TEXT_V1);
         });
-        assertThat(ProcessingProfile.compatibleVersions()).hasSize(6).doesNotHaveDuplicates();
+        assertThat(ProcessingProfile.compatibleVersions()).hasSize(8).doesNotHaveDuplicates();
         for (ProcessingProfile profile : ProcessingProfile.values()) {
             assertThat(ProcessingProfile.stored(profile.schema(), profile.processor(), profile.parser())).isEqualTo(profile);
         }

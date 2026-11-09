@@ -1,0 +1,31 @@
+{
+  "baseImage": "eclipse-temurin:21.0.12_8-jre-ubi9-minimal@sha256:fa6a3cd1e88402446002f86e0d06f5202d7d6ec02d525888f9c0ea2eeb5b07ad",
+  "jarSha256": "d3f8969b5bc7bc89d88543ef89cb1acafc3de347a518d095a7ab936217dffad0",
+  "platform": "arm64",
+  "memoryLimitMiB": 384,
+  "network": "none",
+  "readonly": true,
+  "checks": [
+    {
+      "format": "XLSX",
+      "sourceSha256": "2b073589c2dc3800a115834ff6235d0cacb8f0abf42d7170a4c8325bda85be1b",
+      "extractionDigest": "c03353631960c3191c7703c239093d3ed5e2799495528e8deebf4f312d0433d1",
+      "goldenEquality": true,
+      "durationSeconds": 7.229805207985919,
+      "exitCode": 0,
+      "oomKilled": false,
+      "container": "agentic-s9f-xlsx-probe"
+    },
+    {
+      "format": "CSV",
+      "sourceSha256": "75c831ce9d4fb8073994fd067f0b79481c199a639af52963d610a898cef494df",
+      "extractionDigest": "f9a6c210ec8cb51c6fe00d0b51f91f01984a9eeedb6ea53c0262552e101f89ae",
+      "goldenEquality": true,
+      "durationSeconds": 4.575433708028868,
+      "exitCode": 0,
+      "oomKilled": false,
+      "container": "agentic-s9f-csv-probe"
+    }
+  ],
+  "result": "PASS"
+}

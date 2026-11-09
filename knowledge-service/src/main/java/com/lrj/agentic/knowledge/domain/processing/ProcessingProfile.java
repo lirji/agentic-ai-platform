@@ -2,6 +2,7 @@ package com.lrj.agentic.knowledge.domain.processing;
 
 import com.lrj.agentic.contract.knowledge.ExtractionProtocol;
 import com.lrj.agentic.contract.knowledge.OcrProtocol;
+import com.lrj.agentic.contract.knowledge.SheetProtocol;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import com.lrj.agentic.knowledge.domain.DocumentFormat;
@@ -18,7 +19,9 @@ public enum ProcessingProfile {
             "pdf-v3-pdfbox3.0.8-pages512-overlap64-embedding-v4-1024", ExtractionProtocol.PDF_PARSER),
     DOCX_V3(ExtractionProtocol.PREPARATION_SCHEMA,
             "docx-v3-poi6.0.0-structure512-overlap64-ctx256-embedding-v4-1024", ExtractionProtocol.DOCX_PARSER),
-    PDF_OCR_V4(ExtractionProtocol.PREPARATION_SCHEMA, OcrProtocol.PROCESSOR, OcrProtocol.PARSER);
+    PDF_OCR_V4(ExtractionProtocol.PREPARATION_SCHEMA, OcrProtocol.PROCESSOR, OcrProtocol.PARSER),
+    XLSX_V1(ExtractionProtocol.PREPARATION_SCHEMA, SheetProtocol.XLSX_PROCESSOR, SheetProtocol.XLSX_PARSER),
+    CSV_V1(ExtractionProtocol.PREPARATION_SCHEMA, SheetProtocol.CSV_PROCESSOR, SheetProtocol.CSV_PARSER);
 
     private final String schema;
     private final String processor;
@@ -37,7 +40,7 @@ public enum ProcessingProfile {
     public boolean structured() { return parser != null; }
 
     /** 跨块来源只对新算法开放，schema相同不代表旧版本可以改变行为。 */
-    public boolean structural() { return this == PDF_V3 || this == DOCX_V3 || this == PDF_OCR_V4; }
+    public boolean structural() { return this == PDF_V3 || this == DOCX_V3 || this == PDF_OCR_V4 || this == XLSX_V1 || this == CSV_V1; }
 
     /** 受理默认值与历史合法集合分开，关闭新算法不会破坏已持久版本。 */
     public boolean supports(DocumentFormat format) {
@@ -45,6 +48,8 @@ public enum ProcessingProfile {
             case TEXT, MARKDOWN -> this == TEXT_V1;
             case PDF -> this == PDF_V2 || this == PDF_V3 || this == PDF_OCR_V4;
             case DOCX -> this == DOCX_V2 || this == DOCX_V3;
+            case XLSX -> this == XLSX_V1;
+            case CSV -> this == CSV_V1;
         };
     }
 
@@ -53,6 +58,8 @@ public enum ProcessingProfile {
         return switch (this) {
             case PDF_V2, PDF_V3, PDF_OCR_V4 -> ExtractionProtocol.Format.PDF;
             case DOCX_V2, DOCX_V3 -> ExtractionProtocol.Format.DOCX;
+            case XLSX_V1 -> ExtractionProtocol.Format.XLSX;
+            case CSV_V1 -> ExtractionProtocol.Format.CSV;
             case TEXT_V1 -> throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
         };
     }

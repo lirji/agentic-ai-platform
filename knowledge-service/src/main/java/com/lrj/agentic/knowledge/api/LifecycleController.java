@@ -42,7 +42,7 @@ public class LifecycleController {
         try (var input = file.getInputStream()) {
             var upload = UploadRules.validate(key, file.getOriginalFilename(), displayName,
                     input.readNBytes(ExtractionProtocol.MAX_SOURCE_BYTES + 1), file.getContentType(),
-                    parsing.pdfUploadEnabled(), parsing.docxUploadEnabled());
+                    parsing.pdfUploadEnabled(), parsing.docxUploadEnabled(), parsing.spreadsheetUploadEnabled());
             return ResponseEntity.accepted().body(service.update(JwtTrust.caller(jwt), id, key, Long.parseLong(expectedRevision), upload));
         } catch (IOException | NumberFormatException invalid) { throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID); }
     }

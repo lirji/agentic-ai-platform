@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.lrj.agentic.contract.knowledge.Extraction;
 import com.lrj.agentic.contract.knowledge.ExtractionProtocol;
+import com.lrj.agentic.contract.knowledge.SheetStructure;
 import com.lrj.agentic.knowledge.domain.KnowledgeError;
 import com.lrj.agentic.knowledge.domain.KnowledgeFailure;
 import java.util.List;
@@ -21,7 +22,7 @@ public final class ChunkSources {
 
     /** 公开来源类型沿稳定 code，结构位置不与原始文件字节混用。 */
     public enum Kind {
-        UTF8_BYTES("UTF8_BYTES"), PDF_PAGE("PDF_PAGE"), PARAGRAPH("PARAGRAPH"), TABLE_CELL("TABLE_CELL");
+        UTF8_BYTES("UTF8_BYTES"), PDF_PAGE("PDF_PAGE"), PARAGRAPH("PARAGRAPH"), TABLE_CELL("TABLE_CELL"), SHEET_CELL("SHEET_CELL");
         private final String code;
         Kind(String code) { this.code = code; }
         /** 位置类型不随Java枚举名称或顺序变更。 */
@@ -48,6 +49,7 @@ public final class ChunkSources {
                 case PDF_PAGE -> Kind.PDF_PAGE;
                 case PARAGRAPH -> Kind.PARAGRAPH;
                 case TABLE_CELL -> Kind.TABLE_CELL;
+                case SHEET_CELL -> Kind.SHEET_CELL;
             };
             return new Detail(block.blockId(), segment.startByte(), segment.endByte(), kind,
                     block.headingLevel(), block.location());
@@ -58,6 +60,7 @@ public final class ChunkSources {
     public static String structuredLocator(List<Detail> details) {
         if (details == null || details.isEmpty() || details.size() > MAX_SEGMENTS
                 || details.stream().anyMatch(part -> !validStructure(part))) { invalid(); }
+        if (details.getFirst().kind() == Kind.SHEET_CELL) { return sheetLocator(details); }
         if (details.getFirst().kind() != Kind.PDF_PAGE) { return docxLocator(details); }
         var pages = new TreeSet<Integer>();
         int previous = 0;
@@ -75,6 +78,7 @@ public final class ChunkSources {
         Integer heading = detail.headingLevel();
         if (detail.kind() != Kind.PARAGRAPH && heading != null || heading != null && (heading < 1 || heading > 9)) { return false; }
         return switch (detail.location()) {
+            case Extraction.SheetLocation location -> detail.kind() == Kind.SHEET_CELL && SheetStructure.valid(location);
             case Extraction.PdfLocation location -> detail.kind() == Kind.PDF_PAGE && between(location.page(), ExtractionProtocol.MAX_PAGES);
             case Extraction.ParagraphLocation location -> detail.kind() == Kind.PARAGRAPH
                     && between(location.bodyIndex(), ExtractionProtocol.MAX_BLOCKS)
@@ -118,7 +122,7 @@ public final class ChunkSources {
     /** 读取旧行不做回填；只有原文本格式可以生成 utf8-bytes 定位。 */
     public static String locator(Integer start, Integer end, String structured) {
         if (structured != null) {
-            if (start != null || end != null || !(validPdfLocator(structured) || validDocxLocator(structured))) {
+            if (start != null || end != null || !(validPdfLocator(structured) || validDocxLocator(structured) || validSheetLocator(structured))) {
                 throw new KnowledgeFailure(KnowledgeError.SOURCE_INVALID);
             }
             return structured;
@@ -166,6 +170,44 @@ public final class ChunkSources {
                         || nextTable == table && (tableClosed || nextRow < row || nextRow == row && nextColumn <= column)) { return false; }
                 table = nextTable; row = nextRow; column = nextColumn; tableClosed = false;
             }
+        }
+        return true;
+    }
+
+    /** 紧凑来源保留真实工作表序/行/列；名称和跨度仍由详细来源独立校验。 */
+    private static String sheetLocator(List<Detail> details) {
+        var positions = new LinkedHashSet<String>();
+        var names = new LinkedHashMap<Integer, String>();
+        var anchors = new LinkedHashMap<String, Extraction.SheetLocation>();
+        long previous = 0;
+        for (var detail : details) {
+            if (!(detail.location() instanceof Extraction.SheetLocation)) { invalid(); }
+            var cell = (Extraction.SheetLocation) detail.location();
+            long current = SheetStructure.position(cell);
+            String position = "s" + cell.sheetIndex() + "r" + cell.row() + "c" + cell.column();
+            var prior = anchors.putIfAbsent(position, cell);
+            var name = names.putIfAbsent(cell.sheetIndex(), cell.sheetName());
+            if (current < previous || prior != null && !prior.equals(cell) || name != null && !name.equals(cell.sheetName())) { invalid(); }
+            previous = current; positions.add(position);
+        }
+        String result = "sheet-cells:" + String.join(",", positions);
+        if (!validSheetLocator(result)) { invalid(); }
+        return result;
+    }
+
+    private static boolean validSheetLocator(String locator) {
+        if (locator.length() > MAX_LOCATOR_CHARS || !locator.startsWith("sheet-cells:")) { return false; }
+        String[] parts = locator.substring("sheet-cells:".length()).split(",", -1);
+        if (parts.length < 1 || parts.length > MAX_SEGMENTS) { return false; }
+        long previous = 0;
+        for (String part : parts) {
+            var match = java.util.regex.Pattern.compile("s([1-9][0-9]?)r([1-9][0-9]{0,4})c([1-9][0-9]{0,2})").matcher(part);
+            if (!match.matches()) { return false; }
+            var cell = new Extraction.SheetLocation(Integer.parseInt(match.group(1)), "-",
+                    Integer.parseInt(match.group(2)), Integer.parseInt(match.group(3)), 1, 1, false);
+            long current = SheetStructure.position(cell);
+            if (!SheetStructure.valid(cell) || current <= previous) { return false; }
+            previous = current;
         }
         return true;
     }

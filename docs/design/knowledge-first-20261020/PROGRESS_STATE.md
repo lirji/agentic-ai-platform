@@ -2,17 +2,18 @@
 
 ## 当前任务：优先交付S9E、S9F、S18B、S18C
 
-- 最新授权：用户要求“先做S9E S9F和S18B S18C”，已明确选择中英扫描PDF（含原生/扫描混合页）、XLSX、CSV，保留DOCX；记忆用于个人偏好和项目背景，用户确认后生效，支持编辑/停用/遗忘，默认90天过期且可调整。此要求替代先做S17B的顺序；不启动S17B–D或其他扩展。
+- 最新授权：用户要求“先做S9E S9F和S18B S18C”，已明确选择中英扫描PDF（含原生/扫描混合页）、XLSX、CSV，保留DOCX；记忆用于个人偏好和项目背景，用户确认后生效，支持编辑/停用/遗忘，默认90天过期且可调整。用户最新追加：剩余S9F、S18B、S18C完成后，将最新代码部署到现有本地Docker并启动（既有desktop-linux/agentic-ai-app入口28086，部署前核对实际目标），保留数据；此要求替代先做S17B的顺序；不启动S17B–D或其他扩展。
 - 执行顺序/清单：S9E扫描PDF OCR → S9F表格来源与引用 → S18B持久记忆治理 → S18C受控提议与注入。逐片补契约、实现前后端/Runtime、验证、更新进度及正常两仓Git交付，完成一片后继续下一片；parallel=no，无子Agent。
-- 当前阶段：S9E本地必需验收PASS，待两仓正常Git/CI交付，之后立刻继续S9F。契约[OCR_CONTRACTS](OCR_CONTRACTS.md)，验收[TEST_RESULT](../../qa/scanned-pdf-20261109/TEST_RESULT.md)；Java/Python/前端与固定依赖可选镜像齐备。全任务当前41 DONE/6 PLANNED/4 CONDITIONAL，四项优先任务尚未全部完成。
+- 当前阶段：S9E本地验收与分支CI PASS、两仓产品已合并推main；后端main CI PASS，前端main CI42556149525 PASS。S9F本地验收PASS，待Git/CI交付后继续S18B。契约[OCR_CONTRACTS](OCR_CONTRACTS.md)，验收[TEST_RESULT](../../qa/scanned-pdf-20261109/TEST_RESULT.md)；Java/Python/前端与固定依赖可选镜像齐备。全任务当前42 DONE/5 PLANNED/4 CONDITIONAL，四项优先任务尚未全部完成。
 - 已确认/待验证：两组业务选项由用户明确答复确认；受控中英/低清/混合页及表格机制样本用于验证，不冒充真实业务准确率。OCR采用Tesseract5.5.4，语言包固定官方提交和SHA-256；边界见[OCR_CONTRACTS](OCR_CONTRACTS.md)；实际新增模型费用未授权，不复用或重置旧预算。
-- Git：后端原目录`/Users/liruijun/personal/LLM/agentic-ai-platform`，当前`feat/scanned-pdf-ocr-20261109`，基线efa1864；前端`/Users/liruijun/personal/LLM/agentic-ai-platform-web`当前feat/scanned-pdf-ocr-20261109，基线120ba1e；两仓当前未提交改动均为S9E。正常提交/合并推main按既有授权；无新worktree。
-- 边界：不改变现有运行容器/共享基础设施，不部署生产，不清理用户文件/数据库/卷；本次本地验证用独立测试资源，保留原预算。S17A有效验收与交付不重做。
+- Git：后端原目录`/Users/liruijun/personal/LLM/agentic-ai-platform`，当前`feat/spreadsheet-sources-20261109`，S9E产品e32dc65；前端`/Users/liruijun/personal/LLM/agentic-ai-platform-web`基线f32b782，进入同名S9F分支。S9E交付收据已归档至docs/qa/scanned-pdf-20261109/delivery-result.json。正常提交/合并推main按既有授权；无新worktree。
+- 边界：新增授权仅覆盖三个任务验证交付后的本地Docker更新与启动；此前保留原容器，部署前核对目标/制品/迁移。仍不部署生产、不清理用户文件/数据库/卷；本次本地验证用独立测试资源，保留原预算。S17A有效验收与交付不重做。
 - 已验证：真实Tesseract中英/混合/36DPI低清/空页、版本/语言、超时/管道/取消回收通过；清晰受控样本78字归一CER=0，非真实业务准确率。Java全仓package228项及最新解析29/父进程/空配置绑定定向复验、Python76、前端全仓251单元/types/lint/build通过；新旧Java/Python共享金标已验证。日志`.logs/s9e/`和前端`.logs/s9e-*`，样本`docs/qa/scanned-pdf-20261109/`。
 - 数据/Runtime：新增V20仅扩展固定profile CHECK，test库迁移已成功；原dev/生产未迁移。首轮25项IT的11项因原搜索两容器已于3天前停止而失败；改用隔离实例后25项真实IT全PASS，最新2项核心链路复验PASS。另建本任务隔离搜索容器agentic-s9e-qdrant/elastic（28333/29300），不重启原容器。当前原knowledge unhealthy、qa-worker重启，现场问题不归此次OCR改动，不擅自修复。
 - 最终Runtime：Linux/ARM64 Knowledge OCR镜像c0f6678af204（完整digest见linux-result.json），无网络/只读/384MiB限制下4.83秒、峰值312926208字节，输出与共享金标完全相同。版本、语言hash、构建源码摘要已留证；仅隔离探针，没有部署。
-- 在途/保留：本任务隔离搜索两容器均已停止（不删数据）；engine/library/rpm/parser探针均退出；前端28306预览14875仍运行供截图复核。所有构建/测试已成功退出，当前两仓fetch用于正常交付。`.local/s9e`、`.logs/s9e`、镜像、退出容器和test租户证据保留，无新增worktree。
-- 下一步：两仓只暂存本片路径，提交feat/scanned-pdf-ocr-20261109、分支CI通过后正常合并推main并检查main CI；记录收据后原目录建S9F分支，冻结XLSX/CSV工作表/表头/行列与公式缓存契约并实现。随后S18B→S18C，不等待用户重复继续。
+- 在途/保留：本任务隔离搜索两容器均已停止（不删数据）；engine/library/rpm/parser探针均退出；前端28306预览14875仍运行供截图复核。所有构建/测试已成功退出，后端e32dc65/前端f32b782已提交并推任务分支；分支CI42555723935/42555724768均PASS，已合并main；后端main CI42555900716 PASS，前端main CI42556149525 PASS。`.local/s9e`、`.logs/s9e`、镜像、退出容器和test租户证据保留，无新增worktree。
+- S9F检查点：契约[SPREADSHEET_CONTRACTS](SPREADSHEET_CONTRACTS.md)已冻结；解析/独立上传开关/Java与Python新类型和来源/前端引用已实现，最终验收归档中。真实XLSX/CSV共享金标已生成（无模型调用）；解析边界14项、Java定向26项和knowledge/parser模块package PASS。首轮Python测试因测试代码误用from_wire失败已修复；最终117项Python PASS、P05两个代次Java12项PASS，前端254项单测/type/lint/build、浏览器1440/414引用与拒绝恢复PASS。Linux无网络只读384MiB探针XLSX/CSV与共享提取物完全一致。V21已仅在test库实际迁移成功，完整27项结构处理IT PASS，日志`.logs/s9f/`；任务隔离搜索实例agentic-s9e-qdrant/elastic为本轮复用启动，原容器不变。
+- 下一步：S9F代码/文档完成，提交两仓分支并检查CI，正常合并推main；S9E两仓CI交付已PASS，收据已归档。随后S18B→S18C，全部验收/Git交付后更新并启动既有本地Docker、执行健康与业务smoke，不等待用户重复继续。
 - 采用规范：continue-approved-delivery、backend-architecture-design、backend-implementation及后续前端/验证/Runtime/Git Owner；architecture-standards业务建模/持久化/分布式/并发安全/中间件/容量/发布，personal-tech-stack相关并发/日志/状态规则。本轮无受治理Run，沿既有手工有界pass。
 
 ## 上一检查点：2026-11-09进度同步已交付

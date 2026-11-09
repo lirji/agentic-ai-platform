@@ -24,7 +24,7 @@ class GenerationProcessingTest {
     private final ProcessingJson json = new ProcessingJson(mapper);
 
     @ParameterizedTest
-    @ValueSource(strings = {"text", "pdf-v2", "docx-v2", "pdf-v3", "docx-v3"})
+    @ValueSource(strings = {"text", "pdf-v2", "docx-v2", "pdf-v3", "docx-v3", "xlsx", "csv"})
     void readsBothGenerationGoldensAndRoundTripsExactly(String name) throws Exception {
         var identities = new ArrayList<List<String>>();
         var batches = new ArrayList<String>();

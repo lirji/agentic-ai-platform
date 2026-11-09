@@ -77,7 +77,7 @@ public class CandidateController {
         if(file.getSize()>ExtractionProtocol.MAX_SOURCE_BYTES) throw new KnowledgeFailure(KnowledgeError.FILE_TOO_LARGE);
         try(var stream=file.getInputStream()) {
             byte[] bytes=stream.readNBytes(ExtractionProtocol.MAX_SOURCE_BYTES+1);
-            var upload=UploadRules.validate(key,file.getOriginalFilename(),input.title(),bytes,file.getContentType(),parsing.pdfUploadEnabled(),parsing.docxUploadEnabled());
+            var upload=UploadRules.validate(key,file.getOriginalFilename(),input.title(),bytes,file.getContentType(),parsing.pdfUploadEnabled(),parsing.docxUploadEnabled(), parsing.spreadsheetUploadEnabled());
             return service.save(JwtTrust.caller(jwt),id,key,input,upload,create);
         } catch(IOException invalid) { throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID); }
     }

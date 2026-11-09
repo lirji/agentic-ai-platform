@@ -8,7 +8,7 @@
 
 ## 阅读入口
 
-- [20 项差距的实施方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)：按当前三框架与 Java/React 边界拆为 11 批、51 项任务，包含依赖、契约前置、兼容路线及验收。2026-11-09同步：41项DONE、6项PLANNED、4项CONDITIONAL；S9E本地验收通过，按用户优先顺序继续S9F、S18B、S18C，具体范围与未验证项见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+- [20 项差距的实施方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)：按当前三框架与 Java/React 边界拆为 11 批、51 项任务，包含依赖、契约前置、兼容路线及验收。2026-11-09同步：42项DONE、5项PLANNED、4项CONDITIONAL；S9E已交付，S9F本地验收通过，按用户优先顺序继续S18B、S18C，具体范围与未验证项见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 - [与 langchain4j-platform 的能力差距](.engineering/exploration/CAPABILITY_GAPS.md)：业务与实现深度的 20 项对照及固定源码证据，为新计划提供依据。
 - [首期业务与工程约定](docs/design/knowledge-first-20261020/BRIEF.md)：独立运行、业务优先级、React 与技能代码规范，以及模型、数据和代码参考资产。
 - [目标架构](docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md)：三框架职责、模块与数据所有权、任务恢复、安全边界及 P0–P4 演进建议。
@@ -25,7 +25,7 @@
 - [文档来源映射](docs/doc-map.md)：参考仓库基线、源码领域与后续同步规则。
 - [任务进度与恢复入口](CODEX_PROGRESS.md)：实施、验证与交付状态。
 - [最小持续集成契约](docs/design/knowledge-first-20261020/CI_CONTRACTS.md)：两仓自动检查、共享 Java/Python 报文金标及无付费运行边界；[S8F验收](docs/qa/ci-contracts-20261024/TEST_RESULT.md)。
-- [结构化资料设计](docs/design/knowledge-first-20261020/PARSING_DESIGN.md)与[P-v2契约](docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)：已接通原生PDF及DOCX上传，引用保留真实页码或段落/表格位置，兼容旧TXT/MD。DOCX标题、表头、矩形合并与缺失信息告警见[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)；新受理须按[运行说明](deploy/README.md)显式开启，不支持OCR。[S9D验收](docs/qa/structured-chunking-20261025/TEST_RESULT.md)补齐按章节、表格行和相邻页分块及新旧profile兼容，引用保持原文。
+- [结构化资料设计](docs/design/knowledge-first-20261020/PARSING_DESIGN.md)与[P-v2契约](docs/design/knowledge-first-20261020/STRUCTURED_PROCESSING_CONTRACTS.md)：已接通原生PDF及DOCX上传，引用保留真实页码或段落/表格位置，兼容旧TXT/MD。DOCX标题、表头、矩形合并与缺失信息告警见[S9C验收](docs/qa/docx-ingestion-20261025/TEST_RESULT.md)；新受理须按[运行说明](deploy/README.md)显式开启。扫描PDF另见[S9E](docs/qa/scanned-pdf-20261109/TEST_RESULT.md)。[S9D验收](docs/qa/structured-chunking-20261025/TEST_RESULT.md)补齐按章节、表格行和相邻页分块及新旧profile兼容，引用保持原文。
 
 - [文档生命周期设计](docs/design/knowledge-first-20261020/LIFECYCLE_CONTRACTS.md)：区分内容修订、发布版和索引代次，定义更新失败、撤下/逻辑删除、旧引用与清理边界；[S10A设计验证](docs/qa/knowledge-lifecycle-design-20261025/TEST_RESULT.md)。更新、撤下、逻辑删除与固定快照重索引已按S10B–D实现。
 
@@ -44,3 +44,5 @@
 新授权检索管线已通过Java/Python共享金标和实际容器验证：Java提供当前发布候选与最终核权，LlamaIndex以完整身份执行一次RRF融合，具备总期限与共享容量限制。[S11C验收](docs/qa/llama-retrieval-20261028/TEST_RESULT.md)记录适用范围；现有消费者接入和独立模型精排继续按S11D/E推进。
 
 独立精排的50项候选、原生异步后处理、两次核权、累计预算与失败机制已通过[S11D协议验收](docs/qa/rerank-budget-20261028/TEST_RESULT.md)。真实模型仍关闭，实际质量消融待账号及独立额度条件满足；消费者统一接入已通过S11E验收。受控追问S12A支持保留原问题、展示实际检索问题与回退诊断，[验收结果](docs/qa/contextual-qa-20261030/TEST_RESULT.md)含真实持久链路和3题真实模型召回对照；运行容器未自动更新。
+
+- [S9F表格验收](docs/qa/spreadsheet-sources-20261109/TEST_RESULT.md)：XLSX/UTF-8 CSV真实工作表、表头和行列来源，公式仅读缓存；[启用与回退边界](docs/qa/spreadsheet-sources-20261109/RUNTIME.md)。

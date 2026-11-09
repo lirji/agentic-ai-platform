@@ -37,6 +37,7 @@ public final class ParserMain {
                 case PDF -> ocr ? new OcrPdfExtractor(configuredPath(OcrProtocol.EXECUTABLE_PROPERTY),
                         configuredPath(OcrProtocol.DATA_PROPERTY)).extract(source) : new PdfExtractor().extract(source);
                 case DOCX -> new DocxExtractor().extract(source);
+                case XLSX, CSV -> new SheetExtractor().extract(format, source);
             };
             byte[] json = new ObjectMapper().writeValueAsBytes(extraction);
             if (json.length > ExtractionProtocol.MAX_OUTPUT_BYTES) {

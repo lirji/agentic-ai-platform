@@ -275,3 +275,7 @@ S9C传递依赖补丁：Boot3.5.16默认Commons Lang3.17.0覆盖了Compress所�
 ## S9E：本地中英扫描PDF
 
 用户已启用扫描/混合页范围。现有PDFBox3.0.8负责光栅与真实页序，Tesseract5.5.4 + tessdata_fast固定提交识别中英；可选Knowledge镜像使用Leptonica1.87.0。均为CPU本地执行，新增版本保持旧profile兼容；不新增云解析或付费模型。选择、官方来源、依赖摘要、边界与限制见[OCR契约](../knowledge-first-20261020/OCR_CONTRACTS.md)及[运行说明](../../qa/scanned-pdf-20261109/RUNTIME.md)。
+
+## S9F：本地表格读取
+
+用户已确认XLSX/CSV范围；复用POI6.0.0读取XLSX，新增已选定Commons CSV1.14.1（Apache-2.0、Java8+）处理RFC4180，避免自写引号/换行状态机。依赖只进入已有隔离解析进程，沿20秒/128MiB Java堆及有界ZIP预算，无新服务或付费出口。固定版本、官方安全公告核验、公式缓存/外链策略和兼容启用顺序见[表格契约](../knowledge-first-20261020/SPREADSHEET_CONTRACTS.md)。这项常规库选择属于用户已授权实施范围；Code Hygiene登记commons-csv为当前slice已选依赖。

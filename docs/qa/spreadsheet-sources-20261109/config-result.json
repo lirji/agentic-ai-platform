@@ -1,0 +1,5 @@
+{
+  "result": "PASS",
+  "guard": "spreadsheets requires parsing",
+  "sideEffects": "rejected before prepare snapshot or service mutation"
+}

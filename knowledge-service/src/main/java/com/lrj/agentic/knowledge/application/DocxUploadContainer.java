@@ -35,7 +35,10 @@ final class DocxUploadContainer {
     private DocxUploadContainer() { }
 
     /** 有界读取ZIP，避免为了跳到元数据而让请求线程无限解压；不相信声明大小。 */
-    static void validate(byte[] source) {
+    static void validate(byte[] source) { validate(source, ExtractionProtocol.DOCX_MAIN_TYPE); }
+
+    /** 普通XLSX与DOCX共用入口容器边界，主部件类型仍严格区分。 */
+    static void validate(byte[] source, String mainType) {
         if (java.util.Arrays.equals(java.util.Arrays.copyOf(source, OLE.length), OLE)) {
             throw new KnowledgeFailure(KnowledgeError.PARSE_ENCRYPTED);
         }
@@ -99,7 +102,7 @@ final class DocxUploadContainer {
         });
         if (main.size() != 1) { invalid(); }
         String path = main.iterator().next();
-        if (!ExtractionProtocol.DOCX_MAIN_TYPE.equals(types.get(path)) || !names.contains(path.substring(1))) { invalid(); }
+        if (!mainType.equals(types.get(path)) || !names.contains(path.substring(1))) { invalid(); }
     }
 
     /** 入口元数据也禁用DTD/外部实体；配置失败直接拒绝，不降级解析。 */

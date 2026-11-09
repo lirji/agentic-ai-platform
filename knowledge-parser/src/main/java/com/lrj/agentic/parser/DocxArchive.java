@@ -47,6 +47,11 @@ final class DocxArchive {
 
     /** 条目数、单条/总量及膨胀比都按真实读取计数，ZIP声明长度不是资源依据。 */
     static Validated validate(byte[] source) throws ParseFailure {
+        return validate(source, MAIN_TYPE);
+    }
+
+    /** XLSX复用同一ZIP/XML安全边界，但主部件类型必须精确匹配。 */
+    static Validated validate(byte[] source, String mainType) throws ParseFailure {
         if (source.length > ExtractionProtocol.MAX_SOURCE_BYTES) { throw new ParseFailure(Exit.RESOURCE_LIMIT); }
         if (java.util.Arrays.equals(java.util.Arrays.copyOf(source, OLE.length), OLE)) {
             throw new ParseFailure(Exit.ENCRYPTED);
@@ -73,7 +78,7 @@ final class DocxArchive {
             var metadata = new Metadata();
             xml(read(zip, entries.get(TYPES)), metadata.types());
             xml(read(zip, entries.get(ROOT_RELS)), metadata.relationships(true));
-            if (metadata.main == null || !MAIN_TYPE.equals(metadata.types.get("/" + metadata.main))
+            if (metadata.main == null || !mainType.equals(metadata.types.get("/" + metadata.main))
                     || !entries.containsKey(metadata.main)) { throw new ParseFailure(Exit.INVALID); }
             long total = 0;
             for (var entry : entries.values()) {

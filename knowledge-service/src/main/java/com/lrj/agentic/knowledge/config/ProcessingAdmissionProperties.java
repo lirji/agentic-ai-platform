@@ -27,6 +27,7 @@ public record ProcessingAdmissionProperties(@NotNull @DefaultValue("BLOCK_V2") M
         return switch (format) {
             case PDF -> structuredProfile == Mode.OCR_V4 ? ProcessingProfile.PDF_OCR_V4 : ProcessingProfile.PDF_V3;
             case DOCX -> ProcessingProfile.DOCX_V3;
+            case XLSX, CSV -> format.profile();
             case TEXT, MARKDOWN -> ProcessingProfile.TEXT_V1;
         };
     }

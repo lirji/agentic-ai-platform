@@ -32,7 +32,7 @@ class StructuredProfileTest {
     private final ProcessingJson json = new ProcessingJson(mapper);
 
     @ParameterizedTest
-    @ValueSource(strings = {"docx", "long-docx", "pdf", "ocr"})
+    @ValueSource(strings = {"docx", "long-docx", "pdf", "ocr", "sheet-xlsx", "sheet-csv"})
     void realExtractionAndNodesRoundTripWithAllSources(String name) throws Exception {
         JsonNode tree = fixture(name);
         var request = request(tree);
@@ -45,7 +45,7 @@ class StructuredProfileTest {
         for (var chunk : result.chunks()) {
             var details = ChunkSources.details(chunk, request.extraction());
             assertThat(details).hasSize(chunk.segments().size());
-            assertThat(ChunkSources.structuredLocator(details)).startsWith(request.extraction().format() == com.lrj.agentic.contract.knowledge.ExtractionProtocol.Format.PDF ? "pdf-pages:" : "docx-blocks:");
+            assertThat(ChunkSources.structuredLocator(details)).startsWith(request.extraction().format() == com.lrj.agentic.contract.knowledge.ExtractionProtocol.Format.PDF ? "pdf-pages:" : name.startsWith("sheet-") ? "sheet-cells:" : "docx-blocks:");
             assertThat(chunk.text()).doesNotContain("章节：", "表头：");
         }
         if (name.equals("pdf")) {
@@ -140,7 +140,7 @@ class StructuredProfileTest {
     }
 
     private JsonNode fixture(String name) throws Exception {
-        try (var input = getClass().getResourceAsStream("/structured-v3-" + name + "-golden.json")) { return mapper.readTree(input); }
+        try (var input = getClass().getResourceAsStream((name.startsWith("sheet-") ? "/structured-" : "/structured-v3-") + name + "-golden.json")) { return mapper.readTree(input); }
     }
     private StructuredPreparedDocument.Request request(JsonNode tree) {
         return json.read(json.write(tree.get("request")), StructuredPreparedDocument.Request.class, KnowledgeError.SOURCE_INVALID);

@@ -227,10 +227,10 @@ public class CandidateService {
     }
     /** 能力只表示当前入口配置，不把准备受理声明为原文修正生效。 */
     public Capabilities capabilities() {
-        return new Capabilities(properties.enabled(),parsing.pdfUploadEnabled(),parsing.docxUploadEnabled(),
+        return new Capabilities(properties.enabled(),parsing.pdfUploadEnabled(),parsing.docxUploadEnabled(),parsing.spreadsheetUploadEnabled(),
                 properties.enabled()&&processingEnabled&&lifecycle.createEnabled()&&lifecycle.generationEnabled());
     }
-    public record Capabilities(boolean enabled,boolean pdfUploadEnabled,boolean docxUploadEnabled,boolean preparationEnabled) { }
+    public record Capabilities(boolean enabled,boolean pdfUploadEnabled,boolean docxUploadEnabled,boolean spreadsheetUploadEnabled,boolean preparationEnabled) { }
 
     private Evaluation evaluation(Caller owner,Root root,Revision row,long documentRevision,Publication publication,
             List<TextCheck> checks,List<DatasetRow> datasets,EvaluationBinding bound) {

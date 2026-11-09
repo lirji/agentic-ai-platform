@@ -83,6 +83,8 @@ final class StructuredSources {
             }
             GroupKey current = block.location() instanceof Extraction.TableLocation cell
                     ? new GroupKey(block.kind(), cell.bodyIndex(), cell.tableIndex(), cell.row())
+                    : block.location() instanceof Extraction.SheetLocation sheet
+                    ? new GroupKey(block.kind(), sheet.sheetIndex(), sheet.sheetIndex(), sheet.row())
                     : new GroupKey(block.kind(), 0, 0, 0);
             if (!current.equals(key) || pending.size() == ChunkSources.MAX_SEGMENTS) {
                 next = accept(pending, headings, headers, result, next);
@@ -98,6 +100,9 @@ final class StructuredSources {
             }
             if (!Extraction.blank(block.text())) {
                 pending.add(block);
+                if (block.location() instanceof Extraction.SheetLocation cell && cell.header()) {
+                    headers.computeIfAbsent(cell.sheetIndex(), ignored -> new ArrayList<>()).add(block);
+                }
                 if (block.location() instanceof Extraction.TableLocation cell && cell.header()) {
                     headers.computeIfAbsent(cell.tableIndex(), ignored -> new ArrayList<>()).add(block);
                 }
@@ -122,6 +127,17 @@ final class StructuredSources {
                 context.add("表头：");
                 prior.forEach(block -> context.add(block.text()));
             }
+        }
+        if (pending.getFirst().location() instanceof Extraction.SheetLocation first) {
+            context.add("工作表："); context.add(first.sheetName());
+            var prior = headers.getOrDefault(first.sheetIndex(), List.of()).stream().filter(block -> {
+                var header = (Extraction.SheetLocation) block.location();
+                return header.row() < first.row() && pending.stream().anyMatch(item -> {
+                    var cell = (Extraction.SheetLocation) item.location();
+                    return header.column() < cell.column() + cell.columnSpan() && cell.column() < header.column() + header.columnSpan();
+                });
+            }).toList();
+            if (!prior.isEmpty()) { context.add("表头："); prior.forEach(block -> context.add(block.text())); }
         }
         require(context.stream().mapToInt(StructuredSources::codePoints).sum() + Math.max(0, context.size() - 1) <= MAX_CONTEXT);
         pending.forEach(block -> groups.put(block.blockId(), next));

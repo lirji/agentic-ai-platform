@@ -32,12 +32,19 @@ public final class UploadRules {
     /** 两种二进制格式独立受理；DOCX还核对普通Word容器，不能把任意ZIP存成可处理资料。 */
     public static Upload validate(String idempotencyKey, String fileName, String displayName, byte[] bytes,
             String requestContentType, boolean pdfEnabled, boolean docxEnabled) {
+        return validate(idempotencyKey, fileName, displayName, bytes, requestContentType, pdfEnabled, docxEnabled, false);
+    }
+
+    /** 新表格格式独立受理，上传关闭不影响已持久任务读取与恢复。 */
+    public static Upload validate(String idempotencyKey, String fileName, String displayName, byte[] bytes,
+            String requestContentType, boolean pdfEnabled, boolean docxEnabled, boolean spreadsheetEnabled) {
         if (idempotencyKey == null || !IDEMPOTENCY_KEY.matcher(idempotencyKey).matches()
                 || bytes == null || bytes.length == 0 || fileName == null) {
             throw new KnowledgeFailure(KnowledgeError.INPUT_INVALID);
         }
         DocumentFormat format = DocumentFormat.fromFilename(fileName);
-        if (format == DocumentFormat.PDF && !pdfEnabled || format == DocumentFormat.DOCX && !docxEnabled) {
+        if (format == DocumentFormat.PDF && !pdfEnabled || format == DocumentFormat.DOCX && !docxEnabled
+                || (format == DocumentFormat.XLSX || format == DocumentFormat.CSV) && !spreadsheetEnabled) {
             throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT);
         }
         if (bytes.length > format.maximum()) {
@@ -54,11 +61,16 @@ public final class UploadRules {
         if (format == DocumentFormat.PDF && (!pdfSignature || !contentType.equalsIgnoreCase(requestContentType))) {
             throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT);
         }
-        if (format == DocumentFormat.DOCX) {
+        if (format == DocumentFormat.DOCX || format == DocumentFormat.XLSX) {
             if (!contentType.equalsIgnoreCase(requestContentType)) { throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT); }
-            DocxUploadContainer.validate(bytes);
+            DocxUploadContainer.validate(bytes, format == DocumentFormat.DOCX
+                    ? com.lrj.agentic.contract.knowledge.ExtractionProtocol.DOCX_MAIN_TYPE
+                    : com.lrj.agentic.contract.knowledge.SheetProtocol.XLSX_MAIN_TYPE);
         }
-        if (!format.profile().structured()) {
+        if (format == DocumentFormat.CSV && !contentType.equalsIgnoreCase(requestContentType)) {
+            throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT);
+        }
+        if (!format.profile().structured() || format == DocumentFormat.CSV) {
             if (pdfSignature) { throw new KnowledgeFailure(KnowledgeError.UNSUPPORTED_FORMAT); }
             try {
                 String text = StandardCharsets.UTF_8.newDecoder()

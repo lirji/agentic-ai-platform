@@ -6,6 +6,7 @@ from typing import Literal, Self
 
 from pydantic import Field, field_validator, model_validator
 
+from agentic_ai.processing.sheet_protocol import MAX_SHEET_COLUMNS, MAX_SHEET_ROWS, MAX_SHEETS
 from agentic_ai.tasks.models import CanonicalId, Sha256, WireModel
 
 MAX_QUESTION = 2000
@@ -77,6 +78,23 @@ class CitationSource(WireModel):
                 and all(re.fullmatch(r"[1-9][0-9]{0,2}", page) for page in pages)
                 and all(int(page) <= 200 for page in pages)
                 and list(map(int, pages)) == sorted(set(map(int, pages)))
+            ):
+                return value
+        if value.startswith("sheet-cells:"):
+            parts = value.removeprefix("sheet-cells:").split(",")
+            sheet_positions: list[tuple[int, int, int]] = []
+            for part in parts:
+                match = re.fullmatch(r"s([1-9][0-9]?)r([1-9][0-9]{0,4})c([1-9][0-9]{0,2})", part)
+                if not match:
+                    break
+                sheet, row, column = map(int, match.groups())
+                if sheet > MAX_SHEETS or row > MAX_SHEET_ROWS or column > MAX_SHEET_COLUMNS:
+                    break
+                sheet_positions.append((sheet, row, column))
+            if (
+                1 <= len(parts) <= 16
+                and len(sheet_positions) == len(parts)
+                and sheet_positions == sorted(set(sheet_positions))
             ):
                 return value
         if value.startswith("docx-blocks:"):

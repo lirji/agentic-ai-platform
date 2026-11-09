@@ -31,8 +31,8 @@ public record Extraction(@JsonProperty(required = true) String schemaVersion,
     /** 由互斥字段辨别位置，不增加类型字段或改变已发布PDF JSON。 */
     @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
     @JsonSubTypes({@JsonSubTypes.Type(PdfLocation.class), @JsonSubTypes.Type(ParagraphLocation.class),
-            @JsonSubTypes.Type(TableLocation.class)})
-    public sealed interface Location permits PdfLocation, ParagraphLocation, TableLocation {
+            @JsonSubTypes.Type(TableLocation.class), @JsonSubTypes.Type(SheetLocation.class)})
+    public sealed interface Location permits PdfLocation, ParagraphLocation, TableLocation, SheetLocation {
         /** 摘要仅使用固定字段顺序，不依赖JSON排列。 */
         String key();
     }
@@ -61,6 +61,16 @@ public record Extraction(@JsonProperty(required = true) String schemaVersion,
                 + ":" + rowSpan + ":" + columnSpan + ":" + (header ? "1" : "0"); }
     }
 
+    /** 工作表名称与真实行列共同参与身份，CSV使用固定单表名，不借用DOCX坐标。 */
+    public record SheetLocation(@JsonProperty(required = true) int sheetIndex,
+            @JsonProperty(required = true) String sheetName, @JsonProperty(required = true) int row,
+            @JsonProperty(required = true) int column, @JsonProperty(required = true) int rowSpan,
+            @JsonProperty(required = true) int columnSpan, @JsonProperty(required = true) boolean header) implements Location {
+        /** 名称先摘要避免分隔符歧义，原名称仍供来源展示。 */
+        public String key() { return "sheet:" + sheetIndex + ":" + digest(sheetName) + ":" + row + ":" + column
+                + ":" + rowSpan + ":" + columnSpan + ":" + (header ? "1" : "0"); }
+    }
+
     /** null 位置表示格式能力边界，页告警必须绑定实际页块。 */
     public record Warning(@JsonProperty(required = true) WarningCode code,
             @JsonProperty(required = true) String locationKey) {
@@ -76,7 +86,8 @@ public record Extraction(@JsonProperty(required = true) String schemaVersion,
                 && sourceSize > 0 && sourceSize <= ExtractionProtocol.MAX_SOURCE_BYTES);
         require(blocks != null && !blocks.isEmpty() && blocks.size() <= ExtractionProtocol.MAX_BLOCKS);
         if (format == Format.DOCX) { DocxStructure.validate(blocks, warnings); }
-        else { require(blocks.size() <= ExtractionProtocol.MAX_PAGES); }
+        else if (format == Format.PDF) { require(blocks.size() <= ExtractionProtocol.MAX_PAGES); }
+        else { SheetStructure.validate(format, blocks, warnings); }
         List<Warning> expectedWarnings = new ArrayList<>(List.of(
                 new Warning(WarningCode.PDF_LAYOUT_APPROXIMATE, null),
                 new Warning(WarningCode.PDF_NON_TEXT_CONTENT_OMITTED, null)));
@@ -162,6 +173,16 @@ public record Extraction(@JsonProperty(required = true) String schemaVersion,
                 hash, source.length, List.copyOf(blocks), ordered, manifest(ExtractionProtocol.SCHEMA,
                 Format.DOCX, ExtractionProtocol.DOCX_PARSER, hash, source.length, blocks, ordered))
                 .validated(hash, source.length);
+    }
+
+    /** 表格适配器构造后立即执行完整协议验证，接收方仍独立复核。 */
+    public static Extraction sheet(Format format, byte[] source, List<Block> blocks, List<Warning> warnings) {
+        require(format == Format.XLSX || format == Format.CSV);
+        String hash = digest(source);
+        List<Warning> ordered = sorted(warnings.stream().distinct().toList());
+        return new Extraction(ExtractionProtocol.SCHEMA, format, format.parser(), hash, source.length,
+                List.copyOf(blocks), ordered, manifest(ExtractionProtocol.SCHEMA, format, format.parser(),
+                hash, source.length, blocks, ordered)).validated(hash, source.length);
     }
 
     /** 块身份从原文件摘要及完整位置生成，调用方不能传入自造的blockId。 */

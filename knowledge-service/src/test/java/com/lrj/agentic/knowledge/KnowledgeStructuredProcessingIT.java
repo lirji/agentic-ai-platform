@@ -105,6 +105,35 @@ class KnowledgeStructuredProcessingIT {
                 .isInstanceOf(org.springframework.dao.DataAccessException.class);
     }
 
+    @ParameterizedTest @CsvSource({"XLSX,multi-sheet.xlsx,5", "CSV,quoted.csv,3"})
+    void sheetsPublishSearchAndReturnAuthorizedRealCoordinates(DocumentFormat format, String file, int expectedChunks) throws Exception {
+        Caller owner = owner(); String key = UUID.randomUUID().toString();
+        byte[] bytes = Files.readAllBytes(Path.of("../docs/qa/spreadsheet-sources-20261109/fixtures").resolve(file));
+        var job = knowledge.submit(owner, key, UploadRules.validate(key, file, null, bytes, format.contentType(), false, false, true));
+        var model = new Model(); runner(model, index, parser).run(claim(job, "sheet-it"));
+        assertThat(knowledge.ingestion(owner, job.jobId()).status()).isEqualTo(IngestionStatus.READY);
+        var search = search(model, index); var sources = new KnowledgeSources(repository, search, json);
+        assertThat(sources.metadata(owner, job.documentId(), 1).format()).isEqualTo(format);
+        List<String> ids = jdbc.queryForList("SELECT chunk_id FROM knowledge_chunk WHERE job_id=? ORDER BY ordinal", String.class, job.jobId());
+        assertThat(ids).hasSize(expectedChunks);
+        var details = sources.source(owner, job.documentId(), 1, ids.get(1)).segments();
+        assertThat(details).hasSize(3).allMatch(part -> part.kind() == ChunkSources.Kind.SHEET_CELL);
+        assertThat(((Extraction.SheetLocation) details.getFirst().location()).row()).isEqualTo(2);
+        assertThat(search.citation(owner, job.documentId(), 1, ids.get(1)).source().locator()).isEqualTo("sheet-cells:s1r2c1,s1r2c2,s1r2c3");
+        assertThat(search.citation(owner, job.documentId(), 1, ids.get(1)).text()).contains(format == DocumentFormat.XLSX ? "000123" : "00123");
+        for (var sink : ProcessingClaim.Sink.values()) {
+            assertThat(index.search(sink, owner, "编号", model.query(owner, "编号"), List.of(job.documentId()), 10,
+                    java.time.Duration.ofSeconds(8))).isNotEmpty();
+        }
+        for (Caller denied : List.of(new Caller(owner.tenantId(), "other"), new Caller("other-tenant", owner.userId()))) {
+            error(KnowledgeError.NOT_FOUND, () -> sources.metadata(denied, job.documentId(), 1));
+            error(KnowledgeError.NOT_FOUND, () -> sources.source(denied, job.documentId(), 1, ids.get(1)));
+        }
+        assertThatThrownBy(() -> jdbc.update("UPDATE knowledge_ingestion SET parser_profile=? WHERE job_id=?",
+                com.lrj.agentic.contract.knowledge.ExtractionProtocol.DOCX_PARSER, job.jobId()))
+                .isInstanceOf(org.springframework.dao.DataAccessException.class);
+    }
+
     @Test void structuralAndLegacyProfilesCoexistWithRealSourcesAndIndependentAdmissionSwitch() throws Exception {
         Caller owner = owner();
         var model = new Model();
@@ -491,6 +520,8 @@ class KnowledgeStructuredProcessingIT {
                 case DOCX_V3 -> "/structured-v3-long-docx-golden.json";
                 case PDF_V3 -> "/structured-v3-pdf-golden.json";
                 case PDF_OCR_V4 -> "/structured-v3-ocr-golden.json";
+                case XLSX_V1 -> "/structured-sheet-xlsx-golden.json";
+                case CSV_V1 -> "/structured-sheet-csv-golden.json";
                 case TEXT_V1 -> throw new AssertionError("v1不能进入结构准备");
             };
             try (var input = getClass().getResourceAsStream(fixture)) {

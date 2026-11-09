@@ -73,6 +73,8 @@ def source_contents(root: Path, revision: str | None = None) -> dict[str, bytes]
 
 def prepare(args: argparse.Namespace) -> None:
     """根据真实本机 helper 生成各服务最小配置，制作可追溯的源码副本。"""
+    if args.spreadsheets and not args.parsing:
+        raise ValueError("表格受理需要同时启用--parsing")
     if args.ocr and not args.parsing:
         raise ValueError("OCR需要同时启用--parsing")
     if args.structured_profile == "OCR_V4" and not args.ocr:
@@ -104,6 +106,7 @@ def prepare(args: argparse.Namespace) -> None:
         "ocr": args.ocr,
         "pdf": args.pdf,
         "docx": args.docx,
+        "spreadsheets": args.spreadsheets,
         "structuredProfile": args.structured_profile,
     }
     fingerprint = hashlib.sha256(
@@ -174,6 +177,7 @@ def prepare(args: argparse.Namespace) -> None:
             "KNOWLEDGE_PARSING_ENABLED": str(args.parsing).lower(),
             "KNOWLEDGE_PDF_UPLOAD_ENABLED": str(args.pdf).lower(),
             "KNOWLEDGE_DOCX_UPLOAD_ENABLED": str(args.docx).lower(),
+            "KNOWLEDGE_SPREADSHEET_UPLOAD_ENABLED": str(args.spreadsheets).lower(),
             "KNOWLEDGE_STRUCTURED_PROFILE": args.structured_profile,
         }
     )
@@ -512,6 +516,7 @@ def main() -> None:
     parser.add_argument("--ocr", action="store_true", help="构建固定中英OCR引擎，需--parsing")
     parser.add_argument("--pdf", action="store_true")
     parser.add_argument("--docx", action="store_true")
+    parser.add_argument("--spreadsheets", action="store_true", help="启用XLSX/CSV受理，需--parsing")
     parser.add_argument("--identity-mode", choices=("local", "oidc"), default="local")
     parser.add_argument("--sharing", action="store_true", help="仅与oidc一起启用已验收的只读共享")
     parser.add_argument("--feedback", action="store_true", help="启用所有者反馈及任务引用证明")

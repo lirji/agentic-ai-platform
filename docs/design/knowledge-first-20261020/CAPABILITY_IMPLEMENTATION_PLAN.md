@@ -166,7 +166,7 @@ S8A 至少给出 Recall@K、MRR/nDCG 的相关性标注与聚合口径，另列�
 
 普通软件改动的回退保留旧契约/profile 和兼容数据库；已发生业务效果通过查询对账/补偿处理。允许的正常 Git 提交、合并、推送沿用户持续授权执行；不强推，不绕过必要失败门禁，不自动生产部署。
 
-当前状态（2026-11-09同步）：S16A–D及S17A已按各自范围验收交付；S16D见[验收](../../qa/operational-alerts-20261102/TEST_RESULT.md)，S17A两仓合并推main及CI见[交付收据](../../qa/isolated-release-validation-20261102/delivery-result.json)。51项中41项DONE、6项PLANNED（S9F、S17B–D、S18B/C）、4项CONDITIONAL（S18A/D/E/F）。用户已进一步要求优先实施S9E/F、S18B/C并确认范围；S9E本地验收通过，后续依次为S9F、S18B、S18C。最后Docker部署仍为原制品，新增指标/常驻采集尚未启用；真实精排、业务质量和生产容量验证的限制保留。
+当前状态（2026-11-09同步）：S16A–D及S17A已按各自范围验收交付；S16D见[验收](../../qa/operational-alerts-20261102/TEST_RESULT.md)，S17A两仓合并推main及CI见[交付收据](../../qa/isolated-release-validation-20261102/delivery-result.json)。51项中42项DONE、5项PLANNED（S17B–D、S18B/C）、4项CONDITIONAL（S18A/D/E/F）。用户已进一步要求优先实施S9E/F、S18B/C并确认范围；S9E已交付，S9F本地验收通过，后续依次为S9F、S18B、S18C。最后Docker部署仍为原制品，新增指标/常驻采集尚未启用；真实精排、业务质量和生产容量验证的限制保留。
 
 ## 8. 恢复实施时的第一步
 

@@ -25,6 +25,8 @@ from agentic_ai.processing.models import (
 GENERATION_SCHEMA: Final = "knowledge-generation-preparation-v1"
 INVALID_GENERATION = "代次准备输入或结果不一致"
 CONTENT_FORMATS = {
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "XLSX",
+    "text/csv": "CSV",
     "application/pdf": "PDF",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "DOCX",
 }
