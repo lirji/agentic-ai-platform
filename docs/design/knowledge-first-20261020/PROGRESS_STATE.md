@@ -13,7 +13,7 @@
 - Docker验证：真实双账号OIDC、匿名/未授权拒绝、CSRF/退出吊销、10项只读业务API/记忆入口、1440/414页面PASS；实际运行镜像内PDF OCR/XLSX/CSV提取物等于共享金标。部署阶段0模型调用、无业务写入，未覆盖原数据。原搜索已恢复；隔离搜索实例正常停止且保留数据。
 - 限制：真实模型探针仅LIMITED（严格输出/原文依据通过，固定输出替身拒绝非逐字相同结果，未重发），大样本提议质量、真实精排/业务效果、生产容量/SLO未验证。原Chat账本28调用、保守预留0.971852/1 CNY；Embedding76调用、0.781784/1 CNY；额度与账本未增加或重置，保守预留不是实际账单。Java专用formatter/static未配置，卫生COMPLETE_WITH_LIMITATIONS，无阻断Finding。
 - 保留与恢复：.local/docker-capabilities-20261109保存三库私密备份、前版配置与阶段，.local/docker-runtime保存固定制品/镜像收据；.logs/docker-capabilities-20261109保存构建/启动/浏览器/解析日志。本任务测试资料、旧镜像、停止容器、.idea及各既有worktree均保留；未获清理授权，不删除。任务验证进程已退出，产品9容器持续运行。
-- 下一步：完成部署证据与进度的文档归档Git交付；当前四片及Docker无未完成实现/验证。后续建设仍为S17B–D和条件扩展，需后续任务启动，不在本轮自动扩展。
+- 本轮收尾：四片及Docker目标已达成，无未完成实现/验证；最终文档归档提交与CI结果由.local/docker-capabilities-20261109/final-delivery.json记录。后续建设仍为S17B–D和条件扩展，需后续任务启动，不在本轮自动扩展。
 - 采用规范：continue-approved-delivery、backend-architecture-design/implementation、frontend-implementation、implementation-validation、runtime-and-deploy、task-git-delivery、ci-cd-gate、deployment-execution、update-progress-docs；architecture-standards业务建模/持久化/分布式/并发安全/容量/发布。沿既有手工有界pass，不宣称机器Runtime治理通过。
 
 ## 上一检查点：2026-11-09进度同步已交付
