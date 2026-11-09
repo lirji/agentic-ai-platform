@@ -162,6 +162,8 @@ services:
     volumes:
       - '${RUNTIME_DIR}/qa-worker:/run/agentic:ro'
       - '${CHAT_LEDGER:?required}:/run/budgets/chat.json'
+      - '${EMBEDDING_LEDGER:?required}:/run/budgets/embedding.json'
+    env_file: [{path: '${RUNTIME_DIR}/qa-worker/service.env', format: raw}]
     command: [qa-worker, --config, /run/agentic/qa-worker.json]
     healthcheck:
       test: [CMD, python, -m, agentic_ai.cli, check-qa-worker, --config, /run/agentic/qa-worker.json]

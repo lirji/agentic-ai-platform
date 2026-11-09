@@ -179,3 +179,5 @@ S17A：`deploy/docker`制品门禁/隔离入口、Knowledge ProcessingProperties
 - S9F：SheetProtocol/SheetStructure、SheetExtractor、Knowledge V21/profile/ChunkSources、Python sheet_protocol/structured/generation与QA定位 → [表格契约](design/knowledge-first-20261020/SPREADSHEET_CONTRACTS.md)、[验收](qa/spreadsheet-sources-20261109/TEST_RESULT.md)。前端上传、工作表位置、公式缓存/表头/隐藏告警及撤权恢复见前端仓同日QA目录。
 
 - S18B：Conversation MemoryService/MemoryMapper/V4与React MemoryPage → [记忆契约](design/knowledge-first-20261020/MEMORY_CONTRACTS.md)、[验收](qa/governed-memory-20261109/TEST_RESULT.md)。默认90天、确认生效、只读适配/元数据收据，S18C的模型提议与注入另行交付。
+
+- S18C：MemoryProposalService/MemoryContextService、Conversation V5/V6、Tasks V9、Python memory与React提议/v4问答 → [契约](design/knowledge-first-20261020/MEMORY_CONTRACTS.md)、[验收](qa/controlled-memory-20261109/TEST_RESULT.md)、[运行](qa/controlled-memory-20261109/RUNTIME.md)。

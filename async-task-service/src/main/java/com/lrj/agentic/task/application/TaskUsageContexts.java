@@ -44,6 +44,7 @@ public class TaskUsageContexts implements TaskUsageContextPort {
     private Context context(TaskRow row) {
         Workload workload;
         if (TaskProtocol.KIND.equals(row.kind())) { workload = Workload.QA; }
+        else if (TaskProtocol.MEMORY_KIND.equals(row.kind())) { workload = Workload.MEMORY; }
         else if (TaskProtocol.EVALUATION_KIND.equals(row.kind())) { workload = Workload.EVALUATION; }
         else if (WorkKind.RESEARCH.code().equals(row.kind())) { workload = Workload.RESEARCH; }
         else if (WorkKind.READONLY_ASSISTANT.code().equals(row.kind())) { workload = Workload.ASSISTANT; }

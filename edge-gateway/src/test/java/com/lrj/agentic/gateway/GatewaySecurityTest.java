@@ -54,6 +54,8 @@ class GatewaySecurityTest {
                 java.util.Map.entry("/api/v1/conversations/id", "agentic-ai-conversation"),
                 java.util.Map.entry("/api/v2/conversations/capabilities", "agentic-ai-conversation"),
                 java.util.Map.entry("/api/v3/conversations/id/turns", "agentic-ai-conversation"),
+                java.util.Map.entry("/api/v4/conversations/id/turns", "agentic-ai-conversation"),
+                java.util.Map.entry("/api/v2/conversations/memory", "agentic-ai-conversation"),
                 java.util.Map.entry("/api/v2/knowledge/evaluations/runs", "agentic-ai-knowledge")).entrySet()) {
             var external = org.springframework.security.oauth2.jwt.Jwt.withTokenValue("external").header("alg", "RS256")
                     .subject("alice").claim("tenant_id", "tenant").claim("scope", "task:write").build();

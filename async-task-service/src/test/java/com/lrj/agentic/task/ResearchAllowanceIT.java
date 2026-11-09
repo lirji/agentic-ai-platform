@@ -50,7 +50,7 @@ class ResearchAllowanceIT {
         var created = tasks.submitResearchWork(owner, "admit", command);
         assertThat(tasks.request(owner, created.taskId()).schemaVersion()).isEqualTo(TaskProtocol.WORK_INPUT_V3);
         error(TaskError.CONFLICT, () -> tasks.submitGenerationWork(owner, "admit", command));
-        var closed = new TaskService(mapper, values, manager, 60, evidence, visibility, false, false, false, false, capacity);
+        var closed = new TaskService(mapper, values, manager, 60, evidence, visibility, false, false, false, false, capacity, false);
         assertThat(closed.researchCapabilities().enabled()).isFalse();
         assertThat(closed.submitResearchWork(owner, "admit", command)).isEqualTo(created);
         error(TaskError.RESEARCH_DISABLED, () -> closed.submitResearchWork(owner, "new", command()));
@@ -66,7 +66,7 @@ class ResearchAllowanceIT {
         assertThat(http("GET", "/api/v4/tasks/capabilities", owner, false, "task:read", null, null).statusCode()).isEqualTo(200);
         assertThat(tasks.request(owner, command.taskId()).schemaVersion()).isEqualTo(TaskProtocol.WORK_INPUT_V4);
         error(TaskError.CONFLICT, () -> tasks.submitResearchWork(owner, "staged", command));
-        var closed = new TaskService(mapper, values, manager, 60, evidence, visibility, false, false, false, false, capacity);
+        var closed = new TaskService(mapper, values, manager, 60, evidence, visibility, false, false, false, false, capacity, false);
         assertThat(closed.stagedResearchCapabilities().enabled()).isFalse();
         assertThat(closed.submitStagedResearchWork(owner, "staged", command).taskId()).isEqualTo(command.taskId());
         error(TaskError.RESEARCH_DISABLED, () -> closed.submitStagedResearchWork(owner, "new", command()));

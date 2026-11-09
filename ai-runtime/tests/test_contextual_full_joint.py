@@ -58,6 +58,12 @@ def conversations(joint):
         CONVERSATION_WORKER_TENANT=joint["tenant"],
         CONVERSATION_POLL_SECONDS="1",
     )
+    if os.environ.get("AGENTIC_MEMORY_JOINT_IT") == "1":
+        environment.update(
+            CONVERSATION_MEMORY_ENABLED="true",
+            CONVERSATION_MEMORY_AI_ENABLED="true",
+            MEMORY_RUNTIME_PUBLIC_KEY=(ROOT / ".local/s18c/runtime-memory-public.pem").as_uri(),
+        )
     endpoint = f"http://127.0.0.1:{port}"
     with (joint["directory"] / "conversations.log").open("w") as log:
         process = subprocess.Popen(

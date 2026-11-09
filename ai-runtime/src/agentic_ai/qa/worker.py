@@ -34,6 +34,12 @@ from agentic_ai.evaluation.models import (
     Profile,
 )
 from agentic_ai.evaluation.pipeline import EvaluationFailed, EvaluationPipeline, model_profile
+from agentic_ai.memory.client import MemoryClient, MemoryPort
+from agentic_ai.memory.errors import MemoryError
+from agentic_ai.memory.models import MEMORY_GRAPH
+from agentic_ai.memory.proposal_pipeline import MemoryProposalPipeline
+from agentic_ai.memory.qa_models import MEMORY_QA_GRAPH
+from agentic_ai.memory.qa_pipeline import MemoryQaPipeline
 from agentic_ai.qa.chat import ChatClient, ChatPort
 from agentic_ai.qa.chat_budget import ChatBudget
 from agentic_ai.qa.chat_config import MAX_CONFIG_BYTES, ChatConfig
@@ -65,12 +71,15 @@ USAGE_PURPOSES = {
     "RESEARCH": Purpose.RESEARCH,
     "READONLY_ASSISTANT": Purpose.ASSISTANT,
     "KNOWLEDGE_EVALUATION": Purpose.EVALUATION,
+    "MEMORY_PROPOSAL": Purpose.MEMORY,
 }
 
 
 class WorkerGraph(StrEnum):
     """显式稳定图版本，调度分工不能重命名已持久的历史图。"""
 
+    MEMORY_QA = MEMORY_QA_GRAPH
+    MEMORY_PROPOSAL = MEMORY_GRAPH
     QA_V1 = "knowledge-qa-v1"
     WORK_V1 = WORK_GRAPH
     EVALUATION_V1 = EVALUATION_GRAPH
@@ -86,7 +95,9 @@ class WorkerConfig(BaseModel):
     """只在显式 CLI 启动时启用，配置不包含模型默认值或用户可覆写的 worker ID。"""
 
     model_config = ConfigDict(frozen=True, extra="forbid", hide_input_in_errors=True)
-    graph_versions: tuple[WorkerGraph, ...] | None = Field(default=None, min_length=1, max_length=9)
+    graph_versions: tuple[WorkerGraph, ...] | None = Field(
+        default=None, min_length=1, max_length=len(WorkerGraph)
+    )
     tenant_id: SubjectId
     tasks_endpoint: str = Field(repr=False, max_length=2048)
     knowledge_endpoint: str = Field(repr=False, max_length=2048)
@@ -98,6 +109,9 @@ class WorkerConfig(BaseModel):
     retrieval_enabled: bool = Field(default=False, strict=True)
     contextual_qa_enabled: bool = Field(default=False, strict=True)
     rerank_config: Path | None = Field(default=None, repr=False)
+    memory_enabled: bool = Field(default=False, strict=True)
+    memory_endpoint: str | None = Field(default=None, repr=False, max_length=2048)
+    memory_private_key: Path | None = Field(default=None, repr=False)
 
     @model_validator(mode="after")
     def retrieval_configuration(self) -> Self:
@@ -105,6 +119,21 @@ class WorkerConfig(BaseModel):
         if (
             self.rerank_config is not None or self.contextual_qa_enabled
         ) and not self.retrieval_enabled:
+            raise ValueError(QaCode.CONFIG_INVALID.value)
+        if self.memory_enabled != (
+            self.memory_endpoint is not None and self.memory_private_key is not None
+        ):
+            raise ValueError(QaCode.CONFIG_INVALID.value)
+        if not self.memory_enabled and (
+            self.memory_endpoint is not None or self.memory_private_key is not None
+        ):
+            raise ValueError(QaCode.CONFIG_INVALID.value)
+        if self.memory_endpoint is not None:
+            try:
+                MemoryClient.validate_endpoint(self.memory_endpoint)
+            except MemoryError:
+                raise ValueError(QaCode.CONFIG_INVALID.value) from None
+        if self.memory_enabled and not self.contextual_qa_enabled:
             raise ValueError(QaCode.CONFIG_INVALID.value)
         if self.graph_versions is not None and (
             len(set(self.graph_versions)) != len(self.graph_versions)
@@ -117,6 +146,7 @@ class WorkerConfig(BaseModel):
         """仅列出启动配置实际能装配的图；默认顺序兼容既有轮询。"""
         return (
             (WorkerGraph.QA_V1, WorkerGraph.WORK_V1)
+            + ((WorkerGraph.MEMORY_PROPOSAL, WorkerGraph.MEMORY_QA) if self.memory_enabled else ())
             + ((WorkerGraph.EVALUATION_V1,) if self.evaluation_private_key is not None else ())
             + (
                 (
@@ -148,7 +178,7 @@ class WorkerConfig(BaseModel):
             raise ValueError("worker 配置需要绝对路径")
         return value
 
-    @field_validator("evaluation_private_key", "rerank_config")
+    @field_validator("evaluation_private_key", "rerank_config", "memory_private_key")
     @classmethod
     def evaluation_absolute(cls, value: Path | None) -> Path | None:
         """旧配置默认不领取评测，新身份必须显式配置绝对路径。"""
@@ -177,7 +207,8 @@ class WorkerConfig(BaseModel):
 
 
 async def _run_with_heartbeat(
-    pipeline: QaPipeline | WorkPipeline | EvaluationPipeline, checkpoints: CheckpointConfig
+    pipeline: QaPipeline | WorkPipeline | EvaluationPipeline | MemoryProposalPipeline,
+    checkpoints: CheckpointConfig,
 ) -> TaskView:
     async def pulse() -> None:
         while True:
@@ -192,7 +223,10 @@ async def _run_with_heartbeat(
             pipeline.build,
             before_complete=pipeline.before_complete,
             before_restore=pipeline.before_restore
-            if isinstance(pipeline, (QaPipeline, WorkPipeline, GenerationEvaluationPipeline))
+            if isinstance(
+                pipeline,
+                (QaPipeline, WorkPipeline, GenerationEvaluationPipeline, MemoryProposalPipeline),
+            )
             else None,
             execution_seconds=(
                 EXECUTION_SECONDS
@@ -233,16 +267,22 @@ async def execute_qa_task(
     profile: Profile | None = None,
     retrieval: RetrievalUseCase | None = None,
     candidates: CandidatePort | None = None,
+    memory: MemoryPort | None = None,
 ) -> TaskView:
     """异常先核对中央；取消/完成赢得竞争后不再报告覆盖它的失败。"""
     with telemetry().stage(
         Stage.WORKER, root=True, task_id=binding.task.task_id, epoch=binding.epoch
     ) as diagnostic:
         try:
-            pipeline: QaPipeline | WorkPipeline | EvaluationPipeline
-            if binding.graph_version in (
+            pipeline: QaPipeline | WorkPipeline | EvaluationPipeline | MemoryProposalPipeline
+            if binding.graph_version == MEMORY_GRAPH:
+                if memory is None:
+                    raise QaError(QaCode.CONFIG_INVALID)
+                pipeline = MemoryProposalPipeline(binding, central, memory, chat)
+            elif binding.graph_version in (
                 QA_GRAPH_V2,
                 QA_GRAPH_V3,
+                MEMORY_QA_GRAPH,
                 WORK_GRAPH_V2,
                 RESEARCH_GRAPH,
                 STAGED_RESEARCH_GRAPH,
@@ -260,6 +300,12 @@ async def execute_qa_task(
                         else GenerationWorkPipeline
                     )
                     pipeline = work_type(binding, central, candidates, tool_chat, retrieval)
+                elif binding.graph_version == MEMORY_QA_GRAPH:
+                    if memory is None:
+                        raise QaError(QaCode.CONFIG_INVALID)
+                    pipeline = MemoryQaPipeline(
+                        binding, central, candidates, chat, retrieval, memory
+                    )
                 elif binding.graph_version == QA_GRAPH_V3:
                     pipeline = ContextualQaPipeline(binding, central, candidates, chat, retrieval)
                 else:
@@ -312,7 +358,9 @@ async def execute_qa_task(
                         "state": "EXECUTION_REJECTED",
                         "taskId": binding.task.task_id,
                         "code": error.code.value
-                        if isinstance(error, (QaError, TaskRuntimeError, EvaluationFailed))
+                        if isinstance(
+                            error, (QaError, TaskRuntimeError, EvaluationFailed, MemoryError)
+                        )
                         else "EXECUTION_FAILED",
                     }
                 )
@@ -440,6 +488,11 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                 if config.evaluation_private_key is not None
                 else None
             )
+            memory_key = (
+                MemoryClient.load_private_key(config.memory_private_key)
+                if config.memory_private_key is not None
+                else None
+            )
             evaluation_profile = model_profile(chat_config) if evaluation_key is not None else None
             budget = ChatBudget(chat_config) if usage is None else None
             if budget is not None:
@@ -486,6 +539,7 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                         in (
                             QA_GRAPH_V2,
                             QA_GRAPH_V3,
+                            MEMORY_QA_GRAPH,
                             WORK_GRAPH_V2,
                             RESEARCH_GRAPH,
                             STAGED_RESEARCH_GRAPH,
@@ -505,6 +559,15 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                         and evaluation_key is not None
                         else None
                     )
+                    memory = (
+                        MemoryClient(config.memory_endpoint, binding, memory_key)
+                        if (
+                            binding.graph_version in (MEMORY_GRAPH, MEMORY_QA_GRAPH)
+                            and config.memory_endpoint is not None
+                            and memory_key is not None
+                        )
+                        else None
+                    )
                     candidates = knowledge if isinstance(knowledge, RetrievalClient) else None
                     started = time.monotonic()
                     _log("EXECUTING", task=binding.task)
@@ -520,6 +583,7 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                             evaluation_profile if evaluations is not None else None,
                             retrieval,
                             candidates,
+                            memory,
                         )
                     )
                     stopping = asyncio.create_task(stop.wait())
@@ -542,6 +606,8 @@ async def run_worker(config: WorkerConfig, *, check_only: bool = False) -> None:
                         stopping.cancel()
                         await asyncio.gather(work, stopping, return_exceptions=True)
                         await knowledge.aclose()
+                        if memory is not None:
+                            await memory.aclose()
                         if evaluations is not None:
                             await evaluations.aclose()
                 if not stop.is_set():

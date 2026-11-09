@@ -19,6 +19,10 @@ public final class ConversationDtos {
     public record AskContextual(@NotNull @Min(0) Long expectedRevision, @NotNull String question,
             @NotNull List<String> documentIds, String contextTurnId, @NotNull String retrievalStrategy,
             @NotNull String queryPolicy) { }
+    /** v4显式绑定用户看到的记忆版本，不能由全局配置偷偷启用。 */
+    public record AskMemory(@NotNull @Min(0) Long expectedRevision, @NotNull String question,
+            @NotNull List<String> documentIds, String contextTurnId, @NotNull String retrievalStrategy,
+            @NotNull String queryPolicy, @NotNull String memoryPolicy, @NotNull @Min(0) Long expectedMemoryRevision) { }
     /** 仅报告受理配置，不探测worker或消费模型预算。 */
     public record Capabilities(String schemaVersion, boolean contextualQueryEnabled) { }
     public record Retry(@NotNull @Min(0) Long expectedRevision) { }
@@ -31,7 +35,10 @@ public final class ConversationDtos {
             @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
             String retrievalStrategy,
             @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-            String queryPolicy) { }
+            String queryPolicy,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) String memoryPolicy,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) Long memoryRevision,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) Long memoryGeneration) { }
     public record Conversations(List<Conversation> items, String nextCursor) { }
     public record Turns(List<Turn> items, Long nextCursor) { }
 }

@@ -1,0 +1,14 @@
+{
+  "scope": "real-provider-proposal-prompt-with-protocol-domain-ports",
+  "model": "deepseek-flash",
+  "callsBefore": 27,
+  "callsAfter": 28,
+  "reservedBefore": "0.957092",
+  "reservedAfter": "0.971852",
+  "limitCny": "1",
+  "maxOutputTokens": 512,
+  "status": "LIMITED",
+  "providerResponse": "accepted by strict candidate/quote parser before protocol-domain-port assertion",
+  "limitation": "Fixed-output test double rejected a nonidentical model result. Not a completed domain acceptance or quality-rate measurement; no second request.",
+  "pricingVerifiedAt": "2026-11-09"
+}

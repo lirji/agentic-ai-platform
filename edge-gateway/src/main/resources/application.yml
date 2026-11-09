@@ -11,7 +11,7 @@ spring:
             - id: conversations
               uri: ${CONVERSATION_SERVICE_URL:http://127.0.0.1:28088}
               predicates:
-                - Path=/api/v1/conversations,/api/v1/conversations/**,/api/v2/conversations/*/turns,/api/v2/conversations/capabilities,/api/v3/conversations/*/turns
+                - Path=/api/v1/conversations,/api/v1/conversations/**,/api/v2/conversations/*/turns,/api/v2/conversations/capabilities,/api/v3/conversations/*/turns,/api/v4/conversations/*/turns,/api/v2/conversations/memory
             - id: tasks
               uri: ${TASK_SERVICE_URL:http://127.0.0.1:28087}
               predicates:

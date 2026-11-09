@@ -23,6 +23,9 @@
     </update>
     <sql id="turn">SELECT * FROM knowledge_turn WHERE turn_id=#{id} AND conversation_id=#{conversationId} AND <include refid="owner"/></sql>
     <select id="turn" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow"><include refid="turn"/></select>
+    <select id="turnByTask" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow">
+        SELECT * FROM knowledge_turn WHERE task_id=#{task} AND <include refid="owner"/>
+    </select>
     <select id="lockTurn" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow"><include refid="turn"/> FOR UPDATE</select>
     <select id="turnByKey" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow">
         SELECT * FROM knowledge_turn WHERE conversation_id=#{conversationId} AND idempotency_hash=#{hash}
@@ -34,9 +37,11 @@
     </select>
     <insert id="insertTurn">
         INSERT INTO knowledge_turn(turn_id,conversation_id,tenant_id,owner_id,sequence,question,document_ids,
-            context_turn_id,context_task_id,context_question,task_id,idempotency_hash,request_hash,dispatch_state,retrieval_strategy,query_policy)
+            context_turn_id,context_task_id,context_question,task_id,idempotency_hash,request_hash,dispatch_state,retrieval_strategy,query_policy,
+            memory_policy,memory_revision,memory_generation)
         VALUES(#{turnId},#{conversationId},#{tenantId},#{ownerId},#{sequence},#{question},#{documentIds},
-            #{contextTurnId},#{contextTaskId},#{contextQuestion},#{taskId},#{idempotencyHash},#{requestHash},'PENDING',#{retrievalStrategy},#{queryPolicy})
+            #{contextTurnId},#{contextTaskId},#{contextQuestion},#{taskId},#{idempotencyHash},#{requestHash},'PENDING',#{retrievalStrategy},#{queryPolicy},
+            #{memoryPolicy},#{memoryRevision},#{memoryGeneration})
     </insert>
     <select id="nextDispatch" resultType="com.lrj.agentic.conversation.infrastructure.TurnRow">
         SELECT * FROM knowledge_turn WHERE tenant_id=#{tenant}

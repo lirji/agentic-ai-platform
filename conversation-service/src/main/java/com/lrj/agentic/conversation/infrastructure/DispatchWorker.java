@@ -1,6 +1,7 @@
 package com.lrj.agentic.conversation.infrastructure;
 
 import com.lrj.agentic.conversation.application.DispatchService;
+import com.lrj.agentic.conversation.application.MemoryProposalDispatch;
 import com.lrj.agentic.conversation.config.ConversationProperties;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
@@ -23,6 +24,7 @@ public class DispatchWorker implements SmartLifecycle {
     private static final Logger LOG = LoggerFactory.getLogger(DispatchWorker.class);
     private final String worker = UUID.randomUUID().toString();
     private final DispatchService dispatch;
+    private final MemoryProposalDispatch proposals;
     private final ConversationProperties properties;
     private final MeterRegistry meters;
     private final Tracer tracer;
@@ -33,9 +35,9 @@ public class DispatchWorker implements SmartLifecycle {
             new ThreadPoolExecutor.AbortPolicy());
     private volatile boolean running;
     /** 每个实例固定独立 worker 标识，指标只使用有限标签而不暴露问题或租户。 */
-    public DispatchWorker(DispatchService dispatch, ConversationProperties properties,
+    public DispatchWorker(DispatchService dispatch, MemoryProposalDispatch proposals, ConversationProperties properties,
             MeterRegistry meters, Tracer tracer) {
-        this.dispatch = dispatch; this.properties = properties; this.meters = meters; this.tracer = tracer;
+        this.dispatch = dispatch; this.proposals = proposals; this.properties = properties; this.meters = meters; this.tracer = tracer;
         new ExecutorServiceMetrics(executor, "conversation.dispatch", List.of()).bindTo(meters);
         meters.gauge("conversation.dispatch.active", active);
         meters.gauge("conversation.dispatch.pending", pending);
@@ -47,7 +49,20 @@ public class DispatchWorker implements SmartLifecycle {
     private void loop() {
         while (running) {
             try {
-                pending.set(Math.toIntExact(dispatch.pending(properties.workerTenant())));
+                pending.set(Math.toIntExact(dispatch.pending(properties.workerTenant()) + proposals.pending(properties.workerTenant())));
+                // 每轮先处理最多一个提议，再处理一个问题；任一流量持续到达也不会饿死另一类。
+                var proposal = proposals.claim(properties.workerTenant(), worker);
+                if (proposal.isPresent()) {
+                    active.set(1);
+                    var span = tracer.nextSpan().name("conversation.memory.dispatch").start();
+                    Timer.Sample timer = Timer.start(meters);
+                    try (var scope = tracer.withSpan(span)) {
+                        boolean committed = proposals.dispatch(proposal.get());
+                        meters.counter("conversation.memory.dispatch.events", "outcome", committed ? "committed" : "stale").increment();
+                    } finally {
+                        span.end(); timer.stop(meters.timer("conversation.memory.dispatch.duration")); active.set(0);
+                    }
+                }
                 var claimed = dispatch.claim(properties.workerTenant(), worker);
                 if (claimed.isEmpty()) { TimeUnit.SECONDS.sleep(properties.pollSeconds()); continue; }
                 active.set(1);

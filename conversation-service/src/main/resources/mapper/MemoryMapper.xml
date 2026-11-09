@@ -27,17 +27,19 @@
     </insert>
     <update id="edit">
         UPDATE user_memory_entry SET category=#{category},content=#{content},status='PENDING',retention_days=#{days},
-            expires_at=TIMESTAMPADD(DAY,#{days},UTC_TIMESTAMP(6)),version=version+1,updated_at=UTC_TIMESTAMP(6)
+            expires_at=TIMESTAMPADD(DAY,#{days},UTC_TIMESTAMP(6)),version=version+1,updated_at=UTC_TIMESTAMP(6),
+            source_conversation_id=NULL,source_turn_id=NULL,source_proposal_id=NULL,source_task_id=NULL,source_quote=NULL
         WHERE <include refid="owner"/> AND memory_id=#{id} AND version=#{version} AND status IN ('PENDING','ACTIVE','DISABLED')
     </update>
     <update id="transition">
         UPDATE user_memory_entry SET status=#{status},version=version+1,updated_at=UTC_TIMESTAMP(6)
         <if test="renew">,expires_at=TIMESTAMPADD(DAY,retention_days,UTC_TIMESTAMP(6))</if>
-        <if test="erase">,content=NULL</if>
+        <if test="erase">,content=NULL,source_conversation_id=NULL,source_turn_id=NULL,source_proposal_id=NULL,source_task_id=NULL,source_quote=NULL</if>
         WHERE <include refid="owner"/> AND memory_id=#{id} AND version=#{version} AND status IN ('PENDING','ACTIVE','DISABLED')
     </update>
     <update id="clear">
-        UPDATE user_memory_entry SET status='FORGOTTEN',content=NULL,version=version+1,updated_at=UTC_TIMESTAMP(6)
+        UPDATE user_memory_entry SET status='FORGOTTEN',content=NULL,version=version+1,updated_at=UTC_TIMESTAMP(6),
+            source_conversation_id=NULL,source_turn_id=NULL,source_proposal_id=NULL,source_task_id=NULL,source_quote=NULL
         WHERE <include refid="owner"/> AND status IN ('PENDING','ACTIVE','DISABLED')
     </update>
     <update id="advance">

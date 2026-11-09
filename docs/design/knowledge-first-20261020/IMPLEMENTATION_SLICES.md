@@ -242,7 +242,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S17D | 制品与依赖供应链门禁 | S8F, S17A | ENGINEERING | PLANNED |
 | S18A | 一个真实知识来源的增量同步 | S10D, S10E, S13B, S16B | IMPLEMENT | CONDITIONAL |
 | S18B | 用户记忆治理与持久化 | S13A, S15C | IMPLEMENT | DONE |
-| S18C | 受控记忆提议与上下文注入 | S18B, S12A, S15B | IMPLEMENT | PLANNED |
+| S18C | 受控记忆提议与上下文注入 | S18B, S12A, S15B | IMPLEMENT | DONE |
 | S18D | 一个具体业务的只读工具 | S13C, S15B, S12D | IMPLEMENT | CONDITIONAL |
 | S18E | 受控业务写入与人工批准 | S18D, S16A | IMPLEMENT | CONDITIONAL |
 | S18F | 一种渠道或协议接入 | S18D, S13C | IMPLEMENT | CONDITIONAL |
@@ -743,10 +743,12 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-MEMORY、C-QA2；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 清空期间旧抽取任务不得回填；停用/过期/权限变化即时生效；不以 Deep Agents Store 直写绕过Java；费用与错误可见。
 - **Pass / Runtime：** IMPLEMENT；现有模型出口和预算；框架记忆仅作受控接口消费者。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G11 G08 G18。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G11 G08 G18。
 - **触发条件：** S18B 的业务触发持续成立，并验证抽取/注入收益。
 
 - **已确认规则：** 个人偏好/项目背景，用户确认才生效，可编辑/停用/遗忘，默认90天过期且可调整；按S18B→S18C实施。
+
+- **验收：** [S18C TEST_RESULT](../../qa/controlled-memory-20261109/TEST_RESULT.md)，本地必需验证PASS，真实模型质量边界如实保留；Git/CI与Docker部署由后续收据确认。
 
 ### S18D · 一个具体业务的只读工具
 
@@ -783,7 +785,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 
 ### 下一任务、受阻条件及 Runtime 介入
 
-- 当前51项中43项DONE、4项PLANNED（S17B–D、S18C）、4项CONDITIONAL（S18A/D/E/F）。用户已优先启用S9E/F、S18B/C；S9E/F已交付，S18B本地验收通过，S18B交付后连续执行S18C；S17B–D暂不启动。
+- 当前51项中44项DONE、3项PLANNED（S17B–D）、4项CONDITIONAL（S18A/D/E/F）。用户已优先启用S9E/F、S18B/C；S9E/F、S18B已交付，S18C本地验收通过，完成Git交付后更新现有本地Docker；S17B–D暂不启动。
 - 已完成项沿用绑定源码/提交的有效验收，不重做S8–S17A已完成范围；条件业务与G01–G20覆盖见主方案，实际恢复入口以[PROGRESS_STATE](PROGRESS_STATE.md)为准。
 - U01–U07 的条件只阻止相关行为；欠缺真实模型额度不会阻止契约/协议测试，但不能把未运行的真实效果标 PASS。
 - Runtime 首次新增工作：S9B 解析子进程/依赖，S9E 条件 OCR，S11D 重排模型私密配置与预算，S13A 正式身份配置，S15C 观测接入，S16A worker 配额，S17A 完整制品。S18A 周期业务同步首次需要时才接既定 XXL-JOB。

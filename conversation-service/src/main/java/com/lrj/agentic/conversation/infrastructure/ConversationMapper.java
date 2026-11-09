@@ -26,6 +26,8 @@ public interface ConversationMapper extends BaseMapper<ConversationRow> {
     /** 同时约束所属会话与 owner，不能凭轮次 ID 跨会话引用。 */
     TurnRow turn(@Param("owner") Caller owner, @Param("conversationId") String conversationId,
             @Param("id") String id);
+    /** 内部上下文仍绑定owner，不开放裸taskId反查其他用户问题。 */
+    TurnRow turnByTask(@Param("owner") Caller owner, @Param("task") String task);
     /** 人工恢复必须锁定当前交接版本，避免并发耗尽次数被覆盖。 */
     TurnRow lockTurn(@Param("owner") Caller owner, @Param("conversationId") String conversationId,
             @Param("id") String id);

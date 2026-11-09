@@ -8,7 +8,7 @@
 
 ## 前提与构建
 
-个人记忆治理通过prepare的`--memory`显式启用，默认关闭新建/确认；关闭后仍可管理和遗忘已有内容。新表、有效期和兼容边界见[S18B运行说明](../../docs/qa/governed-memory-20261109/RUNTIME.md)。这不启用尚未交付的模型提议或注入。
+个人记忆治理通过prepare的`--memory`显式启用，默认关闭新建/确认；关闭后仍可管理和遗忘已有内容。新表、有效期和兼容边界见[S18B运行说明](../../docs/qa/governed-memory-20261109/RUNTIME.md)。模型提议和知识问答只读使用通过独立`--memory-ai`开启（要求`--memory`），并配套启用既有检索和追问；运行、独立密钥及回退见[S18C运行说明](../../docs/qa/controlled-memory-20261109/RUNTIME.md)。
 
 要求支持 `env_file.format: raw` 的 Docker Compose、JDK 21、Maven、Python 3，并已按 [本机运行](../README.md) 初始化项目专用凭据/数据和搜索服务。镜像固定版本/摘要，Python 与 Node 使用项目锁文件；不把本机虚拟环境、node_modules、密钥或账本打进镜像。
 
@@ -69,7 +69,7 @@ docker compose --env-file /absolute/path/agentic-ai-platform/.local/docker-runti
 
 普通停止不删除容器、卷、网络、密钥、恢复状态或预算。不要在 Docker 应用运行时执行旧 `local.py start`；它不识别 Docker 内部端口，可能产生重复 worker。
 
-前次部署追加迁移为Knowledge V12→V19、Tasks V5→V8，Conversations保持V3。本次版本无新增迁移。切换前正常停旧应用，保存三开发库SQL备份和原字段摘要；切换后校验版本、旧字段摘要与预算文件。迁移后不能直接重启不支持新schema的旧writer；配置问题优先修复同一新schema版本。不自动逆向恢复数据；备份成功不代表恢复演练通过。
+前次部署迁移至Knowledge V19、Tasks V8、Conversations V3。本次S9E/F与S18B/C追加至Knowledge V21、Tasks V9、Conversations V6。切换前正常停旧应用，保存三开发库SQL备份和原字段摘要；切换后校验版本、旧字段摘要与预算文件。迁移后不能直接重启不支持新schema的旧writer；配置问题优先修复同一新schema版本。不自动逆向恢复数据；备份成功不代表恢复演练通过。
 
 现行聊天程序要求价格在 7 天内核验；过期需实际核实后按原规则更新，不能仅改日期绕过。缺配置、账本或余额会关闭 worker，不能自动建新账本。
 

@@ -28,6 +28,7 @@ class Purpose(StrEnum):
     INGESTION = "INGESTION"
     SEARCH = "SEARCH"
     EVALUATION = "EVALUATION"
+    MEMORY = "MEMORY"
 
 
 class State(StrEnum):

@@ -54,6 +54,7 @@ class Stage(StrEnum):
     KNOWLEDGE = "knowledge"
     USAGE = "usage"
     EVALUATION = "evaluation"
+    MEMORY = "memory"
     EMBEDDING = "embedding"
     CHAT = "chat"
     TOOL_CHAT = "tool_chat"

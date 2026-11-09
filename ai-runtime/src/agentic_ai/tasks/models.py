@@ -57,7 +57,9 @@ class TaskView(WireModel):
     """中央用户可见结果，不包含执行凭据。"""
 
     task_id: CanonicalId
-    kind: Literal["KNOWLEDGE_QA", "RESEARCH", "READONLY_ASSISTANT", "KNOWLEDGE_EVALUATION"]
+    kind: Literal[
+        "KNOWLEDGE_QA", "RESEARCH", "READONLY_ASSISTANT", "KNOWLEDGE_EVALUATION", "MEMORY_PROPOSAL"
+    ]
     status: TaskStatus
     revision: int = Field(ge=0)
     attempt_count: int = Field(ge=0, le=5)
@@ -94,10 +96,12 @@ class TaskLease(WireModel):
         "knowledge-evaluation-v1",
         "knowledge-qa-v2",
         "knowledge-qa-v3",
+        "knowledge-qa-v4",
         "knowledge-work-v2",
         "knowledge-work-v3",
         "knowledge-work-v4",
         "knowledge-evaluation-v2",
+        "memory-proposal-v1",
     ]
     epoch: int = Field(ge=0)
     worker_id: SubjectId | None
@@ -130,6 +134,8 @@ class TaskFailureCode(StrEnum):
     BUDGET_EXCEEDED = "BUDGET_EXCEEDED"
     INPUT_REJECTED = "INPUT_REJECTED"
     EXECUTION_FAILED = "EXECUTION_FAILED"
+    MEMORY_STALE = "MEMORY_STALE"
+    MEMORY_CALL_LIMIT = "MEMORY_CALL_LIMIT"
 
 
 class TaskEvent(WireModel):

@@ -12,4 +12,5 @@ public record TurnRow(@TableId String turnId, String conversationId, String tena
         String contextQuestion, String taskId, String idempotencyHash, String requestHash,
         DispatchState dispatchState, int dispatchAttempts, int retryCount, long revision,
         long leaseEpoch, String leaseOwner, Instant leaseExpiresAt, Instant nextAttemptAt,
-        String errorCode, Instant createdAt, Instant updatedAt, String retrievalStrategy, String queryPolicy) { }
+        String errorCode, Instant createdAt, Instant updatedAt, String retrievalStrategy, String queryPolicy,
+        String memoryPolicy, Long memoryRevision, Long memoryGeneration) { }

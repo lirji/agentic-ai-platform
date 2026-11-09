@@ -163,6 +163,10 @@ class CrossRuntimeRetrievalIT {
         runConsumerTest("test_contextual_full_joint.py", true);
     }
 
+    @Test void controlledMemoryUsesRealAuthorityAndPostgresWithoutBodyCopies() throws Exception {
+        runConsumerTest("test_memory_full_joint.py", true);
+    }
+
     @Test void researchCoverageUsesRealPublishedEvidenceAndPersistentAllowance() throws Exception {
         runConsumerTest("test_research_full_joint.py", false);
     }
@@ -191,6 +195,7 @@ class CrossRuntimeRetrievalIT {
         builder.directory(root.resolve("ai-runtime").toFile()).redirectErrorStream(true)
                 .redirectOutput(runtime.directory.resolve("consumers.log").toFile());
         builder.environment().put("AGENTIC_EVALUATION_FULL_IT", input.toString());
+        if ("test_memory_full_joint.py".equals(test)) builder.environment().put("AGENTIC_MEMORY_JOINT_IT", "1");
         if (contextual) builder.environment().put("AGENTIC_CONTEXTUAL_JOINT_IT", "1");
         if ("test_research_full_joint.py".equals(test)) builder.environment().put("AGENTIC_RESEARCH_JOINT_IT", "1");
         if ("test_staged_research_full_joint.py".equals(test)) builder.environment().put("AGENTIC_STAGED_RESEARCH_JOINT_IT", "1");

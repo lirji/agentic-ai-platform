@@ -27,6 +27,10 @@ public class TaskKnowledgeVisibility {
     public void verify(Caller owner, TaskRow row, long deadline) {
         time(deadline);
         if (TaskProtocol.EVALUATION_KIND.equals(row.kind())) { return; }
+        if (TaskProtocol.MEMORY_KIND.equals(row.kind())) {
+            if (row.resultJson() != null) { MemoryProposalRequests.result(values.read(row.inputJson()), values.read(row.resultJson())); }
+            return;
+        }
         if (TaskProtocol.generationGraph(row.graphVersion())) {
             verifyGeneration(owner, row, deadline);
             return;

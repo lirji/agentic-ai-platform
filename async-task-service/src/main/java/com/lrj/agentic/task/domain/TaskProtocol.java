@@ -14,12 +14,17 @@ public final class TaskProtocol {
     public static final String WRITE = "task:write";
     public static final String SUBMIT = "task:submit";
     public static final String WORKER = "task:worker";
+    public static final String MEMORY_KIND = "MEMORY_PROPOSAL";
+    public static final String MEMORY_GRAPH = "memory-proposal-v1";
+    public static final String MEMORY_INPUT = "memory-proposal-input-v1";
+    public static final String MEMORY_RESULT = "memory-proposal-result-v1";
+    public static final int MAX_MEMORY_CANDIDATES = 3;
     public static final String KIND = "KNOWLEDGE_QA";
     public static final String RUNTIME = "langgraph-v1";
     public static final String WORK_GRAPH = "knowledge-work-v1";
     public static final String WORK_INPUT = "knowledge-work-input-v1";
     public static final String EVALUATION_KIND = "KNOWLEDGE_EVALUATION";
-    public static final java.util.List<String> BACKGROUND_KINDS = java.util.List.of(WorkKind.RESEARCH.code(), EVALUATION_KIND);
+    public static final java.util.List<String> BACKGROUND_KINDS = java.util.List.of(WorkKind.RESEARCH.code(), EVALUATION_KIND, MEMORY_KIND);
     public static final String EVALUATION_GRAPH = "knowledge-evaluation-v1";
     public static final String EVALUATION_INPUT = "evaluation-input-v1";
     public static final String EVALUATION_RESULT = "evaluation-completion-v1";
@@ -36,7 +41,7 @@ public final class TaskProtocol {
     public static final String TEXT_DELTA_EVENT = "TEXT_DELTA";
     public static final Set<String> WORKER_EVENTS = Set.of(PROGRESS_EVENT, TEXT_DELTA_EVENT);
     public static final Set<String> FAILURES = Set.of(
-            "AI_UNAVAILABLE", "BUDGET_EXCEEDED", "INPUT_REJECTED", "EXECUTION_FAILED");
+            "AI_UNAVAILABLE", "BUDGET_EXCEEDED", "INPUT_REJECTED", "EXECUTION_FAILED", "MEMORY_STALE", "MEMORY_CALL_LIMIT");
     public static final String EXECUTION_FAILED = "EXECUTION_FAILED";
     public static final int MAX_ATTEMPTS = 5;
     public static final int MAX_RESUMES = 3;
@@ -45,6 +50,13 @@ public final class TaskProtocol {
     public static final int MAX_VALUE = 64 * 1024;
     public static final int MAX_EVENT_VALUE = 8 * 1024;
     public static final String GRAPH_V2 = "knowledge-qa-v2";
+    public static final String GRAPH_V4 = "knowledge-qa-v4";
+    public static final String INPUT_V4 = "knowledge-qa-input-v4";
+    public static final String RESULT_V4 = "knowledge-qa-result-v4";
+    public static final String MEMORY_POLICY = "CONFIRMED_MEMORY_V1";
+    public static final String MEMORY_USAGE = "memory-usage-v1";
+    public static final int MAX_MEMORY_CONTEXT = 5;
+    public static final int MAX_MEMORY_ENTRIES = 100;
     public static final String GRAPH_V3 = "knowledge-qa-v3";
     public static final String INPUT_V3 = "knowledge-qa-input-v3";
     public static final String RESULT_V3 = "knowledge-qa-result-v3";
@@ -65,7 +77,7 @@ public final class TaskProtocol {
     public static final String EVIDENCE_V1 = "knowledge-evidence-v1";
     /** 仅用于已持久任务的证据版本判断；受理版本仍由独立入口控制。 */
     public static boolean generationGraph(String graph) {
-        return Set.of(GRAPH_V2, GRAPH_V3, WORK_GRAPH_V2, WORK_GRAPH_V3, WORK_GRAPH_V4, EVALUATION_GRAPH_V2).contains(graph);
+        return Set.of(GRAPH_V2, GRAPH_V3, GRAPH_V4, WORK_GRAPH_V2, WORK_GRAPH_V3, WORK_GRAPH_V4, EVALUATION_GRAPH_V2).contains(graph);
     }
     private TaskProtocol() { }
 }

@@ -4,6 +4,10 @@ import com.lrj.agentic.contract.ErrorCode;
 
 /** 会话模块复用平台错误协议，提示中不带原问题、密钥或依赖正文。 */
 public enum ConversationError implements ErrorCode {
+    MEMORY_AI_DISABLED("MEMORY_AI_DISABLED", "记忆提议与使用暂未开放，已有记忆仍可管理。", 503),
+    MEMORY_STALE("MEMORY_STALE", "记忆已变更、停用或过期，请刷新后重新发起。", 409),
+    MEMORY_CALL_LIMIT("MEMORY_CALL_LIMIT", "本次提议的模型调用次数已达上限。", 409),
+    MEMORY_PROPOSAL_LIMIT("MEMORY_PROPOSAL_LIMIT", "尚有记忆提议等待交接，请稍后重试。", 409),
     MEMORY_NOT_FOUND("MEMORY_NOT_FOUND", "记忆或操作收据不存在，或当前身份不可见。", 404),
     MEMORY_DISABLED("MEMORY_DISABLED", "新建和确认记忆暂未开放，已有记忆仍可管理和遗忘。", 503),
     MEMORY_LIMIT("MEMORY_LIMIT", "记忆条数已达上限，请先遗忘不再需要的内容。", 409),

@@ -24,4 +24,11 @@ public class ContextualConversationController {
             @RequestHeader("Idempotency-Key") String key, @Valid @RequestBody AskContextual command) {
         return conversations.askContextual(JwtTrust.caller(jwt), id, key, command);
     }
+    /** 新版记忆问答必须显式选择策略与当前记忆版本。 */
+    @PostMapping("/api/v4/conversations/{id}/turns") @ResponseStatus(HttpStatus.ACCEPTED)
+    public Turn askMemory(@AuthenticationPrincipal Jwt jwt, @PathVariable String id,
+            @RequestHeader("Idempotency-Key") String key, @Valid @RequestBody AskMemory command) {
+        return conversations.askMemory(JwtTrust.caller(jwt), id, key, command);
+    }
+
 }

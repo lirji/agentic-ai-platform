@@ -1,0 +1,79 @@
+{
+  "input": {
+    "schemaVersion": "knowledge-qa-input-v4",
+    "conversationId": "10000000-0000-4000-8000-000000000001",
+    "turnId": "10000000-0000-4000-8000-000000000002",
+    "question": "它有哪些限制？",
+    "documentIds": ["00000000-0000-0000-0000-000000000001"],
+    "contextTurnId": "10000000-0000-4000-8000-000000000003",
+    "contextTaskId": "10000000-0000-4000-8000-000000000004",
+    "contextQuestion": "资料中如何描述示例产品？",
+    "retrievalStrategy": "LLAMA_RRF_V1",
+    "queryPolicy": "CONTEXT_REWRITE_V1",
+    "memoryPolicy": "CONFIRMED_MEMORY_V1",
+    "memoryRevision": 7,
+    "memoryGeneration": 2
+  },
+  "result": {
+    "schemaVersion": "knowledge-qa-result-v4",
+    "strategy": "LLAMA_RRF_V1",
+    "content": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "示例产品有资料中列出的限制。[1]",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "00000000-0000-0000-0000-000000000001",
+          "version": 1,
+          "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "source": {
+            "displayName": "契约测试资料",
+            "locator": "utf8-bytes:0-20"
+          }
+        }
+      ]
+    },
+    "references": [
+      {
+        "documentId": "00000000-0000-0000-0000-000000000001",
+        "version": 1,
+        "indexGeneration": 1,
+        "jobId": "00000000-0000-0000-0000-000000000002",
+        "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+        "chunkId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "batchDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "textHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "retrieval": [
+      {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 8
+      }
+    ],
+    "query": {
+      "originalQuestion": "它有哪些限制？",
+      "retrievalQuestion": "资料中示例产品有哪些限制？",
+      "mode": "REWRITTEN",
+      "fallbackReason": null,
+      "contextTruncated": false
+    },
+    "memory": {
+      "schemaVersion": "memory-usage-v1",
+      "policy": "CONFIRMED_MEMORY_V1",
+      "revision": 7,
+      "generation": 2,
+      "items": [
+        {
+          "memoryId": "00000000-0000-4000-8000-000000000099",
+          "version": 2,
+          "expiresAt": "2030-01-01T00:00:00Z"
+        }
+      ],
+      "omittedCount": 0
+    }
+  }
+}

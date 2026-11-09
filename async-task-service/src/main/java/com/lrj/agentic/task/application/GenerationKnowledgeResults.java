@@ -14,6 +14,10 @@ public final class GenerationKnowledgeResults {
 
     /** 持久graph决定结果协议；v3必须绑定原输入，旧任务不能借新信封跳过校验。 */
     public static List<Reference> references(String kind, String graph, JsonNode result, JsonNode input) {
+        if (TaskProtocol.GRAPH_V4.equals(graph)) {
+            require(TaskProtocol.KIND.equals(kind));
+            return MemoryQaRequests.references(result, input);
+        }
         if (TaskProtocol.GRAPH_V3.equals(graph)) {
             require(TaskProtocol.KIND.equals(kind));
             return ContextualKnowledgeResults.references(result, input);

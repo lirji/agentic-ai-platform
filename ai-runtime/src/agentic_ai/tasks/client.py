@@ -168,6 +168,8 @@ class CentralTaskClient:
                                 if code == "TASK_LEASE_LOST"
                                 else TaskRuntimeCode.RESEARCH_LIMIT
                                 if code == "TASK_RESEARCH_LIMIT"
+                                else TaskRuntimeCode.MEMORY_STALE
+                                if code == "TASK_MEMORY_STALE"
                                 else TaskRuntimeCode.CONFLICT
                             )
                         if response.status_code >= 500:

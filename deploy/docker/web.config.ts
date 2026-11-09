@@ -16,7 +16,7 @@ export default defineConfig({
     proxy: Object.fromEntries(
       (mode === 'oidc' ? ['/api', '/oauth2/authorization', '/login/oauth2/code'] : [
         '/api/v2/knowledge', '/api/v1/knowledge',
-        '/api/v3/conversations', '/api/v2/conversations', '/api/v1/conversations',
+        '/api/v4/conversations', '/api/v3/conversations', '/api/v2/conversations', '/api/v1/conversations',
         '/api/v4/tasks', '/api/v3/tasks', '/api/v2/tasks', '/api/v1/tasks',
         '/api/v1/usage',
       ]).map(

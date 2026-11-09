@@ -148,3 +148,28 @@ def test_group_rejects_unsafe_or_unbounded_manifest(tmp_path, change):
         )
     with pytest.raises(QaError, match=QaCode.CONFIG_INVALID):
         WorkerGroup.from_file(manifest).inspect()
+
+
+def test_memory_graphs_require_independent_role_and_explicit_dependencies(tmp_path):
+    extras = dict(
+        retrieval_enabled=True,
+        contextual_qa_enabled=True,
+        memory_enabled=True,
+        memory_endpoint="http://127.0.0.1:28088",
+        memory_private_key=str(tmp_path / "memory.pem"),
+    )
+    config = WorkerConfig.model_validate(worker(tmp_path, **extras))
+    assert WorkerGraph.MEMORY_PROPOSAL in config.selected_graphs()
+    assert WorkerGraph.MEMORY_QA in config.selected_graphs()
+    assert (
+        WorkerGraph.MEMORY_QA not in WorkerConfig.model_validate(worker(tmp_path)).selected_graphs()
+    )
+    for override in (
+        {"memory_enabled": False},
+        {"memory_private_key": None},
+        {"contextual_qa_enabled": False},
+        {"retrieval_enabled": False},
+        {"memory_endpoint": "http://external.example"},
+    ):
+        with pytest.raises(ValidationError):
+            WorkerConfig.model_validate(worker(tmp_path, **(extras | override)))

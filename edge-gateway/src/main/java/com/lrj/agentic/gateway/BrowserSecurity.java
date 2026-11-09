@@ -102,7 +102,7 @@ public class BrowserSecurity {
                         .pathMatchers("/api/v1/session", "/api/v1/auth/logout", "/api/v1/knowledge/**", "/api/v2/knowledge/**",
                                 com.lrj.agentic.contract.ModelUsageProtocol.PUBLIC_PATH, com.lrj.agentic.contract.ModelUsageProtocol.AUDIT_MATCHER, "/api/v1/tasks/**", "/api/v2/tasks", "/api/v3/tasks", "/api/v3/tasks/capabilities",
                                 "/api/v4/tasks", "/api/v4/tasks/capabilities", "/api/v1/conversations", "/api/v1/conversations/**",
-                                "/api/v2/conversations/**", "/api/v3/conversations/*/turns").authenticated().anyExchange().denyAll())
+                                "/api/v2/conversations/**", "/api/v3/conversations/*/turns", "/api/v4/conversations/*/turns").authenticated().anyExchange().denyAll())
                 .oauth2Login(c -> c.clientRegistrationRepository(browserRegistrations).authorizedClientRepository(browserClients)
                         .authenticationManager(token -> authentication.authenticate(token).timeout(BrowserIdentityClient.DEADLINE)
                                 .onErrorMap(error -> error instanceof org.springframework.security.core.AuthenticationException ? error

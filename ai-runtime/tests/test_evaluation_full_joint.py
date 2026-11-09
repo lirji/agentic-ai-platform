@@ -52,6 +52,7 @@ def joint():
         TASK_PORT=str(value["taskPort"]),
         TASK_MANAGEMENT_PORT="0",
         TASK_GENERATION_ENABLED="true",
+        TASK_MEMORY_ENABLED="true" if os.environ.get("AGENTIC_MEMORY_JOINT_IT") == "1" else "false",
         TASK_RESEARCH_STAGED_ENABLED="true",
         TASK_RESEARCH_ENABLED=(
             "true"

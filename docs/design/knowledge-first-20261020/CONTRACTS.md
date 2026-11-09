@@ -16,7 +16,7 @@ S12C 的研究增量见 [RESEARCH_COVERAGE_CONTRACTS](RESEARCH_COVERAGE_CONTRACT
 
 ## 1. 通用约定
 
-S18B个人记忆治理见[MEMORY_CONTRACTS](MEMORY_CONTRACTS.md)：Conversation MySQL唯一权威、用户确认生效、默认90天、撤销代次与无正文收据；S18C的模型提议及注入另行增补，不改变旧问答输入。
+S18B个人记忆治理见[MEMORY_CONTRACTS](MEMORY_CONTRACTS.md)：Conversation MySQL唯一权威、用户确认生效、默认90天、撤销代次与无正文收据；S18C新增显式提议任务、独立执行身份和QA v4只读注入，原v1–v3问答输入保持不变；完整闭集与共享金标仍见同一契约。
 
 - 基础业务 API 使用 `/api/v1` 命名空间，由本项目网关路由；生命周期K07新管理模型显式使用`/api/v2/knowledge`，不静默改变严格v1消费者。迁入旧 schema 时明确版本及适配映射，原项目文件只作固定参考，不能双向竞争维护。
 - 租户、用户和权限来自已验证身份上下文，不信任请求正文、模型生成内容或任意身份头；恢复与引用读取重新判权。

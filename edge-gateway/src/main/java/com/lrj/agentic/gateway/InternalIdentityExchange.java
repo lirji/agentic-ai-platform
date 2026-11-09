@@ -85,7 +85,7 @@ public class InternalIdentityExchange implements GlobalFilter, Ordered {
         if ((path.equals("/api/v1/tasks") || path.startsWith("/api/v1/tasks/")) || path.equals("/api/v2/tasks")
                 || path.equals("/api/v3/tasks") || path.equals("/api/v3/tasks/capabilities") || path.equals("/api/v4/tasks") || path.equals("/api/v4/tasks/capabilities")) { return IdentityProtocol.TASK_AUDIENCE; }
         if (path.equals("/api/v1/conversations") || path.startsWith("/api/v1/conversations/") || path.startsWith("/api/v2/conversations/")
-                || path.matches("/api/v3/conversations/[^/]+/turns")) {
+                || path.matches("/api/v[34]/conversations/[^/]+/turns")) {
             return IdentityProtocol.CONVERSATION_AUDIENCE;
         }
         return IdentityProtocol.KNOWLEDGE_AUDIENCE;

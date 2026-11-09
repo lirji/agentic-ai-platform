@@ -47,13 +47,13 @@ public class CentralTaskGateway implements TaskGateway {
         try {
             body = json.writeValueAsBytes(Map.of("taskId", taskId, "kind", ConversationProtocol.TASK_KIND,
                     "runtimeVersion", ConversationProtocol.TASK_RUNTIME, "graphVersion",
-                    input.queryPolicy() != null ? ConversationProtocol.TASK_GRAPH_V3
+                    input.memoryPolicy() != null ? MemoryAiProtocol.QA_GRAPH : input.queryPolicy() != null ? ConversationProtocol.TASK_GRAPH_V3
                             : input.retrievalStrategy() == null ? ConversationProtocol.TASK_GRAPH : ConversationProtocol.TASK_GRAPH_V2,
                     "input", input));
         } catch (IOException invalid) { throw new ConversationFailure(ConversationError.DISPATCH_REJECTED); }
         var response = http.request("POST", properties.taskEndpoint().resolve("/internal/v1/tasks"), headers, body);
         if (response.status() != HttpStatus.ACCEPTED.value()) { reject(response.status(), false); }
-        read(response.body(), taskId);
+        read(response.body(), taskId, ConversationProtocol.TASK_KIND);
     }
 
     /** 成功上下文只来自中央已确认状态，不根据本地 SUBMITTED 或流式文本推断。 */
@@ -63,14 +63,40 @@ public class CentralTaskGateway implements TaskGateway {
         var response = http.request("GET", properties.taskEndpoint().resolve("/internal/v1/tasks/" + taskId),
                 headers(owner, ConversationProtocol.TASK_INSPECT), null);
         if (response.status() != HttpStatus.OK.value()) { reject(response.status(), true); }
-        return read(response.body(), taskId);
+        return read(response.body(), taskId, ConversationProtocol.TASK_KIND);
     }
 
-    private TaskStatus read(byte[] body, String taskId) {
+    /** 提议与问答的中央kind严格分开，避免错误类型的任务被当作成功交接。 */
+    @Override
+    public void submitProposal(Caller owner, String taskId, com.lrj.agentic.conversation.api.MemoryAiDtos.Input input) {
+        ConversationValues.id(taskId); ConversationValues.id(input.proposalId());
+        var headers = headers(owner, ConversationProtocol.TASK_SUBMIT);
+        headers.put("Idempotency-Key", "memory-proposal:" + input.proposalId());
+        byte[] body;
+        try {
+            body = json.writeValueAsBytes(Map.of("taskId", taskId, "kind", MemoryAiProtocol.KIND,
+                    "runtimeVersion", ConversationProtocol.TASK_RUNTIME, "graphVersion", MemoryAiProtocol.GRAPH, "input", input));
+        } catch (IOException invalid) { throw new ConversationFailure(ConversationError.DISPATCH_REJECTED); }
+        var response = http.request("POST", properties.taskEndpoint().resolve("/internal/v1/tasks"), headers, body);
+        if (response.status() != HttpStatus.ACCEPTED.value()) { reject(response.status(), false); }
+        read(response.body(), taskId, MemoryAiProtocol.KIND);
+    }
+
+    /** 内部执行源读取前独立核验中央任务类型与当前状态。 */
+    @Override
+    public TaskStatus proposalStatus(Caller owner, String taskId) {
+        ConversationValues.id(taskId);
+        var response = http.request("GET", properties.taskEndpoint().resolve("/internal/v1/tasks/" + taskId),
+                headers(owner, ConversationProtocol.TASK_INSPECT), null);
+        if (response.status() != HttpStatus.OK.value()) { reject(response.status(), true); }
+        return read(response.body(), taskId, MemoryAiProtocol.KIND);
+    }
+
+    private TaskStatus read(byte[] body, String taskId, String kind) {
         try {
             JsonNode node = json.readTree(body);
             if (node == null || !node.isObject() || !taskId.equals(node.path("taskId").textValue())
-                    || !ConversationProtocol.TASK_KIND.equals(node.path("kind").textValue())
+                    || !kind.equals(node.path("kind").textValue())
                     || !node.path("status").isTextual()) {
                 throw new ConversationFailure(ConversationError.TASK_UNAVAILABLE);
             }

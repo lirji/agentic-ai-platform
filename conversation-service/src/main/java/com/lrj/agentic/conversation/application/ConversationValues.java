@@ -95,16 +95,16 @@ public class ConversationValues {
                 documents(row.documentIds()), row.contextTurnId(), row.taskId(), row.dispatchState(),
                 row.dispatchAttempts(), row.retryCount(), row.revision(), row.errorCode(),
                 row.createdAt(), row.updatedAt(), legacy(row) ? null : row.retrievalStrategy(),
-                contextual(row) ? row.queryPolicy() : null);
+                contextual(row) ? row.queryPolicy() : null, row.memoryPolicy(), row.memoryRevision(), row.memoryGeneration());
     }
     /** 下游输入只能从已提交问题重建，不接受运行时覆盖原问题或身份。 */
     public TaskGateway.QuestionInput input(TurnRow row) {
-        String version = contextual(row) ? ConversationProtocol.INPUT_VERSION_V3
+        String version = row.memoryPolicy() != null ? MemoryAiProtocol.QA_INPUT : contextual(row) ? ConversationProtocol.INPUT_VERSION_V3
                 : legacy(row) ? ConversationProtocol.INPUT_VERSION : ConversationProtocol.INPUT_VERSION_V2;
         return new TaskGateway.QuestionInput(version, row.conversationId(),
                 row.turnId(), row.question(), documents(row.documentIds()), row.contextTurnId(),
                 row.contextTaskId(), row.contextQuestion(), legacy(row) ? null : row.retrievalStrategy(),
-                contextual(row) ? row.queryPolicy() : null);
+                contextual(row) ? row.queryPolicy() : null, row.memoryPolicy(), row.memoryRevision(), row.memoryGeneration());
     }
     /** 持久策略必须属于闭集，损坏行不能按默认策略继续分派。 */
     public static boolean contextual(TurnRow row) {

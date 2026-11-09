@@ -9,6 +9,10 @@ public interface TaskGateway {
     void submit(Caller owner, String taskId, String turnId, QuestionInput input);
     /** 查询仍绑定原 owner，未知资源/协议不得当作成功上下文。 */
     TaskStatus status(Caller owner, String taskId);
+    /** 记忆提议使用独立kind和图，不能伪装成知识问答。 */
+    void submitProposal(Caller owner, String taskId, com.lrj.agentic.conversation.api.MemoryAiDtos.Input input);
+    /** 运行校验只接受记忆提议任务，避免跨类型任务借用回调权限。 */
+    TaskStatus proposalStatus(Caller owner, String taskId);
 
     /** 传给 Python 的业务输入没有用户 JWT 或数据库连接信息。 */
     record QuestionInput(String schemaVersion, String conversationId, String turnId,
@@ -17,7 +21,17 @@ public interface TaskGateway {
             @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
             String retrievalStrategy,
             @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-            String queryPolicy) {
+            String queryPolicy,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) String memoryPolicy,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) Long memoryRevision,
+            @com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL) Long memoryGeneration) {
+        /** 保持v3原构造和字段形状，不为旧任务输出记忆空字段。 */
+        public QuestionInput(String schemaVersion, String conversationId, String turnId, String question,
+                java.util.List<String> documentIds, String contextTurnId, String contextTaskId,
+                String contextQuestion, String retrievalStrategy, String queryPolicy) {
+            this(schemaVersion, conversationId, turnId, question, documentIds, contextTurnId, contextTaskId,
+                    contextQuestion, retrievalStrategy, queryPolicy, null, null, null);
+        }
         /** v2保持九字段输入，不输出新策略空字段。 */
         public QuestionInput(String schemaVersion, String conversationId, String turnId, String question,
                 java.util.List<String> documentIds, String contextTurnId, String contextTaskId,

@@ -17,7 +17,7 @@ public final class UsageTypes {
         public String code() { return code; }
     }
     public enum Purpose implements Code {
-        QA("QA"), RESEARCH("RESEARCH"), ASSISTANT("ASSISTANT"), INGESTION("INGESTION"), SEARCH("SEARCH"), EVALUATION("EVALUATION");
+        QA("QA"), RESEARCH("RESEARCH"), ASSISTANT("ASSISTANT"), INGESTION("INGESTION"), SEARCH("SEARCH"), EVALUATION("EVALUATION"), MEMORY("MEMORY");
         private final String code;
         Purpose(String code) { this.code = code; }
         public String code() { return code; }

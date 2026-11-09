@@ -73,6 +73,10 @@ def main() -> None:
     assert contextual["input"]["schemaVersion"] == "knowledge-qa-input-v3"
     assert contextual["result"]["schemaVersion"] == "knowledge-qa-result-v3"
     assert contextual["result"]["query"]["originalQuestion"] == contextual["input"]["question"]
+    memory = json.loads((ROOT / "conversation-service/src/test/resources/memory-qa-golden.json").read_text())
+    assert memory["input"]["schemaVersion"] == "knowledge-qa-input-v4"
+    assert memory["result"]["schemaVersion"] == "knowledge-qa-result-v4"
+    assert memory["result"]["memory"]["revision"] == memory["input"]["memoryRevision"]
     research = json.loads((ROOT / "async-task-service/src/test/resources/research-coverage-golden.json").read_text())
     assert research["input"]["schemaVersion"] == "knowledge-work-input-v3"
     assert research["result"]["schemaVersion"] == "knowledge-work-result-v3"
@@ -81,7 +85,7 @@ def main() -> None:
     assert usage["protocol"] == REGISTERED_CONTRACTS["USAGE_CONTRACTS.md"]
     assert usage["report"]["schemaVersion"] == usage["settled"]["schemaVersion"] == usage["protocol"]
     assert usage["report"]["usage"] == usage["settled"]["usage"]
-    print(f"{len(REGISTERED_CONTRACTS)} registered contracts and 15 shared wire fixture files: PASS")
+    print(f"{len(REGISTERED_CONTRACTS)} registered contracts and 16 shared wire fixture files: PASS")
 
 
 if __name__ == "__main__":

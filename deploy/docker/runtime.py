@@ -73,6 +73,8 @@ def source_contents(root: Path, revision: str | None = None) -> dict[str, bytes]
 
 def prepare(args: argparse.Namespace) -> None:
     """根据真实本机 helper 生成各服务最小配置，制作可追溯的源码副本。"""
+    if args.memory_ai and not args.memory:
+        raise ValueError("--memory-ai需要同时启用--memory")
     if args.spreadsheets and not args.parsing:
         raise ValueError("表格受理需要同时启用--parsing")
     if args.ocr and not args.parsing:
@@ -108,6 +110,7 @@ def prepare(args: argparse.Namespace) -> None:
         "docx": args.docx,
         "spreadsheets": args.spreadsheets,
         "memory": args.memory,
+        "memoryAi": args.memory_ai,
         "structuredProfile": args.structured_profile,
     }
     fingerprint = hashlib.sha256(
@@ -184,6 +187,11 @@ def prepare(args: argparse.Namespace) -> None:
         }
     )
     source_env = local.environment("dev")
+    import memory_local
+
+    memory_env, memory_worker = memory_local.configuration(args.memory_ai, args.memory, state)
+    source_env.pop("MEMORY_RUNTIME_PUBLIC_KEY", None)
+    source_env.update(memory_env)
     tenant = "local-dev"
     browser = {}
     if args.identity_mode == "oidc":
@@ -273,7 +281,9 @@ def prepare(args: argparse.Namespace) -> None:
             selected = {
                 key: value
                 for key, value in source_env.items()
-                if key.startswith(owners[service]) or key == "INTERNAL_PUBLIC_KEY"
+                if key.startswith(owners[service])
+                or key == "INTERNAL_PUBLIC_KEY"
+                or (service == "conversations" and key == "MEMORY_RUNTIME_PUBLIC_KEY")
             }
         if service in {"knowledge", "tasks"}:
             selected["OPERATIONS_METRICS_ENABLED"] = str(args.operational_metrics).lower()
@@ -310,7 +320,18 @@ def prepare(args: argparse.Namespace) -> None:
         AI_EMBEDDING_BUDGET_FILE="/run/budgets/embedding.json",
         AI_EMBEDDING_BUDGET_LIMIT_CNY="1",
     )
+    if args.memory_ai:
+        ai_env.update(
+            AI_RETRIEVAL_ENABLED="true",
+            AI_RETRIEVAL_KNOWLEDGE_ENDPOINT="http://127.0.0.1:28084",
+            AI_RETRIEVAL_PRIVATE_KEY=transform(str(state / "runtime-knowledge-private.pem"), "ai"),
+        )
     env_file("ai", ai_env)
+    # 新图仅复用既有embedding额度；worker不获得AI HTTP验签或其他服务私钥。
+    env_file(
+        "qa-worker",
+        memory_local.worker_environment(ai_env, args.memory_ai),
+    )
     proxy_env = {
         key: value
         for key, value in chat_local.environment(proxy=True).items()
@@ -324,7 +345,13 @@ def prepare(args: argparse.Namespace) -> None:
         raise RuntimeError("仅支持已授权的 local-dev worker")
     # 仅派生配置切换到已登记租户，不改旧数据所有者或原宿主配置。
     worker["tenant_id"] = tenant
-    for key in ("task_private_key", "knowledge_private_key", "evaluation_private_key"):
+    worker.update(memory_worker)
+    for key in (
+        "task_private_key",
+        "knowledge_private_key",
+        "evaluation_private_key",
+        "memory_private_key",
+    ):
         if worker.get(key):
             worker[key] = transform(worker[key], "qa-worker")
     worker["chat_config"] = "/run/agentic/chat.json"
@@ -520,11 +547,18 @@ def main() -> None:
     parser.add_argument("--docx", action="store_true")
     parser.add_argument("--spreadsheets", action="store_true", help="启用XLSX/CSV受理，需--parsing")
     parser.add_argument("--memory", action="store_true", help="启用个人记忆新建与确认，默认关闭")
+    parser.add_argument(
+        "--memory-ai",
+        action="store_true",
+        help="启用受控提议与只读问答记忆，需--memory；配套启用检索/追问",
+    )
     parser.add_argument("--identity-mode", choices=("local", "oidc"), default="local")
     parser.add_argument("--sharing", action="store_true", help="仅与oidc一起启用已验收的只读共享")
     parser.add_argument("--feedback", action="store_true", help="启用所有者反馈及任务引用证明")
     parser.add_argument(
-        "--operations", action="store_true", help="启用所有者候选修订；不会自动开启处理worker"
+        "--operations",
+        action="store_true",
+        help="启用所有者候选修订；不会自动开启处理worker",
     )
     parser.add_argument(
         "--operations-publication",
@@ -537,12 +571,16 @@ def main() -> None:
         help="显式启用发布后检查与补偿；要求同时指定--operations",
     )
     parser.add_argument(
-        "--operational-metrics", action="store_true", help="显式启用只读管理指标；不启动采集或外发"
+        "--operational-metrics",
+        action="store_true",
+        help="显式启用只读管理指标；不启动采集或外发",
     )
     parser.add_argument("--validation-id", help="复用8位十六进制隔离验证ID，不操作原开发项目")
     parser.add_argument("--committed-only", action="store_true")
     parser.add_argument(
-        "--structured-profile", choices=("BLOCK_V2", "STRUCTURE_V3", "OCR_V4"), default="BLOCK_V2"
+        "--structured-profile",
+        choices=("BLOCK_V2", "STRUCTURE_V3", "OCR_V4"),
+        default="BLOCK_V2",
     )
     args = parser.parse_args()
     state = args.backend.resolve() / ".local/docker-runtime"

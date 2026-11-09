@@ -4,6 +4,7 @@ import com.lrj.agentic.contract.ErrorCode;
 
 /** 中央任务的唯一对外错误目录，拒绝拼接输入与数据库异常。 */
 public enum TaskError implements ErrorCode {
+    MEMORY_STALE("TASK_MEMORY_STALE", "记忆已过期或变化，请刷新后重新提问。", 409),
     CAPACITY_CONFIG_INVALID("TASK_CAPACITY_CONFIG_INVALID", "任务容量配置不一致，暂不能执行。", 503),
     CAPACITY_EXCEEDED("TASK_CAPACITY_EXCEEDED", "当前任务容量已满，请稍后重试。", 429),
     FEEDBACK_DISABLED("TASK_FEEDBACK_DISABLED", "任务反馈关联尚未启用。", 503),

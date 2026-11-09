@@ -228,7 +228,7 @@ class ConversationPersistenceIT {
         }
         var closed = new ConversationService(context.getBean(com.lrj.agentic.conversation.infrastructure.ConversationMapper.class),
                 context.getBean(ConversationValues.class), context.getBean(TaskGateway.class),
-                context.getBean(org.springframework.transaction.PlatformTransactionManager.class), false, false);
+                context.getBean(org.springframework.transaction.PlatformTransactionManager.class), false, false, context.getBean(MemoryContextService.class));
         assertThat(closed.askGeneration(owner, conversation.conversationId(), "same", command).turnId()).isEqualTo(turn.turnId());
         error(ConversationError.RETRIEVAL_DISABLED, () -> closed.askGeneration(owner, conversation.conversationId(), "new",
                 new AskGeneration(1L, "拒绝新受理", List.of(), null, "LLAMA_RRF_V1")));
@@ -250,7 +250,7 @@ class ConversationPersistenceIT {
         assertThat(http("POST", path, owner, "conversation:write", "same", body).body()).isEqualTo(accepted.body());
         var closed = new ConversationService(context.getBean(com.lrj.agentic.conversation.infrastructure.ConversationMapper.class),
                 context.getBean(ConversationValues.class), context.getBean(TaskGateway.class),
-                context.getBean(org.springframework.transaction.PlatformTransactionManager.class), false, false);
+                context.getBean(org.springframework.transaction.PlatformTransactionManager.class), false, false, context.getBean(MemoryContextService.class));
         assertThat(closed.askContextual(owner, conversation.conversationId(), "same", command).turnId()).isEqualTo(turn.turnId());
         assertThat(closed.capabilities().contextualQueryEnabled()).isFalse();
         error(ConversationError.RETRIEVAL_DISABLED, () -> closed.askContextual(owner, conversation.conversationId(), "new", command));
@@ -603,6 +603,7 @@ class ConversationPersistenceIT {
 
     static class CentralScenario implements TaskGateway {
         final Map<String, QuestionInput> inputs = new ConcurrentHashMap<>();
+        final Map<String, com.lrj.agentic.conversation.api.MemoryAiDtos.Input> proposalInputs = new ConcurrentHashMap<>();
         final Map<String, TaskStatus> statuses = new ConcurrentHashMap<>();
         final Map<String, Integer> counts = new ConcurrentHashMap<>();
         final Set<String> dropOnce = ConcurrentHashMap.newKeySet();
@@ -618,6 +619,16 @@ class ConversationPersistenceIT {
             statuses.putIfAbsent(taskId, TaskStatus.QUEUED);
             if (dropOnce.remove(taskId)) { throw new ConversationFailure(ConversationError.TASK_UNAVAILABLE); }
         }
+        @Override public void submitProposal(Caller owner, String taskId, com.lrj.agentic.conversation.api.MemoryAiDtos.Input input) {
+            assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
+            counts.merge(taskId, 1, Integer::sum);
+            if (unavailable.contains(taskId)) { throw new ConversationFailure(ConversationError.TASK_UNAVAILABLE); }
+            var previous = proposalInputs.putIfAbsent(taskId, input);
+            if (previous != null) { assertThat(previous).isEqualTo(input); }
+            statuses.putIfAbsent(taskId, TaskStatus.QUEUED);
+            if (dropOnce.remove(taskId)) { throw new ConversationFailure(ConversationError.TASK_UNAVAILABLE); }
+        }
+        @Override public TaskStatus proposalStatus(Caller owner, String taskId) { return status(owner, taskId); }
         @Override public TaskStatus status(Caller owner, String taskId) {
             assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
             var status = statuses.get(taskId);

@@ -44,6 +44,7 @@ mybatis-plus:
   global-config:
     banner: false
 task:
+  memory-enabled: ${TASK_MEMORY_ENABLED:false}
   feedback-enabled: ${TASK_FEEDBACK_ENABLED:false}
   research-staged-enabled: ${TASK_RESEARCH_STAGED_ENABLED:false}
   research-enabled: ${TASK_RESEARCH_ENABLED:false}

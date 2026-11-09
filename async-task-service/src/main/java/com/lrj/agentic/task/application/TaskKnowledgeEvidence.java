@@ -49,7 +49,7 @@ public class TaskKnowledgeEvidence {
         List<GenerationCitationProtocol.Reference> references;
         try {
             if (!GenerationCitationProtocol.SCHEMA.equals(command.schemaVersion())) throw new IllegalArgumentException();
-            int maximum = TaskProtocol.GRAPH_V3.equals(row.graphVersion()) ? TaskProtocol.MAX_CONTEXTUAL_DEPENDENCIES
+            int maximum = TaskProtocol.GRAPH_V3.equals(row.graphVersion()) || TaskProtocol.GRAPH_V4.equals(row.graphVersion()) ? TaskProtocol.MAX_CONTEXTUAL_DEPENDENCIES
                     : TaskProtocol.KIND.equals(row.kind()) ? 5 : 10;
             references = GenerationCitationProtocol.normalized(command.references(), 0, maximum);
         } catch (IllegalArgumentException invalid) { throw new TaskFailure(TaskError.INPUT_INVALID); }

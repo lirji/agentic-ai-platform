@@ -20,7 +20,7 @@ public interface TaskUsageContextPort {
     }
     /** 任务域公开的稳定工作类别，不暴露持久实体。 */
     enum Workload {
-        QA("QA"), RESEARCH("RESEARCH"), ASSISTANT("ASSISTANT"), EVALUATION("EVALUATION");
+        QA("QA"), RESEARCH("RESEARCH"), ASSISTANT("ASSISTANT"), EVALUATION("EVALUATION"), MEMORY("MEMORY");
         private final String code;
         Workload(String code) { this.code = code; }
         public String code() { return code; }
