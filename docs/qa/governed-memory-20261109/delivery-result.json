@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "backend": {
+    "mainCommit": "8b340ab0ab7f0cf3abc1003ff44e0881b65bbdb7",
+    "branchRun": 42559841880,
+    "mainRun": 42560214132,
+    "conclusion": "success"
+  },
+  "frontend": {
+    "productCommit": "647c13c4e0055e2b36baa10fb5eda72c5e0eba0a",
+    "mainCommit": "ceb944ba2425243f868bfbb886ea870e6425dc3c",
+    "branchRun": 42560613519,
+    "mainRun": 42561033688,
+    "conclusion": "success",
+    "note": "最终包含本地身份桥memory路由和拒绝用例；首次补漏CI仅新QA JSON排版失败，修正后精确提交CI通过。"
+  },
+  "deployment": "等待S18C完成后统一更新既有本地Docker"
+}
