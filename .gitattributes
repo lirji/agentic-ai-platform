@@ -1,0 +1,2 @@
+# 协议金标依赖CSV原始CRLF与字段内换行字节，禁止Git文本换行转换。
+docs/qa/spreadsheet-sources-20261109/fixtures/quoted.csv -text whitespace=cr-at-eol
