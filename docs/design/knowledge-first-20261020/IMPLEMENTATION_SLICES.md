@@ -235,7 +235,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S16A | 多 worker 竞争和有界恢复 | S15B, S12D, S13C | IMPLEMENT | DONE |
 | S16B | 租户公平与后台资源隔离 | S16A, S15C | IMPLEMENT | DONE |
 | S16C | 代表负载与故障容量报告 | S16B, S10F, S11E | VALIDATE | DONE |
-| S16D | 可操作告警与运行手册 | S15C, S16C | IMPLEMENT | PLANNED |
+| S16D | 可操作告警与运行手册 | S15C, S16C | IMPLEMENT | DONE |
 | S17A | 完整应用制品与本地部署入口 | S8F, S9C, S11E, S15B | IMPLEMENT | DONE |
 | S17B | 升级兼容与回退演练 | S17A, S10D, S12D | VALIDATE | PLANNED |
 | S17C | 跨存储还原与删除传播演练 | S17B, S13C, S15B | VALIDATE | PLANNED |
@@ -673,7 +673,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-RELEASE；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** dev_infra 连接/账号/命名空间隔离；健康/ready分开；私密凭据外置；无旧业务服务隐式依赖；重启不重置预算。
 - **Pass / Runtime：** IMPLEMENT；完整应用容器；共享组件优先 dev_infra；非生产目标。
-- **状态 / 并行 / 对应缺口：** DONE（本地验收PASS，Git交付中）；parallel=no；G17。
+- **状态 / 并行 / 对应缺口：** DONE（本地验收、两仓分支/main CI与正常合并推main均PASS；[交付收据](../../qa/isolated-release-validation-20261102/delivery-result.json)）；parallel=no；G17。
 
 ### S17B · 升级兼容与回退演练
 
@@ -773,8 +773,8 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 
 ### 下一任务、受阻条件及 Runtime 介入
 
-- 恢复实施后的第一项是 S8A（设计任务），其后 S8B/S8C/S8D/S8E 形成质量闭环；S8F 可在 S8A 后按实际队列安排，不能无 CI 长期积累后续改动。S8A 设计验收后才能把 S8B 调整为 READY；不得跳过契约。
-- 优先任务链、条件业务与 G01–G20 覆盖见主方案。S14A 反馈可在质量定义建立后提前；S13A/B 在多人使用前提前，不能机械排到最后。
+- 当前51项中40项DONE、3项PLANNED（S17B–D）、8项CONDITIONAL（S9E/F、S18A–F）。S16D与S17A已验收交付；下一实施项为S17B，先完善升级兼容/回退矩阵并进行隔离DB演练，再推进S17C与S17D。2026-11-09本轮仅同步进度，不启动后续实施。
+- 已完成项沿用绑定源码/提交的有效验收，不重做S8–S17A已完成范围；条件业务与G01–G20覆盖见主方案，实际恢复入口以[PROGRESS_STATE](PROGRESS_STATE.md)为准。
 - U01–U07 的条件只阻止相关行为；欠缺真实模型额度不会阻止契约/协议测试，但不能把未运行的真实效果标 PASS。
 - Runtime 首次新增工作：S9B 解析子进程/依赖，S9E 条件 OCR，S11D 重排模型私密配置与预算，S13A 正式身份配置，S15C 观测接入，S16A worker 配额，S17A 完整制品。S18A 周期业务同步首次需要时才接既定 XXL-JOB。
 - 逻辑上不共享资源的文档/CI可分别排期，但没有授权多个 Agent 并行写；同一 Knowledge 迁移序列、公共身份/协议或生产运行资源必须串行。

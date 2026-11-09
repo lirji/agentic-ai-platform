@@ -1,0 +1,100 @@
+{
+  "slice": "S17A",
+  "status": "PASS",
+  "phase": "DONE",
+  "repositories": {
+    "backend": {
+      "commit": "71b3c56cf65885fd139c34035ff7586d19ba636c",
+      "branch": "feat/isolated-release-validation-20261102",
+      "branchCI": {
+        "runId": 41473907450,
+        "headSha": "71b3c56cf65885fd139c34035ff7586d19ba636c",
+        "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41473907450",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "name": "operational-alerts",
+            "conclusion": "success"
+          },
+          {
+            "name": "documents",
+            "conclusion": "success"
+          },
+          {
+            "name": "java",
+            "conclusion": "success"
+          },
+          {
+            "name": "python",
+            "conclusion": "success"
+          }
+        ]
+      },
+      "mainMerged": true,
+      "mainPushed": true,
+      "mainCI": {
+        "runId": 41474362625,
+        "headSha": "71b3c56cf65885fd139c34035ff7586d19ba636c",
+        "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/41474362625",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "name": "java",
+            "conclusion": "success"
+          },
+          {
+            "name": "documents",
+            "conclusion": "success"
+          },
+          {
+            "name": "python",
+            "conclusion": "success"
+          },
+          {
+            "name": "operational-alerts",
+            "conclusion": "success"
+          }
+        ]
+      }
+    },
+    "frontend": {
+      "commit": "120ba1e6e14e31e16dee39030ff35b1c3ffc5d86",
+      "branch": "feat/isolated-release-validation-20261102",
+      "branchCI": {
+        "runId": 41473864828,
+        "headSha": "120ba1e6e14e31e16dee39030ff35b1c3ffc5d86",
+        "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41473864828",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "name": "web",
+            "conclusion": "success"
+          }
+        ]
+      },
+      "mainMerged": true,
+      "mainPushed": true,
+      "mainCI": {
+        "runId": 41474687198,
+        "headSha": "120ba1e6e14e31e16dee39030ff35b1c3ffc5d86",
+        "url": "https://github.com/lirji/agentic-ai-platform-web/actions/runs/41474687198",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "name": "web",
+            "conclusion": "success"
+          }
+        ]
+      }
+    }
+  },
+  "archivedOn": "2026-11-09",
+  "sourceReceipt": ".local/s17a-delivery.json",
+  "verification": {
+    "remoteMainMatchesBothCommits": true,
+    "branchAndMainJobsRechecked": true,
+    "verifiedOn": "2026-11-09",
+    "businessTestsRerun": false,
+    "runtimeProbesRerun": false
+  }
+}

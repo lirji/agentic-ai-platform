@@ -1,9 +1,8 @@
 # Codex Progress
 
-- 当前任务：capability-delivery-20261021持续执行；S17A本地验收PASS，正在两仓Git交付；之后继续S17B–D。
-- 唯一入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；[本片验收](docs/qa/isolated-release-validation-20261102/TEST_RESULT.md)。
-- 后端原目录feat/isolated-release-validation-20261102，HEAD14f033e；前端同名分支HEADc2d12fe。当前本片未提交；parallel=no，无新worktree。
-- 原九应用已经原样恢复且全部healthy，数据/预算一致；隔离7f6a3c91停止并VERIFIED，52693/59500均已退出。用户暂停/恢复授权持续有效，无新费用/生产部署/清理授权。U07=14天/每日/RTO60分钟/RPO24小时，S17C未验收。
+- 当前任务：capability-delivery-20261021的进度同步（progress-sync-20261109）；S16D、S17A已验收并交付，51项中40项DONE、3项PLANNED、8项CONDITIONAL。
+- 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)；S17A两仓Git/CI证据已归档为[交付收据](docs/qa/isolated-release-validation-20261102/delivery-result.json)。
+- 最新范围：用户要求“先同步进度”；本轮只同步文档并按既有授权交付。后续实施入口为S17B，本轮不启动；分支、验证、保留资源和未验证边界见唯一状态文档。
 
 ## 前期可行性任务记录
 

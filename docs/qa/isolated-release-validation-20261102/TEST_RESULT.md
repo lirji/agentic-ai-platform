@@ -1,6 +1,6 @@
 # S17A 固定制品与隔离发布验证
 
-`slice=S17A`，`overall=PASS`，`gate=PASS`（本地验收）。运行ID `7f6a3c91`，隔离环境已停止，原九个应用已按原ID/镜像恢复并全部healthy。没有生产部署、付费模型调用或数据清理。Git交付状态以规范进度及后续交付收据为准。
+`slice=S17A`，`overall=PASS`，`gate=PASS`（本地验收）。运行ID `7f6a3c91`，验收结束时隔离环境已停止，原九个应用已按原ID/镜像恢复并全部healthy。没有生产部署、付费模型调用或数据清理。后端71b3c56、前端120ba1e已正常合并并推main，两仓分支/main CI全部PASS，见[交付收据](delivery-result.json)；2026-11-09仅复核Git/CI并同步文档，没有重跑业务或运行现场验收。
 
 证据：[运行/权限/重启结果](validation-result.json)、[源码与镜像摘要](source-evidence.json)、[浏览器结果](browser-result.json)；验收依据[C-RELEASE](../../design/knowledge-first-20261020/RELEASE_CONTRACTS.md)。
 
