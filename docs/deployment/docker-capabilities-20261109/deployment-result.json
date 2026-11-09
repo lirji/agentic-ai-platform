@@ -1,0 +1,124 @@
+{
+  "status": "PASS",
+  "observedAt": "2026-11-09T05:14:42.070982+00:00",
+  "environment": "local Docker Desktop desktop-linux",
+  "project": "agentic-ai-app",
+  "origin": "http://localhost:28086",
+  "release": "57540a96db9de87b",
+  "previousRelease": "6b7bf063f040da7a",
+  "sourceFingerprint": "57540a96db9de87bfb0e7cfa87cb3711b832c808a4c62e5b33f9018064267761",
+  "commits": {
+    "backend": "728ba9f629f750017219288357c1ff48d853cd08",
+    "frontend": "967328a91e55b18828193e466af665dd6f8dc969"
+  },
+  "includesUncommitted": false,
+  "containers": [
+    {
+      "service": "ai",
+      "image": "agentic-ai/ai-runtime:57540a96db9de87b",
+      "imageId": "sha256:a6dc86faf4901c5c5087e726ed14a67d5be806614a5f832f18c43609af4aea03",
+      "containerId": "5fa89e5941a27a826b2a2e54f974ef9a35af650ba1b0fb2c82c8cee09de66dbe",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "conversations",
+      "image": "agentic-ai/conversation-service:57540a96db9de87b",
+      "imageId": "sha256:0a77ad8b625724a1b4cf36d5659dce12527bd2afb02d8010d475ca51f8f6a4f1",
+      "containerId": "6b44685dd5b9490f7bc93e475ec405fffa0d58f12a47048c3e08923fd9eee4ab",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "gateway",
+      "image": "agentic-ai/edge-gateway:57540a96db9de87b",
+      "imageId": "sha256:9a344c516f111c5df04c1237107ba565fc5f5d41c88a565f4957a0e91762b9f2",
+      "containerId": "21808219d5c99ca7182aa104d6f61891547600da22f81b006c11a63e86c3bba1",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "knowledge",
+      "image": "agentic-ai/knowledge-service:57540a96db9de87b",
+      "imageId": "sha256:57c2578a1d9fdfcfddb52c0f92c3e3f8db37a9eca2beed5dd64bf114c0158e00",
+      "containerId": "05daaf90b550a91197a49a384c848bee2516ebc8333e37d4d0e164b1461789d3",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "model-proxy",
+      "image": "agentic-ai/model-proxy:57540a96db9de87b",
+      "imageId": "sha256:6fc677edd64cf1875607088b519483ac362eeadb8d3748c6793ca7fcaebed185",
+      "containerId": "67b138f0172cad41613ce324a340d61446401b506cb6f8d4fd18a68b201771d1",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "qa-worker",
+      "image": "agentic-ai/ai-runtime:57540a96db9de87b",
+      "imageId": "sha256:a6dc86faf4901c5c5087e726ed14a67d5be806614a5f832f18c43609af4aea03",
+      "containerId": "190dd6884dae8cef2794b52f60b4326b629e6f8c27eabf97aecf989d14a5662c",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "search-bridge",
+      "image": "agentic-ai/ai-runtime:57540a96db9de87b",
+      "imageId": "sha256:a6dc86faf4901c5c5087e726ed14a67d5be806614a5f832f18c43609af4aea03",
+      "containerId": "cdd93e1ef01bf75e059a80893075f37c9eef6e0ccd6e75a539fe2102e6ecd95d",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "tasks",
+      "image": "agentic-ai/async-task-service:57540a96db9de87b",
+      "imageId": "sha256:13ca17b7d23fef64a540c2c68de0f923c93e930d0ae40a631de0fb974358ceff",
+      "containerId": "967ca4b188104558f874a12141ba303a5d18294df5daa18633322d93a0fe653e",
+      "health": "healthy",
+      "restarts": 0
+    },
+    {
+      "service": "web",
+      "image": "agentic-ai/web:57540a96db9de87b",
+      "imageId": "sha256:8c60ab6081c9850a76034ab82fd762b9d436a7b4ab8638795cd1166b9c6d4c1b",
+      "containerId": "4f62aa407f2492b2d6d4fd4a358a24f1f169e2f6806a25efb8600cfade72e1b7",
+      "health": "healthy",
+      "restarts": 0
+    }
+  ],
+  "schemaVersions": {
+    "agentic_knowledge": "21",
+    "agentic_tasks": "9",
+    "agentic_conversations": "6"
+  },
+  "migrationsApplied": {
+    "knowledge": "V20\u2013V21",
+    "tasks": "V9",
+    "conversations": "V4\u2013V6"
+  },
+  "businessTables": 45,
+  "businessRows": 2716,
+  "oldBusinessFieldsUnchanged": true,
+  "budgetsUnchanged": true,
+  "options": {
+    "identity": "oidc",
+    "sharing": false,
+    "feedback": false,
+    "operations": false,
+    "operationsPublication": false,
+    "operationsRecovery": false,
+    "operationalMetrics": false,
+    "parsing": true,
+    "ocr": true,
+    "pdf": true,
+    "docx": true,
+    "spreadsheets": true,
+    "memory": true,
+    "memoryAi": true,
+    "structuredProfile": "OCR_V4"
+  },
+  "browser": "PASS",
+  "runningParser": "PASS",
+  "deploymentPaidModelCalls": 0,
+  "rollback": "NOT_NEEDED; private backups retained. New schema/tasks require compatible writers; disable admission and drain before code rollback, no automatic database restore."
+}

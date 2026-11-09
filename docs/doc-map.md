@@ -181,3 +181,5 @@ S17A：`deploy/docker`制品门禁/隔离入口、Knowledge ProcessingProperties
 - S18B：Conversation MemoryService/MemoryMapper/V4与React MemoryPage → [记忆契约](design/knowledge-first-20261020/MEMORY_CONTRACTS.md)、[验收](qa/governed-memory-20261109/TEST_RESULT.md)。默认90天、确认生效、只读适配/元数据收据，S18C的模型提议与注入另行交付。
 
 - S18C：MemoryProposalService/MemoryContextService、Conversation V5/V6、Tasks V9、Python memory与React提议/v4问答 → [契约](design/knowledge-first-20261020/MEMORY_CONTRACTS.md)、[验收](qa/controlled-memory-20261109/TEST_RESULT.md)、[运行](qa/controlled-memory-20261109/RUNTIME.md)。
+
+- S9E/F、S18B/C最终Docker：固定两仓提交/不可变镜像、三库追加迁移、运行解析器与OIDC → [部署进度](deployment/docker-capabilities-20261109/PROGRESS_STATE.md)、[实际收据](deployment/docker-capabilities-20261109/deployment-result.json)。

@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "imageId": "sha256:57c2578a1d9fdfcfddb52c0f92c3e3f8db37a9eca2beed5dd64bf114c0158e00",
+  "containerId": "05daaf90b550a91197a49a384c848bee2516ebc8333e37d4d0e164b1461789d3",
+  "checks": [
+    {
+      "format": "PDF",
+      "sourceSha256": "904cf907a1bff4d97b42a8d4869b2add527e029f33eac91e4e2cfc762c2d942a",
+      "extractionDigest": "c342ed2d5dd565a6b9fe6aa1092e19f087a7f7c6871dbf56bd59eb8ed02afd3c",
+      "exactGolden": true,
+      "seconds": 4.511104625009466
+    },
+    {
+      "format": "XLSX",
+      "sourceSha256": "2b073589c2dc3800a115834ff6235d0cacb8f0abf42d7170a4c8325bda85be1b",
+      "extractionDigest": "c03353631960c3191c7703c239093d3ed5e2799495528e8deebf4f312d0433d1",
+      "exactGolden": true,
+      "seconds": 2.19930783304153
+    },
+    {
+      "format": "CSV",
+      "sourceSha256": "75c831ce9d4fb8073994fd067f0b79481c199a639af52963d610a898cef494df",
+      "extractionDigest": "f9a6c210ec8cb51c6fe00d0b51f91f01984a9eeedb6ea53c0262552e101f89ae",
+      "exactGolden": true,
+      "seconds": 0.9099235419998877
+    }
+  ],
+  "businessWrites": 0,
+  "paidCalls": 0
+}

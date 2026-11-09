@@ -4,7 +4,7 @@
 
 正式登录入口：<http://localhost:28086>；网关仅绑定本机28080。OIDC模式复用现有Casdoor（localhost:18090，容器DNS auth-governance-casdoor:8000）和已登记的local-agentic个人空间。账号由本机0600文件`.local/identity/ACCESS.md`提供，密钥只注入Gateway。旧local-dev数据保留原归属，不自动转成正式用户资料。
 
-本轮部署状态和验收以[最新Docker部署进度](../../docs/deployment/docker-latest-20261102/PROGRESS_STATE.md)为准。`--identity-mode local`保留原127.0.0.1测试身份入口兼容模式，不与正式模式混用。
+本轮部署状态和验收以[最新Docker部署进度](../../docs/deployment/docker-capabilities-20261109/PROGRESS_STATE.md)为准。`--identity-mode local`保留原127.0.0.1测试身份入口兼容模式，不与正式模式混用。
 
 ## 前提与构建
 
@@ -110,3 +110,5 @@ ai-runtime/.venv/bin/python deploy/docker/validation_probe.py after-restart --id
 应用DB身份仅有本库DML；Flyway仍由独立迁移身份执行启动迁移，不能宣称应用进程完全不持有迁移凭据。Qdrant复用本项目实例key并锁定独立集合，尚无集合级凭据隔离。AI健康仅表示HTTP存活，模型出口在本演练中禁用；完整验收条件见[C-RELEASE](../../docs/design/knowledge-first-20261020/RELEASE_CONTRACTS.md)。
 
 共享宿主内存不足时，需要先明确是否允许本项目短暂停服。获授权后使用`validation-pause-original`；同一`--validation-id`下的`validation-restore-original`先停止隔离应用，再按原容器ID和imageId恢复现有应用。操作阶段写入`originalPhase`，中断时先读取状态和日志；禁止改成`up`重建旧环境或用新tag替代原镜像。应将恢复放入演练调用方的`finally`，成功与失败都执行。不得停止其他项目或共享中间件。
+
+2026-11-09已将S9E/F与S18B/C产品部署为固定制品`57540a96db9de87b`，9容器健康；新增格式和记忆开关已启用，原业务数据/预算摘要保持，详见[当前部署收据](../../docs/deployment/docker-capabilities-20261109/deployment-result.json)。前述20261102脚本和收据为历史版本，本轮复验脚本在`.local/docker-capabilities-20261109/`，不会覆盖历史证据。

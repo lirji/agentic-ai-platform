@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "release": "57540a96db9de87b",
+  "sourceFingerprint": "57540a96db9de87bfb0e7cfa87cb3711b832c808a4c62e5b33f9018064267761",
+  "java": {
+    "tests": 253,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 6
+  },
+  "web": {
+    "tests": 262,
+    "format": "PASS",
+    "lint": "PASS",
+    "types": "PASS",
+    "productionBuild": "PASS"
+  },
+  "dockerImages": "PASS",
+  "receipt": ".local/docker-runtime/artifacts.json",
+  "log": ".logs/docker-capabilities-20261109/build.log"
+}

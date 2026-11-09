@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "scope": [
+    "S18C"
+  ],
+  "deployment": "PASS: ../../deployment/docker-capabilities-20261109/deployment-result.json",
+  "backend": {
+    "mainCommit": "728ba9f629f750017219288357c1ff48d853cd08",
+    "branchRun": 42565372727,
+    "mainRun": 42565533220,
+    "conclusion": "success"
+  },
+  "frontend": {
+    "mainCommit": "967328a91e55b18828193e466af665dd6f8dc969",
+    "branchRun": 42565373784,
+    "mainRun": 42565573882,
+    "conclusion": "success"
+  }
+}
