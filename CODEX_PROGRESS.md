@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务：capability-delivery-20261021。用户指定S9E、S9F、S18B、S18C均已验收并完成两仓产品Git/CI交付；既有本地Docker已更新启动、9容器健康，OIDC/业务页面/运行镜像解析及旧数据/预算对账PASS。产品与部署验收已完成；文档归档Git结果见权威入口引用的最终收据。
-- 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。已确认格式范围与90天可调整的用户确认记忆规则，详见该文档。
-- 顺序：S9E → S9F → S18B → S18C，连续验证和Git交付；parallel=no。本轮不启动S17B–D，未完成项不标DONE。
+- 当前任务：quality-security-baseline-20261109。用户要求先建立真实质量基线及持续提示注入攻击验证，已确认使用当前项目真实架构、操作和运行文档，结果仅代表工程知识场景。
+- 唯一状态与恢复入口：[本轮 PROGRESS_STATE](docs/qa/knowledge-quality-security-20261109/PROGRESS_STATE.md)。本轮60次真实问答与逐题审查已完成、本地验收通过，Git/CI待交付；工程质量16/20，关键覆盖不足，未认定业务质量达标。
+- 前一任务已交付：[capability-delivery-20261021](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。S9E/F、S18B/C及本地Docker已验收，保持原证据；本轮不启动S17B–D。parallel=no，无子Agent。
 
 ## 前期可行性任务记录
 

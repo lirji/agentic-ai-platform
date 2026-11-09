@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:eb4da4cb-4aa4-5a21-a6fa-936843bdfb16:d72e5370-a63f-4b39-a402-8ab179e12a67",
+  "answer": "不能。浏览器、展示名、用户名、owner 请求头或角色文字都不决定用户归属；身份归属固定由 issuer、audience、organization 决定，tenant 映射为 local-agentic，userId 为 IdP 稳定 sub [1]。"
+}

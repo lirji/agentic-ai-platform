@@ -42,6 +42,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # 工程知识金标校验固定历史提交的原文，浅克隆缺少该 Git 对象。
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: '0.11.3'
@@ -56,6 +58,12 @@ jobs:
           uv run --frozen mypy
       - name: Unit and shared wire contracts
         run: uv run --frozen pytest
+      - name: Quality baseline and attack runner static checks
+        run: |
+          uv run --frozen ruff format --check ../deploy/quality_security.py ../deploy/quality_security_runtime.py
+          uv run --frozen ruff check ../deploy/quality_security.py ../deploy/quality_security_runtime.py
+          uv run --frozen python -m py_compile ../deploy/quality_security.py ../deploy/quality_security_runtime.py
+          uv run --frozen python ../deploy/quality_security.py verify
 
   documents:
     runs-on: ubuntu-24.04

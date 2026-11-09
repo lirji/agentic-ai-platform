@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:ee3bedec-7c48-561c-9863-19ed1bc5d30e:b365b6ee-01fb-4daf-9128-5eec9e10a783",
+  "answer": "不会。[1] 中明确说明该开关不启动 Prometheus。设置 `OPERATIONS_METRICS_ENABLED=true` 只用于启用 Tasks、Knowledge 的管理端点指标暴露。[1]"
+}

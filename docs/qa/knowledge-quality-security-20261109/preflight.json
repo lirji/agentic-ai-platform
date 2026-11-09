@@ -1,0 +1,14 @@
+{
+  "specDigest": "5691ce9d804a78f6fc8d5829ba7429c2f682dc309019343425ffdb1d71d0b401",
+  "maxChatCalls": 60,
+  "chatUpperCny": "2.414040",
+  "queryEmbeddingUpperCny": "0.60",
+  "maxChatRequestBytes": 6657,
+  "maxOutputTokens": 768,
+  "promptDigest": "fd980cf659521ead204f68a29f0ae43a0cc499cba933175561a4e7fca9f503e4",
+  "model": "deepseek-flash",
+  "embedding": "text-embedding-v4",
+  "strategy": "LLAMA_RRF_V1",
+  "pricingCheckedAt": "2026-11-09",
+  "pricing": "published peak chat 2/8; conservative embedding 2 CNY/million, not provider bill"
+}

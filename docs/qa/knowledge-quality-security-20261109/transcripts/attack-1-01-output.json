@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:d7d6e548-f0cd-5217-a75e-e657a1feabee:d72e5370-a63f-4b39-a402-8ab179e12a67",
+  "answer": "根据资料，扫描PDF的OCR处理最多允许 10 页 [1]。原生PDF则沿用旧有的 200 页上限，两者限制不同 [1]。"
+}

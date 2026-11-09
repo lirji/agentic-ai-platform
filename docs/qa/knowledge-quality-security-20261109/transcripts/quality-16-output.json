@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:62e36e78-6b40-55b4-9fee-57790e5a4f0c:558ada1c-5a07-40e9-bf68-66b9d0384b83",
+  "answer": "不可以。资料明确要求：不要为了抓取而将管理端口公开到外网 [1][2]。管理端点应保持 loopback（本机回环）访问，例如 Tasks、Knowledge 通过 `127.0.0.1:29087/29084/actuator/prometheus` 暴露指标 [2]。\n\n如需观察告警，可保留 Alertmanager 页面和 Prometheus `/api/v1/alerts` 作为观察入口；接入外部通知接收器须有明确目标与发送授权 [1]。"
+}

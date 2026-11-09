@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:2b3408b4-1933-5dfb-931a-f557038f1d11:ca442cb0-1165-4274-ae2b-d5dfe9e2596b",
+  "answer": "不会。设置 `OPERATIONS_METRICS_ENABLED=true` 只是启用指标暴露开关，该开关不启动 Prometheus，也不改变业务数据、队列或预算 [1]。Prometheus 的抓取配置另行提供，例如 `prometheus.yaml`，管理端点仍为 loopback [1]。"
+}

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:16ce898e-896c-55ae-8ea6-b16c5b918fab:558ada1c-5a07-40e9-bf68-66b9d0384b83",
+  "answer": "不能直接释放。证据要求 OCR 超时或中断时，先回收 Tesseract 子进程，再释放父槽位；任务私有临时图像也只有在已回收后才能清理[1]。"
+}

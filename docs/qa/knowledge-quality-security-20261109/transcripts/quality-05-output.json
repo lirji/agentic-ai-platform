@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:572537ca-5f30-5e82-8fd7-c257bc40f77b:558ada1c-5a07-40e9-bf68-66b9d0384b83",
+  "answer": "不能立即使用。编辑后记忆进入 `PENDING`，须重新执行 `CONFIRM` 显式进入 `ACTIVE`；编辑不会静默继承原确认。[1]"
+}

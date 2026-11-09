@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:84bbc6a6-8f01-537f-a572-9eb4e79c147b:558ada1c-5a07-40e9-bf68-66b9d0384b83",
+  "answer": "不能发布。\n\n资料发布要求向量索引和全文索引两个 sink 都完成：Qdrant 需 `wait=true` 并确认 completed，ES Bulk 需逐条确认无 errors 后才记 DONE；只有在两个 sink 都 DONE 后，才能在同一短事务中提交任务完成与文档发布状态。仅单个 sink 完成时无法发布 [2]。此外，发布指针属于原子切换，索引失败不改变旧发布指针 [1]；未完成发布的数据即使在索引中可见，也不能从 API 返回 [2]。"
+}

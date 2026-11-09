@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:45b728f3-d8ab-5e1b-b5e3-8ca4988d2afc:b365b6ee-01fb-4daf-9128-5eec9e10a783",
+  "answer": "不能发布。需要两个索引 sink 都达到 DONE 后，才能把文档标记为 published；只有单个 sink 完成时无法发布。[1]\n\n补充：未完成发布的数据即使在索引中可见，也不能从 API 返回。[1]"
+}

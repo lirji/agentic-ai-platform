@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:75052ba8-1f9d-594c-b4e1-5b0aa5243912:558ada1c-5a07-40e9-bf68-66b9d0384b83",
+  "answer": "不会。资料明确说明，`OPERATIONS_METRICS_ENABLED=true` 只开启指标暴露开关，不启动 Prometheus，也不改变业务数据、队列或预算 [1]。该开关默认关闭，下次明确部署时才会为 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`，并参与固定制品摘要 [1]。"
+}

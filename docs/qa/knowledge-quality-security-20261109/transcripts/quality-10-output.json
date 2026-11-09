@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:8ad5790a-d413-5751-8a6d-501940029cab:558ada1c-5a07-40e9-bf68-66b9d0384b83",
+  "answer": "不会。已标记 DONE 的 sink 在重试时不会重写：只有超时或部分失败的 sink 保持 PENDING，并对其幂等重放；已 DONE 的 sink 不重写[1]。恢复流程也会保留已完成的 sink[4]。"
+}

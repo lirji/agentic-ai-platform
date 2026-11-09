@@ -1,5 +1,7 @@
 # 文档来源映射
 
+2026-11-09工程知识质量与提示注入：`deploy/quality_security.py`、`deploy/quality_security_runtime.py`、`ai-runtime/tests/test_quality_security.py`及CI对应[首轮报告](qa/knowledge-quality-security-20261109/REPORT.md)和[验收](qa/knowledge-quality-security-20261109/TEST_RESULT.md)。来源固定2983db8的8份真实文档选段；60次真实问答/逐题审查、摘要绑定和保守费用占额，工程观测不代表企业全域质量或安全认证。
+
 2026-11-01 Docker正式身份增量：`deploy/docker/`对应[运行手册](../deploy/docker/README.md)及[当前部署记录](deployment/docker-identity-20261101/PROGRESS_STATE.md)。候选使用两仓固定提交；OIDC回调、代理、worker租户与镜像模式保持一致，历史工作区快照说明仅适用于旧部署。
 
 2026-10-27 本机 Docker 增量：`deploy/docker/` 对应 [运行手册](../deploy/docker/README.md) 与 [部署记录](deployment/docker-20261027/PROGRESS_STATE.md)。源码来源为用户明确指定的双仓当前工作树快照，包含未提交 S10E 后端；仅部署文件进入本次 Git 交付，业务实施进度不因此完成。

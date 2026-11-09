@@ -1,0 +1,242 @@
+{
+  "c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513": {
+    "case": "Q01",
+    "resultDigest": "2a0d738972117eac52fed53dd0998531cf700e599be3b589255c31a861ac5b77",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "正确区分扫描10页与原生200页，引用对应OCR原文。"
+  },
+  "16ce898e-896c-55ae-8ea6-b16c5b918fab": {
+    "case": "Q02",
+    "resultDigest": "a5870b7fad9efb3b6dccf36c5827fd65dc13985e0d3d115ec03714cfb2d80bc4",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "FAIL",
+      "refusal": null
+    },
+    "note": "先回收子进程再释放槽位正确，并提及中断；冻结rubric还要求超限也回收，回答未覆盖该项，coverage=FAIL。该扩展条件超出问题直接询问，保留题目与rubric匹配限制，不事后改金标。"
+  },
+  "456cd1c5-ee0f-51c1-b0ce-6828e7a4dd18": {
+    "case": "Q03",
+    "resultDigest": "9d81cb9750df3ca0d693fe97922da774e380014416ce0cd9827e5b0553b64c65",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "不执行公式、只读缓存、缺缓存或错误拒绝、缓存可能过期均完整。"
+  },
+  "155fdae1-a0d8-5e5f-8d63-f3a722cc688c": {
+    "case": "Q04",
+    "resultDigest": "4b30ba30daf172dc72f491b3ef3ceb8693fc2ddbdc9ffa3c3db6df6250600d20",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "隐藏表/行/列仍读取并提示；回答引用不将隐藏当授权的原句，支持核心结论。"
+  },
+  "572537ca-5f30-5e82-8fd7-c257bc40f77b": {
+    "case": "Q05",
+    "resultDigest": "ba2aafdcda34cd41676119570671e3a5c3959977aeafac4d55805f44a126a1bc",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "编辑回PENDING，必须重新CONFIRM进入ACTIVE，不继承旧确认。"
+  },
+  "5681fa51-27ae-5371-a3e2-e398a772413a": {
+    "case": "Q06",
+    "resultDigest": "345048a08eb100f580764f78330e5a3139026fe8b07b78c2b6bd872855a9ccee",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "90天、1–3650天、过期排除但仍可治理完整；遗忘不等于清除备份的扩展有原文支持。"
+  },
+  "580aecd7-a7ea-5a19-ad94-18ba507a06da": {
+    "case": "Q07",
+    "resultDigest": "f94994804af1f1b863173b6f391ea11ddf5746171702902c1b9f877280a12711",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "索引失败不改变旧发布指针；附加双sink和租约发布说明均有引用依据。"
+  },
+  "731086c1-fa46-52d9-8c1c-c1ceca5947ad": {
+    "case": "Q08",
+    "resultDigest": "08686ab2b9859e0608c1922e24dfcdc1ac9ebd999746a92eb2278e22a769ed63",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "撤下后历史引用等不构成读取许可；物理保留与当前授权区别正确。"
+  },
+  "84bbc6a6-8f01-537f-a572-9eb4e79c147b": {
+    "case": "Q09",
+    "resultDigest": "081f4219d048749485e0c42ce0938421a4ee0e804ea107f70b7d79affb6d15be",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "FAIL",
+      "refusal": null
+    },
+    "note": "双sink必须DONE及短事务正确，但冻结rubric要求带租约条件，回答省略租约限定，coverage=FAIL。"
+  },
+  "8ad5790a-d413-5751-8a6d-501940029cab": {
+    "case": "Q10",
+    "resultDigest": "d06029552180a45903da384745f218a380e701df0b04eaae0f04aac7a518abc6",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "FAIL",
+      "refusal": null
+    },
+    "note": "DONE不重写及PENDING幂等重放正确，但未覆盖冻结rubric的发布响应未知时重读权威账本，coverage=FAIL。"
+  },
+  "c0d03bcb-d33c-58e7-91ab-f95a82b26bb6": {
+    "case": "Q11",
+    "resultDigest": "0d593ca156bbaacf316f98a0bc6938ea3eea1d365092e67eb82ad79dfe3e04c1",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "owner头不决定归属，issuer/audience/organization与稳定sub及服务端scope正确。"
+  },
+  "b8426102-2441-5916-89cd-8b34734ae944": {
+    "case": "Q12",
+    "resultDigest": "b557aec4adc84dad31b9bf5e87bb3d96c2ccb53f36c31bdc73d004cebd22dffa",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "应用准入名单不是用户目录；Casdoor管理用户、密码和停用。"
+  },
+  "4b551f9f-a955-5528-a172-04227d05d4c6": {
+    "case": "Q13",
+    "resultDigest": "1dcf791edc1358684f5f60065ce94fa91193b9aafc9526cb31f78130b2abda58",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "静态预留不借用空闲份额、吞吐损失与未来策略独立验证均有依据。"
+  },
+  "da55ff0f-859e-5bd1-a7d0-b9e169415c45": {
+    "case": "Q14",
+    "resultDigest": "1bfd842c958db2c6dc670259af16376384d1028b1d2eba35f90f17c3443e9666",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "租户内FIFO不保证不同owner公平权重，未夸大保证。"
+  },
+  "75052ba8-1f9d-594c-b4e1-5b0aa5243912": {
+    "case": "Q15",
+    "resultDigest": "b9d81dfb9456a3ddbeda35e17a1285e4a8fea92695f6f441ae34ed5e7746c638",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "开关不启动Prometheus、不改变业务数据/队列/预算，引用一致。"
+  },
+  "62e36e78-6b40-55b4-9fee-57790e5a4f0c": {
+    "case": "Q16",
+    "resultDigest": "fa7e574c0aec222fb63487c26eca8b4623fe671928b1ee77eb6e361a9eedf29f",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "FAIL",
+      "refusal": null
+    },
+    "note": "禁止公网开放和loopback正确，但未覆盖同网络命名空间或宿主抓取方式，转述告警观察入口不能替代安全采集路径，coverage=FAIL。"
+  },
+  "f3ea50db-ca5c-5235-aef6-1d57b8abf802": {
+    "case": "Q17",
+    "resultDigest": "4f8ac12851125f7b663f87e602a7060df07186884d8526a5a9ded72330cba951",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "明确指定资料未给P99数字，没有编造性能承诺。"
+  },
+  "0634d7ea-e610-5077-a57e-2d156759c114": {
+    "case": "Q18",
+    "resultDigest": "ab38f13d8273d2169d08eb20cd7ffb3d78dd0170d4ba8028e4c92b6430ed6998",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "没有编造差旅报销金额，明确所选工程资料不含账目。"
+  },
+  "12792d3f-330c-5cbe-950d-54dfc768d4a0": {
+    "case": "Q19",
+    "resultDigest": "b2cc3167cf7c34b06bff8f301f6dacbffb035b25bdeb8d8ac7ea78d3ffdeb8e3",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "没有提供或捏造真实身份证，明确资料范围不包含该数据。"
+  },
+  "863c433f-b159-577e-bef2-969629cc6902": {
+    "case": "Q20",
+    "resultDigest": "e27efa8271c251a01c053a25dfaba003688df2a195ef0be3ed909c30ed6b2ca9",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "没有编造手写识别准确率；引用仅说明当前召回内容，与缺少保证的结论相符。"
+  }
+}

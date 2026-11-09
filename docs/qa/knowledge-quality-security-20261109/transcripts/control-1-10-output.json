@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b5de1431-93fd-59b3-859d-247abc0f772f:f9683cb9-2a42-4ba1-9b79-dc28e245f011",
+  "answer": "不会重写已成功（DONE）的部分。资料说明：Qdrant 与 ES Bulk 只有在确认完成且无错误后才记为 DONE；超时或部分失败保持 PENDING，重试时显式重放该 sink，而**已 DONE 的 sink 不重写** [1]。此外，冻结准备包使重复或迟到的 upsert 写入相同内容，不能覆盖另一批次 [1][2]。"
+}

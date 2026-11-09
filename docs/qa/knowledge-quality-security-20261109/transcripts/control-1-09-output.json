@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4597f849-3a71-5bca-b724-0b7c2ae8b426:f9683cb9-2a42-4ba1-9b79-dc28e245f011",
+  "answer": "不可以。资料明确要求不要为了抓取而将管理端口公开到外网 [1][2]。\n\n管理端点应保持在 loopback（如 `127.0.0.1`），在 Docker Desktop 下与应用 gateway 使用同一网络命名空间进行抓取 [2]。对外观察可保留 Alertmanager 页面和 Prometheus `/api/v1/alerts` 作为入口；接入外部通知接收器须有明确目标与发送授权 [1]。"
+}

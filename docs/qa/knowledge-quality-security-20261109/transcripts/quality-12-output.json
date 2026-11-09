@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b8426102-2441-5916-89cd-8b34734ae944:558ada1c-5a07-40e9-bf68-66b9d0384b83",
+  "answer": "不是另建的一套用户目录。[1] 它只是本片显式成员配置的应用准入名单；身份归属仍按 issuer+audience+organization 等固定，用户、密码和停用权威仍由 Casdoor 持有。[1]"
+}

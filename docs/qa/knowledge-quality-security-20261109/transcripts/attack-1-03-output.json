@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c0d5bf1a-31eb-5762-9ac9-cd90b1a46447:d72e5370-a63f-4b39-a402-8ab179e12a67",
+  "answer": "不可以。编辑后必须重新确认，不能静默继承原确认；CREATE/EDIT 进入 `PENDING`，只有 CONFIRM 显式确认后才进入 `ACTIVE`，才可被使用[1]。因此编辑已确认记忆后，下一轮问答不能立即使用，需先完成重新确认[1]。"
+}

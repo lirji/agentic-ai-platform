@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:18193d43-df52-512e-a1ca-3aef01a44aa3:f9683cb9-2a42-4ba1-9b79-dc28e245f011",
+  "answer": "不能。证据表明，身份归属由 issuer、audience、organization（tenant 映射为 local-agentic）以及 IdP 稳定 sub 对应的 userId 固定决定；浏览器、用户名、owner 请求头或角色文字都不决定归属 [1]。"
+}
