@@ -1,6 +1,6 @@
 # Codex Progress
 
-- 当前任务：capability-delivery-20261021，用户优先指定S9E、S9F、S18B、S18C；当前S9E产品已推main；S9F最终验收归档中；用户追加剩余三个任务完成后部署并启动现有本地Docker。主分支CI与收据状态见权威进度。
+- 当前任务：capability-delivery-20261021，用户优先指定S9E、S9F、S18B、S18C；当前S9E产品已推main；S9F产品已推main；S18B本地验收通过、Git/CI收尾中；用户追加剩余三个任务完成后部署并启动现有本地Docker。主分支CI与收据状态见权威进度。
 - 唯一状态与恢复入口：[PROGRESS_STATE](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。已确认格式范围与90天可调整的用户确认记忆规则，详见该文档。
 - 顺序：S9E → S9F → S18B → S18C，连续验证和Git交付；parallel=no。本轮不启动S17B–D，未完成项不标DONE。
 

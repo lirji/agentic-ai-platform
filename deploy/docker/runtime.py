@@ -107,6 +107,7 @@ def prepare(args: argparse.Namespace) -> None:
         "pdf": args.pdf,
         "docx": args.docx,
         "spreadsheets": args.spreadsheets,
+        "memory": args.memory,
         "structuredProfile": args.structured_profile,
     }
     fingerprint = hashlib.sha256(
@@ -179,6 +180,7 @@ def prepare(args: argparse.Namespace) -> None:
             "KNOWLEDGE_DOCX_UPLOAD_ENABLED": str(args.docx).lower(),
             "KNOWLEDGE_SPREADSHEET_UPLOAD_ENABLED": str(args.spreadsheets).lower(),
             "KNOWLEDGE_STRUCTURED_PROFILE": args.structured_profile,
+            "CONVERSATION_MEMORY_ENABLED": str(args.memory).lower(),
         }
     )
     source_env = local.environment("dev")
@@ -517,6 +519,7 @@ def main() -> None:
     parser.add_argument("--pdf", action="store_true")
     parser.add_argument("--docx", action="store_true")
     parser.add_argument("--spreadsheets", action="store_true", help="启用XLSX/CSV受理，需--parsing")
+    parser.add_argument("--memory", action="store_true", help="启用个人记忆新建与确认，默认关闭")
     parser.add_argument("--identity-mode", choices=("local", "oidc"), default="local")
     parser.add_argument("--sharing", action="store_true", help="仅与oidc一起启用已验收的只读共享")
     parser.add_argument("--feedback", action="store_true", help="启用所有者反馈及任务引用证明")

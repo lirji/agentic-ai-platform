@@ -4,7 +4,7 @@ S16C最新证据：[混合负载容量报告](qa/mixed-capacity-20261102/CAPACIT
 
 本机 Docker 应用：[运行手册](../deploy/docker/README.md)、[本次部署进度](deployment/docker-latest-20261102/PROGRESS_STATE.md)。部署状态与下述业务实施进度分别记录。
 
-当前状态（2026-11-09同步）：[完整实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)共11批、51项任务，42项DONE、5项PLANNED（S17B–D、S18B/C）、4项CONDITIONAL（S18A/D/E/F）。S9E已交付，S9F本地验收通过；用户已启用S9E/F及S18B/C，按该顺序连续交付，S17B–D暂不启动。唯一状态来源为[PROGRESS_STATE](design/knowledge-first-20261020/PROGRESS_STATE.md)，原[20项差距](../.engineering/exploration/CAPABILITY_GAPS.md)保留为历史基线。
+当前状态（2026-11-09同步）：[完整实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)共11批、51项任务，43项DONE、4项PLANNED（S17B–D、S18C）、4项CONDITIONAL（S18A/D/E/F）。S9E/F已交付，S18B本地验收通过；用户已启用S9E/F及S18B/C，按该顺序连续交付，S17B–D暂不启动。唯一状态来源为[PROGRESS_STATE](design/knowledge-first-20261020/PROGRESS_STATE.md)，原[20项差距](../.engineering/exploration/CAPABILITY_GAPS.md)保留为历史基线。
 
 首期历史阶段（2026-10-21）：资料与独立 React 工作台、中央任务/PG 恢复、原问题和可靠交接已交付。S5D 问答图、累计预算及 worker 已通过受控恢复与真实 deepseek-flash 问答、追问、无资料和引用验证；S5E 问答 UI 通过28项单元/组件和10组真实/受控浏览器验收。S6/S7 研究分析、资料解释、核对清单和草稿建议已接通真实 Deep Agents、任务恢复、界面与引用；当时结果见 S6/S7 验收。
 
@@ -14,7 +14,7 @@ S16C最新证据：[混合负载容量报告](qa/mixed-capacity-20261102/CAPACIT
 
 | 文档 | 职责 | 状态 |
 | --- | --- | --- |
-| [能力实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md) | 框架分工、批次与 G01–G20 映射、三条关键路径、兼容及验收 | 51项中42项DONE、5项PLANNED、4项CONDITIONAL；按用户优先顺序继续S18B、S18C |
+| [能力实施方案](design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md) | 框架分工、批次与 G01–G20 映射、三条关键路径、兼容及验收 | 51项中43项DONE、4项PLANNED、4项CONDITIONAL；按用户优先顺序继续S18B、S18C |
 | [实施切片 S8–S18](design/knowledge-first-20261020/IMPLEMENTATION_SLICES.md#capability-depth-slices) | 51 项稳定任务、逐项依赖、Owner/路径、契约、Runtime 与可观察验收 | 新任务唯一清单；保留 S0–S7 |
 | [用量预算设计](design/knowledge-first-20261020/USAGE_DESIGN.md)、[usage-v1](design/knowledge-first-20261020/USAGE_CONTRACTS.md)、[验收矩阵](design/knowledge-first-20261020/USAGE_ACCEPTANCE.md)、[运行说明](design/knowledge-first-20261020/USAGE_RUNTIME.md) | 资金主体、预留/单次发送许可/未知结果、归因和旧账本迁移 | S15A/B已实现验收；[UA01–UA16](qa/shared-usage-budget-20261102/TEST_RESULT.md)通过，真实额度与生产未迁移 |
 | [容量契约](design/knowledge-first-20261020/CAPACITY_CONTRACTS.md)、[运行与恢复](design/knowledge-first-20261020/CAPACITY_RUNTIME.md) | 版本分工、两实例接管、租户预留份额与后台隔离 | [S16A验收](qa/multi-worker-recovery-20261102/TEST_RESULT.md)、[S16B验收](qa/tenant-capacity-isolation-20261102/TEST_RESULT.md)，交付/部署状态见进度 |
@@ -106,3 +106,5 @@ S12B答案支撑、覆盖和拒答已通过[校准与验收](qa/answer-quality-2
 S9E扫描PDF：[OCR增量契约](design/knowledge-first-20261020/OCR_CONTRACTS.md)、[运行与复验](qa/scanned-pdf-20261109/RUNTIME.md)。本地验收见[TEST_RESULT](qa/scanned-pdf-20261109/TEST_RESULT.md)，Git交付及后续范围以唯一进度为准。
 
 S9F表格：[契约](design/knowledge-first-20261020/SPREADSHEET_CONTRACTS.md)、[验收](qa/spreadsheet-sources-20261109/TEST_RESULT.md)、[运行说明](qa/spreadsheet-sources-20261109/RUNTIME.md)。
+
+- [S18B记忆治理验收](qa/governed-memory-20261109/TEST_RESULT.md)与[启用边界](qa/governed-memory-20261109/RUNTIME.md)：真实MySQL治理及React入口，模型提议/注入属于S18C。

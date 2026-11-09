@@ -1,0 +1,24 @@
+{
+  "baseRevision": "f5d63b905f543e7e270f8553fd24fab677980f58",
+  "files": {
+    "ci/check_contract_docs.py": "4616b4042f5ff6a9e22af136c56984bad20b1737ac3e804e0aacc722cd6f0e19",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/api/MemoryController.java": "3be00756733bdaab2721e3f2080d3263a54922c4a6a7b3a943d67b8c9d38772b",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/api/MemoryDtos.java": "88b7925ff489ae7ae4e004b2e35626ec5f3b21b5c64085c77bb1483ab43682de",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/application/MemoryService.java": "2d43241f20cbb78c5def273224562bb63099824f0c25e64d58d2f751da271551",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/config/ConversationSecurity.java": "a07d0a159ef90caf2669bfb49358ad7828b2df8c0db073124d8eba6e41969cfd",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/ConversationError.java": "e8ec4d7e4ae34c4cc1102fb4243a4fefaa45554df187d4fecf047505d3c36305",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/domain/MemoryProtocol.java": "95b24138f6ff7e005122dce38ed5f4ec20ab4c2cffe5a367a7aec7b8bd871f79",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/MemoryCommandRow.java": "8eee6f2374bc0df8f409c141b87d0c264f1f3d33fa801372b390b5f1d6ed22c9",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/MemoryEntryRow.java": "f85251d791d8c44b903895c6e1a6829d094ef7b68b49832a664543d1c4b6b829",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/MemoryMapper.java": "702ede87f0b017f8cbd1e1869c3c35faaf71b3f8bf47af1be724a88ad1b40713",
+    "conversation-service/src/main/java/com/lrj/agentic/conversation/infrastructure/MemoryStateRow.java": "959400d6bcce1d45dc586dac3b846f12de4fb877619ea02ef23ee23f9fe54c2d",
+    "conversation-service/src/main/resources/application.yml": "2a52e461989e79888de804908ce147475c73eab66f5c25e46a5620549acb6516",
+    "conversation-service/src/main/resources/db/migration/V4__governed_user_memory.sql": "836128d0164f539747664b63b8420f5f100acfae0d2b56fe5e0c14365a4d631c",
+    "conversation-service/src/main/resources/mapper/MemoryMapper.xml": "3921355059247117f8cfc0b6b8e2d1ae57441a4f8d11a49b8cdb602ec4ca01ca",
+    "conversation-service/src/test/java/com/lrj/agentic/conversation/ConversationPersistenceIT.java": "01d41e6567a4f0ba19e14288d7fed1357dd32a65ab6df2bbad5ef230cef1a866",
+    "conversation-service/src/test/java/com/lrj/agentic/conversation/config/ConversationJsonTest.java": "cfb4f3fd862015f3c61f44bc8e548fa9a1bfe91dc0ee3b5802ecf2044cf5b423",
+    "deploy/docker/runtime.py": "2b22b9fd286d88076157112df3ee1baf301c0f7687f9f61959ba76520d276498",
+    "deploy/env.example": "de957c80ab52b4d72cc336887e95e5887bc3f3175200060560581c797af37836"
+  },
+  "fingerprint": "dbf1f2f66cf838789215a20558c32cc0ef9cdfe459cce8ec73c3fc3e9ba49027"
+}

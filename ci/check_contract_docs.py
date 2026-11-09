@@ -21,6 +21,7 @@ REGISTERED_CONTRACTS = {
     "RESEARCH_RECOVERY_CONTRACTS.md": "research-recovery-v1",
     "USAGE_CONTRACTS.md": "usage-v1",
     "CAPACITY_CONTRACTS.md": "worker-group-v1",
+    "MEMORY_CONTRACTS.md": "memory-snapshot-v1",
 }
 FIXTURES = ROOT / "knowledge-service/src/test/resources"
 

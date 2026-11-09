@@ -44,6 +44,7 @@ mybatis-plus:
   global-config:
     banner: false
 conversation:
+  memory-enabled: ${CONVERSATION_MEMORY_ENABLED:false}
   contextual-query-enabled: ${CONVERSATION_CONTEXTUAL_QUERY_ENABLED:false}
   generation-enabled: ${CONVERSATION_GENERATION_ENABLED:false}
   edge-public-key: ${INTERNAL_PUBLIC_KEY}

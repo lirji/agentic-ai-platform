@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "migration": "Conversation V4",
+  "testDatabase": "agentic_conversations_test",
+  "devMigrated": false,
+  "tables": 3,
+  "commentedColumns": 28,
+  "defaultAdmissionEnabled": false,
+  "dockerOptIn": "--memory",
+  "databaseClock": "UTC",
+  "isolation": "REPEATABLE_READ",
+  "modelCalls": 0
+}

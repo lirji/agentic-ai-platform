@@ -241,7 +241,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 | S17C | 跨存储还原与删除传播演练 | S17B, S13C, S15B | VALIDATE | PLANNED |
 | S17D | 制品与依赖供应链门禁 | S8F, S17A | ENGINEERING | PLANNED |
 | S18A | 一个真实知识来源的增量同步 | S10D, S10E, S13B, S16B | IMPLEMENT | CONDITIONAL |
-| S18B | 用户记忆治理与持久化 | S13A, S15C | IMPLEMENT | PLANNED |
+| S18B | 用户记忆治理与持久化 | S13A, S15C | IMPLEMENT | DONE |
 | S18C | 受控记忆提议与上下文注入 | S18B, S12A, S15B | IMPLEMENT | PLANNED |
 | S18D | 一个具体业务的只读工具 | S13C, S15B, S12D | IMPLEMENT | CONDITIONAL |
 | S18E | 受控业务写入与人工批准 | S18D, S16A | IMPLEMENT | CONDITIONAL |
@@ -728,10 +728,12 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 - **契约 / 迁移归属：** C-MEMORY；有新迁移时由相应服务 Owner 串行追加并写表/字段注释；没有迁移不新建占位 SQL。
 - **可观察验收：** 真实DB并发/代次/版本；未确认/过期不生效；遗忘不泄露审计正文；跨用户/租户隔离；无模型抽取也能治理。
 - **Pass / Runtime：** IMPLEMENT；既有 Conversation MySQL；不引入第二个向量记忆权威。
-- **状态 / 并行 / 对应缺口：** PLANNED；parallel=no；G11 G18。
+- **状态 / 并行 / 对应缺口：** DONE；parallel=no；G11 G18。
 - **触发条件：** U05 明确跨会话收益、记忆种类和保留规则。
 
 - **已确认规则：** 个人偏好/项目背景，用户确认才生效，可编辑/停用/遗忘，默认90天过期且可调整；按S18B→S18C实施。
+
+- **验收：** [S18B TEST_RESULT](../../qa/governed-memory-20261109/TEST_RESULT.md)，真实MySQL23项IT、前端257单测与真实API浏览器11次治理写入通过；Git/CI收据单独归档。
 
 ### S18C · 受控记忆提议与上下文注入
 
@@ -781,7 +783,7 @@ S1/S2/S3 已验收；处理与发布的历史准备见 [PROCESSING_READINESS](PR
 
 ### 下一任务、受阻条件及 Runtime 介入
 
-- 当前51项中42项DONE、5项PLANNED（S17B–D、S18B/C）、4项CONDITIONAL（S18A/D/E/F）。用户已优先启用S9E/F、S18B/C；S9E已交付，S9F本地验收通过，S9F交付后连续执行S18B→S18C；S17B–D暂不启动。
+- 当前51项中43项DONE、4项PLANNED（S17B–D、S18C）、4项CONDITIONAL（S18A/D/E/F）。用户已优先启用S9E/F、S18B/C；S9E/F已交付，S18B本地验收通过，S18B交付后连续执行S18C；S17B–D暂不启动。
 - 已完成项沿用绑定源码/提交的有效验收，不重做S8–S17A已完成范围；条件业务与G01–G20覆盖见主方案，实际恢复入口以[PROGRESS_STATE](PROGRESS_STATE.md)为准。
 - U01–U07 的条件只阻止相关行为；欠缺真实模型额度不会阻止契约/协议测试，但不能把未运行的真实效果标 PASS。
 - Runtime 首次新增工作：S9B 解析子进程/依赖，S9E 条件 OCR，S11D 重排模型私密配置与预算，S13A 正式身份配置，S15C 观测接入，S16A worker 配额，S17A 完整制品。S18A 周期业务同步首次需要时才接既定 XXL-JOB。

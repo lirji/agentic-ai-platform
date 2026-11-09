@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.agentic.conversation.infrastructure.MemoryMapper">
+    <sql id="owner">tenant_id=#{owner.tenantId} AND owner_id=#{owner.userId}</sql>
+    <sql id="state">SELECT revision,generation,enabled,UTC_TIMESTAMP(6) AS observed_at FROM user_memory_state WHERE <include refid="owner"/></sql>
+    <select id="state" resultType="com.lrj.agentic.conversation.infrastructure.MemoryStateRow"><include refid="state"/></select>
+    <select id="lock" resultType="com.lrj.agentic.conversation.infrastructure.MemoryStateRow"><include refid="state"/> FOR UPDATE</select>
+    <select id="now" resultType="java.time.Instant">SELECT UTC_TIMESTAMP(6)</select>
+    <insert id="initialize">
+        INSERT INTO user_memory_state(tenant_id,owner_id) VALUES(#{owner.tenantId},#{owner.userId})
+        ON DUPLICATE KEY UPDATE owner_id=user_memory_state.owner_id
+    </insert>
+    <select id="entries" resultType="com.lrj.agentic.conversation.infrastructure.MemoryEntryRow">
+        SELECT * FROM user_memory_entry WHERE <include refid="owner"/> AND status IN ('PENDING','ACTIVE','DISABLED')
+        ORDER BY created_at,memory_id LIMIT #{limit}
+    </select>
+    <select id="entry" resultType="com.lrj.agentic.conversation.infrastructure.MemoryEntryRow">
+        SELECT * FROM user_memory_entry WHERE <include refid="owner"/> AND memory_id=#{id}
+    </select>
+    <select id="receipt" resultType="com.lrj.agentic.conversation.infrastructure.MemoryCommandRow">
+        SELECT command_id,memory_id,action,request_hash,revision,generation,created_at FROM user_memory_command
+        WHERE <include refid="owner"/> AND idempotency_hash=#{key}
+    </select>
+    <insert id="create">
+        INSERT INTO user_memory_entry(memory_id,tenant_id,owner_id,category,content,status,retention_days,expires_at)
+        VALUES(#{id},#{owner.tenantId},#{owner.userId},#{category},#{content},'PENDING',#{days},TIMESTAMPADD(DAY,#{days},UTC_TIMESTAMP(6)))
+    </insert>
+    <update id="edit">
+        UPDATE user_memory_entry SET category=#{category},content=#{content},status='PENDING',retention_days=#{days},
+            expires_at=TIMESTAMPADD(DAY,#{days},UTC_TIMESTAMP(6)),version=version+1,updated_at=UTC_TIMESTAMP(6)
+        WHERE <include refid="owner"/> AND memory_id=#{id} AND version=#{version} AND status IN ('PENDING','ACTIVE','DISABLED')
+    </update>
+    <update id="transition">
+        UPDATE user_memory_entry SET status=#{status},version=version+1,updated_at=UTC_TIMESTAMP(6)
+        <if test="renew">,expires_at=TIMESTAMPADD(DAY,retention_days,UTC_TIMESTAMP(6))</if>
+        <if test="erase">,content=NULL</if>
+        WHERE <include refid="owner"/> AND memory_id=#{id} AND version=#{version} AND status IN ('PENDING','ACTIVE','DISABLED')
+    </update>
+    <update id="clear">
+        UPDATE user_memory_entry SET status='FORGOTTEN',content=NULL,version=version+1,updated_at=UTC_TIMESTAMP(6)
+        WHERE <include refid="owner"/> AND status IN ('PENDING','ACTIVE','DISABLED')
+    </update>
+    <update id="advance">
+        UPDATE user_memory_state SET revision=revision+1,updated_at=UTC_TIMESTAMP(6)
+        <if test="invalidate">,generation=generation+1</if>
+        <if test="enabled != null">,enabled=#{enabled}</if>
+        WHERE <include refid="owner"/> AND revision=#{revision}
+    </update>
+    <insert id="record">
+        INSERT INTO user_memory_command(command_id,tenant_id,owner_id,idempotency_hash,request_hash,memory_id,action,revision,generation)
+        VALUES(#{row.commandId},#{owner.tenantId},#{owner.userId},#{key},#{row.requestHash},#{row.memoryId},#{row.action},#{row.revision},#{row.generation})
+    </insert>
+</mapper>

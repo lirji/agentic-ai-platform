@@ -8,6 +8,8 @@
 
 ## 前提与构建
 
+个人记忆治理通过prepare的`--memory`显式启用，默认关闭新建/确认；关闭后仍可管理和遗忘已有内容。新表、有效期和兼容边界见[S18B运行说明](../../docs/qa/governed-memory-20261109/RUNTIME.md)。这不启用尚未交付的模型提议或注入。
+
 要求支持 `env_file.format: raw` 的 Docker Compose、JDK 21、Maven、Python 3，并已按 [本机运行](../README.md) 初始化项目专用凭据/数据和搜索服务。镜像固定版本/摘要，Python 与 Node 使用项目锁文件；不把本机虚拟环境、node_modules、密钥或账本打进镜像。
 
 ```sh

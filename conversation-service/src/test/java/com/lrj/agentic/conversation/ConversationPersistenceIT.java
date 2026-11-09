@@ -42,19 +42,169 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 /** 真实 MySQL 验证事务/锁/约束；中央协议替身仅用于确定性故障，真实 HTTP 另行验收。 */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
         "management.server.port=0", "conversation.worker-enabled=false", "conversation.generation-enabled=true",
-        "conversation.contextual-query-enabled=true", "spring.main.banner-mode=off"})
+        "conversation.contextual-query-enabled=true", "conversation.memory-enabled=true", "spring.main.banner-mode=off"})
 @Import(ConversationPersistenceIT.Dependencies.class)
 class ConversationPersistenceIT {
     @Autowired ConversationService conversations;
     @Autowired DispatchService dispatch;
     @Autowired JdbcTemplate jdbc;
     @Autowired CentralScenario central;
+    @Autowired MemoryService memories;
 
     @Autowired com.fasterxml.jackson.databind.ObjectMapper json;
     @Autowired org.springframework.context.ApplicationContext context;
     @LocalServerPort int httpPort;
     @Value("${conversation.edge-public-key}") Resource httpPublic;
     @Value("${INTERNAL_PRIVATE_KEY}") Resource httpPrivate;
+
+    @Test void memoryRequiresConfirmationAndEditingRevokesUseUntilConfirmedAgain() {
+        var owner = owner();
+        assertThat(memories.snapshot(owner).revision()).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_memory_state WHERE tenant_id=?", Integer.class, owner.tenantId())).isZero();
+        var created = memories.command(owner, "create", memory(0, "CREATE", null, "偏好中文简洁说明"));
+        var pending = memories.snapshot(owner).items().getFirst();
+        assertThat(pending.status()).isEqualTo("PENDING");
+        assertThat(pending.retentionDays()).isEqualTo(90);
+        assertThat(pending.expiresAt()).isBetween(pending.createdAt().plus(Duration.ofDays(90)).minusSeconds(1), pending.createdAt().plus(Duration.ofDays(90)).plusSeconds(1));
+        assertThat(memories.activeSnapshot(owner).items()).isEmpty();
+        memories.command(owner, "confirm", memory(1, "CONFIRM", created.memoryId(), null));
+        assertThat(memories.activeSnapshot(owner).items()).extracting("content").containsExactly("偏好中文简洁说明");
+        memories.command(owner, "edit", memory(2, "EDIT", created.memoryId(), "新的偏好"));
+        assertThat(memories.activeSnapshot(owner).items()).isEmpty();
+        memories.command(owner, "confirm-again", memory(3, "CONFIRM", created.memoryId(), null));
+        memories.command(owner, "disable", memory(4, "DISABLE", created.memoryId(), null));
+        assertThat(memories.activeSnapshot(owner).items()).isEmpty();
+        assertThat(memories.snapshot(owner).items().getFirst().status()).isEqualTo("DISABLED");
+    }
+
+    @Test void memoryForgetErasesBodyAndReplayOnlyReturnsOriginalMetadata() throws Exception {
+        var owner = owner(); var command = memory(0, "CREATE", null, "绝不进入审计的私人正文");
+        var created = memories.command(owner, "same", command);
+        memories.command(owner, "forget", memory(1, "FORGET", created.memoryId(), null));
+        assertThat(memories.snapshot(owner).items()).isEmpty();
+        assertThat(memories.snapshot(owner).generation()).isEqualTo(1);
+        assertThat(memories.command(owner, "same", command)).isEqualTo(created);
+        assertThat(memories.receipt(owner, "same")).isEqualTo(created);
+        assertThat(jdbc.queryForObject("SELECT content FROM user_memory_entry WHERE memory_id=?", String.class, created.memoryId())).isNull();
+        assertThat(json.writeValueAsString(jdbc.queryForList("SELECT * FROM user_memory_command WHERE tenant_id=?", owner.tenantId())))
+                .doesNotContain(command.content());
+        error(ConversationError.MEMORY_STATE, () -> memories.command(owner, "revive", memory(2, "CONFIRM", created.memoryId(), null)));
+        error(ConversationError.IDEMPOTENCY_CONFLICT, () -> memories.command(owner, "same", memory(0, "CREATE", null, "不同内容")));
+    }
+
+    @Test void memoryExpiryUsesDatabaseTimeAndRenewalRequiresExplicitConfirmation() {
+        var owner = owner(); var created = memories.command(owner, "create", memory(0, "CREATE", null, "有效期测试"));
+        memories.command(owner, "confirm", memory(1, "CONFIRM", created.memoryId(), null));
+        jdbc.update("UPDATE user_memory_entry SET expires_at=UTC_TIMESTAMP(6)-INTERVAL 1 SECOND WHERE memory_id=?", created.memoryId());
+        assertThat(memories.snapshot(owner).items().getFirst().status()).isEqualTo("EXPIRED");
+        assertThat(memories.activeSnapshot(owner).items()).isEmpty();
+        memories.command(owner, "renew", memory(2, "CONFIRM", created.memoryId(), null));
+        assertThat(memories.activeSnapshot(owner).items()).hasSize(1);
+    }
+
+    @Test void memoryOwnerPauseClearRejectAndIsolationAdvanceMonotonicGeneration() {
+        var owner = owner(); var created = memories.command(owner, "create", memory(0, "CREATE", null, "将被拒绝"));
+        var foreign = new Caller(owner.tenantId(), "someone-else");
+        assertThat(memories.snapshot(foreign).items()).isEmpty();
+        error(ConversationError.MEMORY_NOT_FOUND, () -> memories.command(foreign, "forged", memory(0, "FORGET", created.memoryId(), null)));
+        error(ConversationError.MEMORY_NOT_FOUND, () -> memories.receipt(new Caller("other-tenant", owner.userId()), "create"));
+        memories.command(owner, "reject", memory(1, "REJECT", created.memoryId(), null));
+        memories.command(owner, "pause", new com.lrj.agentic.conversation.api.MemoryDtos.Command("memory-command-v1", 2L, "SET_ENABLED", null, null, null, null, false));
+        memories.command(owner, "create2", memory(3, "CREATE", null, "暂停期间可以整理但不使用"));
+        memories.command(owner, "clear", memory(4, "CLEAR", null, null));
+        assertThat(memories.snapshot(owner).revision()).isEqualTo(5);
+        assertThat(memories.snapshot(owner).generation()).isEqualTo(3);
+        assertThat(memories.snapshot(owner).enabled()).isFalse();
+        assertThat(memories.activeSnapshot(owner).items()).isEmpty();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM user_memory_entry WHERE tenant_id=? AND content IS NOT NULL", Integer.class, owner.tenantId())).isZero();
+    }
+
+    @Test void memoryConcurrentDuplicateCommitsOnceAndCompetingVersionsHaveOneWinner() throws Exception {
+        var owner = owner(); var command = memory(0, "CREATE", null, "并发受理");
+        try (var pool = Executors.newFixedThreadPool(4)) {
+            var start = new CountDownLatch(1);
+            var futures = new ArrayList<Future<com.lrj.agentic.conversation.api.MemoryDtos.Receipt>>();
+            for (int i = 0; i < 4; i++) { futures.add(pool.submit(() -> { start.await(); return memories.command(owner, "duplicate", command); })); }
+            start.countDown(); var first = futures.getFirst().get(10, TimeUnit.SECONDS);
+            for (var future : futures) { assertThat(future.get(10, TimeUnit.SECONDS)).isEqualTo(first); }
+            var race = new CountDownLatch(1); var outcomes = new ArrayList<Future<Boolean>>();
+            for (int i = 0; i < 4; i++) {
+                String key = "race-" + i;
+                outcomes.add(pool.submit(() -> {
+                    race.await();
+                    try { memories.command(owner, key, memory(1, "EDIT", first.memoryId(), "并发修改")); return true; }
+                    catch (ConversationFailure failure) { assertThat(failure.error()).isEqualTo(ConversationError.REVISION_CONFLICT); return false; }
+                }));
+            }
+            race.countDown(); int success = 0;
+            for (var outcome : outcomes) { if (outcome.get(10, TimeUnit.SECONDS)) { success++; } }
+            assertThat(success).isEqualTo(1);
+            assertThat(memories.snapshot(owner).revision()).isEqualTo(2);
+        }
+    }
+
+    @Test void memoryClosedAdmissionStillAllowsReadEditForgetAndOriginalReplay() {
+        var owner = owner(); var request = memory(0, "CREATE", null, "关闭后仍可管理");
+        var created = memories.command(owner, "original", request);
+        var closed = new MemoryService(context.getBean(com.lrj.agentic.conversation.infrastructure.MemoryMapper.class),
+                context.getBean(ConversationValues.class), context.getBean(org.springframework.transaction.PlatformTransactionManager.class), false);
+        assertThat(closed.snapshot(owner).admissionEnabled()).isFalse();
+        assertThat(closed.command(owner, "original", request)).isEqualTo(created);
+        error(ConversationError.MEMORY_DISABLED, () -> closed.command(owner, "new", memory(1, "CREATE", null, "拒绝")));
+        error(ConversationError.MEMORY_DISABLED, () -> closed.command(owner, "confirm", memory(1, "CONFIRM", created.memoryId(), null)));
+        closed.command(owner, "edit", memory(1, "EDIT", created.memoryId(), "编辑仍需以后确认"));
+        closed.command(owner, "forget", memory(2, "FORGET", created.memoryId(), null));
+        assertThat(closed.snapshot(owner).items()).isEmpty();
+    }
+
+    @Test void memoryHttpRejectsUnknownMissingWeakFieldsAndUntrustedIdentity() throws Exception {
+        var owner = owner(); String path = "/api/v1/conversations/memory/commands";
+        String body = json.writeValueAsString(memory(0, "CREATE", null, "HTTP确认边界"));
+        var accepted = http("POST", path, owner, "conversation:write", "http-memory", body);
+        assertThat(accepted.statusCode()).isEqualTo(200);
+        assertThat(http("POST", path, owner, "conversation:write", "http-memory", body).body()).isEqualTo(accepted.body());
+        assertThat(http("GET", path + "/http-memory", owner, "conversation:read", null, null).body()).isEqualTo(accepted.body());
+        assertThat(http("POST", path, owner, "conversation:read", "denied", body).statusCode()).isEqualTo(403);
+        assertThat(http("POST", path, null, "", "anonymous", body).statusCode()).isEqualTo(401);
+        for (String invalid : List.of(body.replace("\"enabled\":null", "\"ownerId\":\"forged\""),
+                body.replace(",\"enabled\":null", ""), body.replace("\"expectedRevision\":0", "\"expectedRevision\":\"0\""),
+                body.replace("\"retentionDays\":null", "\"retentionDays\":1.5"),
+                body.replace("\"enabled\":null", "\"enabled\":false"), body.replace("{", "{\"action\":\"FORGET\","))) {
+            assertThat(http("POST", path, owner, "conversation:write", "invalid", invalid).statusCode()).isEqualTo(400);
+        }
+        var foreign = new Caller(owner.tenantId(), "foreign");
+        assertThat(http("GET", path + "/http-memory", foreign, "conversation:read", null, null).statusCode()).isEqualTo(404);
+        assertThat(http("GET", "/api/v1/conversations/memory", owner, "conversation:read", null, null).statusCode()).isEqualTo(200);
+    }
+
+    @Test void memoryBoundsAndDatabaseChecksRejectInvalidWritesWithoutAdvancingRevision() {
+        var owner = owner();
+        for (String content : List.of(" ", "\ud800", "正文\u0001", "字".repeat(501))) {
+            error(ConversationError.INPUT_INVALID, () -> memories.command(owner, "invalid", memory(0, "CREATE", null, content)));
+        }
+        for (int days : List.of(0, 3651)) {
+            var invalid = new com.lrj.agentic.conversation.api.MemoryDtos.Command("memory-command-v1", 0L, "CREATE", null, "PREFERENCE", "正文", days, null);
+            error(ConversationError.INPUT_INVALID, () -> memories.command(owner, "invalid", invalid));
+        }
+        var boundary = new com.lrj.agentic.conversation.api.MemoryDtos.Command("memory-command-v1", 0L, "CREATE", null, "PROJECT_CONTEXT", "🦀".repeat(500), 3650, null);
+        var first = memories.command(owner, "boundary", boundary);
+        assertThat(memories.snapshot(owner).items().getFirst().content().codePointCount(0, 1000)).isEqualTo(500);
+        for (int i = 1; i < 100; i++) { memories.command(owner, "capacity-" + i, memory(i, "CREATE", null, "条目")); }
+        error(ConversationError.MEMORY_LIMIT, () -> memories.command(owner, "overflow", memory(100, "CREATE", null, "溢出")));
+        assertThat(memories.snapshot(owner).revision()).isEqualTo(100);
+        assertThatThrownBy(() -> jdbc.update("UPDATE user_memory_entry SET status='FORGOTTEN' WHERE memory_id=?", first.memoryId()))
+                .hasRootCauseInstanceOf(SQLException.class);
+        assertThatThrownBy(() -> jdbc.update("UPDATE user_memory_entry SET retention_days=0 WHERE memory_id=?", first.memoryId()))
+                .hasRootCauseInstanceOf(SQLException.class);
+        memories.command(owner, "free", memory(100, "FORGET", first.memoryId(), null));
+        memories.command(owner, "space", memory(101, "CREATE", null, "可重新使用空位"));
+        assertThat(memories.snapshot(owner).items()).hasSize(100);
+    }
+
+    private static com.lrj.agentic.conversation.api.MemoryDtos.Command memory(long revision, String action, String id, String text) {
+        return new com.lrj.agentic.conversation.api.MemoryDtos.Command("memory-command-v1", revision, action, id,
+                text == null ? null : "PREFERENCE", text, null, null);
+    }
 
     @Test void generationPublicHttpKeepsVersionedStrategyAndClosedGateReplaysOnlyExistingTurns() throws Exception {
         var owner = owner(); var conversation = conversations.create(owner, "new-http", new Create("HTTP策略"));

@@ -8,7 +8,7 @@
 
 ## 阅读入口
 
-- [20 项差距的实施方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)：按当前三框架与 Java/React 边界拆为 11 批、51 项任务，包含依赖、契约前置、兼容路线及验收。2026-11-09同步：42项DONE、5项PLANNED、4项CONDITIONAL；S9E已交付，S9F本地验收通过，按用户优先顺序继续S18B、S18C，具体范围与未验证项见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
+- [20 项差距的实施方案](docs/design/knowledge-first-20261020/CAPABILITY_IMPLEMENTATION_PLAN.md)：按当前三框架与 Java/React 边界拆为 11 批、51 项任务，包含依赖、契约前置、兼容路线及验收。2026-11-09同步：43项DONE、4项PLANNED、4项CONDITIONAL；S9E/F已交付，S18B本地验收通过，按用户优先顺序继续S18B、S18C，具体范围与未验证项见[当前进度](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。
 - [与 langchain4j-platform 的能力差距](.engineering/exploration/CAPABILITY_GAPS.md)：业务与实现深度的 20 项对照及固定源码证据，为新计划提供依据。
 - [首期业务与工程约定](docs/design/knowledge-first-20261020/BRIEF.md)：独立运行、业务优先级、React 与技能代码规范，以及模型、数据和代码参考资产。
 - [目标架构](docs/design/platform-selection-20261020/BACKEND_ARCHITECTURE.md)：三框架职责、模块与数据所有权、任务恢复、安全边界及 P0–P4 演进建议。
@@ -46,3 +46,5 @@
 独立精排的50项候选、原生异步后处理、两次核权、累计预算与失败机制已通过[S11D协议验收](docs/qa/rerank-budget-20261028/TEST_RESULT.md)。真实模型仍关闭，实际质量消融待账号及独立额度条件满足；消费者统一接入已通过S11E验收。受控追问S12A支持保留原问题、展示实际检索问题与回退诊断，[验收结果](docs/qa/contextual-qa-20261030/TEST_RESULT.md)含真实持久链路和3题真实模型召回对照；运行容器未自动更新。
 
 - [S9F表格验收](docs/qa/spreadsheet-sources-20261109/TEST_RESULT.md)：XLSX/UTF-8 CSV真实工作表、表头和行列来源，公式仅读缓存；[启用与回退边界](docs/qa/spreadsheet-sources-20261109/RUNTIME.md)。
+
+- [S18B个人记忆治理](docs/qa/governed-memory-20261109/TEST_RESULT.md)：可确认、编辑、停用、遗忘/清空，默认90天可调整；[契约](docs/design/knowledge-first-20261020/MEMORY_CONTRACTS.md)。
