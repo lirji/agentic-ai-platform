@@ -1,0 +1,21 @@
+{
+  "slice": "S9E",
+  "result": "PASS",
+  "backend": {
+    "commit": "e32dc65db8a7b5570a86ce7ccbd7cf1634517607",
+    "branchRun": 42555723935,
+    "mainRun": 42555900716,
+    "branchCi": "PASS",
+    "mainCi": "PASS",
+    "mergedAndPushed": "main"
+  },
+  "frontend": {
+    "commit": "f32b782082805b2f8f96acda91408797d6e3e244",
+    "branchRun": 42555724768,
+    "mainRun": 42556149525,
+    "branchCi": "PASS",
+    "mainCi": "PASS",
+    "mergedAndPushed": "main"
+  },
+  "deployment": "NOT_EXECUTED"
+}
