@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "backend": {
+    "productCommit": "4e76b4443237b1081e30644946c15e6b49f629c2",
+    "mainCommit": "1168e7a82301f0894872ecb86b5004df2ff758ac",
+    "branchRun": 42557852446,
+    "mainRun": 42558097885,
+    "conclusion": "success",
+    "note": "最终提交限定CSV金标夹具为原始字节，避免Git归一CRLF；最终精确提交的分支和main CI均通过。"
+  },
+  "frontend": {
+    "mainCommit": "d0b0a114422e3c4d26c359c7e167714e13d7fd15",
+    "branchRun": 42557811819,
+    "mainRun": 42558131793,
+    "conclusion": "success"
+  },
+  "deployment": "等待S18B和S18C完成后统一更新既有本地Docker"
+}
