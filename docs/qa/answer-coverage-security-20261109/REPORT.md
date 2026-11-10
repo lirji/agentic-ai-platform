@@ -4,7 +4,7 @@
 
 第四版五处发布未知核验遗漏全部补齐，但quality/Q02额外添加清理前置；quality/Q10与control-1/A10把sink PENDING写成任务状态；control-1/A09漏掉正确抓取路径，四项失败保留。相对第四版3项改善/2项退化，相对第三版1项改善/3项退化，相对原基线11项改善/1项退化。较旧基线改善不能证明当前验收通过。
 
-本版60/60次、累计CHAT343/343，Embedding360次；占额及内部结算10.984026/14.5元，本版新增2.018870元，提供方账单未知。60份正式评分、固定资金路由及583条历史尝试未改均已核对，旧未知占额保留；未选新基线。源码仍匹配921项离线通过证据。见[第五版验收](candidate-v5/TEST_RESULT.md)、[审计](candidate-v5/acceptance-audit.json)及[证据一致性](candidate-v5/evidence-integrity.json)。按用户要求完成结果提交后推送当前任务分支；不合入main，不部署。
+本版60/60次、累计CHAT343/343，Embedding360次；占额及内部结算10.984026/14.5元，本版新增2.018870元，提供方账单未知。60份正式评分、固定资金路由及583条历史尝试未改均已核对，旧未知占额保留；未选新基线。源码仍匹配921项离线通过证据。见[第五版验收](candidate-v5/TEST_RESULT.md)、[审计](candidate-v5/acceptance-audit.json)及[证据一致性](candidate-v5/evidence-integrity.json)。按用户要求结果已提交为b757471并推送当前任务分支，Java/Python/文档/运维告警四项远程CI通过；见[交付回执](candidate-v5/final-delivery/DELIVERY_RESULT.json)。业务FAIL不合入main，不部署。
 
 ## 第四版历史完整实测
 

@@ -31,4 +31,4 @@
 
 调用前[implementation-evidence](implementation-evidence.json)、[funding-proposal](funding-proposal.json)是历史离线/待授权快照，不覆盖；当前真实结论以[acceptance-audit](acceptance-audit.json)、[evidence-integrity](evidence-integrity.json)、[funding-route-audit](funding-route-audit.json)、[summary](summary.json)及逐题reviews为准。实际序列化请求最大7485 bytes，低于预检8364 bytes。
 
-Code Hygiene既有局限：扫描器未识别子目录Ruff，实际规范命令已通过；次数283已用命名常量管理，扫描器仍报advisory。原Java文件的空行改动被保护并排除，真实运行jar摘要与v4一致，见[runtime-context](runtime-context.json)。所有本轮进程已停止，调用余量0。远程分支和CI实际结果由后续交付回执记录。
+Code Hygiene既有局限：扫描器未识别子目录Ruff，实际规范命令已通过；次数283已用命名常量管理，扫描器仍报advisory。原Java文件的空行改动被保护并排除，真实运行jar摘要与v4一致，见[runtime-context](runtime-context.json)。所有本轮进程已停止，调用余量0。结果b757471已正常推送同名任务分支，四项远程CI全部通过；见[交付回执](final-delivery/DELIVERY_RESULT.json)及[CI结果](final-delivery/CI_RESULT.json)。工程CI通过不改变业务FAIL。

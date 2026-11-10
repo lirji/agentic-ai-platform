@@ -11,10 +11,11 @@
 - 不可变边界：6份fixture与原基线逐字节相同；提示摘要dc0b5845420961dbd862f90dde60b56e5e051581300401582a3e6dec93c681be，单次生成、原模型、768上限不变。60份输入/输出/来源块/引用/评分均核验；最大实际请求7485 bytes，上界8364。
 - 历史保留：583条既有usage_attempt逐字段不变，原两份外部账本摘要不变。v4原Q13未知占额保留，原12成功候选未重抽；旧失败/中断快照、v4/resume-final及全部v1–v4证据保持。旧存储故障根因仍未确认。
 - 离线证据：v5实现后122项定向、921 passed/102 skipped/34 warnings，Ruff175文件、mypy100源、编译/契约/计量边界、历史六份verify均PASS；当前8份源码SHA256仍匹配。新增v5 report/verify PASS，已加入CI。Code Hygiene扫描器未识别子目录Ruff且对已命名次数常量报advisory，实际检查通过。implementation-evidence/funding-proposal为调用前快照，当前真实结果以后续审计为准。
-- 目录/分支：/Users/liruijun/personal/LLM/agentic-ai-platform，fix/answer-coverage-security-20261109；当前从802882a继续，v5实现WIP ac76ada。此前d0aef65、fa47d4b、082f620、10e184d等WIP均属本任务。当前结果等待提交/正常推送，main保持7aa205f7f4597720fb560277a0390be18b094e0e。
+- 目录/分支：/Users/liruijun/personal/LLM/agentic-ai-platform，fix/answer-coverage-security-20261109；当前从802882a继续，v5实现WIP ac76ada。此前d0aef65、fa47d4b、082f620、10e184d等WIP均属本任务。第五版结果b757471已正常推送origin同名任务分支，远程SHA已核对；CI run42754037783四项全部PASS，main保持7aa205f7f4597720fb560277a0390be18b094e0e。
 - 源码现场：MySqlProcessingRepository.java仅既有空行改动，保护且不暂存。当前摘要与旧v4记录不同但只读diff确认仅空行；Java运行jar摘要未变，见candidate-v5/runtime-context.json。无API/Schema/Java/UI产品改动。
 - 运行状态：五组命令和review-all均已结束，全部子进程已回收，state.processes为空。最后review/audit session24098成功退出。日志.logs/answer-coverage-security-20261109/v5-*-command.log、v5-review-audit.log；原离线v5-final-*日志保留。
 - 私密恢复入口：.local/quality-security-20261109/coverage-remediation-v5-state.json。全部五组已终态，不得再次执行模型运行；原v4及quality-resume状态继续保留。需要核对时仅读正式结果。
-- 下一步：提交第五版完整结果和CI门禁，正常推送origin/fix/answer-coverage-security-20261109，核对远程SHA和CI；即使工程CI通过，业务仍FAIL/HOLD。随后保存交付回执/进度。无新增模型调用待办。
+- 分支交付：结果b757471已推送origin/fix/answer-coverage-security-20261109且Java/Python/文档/运维告警四项CI通过；回执candidate-v5/final-delivery/{DELIVERY_RESULT,CI_RESULT}.json。回执以文档提交正常推送，最终HEAD/远端/CI核验保存在.local/quality-security-20261109/v5-final-delivery.json。业务仍FAIL/HOLD，不进入main。
+- 后续边界：本轮60题复测及任务分支交付已完成，剩余四项缺陷如需继续整改须新有界方案；没有剩余模型调用许可，不自动追加资金、采样或发布。
 - Git/目录保留：未新建worktree；main工作树位于~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027，未切换/清理。.local/.logs是必要私密状态、账本和日志，应保留；没有可自动删除目录。
 - 采用规范：session-handoff、continue-approved-delivery、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate；architecture-standards相关业务建模、接口、持久化、并发安全与发布治理章节。无子Agent。
