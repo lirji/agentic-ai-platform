@@ -207,6 +207,10 @@ def test_report_rejects_extra_groups_paths_and_double_counting(remediation, tmp_
         ("v5", 283, "0", "quality", "FUNDING_APPROVAL_MISMATCH"),
         ("v5", 283, "2", "quality", "FUNDING_APPROVAL_MISMATCH"),
         ("v5", 283, "1.5", "probe-control", "UNAPPROVED_RUN_LABEL"),
+        ("v6", 283, "2", "quality", "CALL_APPROVAL_MISMATCH"),
+        ("v6", 343, "0", "quality", "FUNDING_APPROVAL_MISMATCH"),
+        ("v6", 343, "1.5", "quality", "FUNDING_APPROVAL_MISMATCH"),
+        ("v6", 343, "2", "probe-control", "UNAPPROVED_RUN_LABEL"),
     ],
 )
 def test_new_revision_rejects_missing_grant_or_unplanned_run_before_side_effects(
@@ -279,6 +283,7 @@ def test_v3_funding_keeps_old_manifest_and_routes_only_pairs_to_new_account(reme
     [
         ("ThirdRemediationRuntime", "v2", 162, 222),
         ("FourthRemediationRuntime", "v3", 222, 282),
+        ("SixthRemediationRuntime", "v5", 343, 403),
     ],
 )
 def test_new_revision_continues_previous_terminal_state_without_rewriting(
@@ -287,7 +292,7 @@ def test_new_revision_continues_previous_terminal_state_without_rewriting(
     monkeypatch.setattr(remediation, "WORK", tmp_path)
     old = {
         "processes": [],
-        "runs": {str(i): {"collected": True} for i in range(5)},
+        "runs": {str(i): {"collected": True, "executionStatus": "SUCCEEDED"} for i in range(5)},
         "approvedBudget": {"CHAT": "6", "EMBEDDING": "2"},
         "datasets": {"quality": "unchanged"},
     }
@@ -351,7 +356,12 @@ def test_v3_checks_both_funding_pools_and_all_60_calls(
 
 @pytest.mark.parametrize(
     "runtime_name",
-    ["ThirdRemediationRuntime", "FourthRemediationRuntime", "FifthRemediationRuntime"],
+    [
+        "ThirdRemediationRuntime",
+        "FourthRemediationRuntime",
+        "FifthRemediationRuntime",
+        "SixthRemediationRuntime",
+    ],
 )
 def test_new_revision_review_never_selects_baseline_from_mechanism_eligibility(
     remediation, tmp_path, monkeypatch, runtime_name
@@ -648,4 +658,146 @@ def test_v5_checks_every_selected_pool_and_cumulative_limit(
         accounts["CHAT_V3"]["held"], accounts["CHAT_V4"]["held"] = "2", "3"
         # 两个历史池对应的组已完成，后续三组不重复预留或借用这些余额。
         runner.active_label = "attack-1"
+        runner.preflight()
+
+
+def test_v6_routes_old_pair_balances_and_preserves_funding_identity(remediation):
+    runner = object.__new__(remediation.SixthRemediationRuntime)
+    expected = {
+        "quality": ("CHAT_V6", "qs-coverage-v6-chat"),
+        "control-1": ("CHAT_V3", "qs-coverage-v3-chat"),
+        "attack-1": ("CHAT_V5", "qs-coverage-v5-chat"),
+        "control-2": ("CHAT_V6", "qs-coverage-v6-chat"),
+        "attack-2": ("CHAT_V6", "qs-coverage-v6-chat"),
+    }
+    for label, (key, profile) in expected.items():
+        for suffix in ("", "-recovery"):
+            runner.active_label = label + suffix
+            assert runner.run_funding_key(runner.active_label) == key
+            profiles = runner.usage_profiles()
+            assert profiles["CHAT"]["profileId"] == profile
+            assert profiles["EMBEDDING"]["profileId"] == "qs-20261109-embedding"
+    original = {
+        "profiles": [{"profileId": "original", "pricing": {"inputRate": "2.000000"}}],
+        "bindings": [{"profileId": "original"}],
+    }
+    before = json.dumps(original)
+    manifest = runner.supplemental_manifest(original)
+    previous = object.__new__(remediation.FifthRemediationRuntime).supplemental_manifest(original)
+    assert json.dumps(original) == before
+    assert manifest["limitAmount"] == "2.000000"
+    assert manifest["accountId"] != previous["accountId"]
+    assert manifest["fundingSourceRef"] != previous["fundingSourceRef"]
+    assert manifest["profiles"][0]["pricing"] == original["profiles"][0]["pricing"]
+    assert runner.max_total_chat_calls == 403
+
+
+def test_v6_audit_includes_old_v5_instead_of_relabeling_new_pool(remediation, monkeypatch):
+    runner = object.__new__(remediation.SixthRemediationRuntime)
+    monkeypatch.setattr(
+        remediation.Runtime,
+        "accounts",
+        lambda _: {
+            "CHAT": {"limit": "6", "held": "5.782608", "booked": "0"},
+            "EMBEDDING": {"limit": "2", "held": "0", "booked": "0.021174"},
+        },
+    )
+    values = {
+        remediation.stable_id(f"coverage-remediation-{rev}:account:CHAT"): {
+            "limit": limit,
+            "held": held,
+            "booked": "0",
+        }
+        for rev, limit, held in (
+            ("v3", "2", "1.452908"),
+            ("v4", "3", "2.820196"),
+            ("v5", "1.5", "0.907140"),
+            ("v6", "2.000000", "0"),
+        )
+    }
+    monkeypatch.setattr(remediation, "funding_account", values.__getitem__)
+    accounts = runner.funding_accounts()
+    assert set(accounts) == {
+        "CHAT_ORIGINAL",
+        "CHAT_V3",
+        "CHAT_V4",
+        "CHAT_V5",
+        "CHAT_V6",
+        "EMBEDDING",
+    }
+    assert accounts["CHAT_V5"]["held"] == "0.907140"
+    assert accounts["CHAT_V6"]["held"] == "0"
+    assert runner.accounts()["CHAT"] == {"limit": "14.500000", "held": "10.962852", "booked": "0"}
+
+
+@pytest.mark.parametrize("execution_status", ["FAILED", "QUEUED", None])
+def test_v6_rejects_collected_but_not_successful_v5(
+    remediation, tmp_path, monkeypatch, execution_status
+):
+    monkeypatch.setattr(remediation, "WORK", tmp_path)
+    source = {
+        "processes": [],
+        "runs": {str(i): {"collected": True, "executionStatus": "SUCCEEDED"} for i in range(5)},
+    }
+    source["runs"]["0"]["executionStatus"] = execution_status
+    path = tmp_path / "coverage-remediation-v5-state.json"
+    path.write_text(json.dumps(source))
+    before = path.read_bytes()
+    runner = object.__new__(remediation.SixthRemediationRuntime)
+    with pytest.raises(RuntimeError, match="BASELINE_NOT_SUCCEEDED"):
+        runner.initial_state()
+    assert path.read_bytes() == before
+    assert not runner.state_file.exists()
+
+
+@pytest.mark.parametrize(
+    "exhausted,count,error",
+    [
+        (None, 343, None),
+        ("CHAT_V3", 343, "REMAINING_BUDGET_INSUFFICIENT:CHAT"),
+        ("CHAT_V5", 343, "REMAINING_BUDGET_INSUFFICIENT:CHAT"),
+        ("CHAT_V6", 343, "REMAINING_BUDGET_INSUFFICIENT:CHAT"),
+        ("EMBEDDING", 343, "REMAINING_BUDGET_INSUFFICIENT:EMBEDDING"),
+        (None, 344, "REMAINING_CALL_ALLOWANCE_INSUFFICIENT"),
+        (None, 404, "CAMPAIGN_CALL_LIMIT_VIOLATION"),
+    ],
+)
+def test_v6_checks_fixed_pools_and_cumulative_calls(
+    remediation, tmp_path, monkeypatch, exhausted, count, error
+):
+    monkeypatch.setattr(remediation, "REMEDIATION_OUT", tmp_path)
+    monkeypatch.setattr(remediation.local, "mysql", lambda _: str(count))
+    runner = object.__new__(remediation.SixthRemediationRuntime)
+    runner.state = {"runs": {}}
+    runner.active_label, runner.phase = "quality", remediation.RunStage.FINAL
+    runner.frozen = {"specDigest": "fixed"}
+    accounts = {
+        key: {"limit": limit, "held": held, "booked": "0"}
+        for key, limit, held in (
+            ("CHAT_ORIGINAL", "6", "5.782608"),
+            ("CHAT_V3", "2", "1.452908"),
+            ("CHAT_V4", "3", "2.820196"),
+            ("CHAT_V5", "1.5", "0.907140"),
+            ("CHAT_V6", "2", "0"),
+            ("EMBEDDING", "2", "0"),
+        )
+    }
+    if exhausted:
+        accounts[exhausted]["held"] = accounts[exhausted]["limit"]
+    runner.funding_accounts = lambda: accounts
+    runner.estimate = lambda groups: (
+        sum(Decimal("0.9" if group == "quality" else "0.45") * n for group, n in groups),
+        sum(Decimal("0.2" if group == "quality" else "0.1") * n for group, n in groups),
+        8500,
+    )
+    if error:
+        with pytest.raises(RuntimeError, match=error):
+            runner.preflight()
+    else:
+        assert runner.preflight()["cumulativeGrantCny"] == "16.500000"
+        runner.state["runs"] = {label: {} for label in ("quality", "control-1", "attack-1")}
+        accounts["CHAT_V3"]["held"], accounts["CHAT_V5"]["held"] = "2", "1.5"
+        accounts["CHAT_V6"]["held"] = "1"
+        # 已完成的首轮配对不重复预留；剩余两组只检查新池的剩余额度。
+        runner.active_label = "control-2"
         runner.preflight()

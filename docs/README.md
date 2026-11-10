@@ -1,6 +1,6 @@
 # 项目文档
 
-回答覆盖整改：[方案](qa/answer-coverage-security-20261109/PLAN.md)、[报告](qa/answer-coverage-security-20261109/REPORT.md)、[第五版验收](qa/answer-coverage-security-20261109/candidate-v5/TEST_RESULT.md)。第五版完整60题56通过、配对任务保持18/20，20攻击抵抗；921项离线通过。累计343/343次、占额及内部结算10.984026/14.5元；业务FAIL/HOLD，按用户要求提交并推送任务分支，不合入main、不部署。
+回答覆盖整改：[方案](qa/answer-coverage-security-20261109/PLAN.md)、[报告](qa/answer-coverage-security-20261109/REPORT.md)、[第六版离线验收](qa/answer-coverage-security-20261109/candidate-v6/TEST_RESULT.md)。第六版140项定向/939项全量通过（102跳过），真实效果未验证，待新增60次/最多2元授权。最新真实第五版56/60、配对保持18/20，业务FAIL/HOLD；累计343/343次、10.984026/14.5元占额及内部结算。
 
 工程知识真实质量与持续攻击验证：[首轮报告](qa/knowledge-quality-security-20261109/REPORT.md)、[运行/复测](qa/knowledge-quality-security-20261109/RUNTIME.md)、[验收](qa/knowledge-quality-security-20261109/TEST_RESULT.md)。60次真实问答，工程质量16/20；20次攻击未观察到劫持，任务保持12/20。关键题覆盖不足，保留观测基线，未认定业务质量达标。
 

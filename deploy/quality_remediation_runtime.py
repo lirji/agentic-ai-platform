@@ -35,6 +35,9 @@ FOURTH_CHAT_PROFILE = "qs-coverage-v4-chat"
 FIFTH_REVISION_CALL_LIMIT = 283
 FIFTH_CHAT_PROFILE = "qs-coverage-v5-chat"
 FIFTH_CHAT_GRANT = Decimal("1.500000")
+SIXTH_REVISION_CALL_LIMIT = 343
+SIXTH_CHAT_PROFILE = "qs-coverage-v6-chat"
+SIXTH_CHAT_GRANT = Decimal("2.000000")
 
 
 class RunStage(StrEnum):
@@ -52,6 +55,7 @@ class CandidateRevision(StrEnum):
     V3 = "v3"
     V4 = "v4"
     V5 = "v5"
+    V6 = "v6"
 
 
 class Command(StrEnum):
@@ -122,6 +126,8 @@ class RemediationRuntime(Runtime):
     """只隔离命令键/状态/结果，父类固定的数据库与资金manifest身份保持不变。"""
 
     additional_chat_grant = Decimal(0)
+    # 旧候选允许保留中断快照；新候选可明确要求前一版所有执行均成功结束。
+    require_successful_continuation = False
 
     @property
     def output(self):
@@ -179,6 +185,10 @@ class RemediationRuntime(Runtime):
             raise RuntimeError("BASELINE_NOT_TERMINAL")
         if any(not r.get("collected") for r in source["runs"].values()):
             raise RuntimeError("BASELINE_NOT_COLLECTED")
+        if self.require_successful_continuation and any(
+            r.get("executionStatus") != "SUCCEEDED" for r in source["runs"].values()
+        ):
+            raise RuntimeError("BASELINE_NOT_SUCCEEDED")
         source["baselineStateDigest"] = digest(source)
         source["runs"] = {}
         source["approvedAdditionalCalls"] = self.additional_call_limit
@@ -606,6 +616,72 @@ class FifthRemediationRuntime(ThirdRemediationRuntime):
         }
 
 
+class SixthRemediationRuntime(ThirdRemediationRuntime):
+    """首轮配对复用v3/v5各十题余额，新2元固定用于质量组及第二轮配对。"""
+
+    funding_revision = CandidateRevision.V6
+    additional_chat_grant = SIXTH_CHAT_GRANT
+    supplemental_chat_profile = SIXTH_CHAT_PROFILE
+    previous_grant = Decimal("14.500000")
+    quality_funding_key = "CHAT_V6"
+    paired_funding_key = "CHAT_V6"
+    require_successful_continuation = True
+
+    @property
+    def output(self):
+        return REMEDIATION_OUT / "candidate-v6"
+
+    @property
+    def state_file(self):
+        return WORK / "coverage-remediation-v6-state.json"
+
+    @property
+    def continuation_source_file(self):
+        return WORK / "coverage-remediation-v5-state.json"
+
+    @property
+    def log_directory(self):
+        return ROOT / ".logs/answer-coverage-security-20261109/candidate-v6"
+
+    @property
+    def additional_call_limit(self):
+        return SIXTH_REVISION_CALL_LIMIT
+
+    def evaluation_key(self, name):
+        """资金与评测身份均按新版本隔离，旧账目和运行键不重建。"""
+        return stable_id("coverage-remediation-v6:" + name)
+
+    def run_funding_key(self, label):
+        """首轮两组固定使用两个旧池，恢复沿原组账户，不临时改路由。"""
+        return {
+            "control-1": "CHAT_V3",
+            "attack-1": "CHAT_V5",
+        }.get(label.removesuffix("-recovery"), self.paired_funding_key)
+
+    def usage_profiles(self):
+        """仅切换已批准资金配置身份，实际模型和价格继承原固定manifest。"""
+        profiles = Runtime.usage_profiles(self)
+        key = self.run_funding_key(getattr(self, "active_label", "quality"))
+        profiles["CHAT"]["profileId"] = {
+            "CHAT_V3": SUPPLEMENTAL_CHAT_PROFILE,
+            "CHAT_V5": FIFTH_CHAT_PROFILE,
+            "CHAT_V6": self.supplemental_chat_profile,
+        }[key]
+        return profiles
+
+    def funding_accounts(self):
+        """全部历史池与新池分列审计，历史身份不能被当前evaluation_key替代。"""
+        original = Runtime.accounts(self)
+        return {
+            "CHAT_ORIGINAL": original["CHAT"],
+            "CHAT_V3": funding_account(stable_id("coverage-remediation-v3:account:CHAT")),
+            "CHAT_V4": funding_account(stable_id("coverage-remediation-v4:account:CHAT")),
+            "CHAT_V5": funding_account(stable_id("coverage-remediation-v5:account:CHAT")),
+            "CHAT_V6": funding_account(self.evaluation_key("account:CHAT")),
+            "EMBEDDING": original["EMBEDDING"],
+        }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("phase", type=Command, choices=tuple(Command))
@@ -625,6 +701,7 @@ def main():
         CandidateRevision.V3: ThirdRemediationRuntime,
         CandidateRevision.V4: FourthRemediationRuntime,
         CandidateRevision.V5: FifthRemediationRuntime,
+        CandidateRevision.V6: SixthRemediationRuntime,
     }[args.revision]
     # 此处只读取静态范围；不能在授权核对前运行会写私密状态的__init__。
     proposal = object.__new__(runtime_type)
