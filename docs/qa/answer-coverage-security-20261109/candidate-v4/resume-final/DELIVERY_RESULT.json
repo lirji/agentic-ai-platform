@@ -1,0 +1,63 @@
+{
+  "status": "COMPLETED_LOCAL_WIP",
+  "businessGate": "HOLD",
+  "branch": "fix/answer-coverage-security-20261109",
+  "commits": [
+    {
+      "id": "2bca816ad9b9f29870e09e0db7a1456e88238248",
+      "message": "test(quality): WIP 保存第四版复测失败与中断证据"
+    },
+    {
+      "id": "082f620c3597bba9e4b5b7f999eb29c2b87e7303",
+      "message": "fix(quality): WIP 支持保留成功前缀的有界复测恢复"
+    },
+    {
+      "id": "10e184d71e33cfdc5735ef9039c42add71598657",
+      "message": "test(quality): WIP 完成第四版检查点恢复与全量复测"
+    }
+  ],
+  "validatedEvidenceCommit": "10e184d71e33cfdc5735ef9039c42add71598657",
+  "verification": {
+    "fullOfflinePassed": 904,
+    "fullOfflineSkipped": 102,
+    "targetedPassed": 85,
+    "formalCases": 60,
+    "qualityPass": 55,
+    "nativeResume": "PASS: same run/task and unchanged12-candidate prefix",
+    "sourceHashes": "PASS",
+    "stagedScope": "PASS",
+    "unrelatedChangeExcluded": true,
+    "originalEvidencePreserved": true
+  },
+  "push": "NOT_EXECUTED: required business acceptance failed",
+  "merge": "NOT_EXECUTED: required business acceptance failed",
+  "remoteCI": "NOT_EXECUTED",
+  "productionDeploy": "NOT_EXECUTED",
+  "mainContainsEvidenceCommit": false,
+  "excludedDirtyPaths": [
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlProcessingRepository.java",
+      "sha256": "3d10dc0eb61f338e1060705604daed931ab6d06ceceaf111d09b33be77e4aa25",
+      "reason": "Pre-existing unrelated blank-line edit, preserved"
+    }
+  ],
+  "worktreesCreated": [],
+  "retainedPaths": [
+    {
+      "path": ".local",
+      "reason": "Private funding, keys and task recovery states; ignored, retain"
+    },
+    {
+      "path": ".logs",
+      "reason": "Original failures, verification and audit logs; ignored, retain"
+    },
+    {
+      "path": "/Users/liruijun/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027",
+      "reason": "Existing main worktree; not this task creation, not switched or cleaned"
+    }
+  ],
+  "cleanup": "NOT_AUTHORIZED; no cleanup performed",
+  "remainingModelCalls": 0,
+  "cumulativeHeldAndInternalCny": "8.965156",
+  "cumulativeFundingLimitCny": "13.000000"
+}

@@ -16,7 +16,7 @@
 
 累计CHAT283/283、Embedding300；保守占额及内部结算8.965156/13元（提供方最终账单未知），原两份外部账本未变，全部旧usage_attempt及未知Q13占额未改变。60份正式assessment已保存，未选新基线。原故障底层原因未确认，成功恢复不等于修复存储故障。
 
-有界恢复与独立恢复后报表已实现；最终85项定向、904项全量通过/102跳过，格式、静态、类型、编译及全部旧/新报表verify通过。当前验收与证据见[第四版TEST_RESULT](candidate-v4/TEST_RESULT.md)、[完整统计](candidate-v4/resumed-summary.json)、[审计](candidate-v4/resume-final/acceptance-audit.json)和[恢复入口](PROGRESS_STATE.md)。源码与结果按授权保存本地WIP；业务未通过，不合并/推送，无生产部署。
+有界恢复与独立恢复后报表已实现；最终85项定向、904项全量通过/102跳过，格式、静态、类型、编译及全部旧/新报表verify通过。当前验收与证据见[第四版TEST_RESULT](candidate-v4/TEST_RESULT.md)、[完整统计](candidate-v4/resumed-summary.json)、[审计](candidate-v4/resume-final/acceptance-audit.json)和[恢复入口](PROGRESS_STATE.md)。源码与结果已按授权保存为本地WIP `2bca816`、`082f620`、`10e184d`；[交付回执](candidate-v4/resume-final/DELIVERY_RESULT.json)另存。业务未通过，不合并/推送，无生产部署。
 
 原53次时的partial统计、失败快照、原始输出和诊断保留；完整统计另存resumed-*，没有覆盖中断历史。
 
