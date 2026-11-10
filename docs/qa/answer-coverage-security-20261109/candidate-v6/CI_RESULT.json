@@ -1,0 +1,36 @@
+{
+  "status": "COMPLETED",
+  "gate": "PASS",
+  "commit": "b421b50f0192ba5d6c55ecf78d9897fc69afd85f",
+  "branch": "fix/answer-coverage-security-20261109",
+  "runId": 42771700438,
+  "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/42771700438",
+  "event": "push",
+  "checks": [
+    {
+      "name": "operational-alerts",
+      "required": true,
+      "result": "PASS",
+      "jobUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/42771700438/job/129680766717"
+    },
+    {
+      "name": "java",
+      "required": true,
+      "result": "PASS",
+      "jobUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/42771700438/job/129680766954"
+    },
+    {
+      "name": "python",
+      "required": true,
+      "result": "PASS",
+      "jobUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/42771700438/job/129680767103"
+    },
+    {
+      "name": "documents",
+      "required": true,
+      "result": "PASS",
+      "jobUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/42771700438/job/129680767456"
+    }
+  ],
+  "scope": "Engineering CI only; V6 real-model quality remains UNVERIFIED, business delivery HOLD"
+}

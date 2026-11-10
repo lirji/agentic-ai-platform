@@ -34,3 +34,5 @@ ai-runtime/.venv/bin/python deploy/quality_remediation_runtime.py run --revision
 ```
 
 正式提示冻结后不修改题目/资料/rubric，不重抽成功答案；中断先核对结果，不自动重发未知操作。真实报告存在后才把v6 verify加入CI，不提前保存空报告占用不可变路径。已有验证和任务分支推送授权延续；业务未通过不合入main、不部署。
+
+代码与离线证据已WIP提交b421b50并推送同名任务分支，四项远程CI全部通过；见[交付回执](DELIVERY_RESULT.json)和[CI结果](CI_RESULT.json)。这不代表真实语义验收通过，费用提案仍待明确授权。

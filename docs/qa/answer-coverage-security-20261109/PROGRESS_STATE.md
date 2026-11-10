@@ -1,24 +1,24 @@
 # 当前整改状态
 
 - 任务：answer-coverage-security-20261109，AC1覆盖、AC2攻击下任务保持、AC3有界复测。原理/方案/注意点/难点见[PLAN](PLAN.md)；最新离线验收[第六版TEST_RESULT](candidate-v6/TEST_RESULT.md)，最新真实结果[第五版TEST_RESULT](candidate-v5/TEST_RESULT.md)，正文[REPORT](REPORT.md)。
-- 当前继续：第六版条款主语/关系及操作替代修复已实现，140项定向、939 passed/102 skipped/34 warnings全量回归通过；Ruff175/mypy100、编译/契约/计量边界和七份历史verify PASS。真实效果UNVERIFIED，准备WIP提交/推送同任务分支；源码/日志SHA见candidate-v6/implementation-evidence.json。
-- 当前状态：第五版完整60题执行、逐题评分及核账COMPLETED；56/60质量通过，业务FAIL/交付HOLD。五组分别18/20、8/10、10/10、10/10、10/10；20攻击全部暴露且RESISTED，配对任务保持18/20，4拒答PASS。没有宣称整体修复完成。
+- 当前继续：第六版条款主语/关系及操作替代修复已实现，140项定向、939 passed/102 skipped/34 warnings全量回归通过；Ruff175/mypy100、编译/契约/计量边界和七份历史verify PASS。真实效果UNVERIFIED，已WIP提交并推送b421b50到同任务分支，远程CI 42771700438四项PASS，回执candidate-v6/{DELIVERY_RESULT,CI_RESULT}.json；源码/日志SHA见candidate-v6/implementation-evidence.json。
+- 最新真实结果：第五版完整60题执行、逐题评分及核账COMPLETED；56/60质量通过，业务FAIL/交付HOLD。五组分别18/20、8/10、10/10、10/10、10/10；20攻击全部暴露且RESISTED，配对任务保持18/20，4拒答PASS。没有宣称整体修复完成。
 - 剩余缺陷：quality/Q02添加图像清理后才可使用槽位的前置；quality/Q10及control-1/A10把sink的PENDING写成任务状态；control-1/A09未给正确抓取路径。第四版五处未知发布核验已全部补齐，但这些失败保留。
 - 版本比较：原基线46/60；v1/v2/v3/v4分别保留历史，其中v3为58/60、v4为55/60。v5相对v4改善3/退化2，相对v3改善1/退化3，相对原基线改善11/退化1。不得只选择旧基线改善判为通过。
-- 用户最新授权：“继续，昨晚之后提交并推送远程分支”，已按“完成后提交并推送当前任务分支”理解并告知。确认前述新增60次/最多1.5元，证据candidate-v5/funding-authorization.json。仅正常推送本任务分支；业务FAIL不合入main，无部署、无清理授权，parallel=no。
-- 调用与资金：本版60/60、整改283/283、含原基线CHAT343/343，余量0；Embedding累计360次。累计占额及内部结算10.984026/14.5元，本版新增2.018870元；提供方最终账单未知。未授权更多调用或资金。
+- 上次实测与持续Git授权：“继续，昨晚之后提交并推送远程分支”，已按“完成后提交并推送当前任务分支”理解并告知。确认前述新增60次/最多1.5元，证据candidate-v5/funding-authorization.json。仅正常推送本任务分支；业务FAIL不合入main，无部署、无清理授权，parallel=no。
+- 截至第五版的调用与资金：第五版60/60、整改283/283、含原基线CHAT343/343，余量0；Embedding累计360次。累计占额及内部结算10.984026/14.5元，本版新增2.018870元；提供方最终账单未知。未授权更多调用或资金。
 - 分池核账：原CHAT5.782608/6元，v3池1.452908/2元，v4池2.820196/3元，新v5池0.907140/1.5元，Embedding0.021174/2元。质量20题固定旧v4、control-1十题旧v3、其余30题新v5；数据库逐组路由/调用数已验证。没有跨池挪用或清除未知占额。
 - 证据：candidate-v5/{summary,comparison,v3-comparison,v4-comparison,acceptance-audit,evidence-integrity,funding-route-audit,usage-audit,funding-accounts}.json；runs/reviews/transcripts保存全部60题。API评分revision1、complete和内容已核对；quality/control-1机制eligible=false（关键题失败），其余true；未选新基线。
-- 不可变边界：6份fixture与原基线逐字节相同；提示摘要dc0b5845420961dbd862f90dde60b56e5e051581300401582a3e6dec93c681be，单次生成、原模型、768上限不变。60份输入/输出/来源块/引用/评分均核验；最大实际请求7485 bytes，上界8364。
+- 第五版实测冻结边界：6份fixture与原基线逐字节相同；提示摘要dc0b5845420961dbd862f90dde60b56e5e051581300401582a3e6dec93c681be，单次生成、原模型、768上限不变。60份输入/输出/来源块/引用/评分均核验；最大实际请求7485 bytes，上界8364。
 - 历史保留：583条既有usage_attempt逐字段不变，原两份外部账本摘要不变。v4原Q13未知占额保留，原12成功候选未重抽；旧失败/中断快照、v4/resume-final及全部v1–v4证据保持。旧存储故障根因仍未确认。
-- 离线证据：v5实现后122项定向、921 passed/102 skipped/34 warnings，Ruff175文件、mypy100源、编译/契约/计量边界、历史六份verify均PASS；当前8份源码SHA256仍匹配。新增v5 report/verify PASS，已加入CI。Code Hygiene扫描器未识别子目录Ruff且对已命名次数常量报advisory，实际检查通过。implementation-evidence/funding-proposal为调用前快照，当前真实结果以后续审计为准。
-- 目录/分支：/Users/liruijun/personal/LLM/agentic-ai-platform，fix/answer-coverage-security-20261109；当前从802882a继续，v5实现WIP ac76ada。此前d0aef65、fa47d4b、082f620、10e184d等WIP均属本任务。第五版结果b757471已正常推送origin同名任务分支，远程SHA已核对；CI run42754037783四项全部PASS，main保持7aa205f7f4597720fb560277a0390be18b094e0e。
+- 第五版历史离线：v5实现后122项定向、921 passed/102 skipped/34 warnings，Ruff175文件、mypy100源、编译/契约/计量边界、历史六份verify均PASS；当时8份源码SHA256绑定原记录，第六版另存新证据。新增v5 report/verify PASS，已加入CI。Code Hygiene扫描器未识别子目录Ruff且对已命名次数常量报advisory，实际检查通过。implementation-evidence/funding-proposal为调用前快照，当前真实结果以后续审计为准。
+- 目录/分支：/Users/liruijun/personal/LLM/agentic-ai-platform，fix/answer-coverage-security-20261109；第六版从caf5aa9开始，代码及离线证据b421b50已推送且CI四项PASS。main保持7aa205f7f4597720fb560277a0390be18b094e0e。早期WIP均为同任务，未合并main。
 - 源码现场：MySqlProcessingRepository.java仅既有空行改动，保护且不暂存。当前摘要与旧v4记录不同但只读diff确认仅空行；Java运行jar摘要未变，见candidate-v5/runtime-context.json。无API/Schema/Java/UI产品改动。
-- 运行状态：五组命令和review-all均已结束，全部子进程已回收，state.processes为空。最后review/audit session24098成功退出。日志.logs/answer-coverage-security-20261109/v5-*-command.log、v5-review-audit.log；原离线v5-final-*日志保留。
-- 私密恢复入口：.local/quality-security-20261109/coverage-remediation-v5-state.json。全部五组已终态，不得再次执行模型运行；原v4及quality-resume状态继续保留。需要核对时仅读正式结果。
-- 分支交付：结果b757471已推送origin/fix/answer-coverage-security-20261109且Java/Python/文档/运维告警四项CI通过；回执candidate-v5/final-delivery/{DELIVERY_RESULT,CI_RESULT}.json。回执以文档提交正常推送，最终HEAD/远端/CI核验保存在.local/quality-security-20261109/v5-final-delivery.json。业务仍FAIL/HOLD，不进入main。
+- 第五版运行终态：五组命令和review-all均已结束，全部子进程已回收，state.processes为空。最后review/audit session24098成功退出。日志.logs/answer-coverage-security-20261109/v5-*-command.log、v5-review-audit.log；原离线v5-final-*日志保留。
+- 最后真实执行状态：.local/quality-security-20261109/coverage-remediation-v5-state.json。全部五组已终态，不得再次执行模型运行；原v4及quality-resume状态继续保留。需要核对时仅读正式结果。
+- 第五版分支交付：结果b757471已推送origin/fix/answer-coverage-security-20261109且Java/Python/文档/运维告警四项CI通过；回执candidate-v5/final-delivery/{DELIVERY_RESULT,CI_RESULT}.json。回执以文档提交正常推送，最终HEAD/远端/CI核验保存在.local/quality-security-20261109/v5-final-delivery.json。业务仍FAIL/HOLD，不进入main。
 - 第六版授权边界：当前343/343次已耗尽，无新增调用或资金授权。精确提案见candidate-v6/funding-proposal.json：新增60次、独立CHAT最多2元，累计403次/16.5元（整改343）。固定control-1旧v3十题、attack-1旧v5十题，其余40题新v6；分别上界0.473212/0.473900/1.893408元，Embedding0.60元，累计预计上界14.424546元。
 - 第六版执行事实：提示9879dad3694e74ff716b6a06afb637c594819565884eee9c291c44061cc22539，6份fixture字节不变；只读核对v5五组成功且旧状态/manifest/外部账本未改。未创建v6私密state、未登记资金、新调用0。全部离线进程已退出。
-- 下一步：保存第六版WIP提交/推送与CI回执，然后请求60次/最多2元明确授权；获准前不创建资金或执行模型。旧v5交付与历史结果保持，main继续HOLD。
+- 下一步：第六版代码/离线验证和任务分支交付已准备好，待用户批准60次/最多2元明确授权；获准前不创建资金或执行模型。批准后保存authorization，再按candidate-v6/TEST_RESULT的固定五组顺序运行及评分/核账。当前回执文档正常推送后的最终HEAD/远端/CI核验保存在.local/quality-security-20261109/v6-final-delivery.json。
 - Git/目录保留：未新建worktree；main工作树位于~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027，未切换/清理。.local/.logs是必要私密状态、账本和日志，应保留；没有可自动删除目录。
 - 采用规范：session-handoff、continue-approved-delivery、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate；architecture-standards相关业务建模、接口、持久化、并发安全与发布治理章节。无子Agent。
