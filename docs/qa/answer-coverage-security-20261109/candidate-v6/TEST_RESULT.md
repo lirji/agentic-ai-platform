@@ -37,3 +37,5 @@
 需要补充授权的原因是用户已批准的调用数上限，不是Git权限或新的资金需求。获批准前不创建恢复私密状态、不启动六次模型调用。两次QA_KNOWLEDGE_UNAVAILABLE的根因尚未确认；已启用既有脱敏阶段日志，未放宽超时、重试或模型条件。
 
 既有提交/推送任务分支授权继续有效。本批结果和工具按WIP保存；业务FAIL不合入main，不部署，不清理原目录或私密账本。
+
+本批结果与恢复工具已WIP提交b1f6a94并推送同名任务分支，Java/Python/文档/运维告警四项远程CI通过；见[交付回执](final-delivery/DELIVERY_RESULT.json)和[CI证据](final-delivery/CI_RESULT.json)。新增1次调用的确认已提出，当前仍未执行六题恢复。

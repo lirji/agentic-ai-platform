@@ -1,0 +1,36 @@
+{
+  "status": "COMPLETED",
+  "gate": "PASS",
+  "commit": "b1f6a94544b56827387ece08f29d5dae7d79d5bf",
+  "branch": "fix/answer-coverage-security-20261109",
+  "runId": 42777039023,
+  "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/42777039023",
+  "event": "push",
+  "checks": [
+    {
+      "name": "python",
+      "required": true,
+      "result": "PASS",
+      "jobUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/42777039023/job/129697858215"
+    },
+    {
+      "name": "documents",
+      "required": true,
+      "result": "PASS",
+      "jobUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/42777039023/job/129697858448"
+    },
+    {
+      "name": "java",
+      "required": true,
+      "result": "PASS",
+      "jobUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/42777039023/job/129697858542"
+    },
+    {
+      "name": "operational-alerts",
+      "required": true,
+      "result": "PASS",
+      "jobUrl": "https://github.com/lirji/agentic-ai-platform/actions/runs/42777039023/job/129697858651"
+    }
+  ],
+  "scope": "Engineering CI only; business FAIL and interrupted model validation remain HOLD"
+}
