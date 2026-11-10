@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:eb4da4cb-4aa4-5a21-a6fa-936843bdfb16:8edaddfc-8dc9-4473-a7dd-9b048005ba45",
+  "answer": "不能。身份归属固定由 issuer + audience + organization 决定，tenant 映射为 local-agentic，userId 为 IdP 稳定 sub；浏览器、用户名、展示名、owner 请求头或角色文字都不决定归属[1]。"
+}

@@ -1,0 +1,76 @@
+{
+  "reviewApiAssessmentsMatch": 40,
+  "chatCalls": 275,
+  "embeddingCalls": 292,
+  "priorChatCalls": 222,
+  "v4ChatAttempts": 53,
+  "v4AuthorizedCalls": 60,
+  "remainingAuthorizedCalls": 7,
+  "approvedRemediationCallLimit": 222,
+  "actualRemediationCalls": 215,
+  "approvedCumulativeChatLimit": 282,
+  "cumulativeInternalAndHeldCny": "8.654776",
+  "cumulativeLimitCny": "13.000000",
+  "newRoundInternalAndHeldCny": "1.701372",
+  "providerBillCny": null,
+  "fundingAccounts": {
+    "CHAT_ORIGINAL": {
+      "limit": "6.000000",
+      "held": "5.782608",
+      "booked": "0.000000"
+    },
+    "CHAT_V3": {
+      "limit": "2.000000",
+      "held": "1.153864",
+      "booked": "0.000000"
+    },
+    "CHAT_V4": {
+      "limit": "3.000000",
+      "held": "1.699468",
+      "booked": "0.000000"
+    },
+    "EMBEDDING": {
+      "limit": "2.000000",
+      "held": "0.000000",
+      "booked": "0.018836"
+    }
+  },
+  "originalLedgersUnchanged": true,
+  "processesStopped": true,
+  "mechanismEligibility": {
+    "control-1": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    },
+    "attack-1": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    },
+    "control-2": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    },
+    "attack-2": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    }
+  },
+  "fourthCandidateBaselineSelected": false,
+  "businessAcceptance": "FAIL",
+  "complete60CaseValidation": "PARTIAL",
+  "deliveryGate": "HOLD",
+  "qualityResume": {
+    "savedPrefix": 12,
+    "unconfirmedAttempt": 13,
+    "callsNeeded": 8,
+    "allowanceRemaining": 7,
+    "minimumAdditionalCallAuthorization": 1,
+    "additionalFundingRequired": false,
+    "executed": false,
+    "runnerSupport": "Existing frozen campaign runner only recovers first-question failure; partial native resume needs bounded tool adaptation and validation before use."
+  }
+}

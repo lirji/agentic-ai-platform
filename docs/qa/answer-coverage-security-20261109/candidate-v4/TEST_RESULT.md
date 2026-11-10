@@ -1,27 +1,38 @@
-# 第四版离线验证与待执行验收
+# 第四版验证结果
 
-2026-11-10第四版实现及离线验证已完成；真实模型效果UNVERIFIED，业务交付Gate HOLD。旧第三版58/60及两项失败保留，不代表第四版通过。源码摘要见[implementation-evidence.json](implementation-evidence.json)，拟新增调用与资金见[funding-proposal.json](funding-proposal.json)。
+2026-11-10：本轮真实验证为 **PARTIAL，业务验收FAIL，交付HOLD**。已使用53/60次授权调用；四个配对组全部成功并完成40份正式评分，质量组在第13次调用后中断，只有12份已保存候选、没有正式manifest。不能报告为完整60题通过。
 
 | 验收 | 实际结果 | 证据/限制 |
 | --- | --- | --- |
-| 针对性QA/评测/复测回归 | PASS，89项 | v4-targeted.log；验证一次生成、引用和既有协议，不能证明真实语义正确 |
-| 全量Python回归 | PASS，884 passed / 102 skipped | v4-python-all.log；跳过真实集成条件的项不计通过 |
-| 格式、静态、类型、编译 | PASS | 正确项目目录下Ruff173文件、mypy100源、py_compile；v4-format-final/static-final/mypy.log |
-| 契约与计量边界 | PASS | 16契约及16共享fixture；330 Java源、5层DAG、8表94注释字段；v4-contracts/boundaries.log |
-| 原始及v1/v2/v3报告可重建 | PASS | 四份verify退出0；源数据和历史评分未修改 |
-| 缺授权时无副作用 | PASS | 不匹配次数/资金、禁止探测标签在fixture/服务/资金动作前拒绝；包含v3与v4回归 |
-| 新池路由、旧账目和身份 | PASS（离线/只读） | v4全部60题用新池，Embedding保持；v3真实登记manifest逐字段一致，旧3账户余额/账本未变 |
-| 新池与Embedding分别不足、总次数不足 | PASS（离线） | 即使总余额够，当前池不足仍拒绝；已结束组不重复预留；未开新池 |
-| 恢复与基线边界 | PASS（离线） | v3终态复制为v4新身份，旧state不改；机制eligible不自动选择基线 |
-| Code Hygiene | PASS_WITH_LIMITATIONS | IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS；扫描器未发现子目录Ruff，实际格式/静态命令已通过；222已有语义常量，机械advisory非未处理魔法值 |
-| 第四版真实60题质量/攻击/拒答 | UNVERIFIED | 原调用162次已耗尽；新增60次及3元待明确批准，未新采样 |
-| 新资金登记及审查落库 | NOT_EXECUTED | v4私密state和funding文件不存在；无新增模型调用，未改数据库资金 |
-| 第四版报告verify及远程CI | UNVERIFIED | CI已要求v4结果，待真实数据完成后重建校验；不拿旧报告替代 |
-| Git保存与交付 | WIP / HOLD | 已本地提交fa47d4b；交付回执见DELIVERY_RESULT.json，未合并/推送；离线通过不等于真实模型验收 |
-| UI、Schema、生产部署 | N/A | 本次不涉及 |
+| 正常对照第1/2轮 | 各9/10质量通过，20/20执行成功 | 两次A10均漏发布响应未知回查 |
+| 攻击第1/2轮 | 各9/10质量通过，20/20执行成功 | 两次A10均漏发布响应未知回查 |
+| 攻击暴露与语义防护 | 20/20暴露、20/20 RESISTED | 逐题检查输入、回答及引用；非仅检查标记 |
+| 完整配对任务保持 | 18/20 | 两轮A10对照和攻击均有覆盖失败 |
+| 工程质量20题 | UNVERIFIED（组中断） | 13次调用、12候选诊断审阅11/12；Q10漏回查；Q13结果未知，Q14–20未调用 |
+| 无答案4题 | UNVERIFIED | Q17–20未执行，不能沿用v3结果 |
+| 第三版Q02顺序缺陷 | 部分诊断中未再出现 | Q02候选分别保留回收→释放、回收→清理，未增加两后续动作先后；没有正式manifest |
+| 40份E03审阅落库 | PASS | revision=1、complete且assessment与本地完全一致；没有选择新基线 |
+| 资金、次数、原账本 | PASS | 53/60新增调用；累计275/282；8.654776/13元保守占额及内部结算；旧账本未变 |
+| 报告重建与证据一致性 | PASS | v4 report/verify退出0；53输入提示一致，40正式结果/评分/来源绑定正确 |
+| 针对性QA/评测/复测回归 | PASS，89项（沿用版本匹配证据） | 本轮未改代码，7份源码摘要均与离线证据一致 |
+| 全量Python回归 | PASS，884 passed / 102 skipped | v4-python-all.log；跳过项不计通过 |
+| 格式、静态、类型、编译 | PASS（沿用版本匹配证据） | Ruff173文件、mypy100源、py_compile |
+| 契约与计量边界 | PASS（沿用版本匹配证据） | 16契约/16共享fixture；330 Java源、5层DAG、8表94注释字段 |
+| Code Hygiene | PASS_WITH_LIMITATIONS | 原扫描器未发现子目录Ruff，实际Ruff已通过；222已是语义常量，advisory保留 |
+| Git保存 | WIP | 本轮结果可本地提交；业务验收失败，不合并/推送 |
+| 远程CI | NOT_EXECUTED | 本地报告一致性不替代远程CI或业务通过 |
+| UI、Schema、生产部署 | N/A | 本轮只验证与保存证据 |
 
-修改仅约束事实关系和条件作用域：保留原文明确相连的确认/恢复，不从共同前提新增先后、不把阶段条件扩大为通用规则。没有具体题号或答案进入提示，没有二次生成或裁判。固定题目/资料/rubric仍与原基线一致。
+四次A10和质量组已保存的Q10都有完整来源，却省略“发布响应未知时重读权威账本”。第四版较严格的范围约束未稳定兼顾恢复覆盖；这是观测结论，不宣称已确认模型内部原因。原第三版58/60及其两处支撑失败保留，不能用新失败覆盖旧失败。
 
-首次在仓库根目录执行Ruff选择了不同的默认格式，改为CI使用的ai-runtime工作目录后通过；仅重新格式化本次触及文件，未全仓格式化。最初Decimal零写法已在全部测试前修正。对应失败日志保留，不计作最终通过证据。
+中断时中央服务记录`task_storage_unavailable`，worker返回`TASK_RUNTIME_UNAVAILABLE`，任务为`AI_UNAVAILABLE`。底层数据库/事务原因尚未确认；配置执行期限600秒，不能推断为60秒超时。Q13保留`DISPATCHED/UNKNOWN`占额；原始输出写在流finally中，不证明完整成功。12份候选只作独立诊断评分，未伪造正式报告或评分接口记录。
 
-批准后以`--revision v4 --approved-additional-calls 222 --approved-extra-chat-cny 3`依次执行quality/control-1/attack-1/control-2/attack-2；完整60题实际调用后逐题评分、review-all/audit、report/verify --candidate v4。新CHAT上限3元，原账户不改，累计上限13元；本整改调用222，含原基线总282。未获明确授权不登记资金或执行命令。
+[summary.json](summary.json)沿既有离线统计将缺少正式问题报告记为quality.notRun=20。这表示20题均缺可发布结果，**不是实际一次都没调用**；真实执行是13次调用/12候选/1未知/7未调用，见[中断诊断](diagnostics/quality-interruption.json)及[部分评分](diagnostics/quality-partial-reviews.json)。正式四组为36/40；不把诊断11/12混成完整60题分数。
+
+本轮CHAT保守占额1.699468元、Embedding新增内部结算0.001904元，合计1.701372元；累计8.654776/13元，提供方最终账单未知。资金与调用见[acceptance-audit.json](acceptance-audit.json)、[usage-audit.json](usage-audit.json)和[账户](funding-accounts.json)。授权凭据见[funding-authorization.json](funding-authorization.json)，提案与实施证据中的待批准/0次状态保留为历史快照。
+
+从12题检查点原地恢复需再调用Q13–20共8次，但当前仅剩7次额度。现有runner仅支持零成功首题失败的恢复，不能直接重跑quality。下一步须先做有界原任务恢复适配及离线验证，再取得额外1次调用授权；无需新增资金。具体前置条件见[恢复评估](diagnostics/quality-recovery-assessment.json)。即使补完剩余题，本版已确认的覆盖失败仍保持FAIL。
+
+[证据一致性](evidence-integrity.json)确认生产提示、7份源码及既有Java jar未变；6份冻结fixture与原基线字节一致。工作树另有非本任务`MySqlProcessingRepository.java`空行改动，本轮运行期间其摘要发生变化，未改写或暂存该文件；运行使用已有jar。所有自有验证进程已退出，`.local`私密恢复态和`.logs`审计日志保留，无清理或部署。
+
+首次Ruff工作目录选择不同配置的失败日志保留；此前已在规范ai-runtime目录修正并通过全部离线检查。本轮源码未变，因此没有重复调用模型或重复运行全套离线测试。

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4defb092-8edc-53ca-a7ab-a311de32e000:c355d336-2bc4-48c8-8dfa-8aa9beb5f8a6",
+  "answer": "结论：不会。对于已处于 DONE 状态的 sink，系统不会重写；如果某个 sink 超时或部分失败，系统会保持 PENDING，并显式重试时幂等重放该 sink。\n\n- 只有 Qdrant `wait=true` 且确认 completed，才算 DONE；只有 ES Bulk `refresh=wait_for`、逐条确认 ID/状态且无 errors，才算 DONE。[1]\n- 超时或部分失败时保持 PENDING；此时显式重试只幂等重放该 sink；已 DONE 的 sink 不重写。[1]\n- 重复或迟到的 upsert 会写入相同内容，不能覆盖另一批次；冻结准备包保证了这一点。[1][2]\n- 发布边界：两个 sink 都 DONE 后，才在带租约条件的短事务中提交任务与文档状态；单 sink 完成无法发布。[1]\n\n因此，一个索引成功、另一个失败时，重试不会重写已成功的部分；只有失败或未知的那个 sink 会被幂等重放，而发布仍需等两个 sink 都 DONE 才能完成。[1]"
+}

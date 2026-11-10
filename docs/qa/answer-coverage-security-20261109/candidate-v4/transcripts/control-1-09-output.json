@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4597f849-3a71-5bca-b724-0b7c2ae8b426:a35f015a-12f5-473d-8cbd-c6dc750a534e",
+  "answer": "不可以。证据明确要求：不要为了抓取而将管理端口公开到外网[1][2]。\n\n- 指标采集走本地回环地址：Tasks、Knowledge 通过 `127.0.0.1:29087/29084/actuator/prometheus` 暴露指标[2]。\n- 在 Docker Desktop 场景下，`prometheus.yaml` 是与应用 gateway 同一网络命名空间的抓取配置，管理端点仍是 loopback；旧账本采集位于 `host.docker.internal:29192`，宿主 Prometheus 则改为 `127.0.0.1:29192`[2]。\n- 配置目录以只读方式挂载为 `/etc/agentic-monitoring`[1][2]。\n- 观察入口保留 Alertmanager 页面和 Prometheus `/api/v1/alerts`；`alertmanager.yaml` 默认没有配置外部通知接收器，接入外部接收器须有明确目标与发送授权[1]。"
+}

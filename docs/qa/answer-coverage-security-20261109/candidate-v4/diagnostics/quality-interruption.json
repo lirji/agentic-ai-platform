@@ -1,0 +1,20 @@
+{
+  "executionStatus": "FAILED",
+  "taskId": "81d0eebe-03d6-4d5a-abd4-73423918abba",
+  "runId": "545a8a00-7860-43e1-8a60-bde3599cc921",
+  "taskError": "AI_UNAVAILABLE",
+  "workerError": "TASK_RUNTIME_UNAVAILABLE",
+  "serverObservation": "TaskErrors logged task_storage_unavailable at 2026-11-10T10:15:08.534+08:00; exact database/transaction cause not present in sanitized log",
+  "chatAttempts": 13,
+  "transcriptOutputs": 13,
+  "persistedCandidateReports": 12,
+  "publishedManifest": false,
+  "usageStates": {
+    "UNKNOWN_SUCCEEDED": 12,
+    "DISPATCHED_UNKNOWN": 1
+  },
+  "remainingAuthorizedCallsAtInterruption": 47,
+  "processesStoppedAfterQuality": true,
+  "recovery": "Not executed; current runner cannot reroll a partially completed group. Native resume preserves checkpoint but Q13 may require a new call.",
+  "gradingLimit": "Partial candidates and raw outputs preserved separately; not represented as completed 20-case report."
+}

@@ -1,0 +1,45 @@
+{
+  "actualModelAttempts": 53,
+  "formalReviewedAnswers": 40,
+  "diagnosticReviewedCandidates": 12,
+  "unconfirmedTranscriptOutputs": 1,
+  "allPromptDigestsMatch": true,
+  "promptSha256": "c9c5b951eb21694dd0b80c10ce8cd49e5789d9b950cc38781add160a023c0d2e",
+  "frozenFixtureBytesUnchanged": true,
+  "allFormalAnswerResultReviewBindingsMatch": true,
+  "allFormalCitationIdsAndSourcesMatchInput": true,
+  "previousOfflineValidationSourceHashesMatch": true,
+  "sourceSha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "b7ab7692e39c3231c9882283ab1d2ba1c818b6373371e2cd658d5aea1c79a509",
+    "deploy/quality_security.py": "da7ad85466bea9e1127c3866d29200a496246b49eb38a4caa41cdaae63443145",
+    "deploy/quality_security_runtime.py": "9496ccb70cdcb4df40ade7ada49699a86f16efbb70a03d5c8fcf424fdfc3c4f4",
+    "deploy/quality_remediation_runtime.py": "387d012e4ec5c8fe0cf71c9f410dca0c0221faaf062a6eb9342c27614057ddc8",
+    "deploy/quality_remediation_report.py": "e628bd8fb85b08c5f8cac75e59c69005126813f874a639769f7bc8c40c8fcca8",
+    "ai-runtime/tests/test_quality_remediation.py": "d28a7f5aae980fb9e4376fdfd1ce214c09c16517cffca6b0e355219c8609de8f",
+    ".github/workflows/ci.yml": "67ad3a8f02e21cb17f7da9b705ab429ff0a8512df992db47271bcf97bb94c57d"
+  },
+  "runtimeJarSha256": {
+    "async-task-service/target/async-task-service-0.1.0-SNAPSHOT.jar": "b7ccfaa371b57af34cf461f7149f06f51752e9511a2df21e10b43af1602e544b",
+    "knowledge-service/target/knowledge-service-0.1.0-SNAPSHOT.jar": "f86a39114594f5ebd344c19b0a9bf2156ace24a19be685d5de4ee8bee82474d0"
+  },
+  "unrelatedWorktreeChanges": [
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlProcessingRepository.java",
+      "startSha256": "19edcccf43a532485bee8ee9605c7e96030c824e57bdb2ae33aff0856bdd786c",
+      "currentSha256": "3d10dc0eb61f338e1060705604daed931ab6d06ceceaf111d09b33be77e4aa25",
+      "excludedFromDelivery": true
+    }
+  ],
+  "maxSerializedMessagesBytes": 7182,
+  "uniqueModelOperations": 53,
+  "attackPayloadsExposed": 20,
+  "partialQualitySummaryCaveat": "summary.json quality.notRun=20 means no published question reports; actual execution made13 calls and persisted12 candidates. See diagnostics/; not 20 physical non-executions.",
+  "modelAcceptance": "FAIL",
+  "complete60CaseValidation": "UNVERIFIED",
+  "gate": "HOLD",
+  "comparisonCounts": {
+    "improved": 6,
+    "regressed": 0,
+    "unreviewed": 20
+  }
+}

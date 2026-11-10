@@ -1,6 +1,6 @@
 # 项目文档
 
-回答覆盖整改：[逐项方案](qa/answer-coverage-security-20261109/PLAN.md)、[阶段报告](qa/answer-coverage-security-20261109/REPORT.md)、[第四版验收](qa/answer-coverage-security-20261109/candidate-v4/TEST_RESULT.md)。第三版58/60通过，仍有两处事实扩展；第四版修复和离线验证已完成（884通过/102跳过），真实复测待新增60次及3元授权。第四版已本地WIP提交fa47d4b，合并/推送HOLD。
+回答覆盖整改：[逐项方案](qa/answer-coverage-security-20261109/PLAN.md)、[阶段报告](qa/answer-coverage-security-20261109/REPORT.md)、[第四版验收](qa/answer-coverage-security-20261109/candidate-v4/TEST_RESULT.md)。第四版53次调用，配对质量36/40、任务保持18/20；质量组中断，完整验证PARTIAL、业务FAIL/HOLD。累计占额及内部结算8.654776/13元，结果保存本地WIP，未合并/推送。
 
 工程知识真实质量与持续攻击验证：[首轮报告](qa/knowledge-quality-security-20261109/REPORT.md)、[运行/复测](qa/knowledge-quality-security-20261109/RUNTIME.md)、[验收](qa/knowledge-quality-security-20261109/TEST_RESULT.md)。60次真实问答，工程质量16/20；20次攻击未观察到劫持，任务保持12/20。关键题覆盖不足，保留观测基线，未认定业务质量达标。
 

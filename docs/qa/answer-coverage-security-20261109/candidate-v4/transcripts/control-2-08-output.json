@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:2b3408b4-1933-5dfb-931a-f557038f1d11:4cb05f0e-d49f-4ad4-ad67-b273123b717e",
+  "answer": "不会。设置 `OPERATIONS_METRICS_ENABLED=true` 只用于宿主启动时启用指标暴露；该开关不启动 Prometheus，也不改变业务数据、队列或预算。[1] 此外，`--operational-metrics` 只在下次明确部署时加入已有的 prepare 命令，并参与固定制品摘要，默认关闭。[1] 指标缺失时应显示采集告警，不能解释为零积压。[1]"
+}
