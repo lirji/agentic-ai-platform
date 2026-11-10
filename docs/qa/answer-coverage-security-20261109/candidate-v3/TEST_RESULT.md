@@ -26,7 +26,7 @@
 | 冻结与证据绑定 | PASS | 6份原fixture逐字节一致；60份提示、答案/结果/评分摘要、引用来源匹配；7份源码与离线验证摘要一致；evidence-integrity.json |
 | 报告重建 | PASS | report及verify --candidate v3退出0，旧三份verify证据仍适用；不代表模型质量通过 |
 | 原环境与任务回收 | PASS | 原外部两份账本摘要不变；5组及review-all终态成功，processes=[]；无清理/部署 |
-| 远程CI及Git交付 | UNVERIFIED/HOLD | 必需业务验收失败，未提交/合并/推送，远程CI未运行 |
+| 本地保存与远程Git交付 | WIP / HOLD | 已按用户要求创建本地WIP提交d0aef65；业务仍FAIL，未合并/推送，远程CI未运行；../DELIVERY_RESULT.json |
 | UI、Schema迁移、生产部署 | N/A | 本次无对应变更或操作 |
 
 本次修改将操作步骤与直接相连的结果确认/恢复共同约束，明确状态/操作类别和首句一致性；真实结果表明覆盖改善但事实关系仍会被扩大，不声称模型一定遵守。保留单次生成、原题/资料/rubric、输出上限768；不增加裁判调用或成功答案重抽。

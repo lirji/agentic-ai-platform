@@ -1,11 +1,11 @@
 {
   "markdownFiles": 8,
-  "localLinks": 301,
+  "localLinks": 303,
   "tableRows": 149,
   "sourceHashesMatch": true,
   "allLocalLinksResolve": true,
   "tableAndFences": "PASS",
   "credentialPatterns": "NO_FINDINGS",
-  "credentialScanFiles": 454,
-  "scope": "v3 completed 60-call validation, review persistence, audit and final report; business FAIL/HOLD"
+  "credentialScanFiles": 455,
+  "scope": "v3 completed validation and local WIP checkpoint receipt; business FAIL/HOLD"
 }
