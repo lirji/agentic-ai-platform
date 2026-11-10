@@ -39,6 +39,12 @@ def runner(resume_module, tmp_path, monkeypatch):
     monkeypatch.setattr(module, "OUT", baseline)
     monkeypatch.setattr(module.FourthRemediationRuntime, "output", property(lambda self: out))
     monkeypatch.setattr(module, "chat_count", lambda: module.CALLS_BEFORE_RESUME)
+    # 恢复固定v4历史，不能让后续生产提示使历史fixture测试失效；真实入口仍检查漂移。
+    import agentic_ai.qa.pipeline as pipeline
+
+    monkeypatch.setattr(
+        pipeline, "SYSTEM_PROMPT", module.read_json(out / "prompt-final.json")["text"]
+    )
     value = object.__new__(module.PartialQualityResume)
     source = module.read_json(out / "runs/quality.json")
     value.state = {"runs": {module.RESUME_LABEL: {"runId": source["summary"]["runId"]}}}

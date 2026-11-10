@@ -141,7 +141,9 @@ def comparison(baseline=OUT, candidate=REMEDIATION_OUT, *, checkpoint_resume=Fal
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="只重建已保存结果，不发模型请求")
     parser.add_argument("command", choices=("report", "verify"))
-    parser.add_argument("--candidate", choices=("draft", "final", "v3", "v4"), default="final")
+    parser.add_argument(
+        "--candidate", choices=("draft", "final", "v3", "v4", "v5"), default="final"
+    )
     parser.add_argument("--checkpoint-resume", action="store_true")
     args = parser.parse_args()
     if args.checkpoint_resume and args.candidate != "v4":
@@ -151,6 +153,7 @@ if __name__ == "__main__":
         "final": REMEDIATION_OUT / "candidate-v2",
         "v3": REMEDIATION_OUT / "candidate-v3",
         "v4": REMEDIATION_OUT / "candidate-v4",
+        "v5": REMEDIATION_OUT / "candidate-v5",
     }[args.candidate]
     result = comparison(candidate=directory, checkpoint_resume=args.checkpoint_resume)
     prefix = "resumed-" if args.checkpoint_resume else ""

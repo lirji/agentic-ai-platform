@@ -32,6 +32,9 @@ SUPPLEMENTAL_CHAT_GRANT = Decimal("2.000000")
 SUPPLEMENTAL_CHAT_PROFILE = "qs-coverage-v3-chat"
 FOURTH_CHAT_GRANT = Decimal("3.000000")
 FOURTH_CHAT_PROFILE = "qs-coverage-v4-chat"
+FIFTH_REVISION_CALL_LIMIT = 283
+FIFTH_CHAT_PROFILE = "qs-coverage-v5-chat"
+FIFTH_CHAT_GRANT = Decimal("1.500000")
 
 
 class RunStage(StrEnum):
@@ -48,6 +51,7 @@ class CandidateRevision(StrEnum):
     V2 = "v2"
     V3 = "v3"
     V4 = "v4"
+    V5 = "v5"
 
 
 class Command(StrEnum):
@@ -308,6 +312,8 @@ class ThirdRemediationRuntime(FinalRemediationRuntime):
     additional_chat_grant = SUPPLEMENTAL_CHAT_GRANT
     supplemental_chat_profile = SUPPLEMENTAL_CHAT_PROFILE
     previous_grant = Decimal("8.000000")
+    quality_funding_key = "CHAT_ORIGINAL"
+    paired_funding_key = "CHAT_SUPPLEMENTAL"
 
     @property
     def output(self):
@@ -417,21 +423,28 @@ class ThirdRemediationRuntime(FinalRemediationRuntime):
             "EMBEDDING": accounts["EMBEDDING"],
         }
 
+    def run_funding_key(self, label):
+        """按固定组分配资金；恢复标签保持原组账户，不能随余额临时切换。"""
+        return (
+            self.quality_funding_key
+            if label.removesuffix("-recovery") == "quality"
+            else self.paired_funding_key
+        )
+
     def preflight(self):
         """逐池为全部未开始组预留上界，再校验整轮次数和冻结提示。"""
         accounts = self.funding_accounts()
-        if Decimal(accounts["CHAT_SUPPLEMENTAL"]["limit"]) != SUPPLEMENTAL_CHAT_GRANT:
+        if Decimal(accounts[self.paired_funding_key]["limit"]) != self.additional_chat_grant:
             raise RuntimeError("SUPPLEMENTAL_GRANT_MISMATCH")
-        for key, quality in (("CHAT_ORIGINAL", True), ("CHAT_SUPPLEMENTAL", False)):
-            pending = [
-                (group, 1)
-                for label, group in self.planned_labels.items()
-                if label not in self.state["runs"] and (group == "quality") == quality
-            ]
-            if self.active_label in RECOVERY_LABELS and self.active_label not in self.state["runs"]:
-                group = RECOVERY_LABELS[self.active_label]
-                if (group == "quality") == quality:
-                    pending.append((group, 1))
+        by_account = {}
+        for label, group in self.planned_labels.items():
+            if label not in self.state["runs"]:
+                by_account.setdefault(self.run_funding_key(label), []).append((group, 1))
+        if self.active_label in RECOVERY_LABELS and self.active_label not in self.state["runs"]:
+            by_account.setdefault(self.run_funding_key(self.active_label), []).append(
+                (RECOVERY_LABELS[self.active_label], 1)
+            )
+        for key, pending in by_account.items():
             chat, embedding, _ = self.estimate(pending)
             require_remaining_budget(
                 {"CHAT": accounts[key], "EMBEDDING": accounts["EMBEDDING"]},
@@ -514,6 +527,85 @@ class FourthRemediationRuntime(ThirdRemediationRuntime):
         return RemediationRuntime.preflight(self)
 
 
+class FifthRemediationRuntime(ThirdRemediationRuntime):
+    """复用v4质量组和v3首组对照余额，新1.5元只覆盖其余三组。"""
+
+    funding_revision = CandidateRevision.V5
+    additional_chat_grant = FIFTH_CHAT_GRANT
+    supplemental_chat_profile = FIFTH_CHAT_PROFILE
+    previous_grant = Decimal("13.000000")
+    quality_funding_key = "CHAT_V4"
+    paired_funding_key = "CHAT_V5"
+
+    @property
+    def output(self):
+        return REMEDIATION_OUT / "candidate-v5"
+
+    @property
+    def state_file(self):
+        return WORK / "coverage-remediation-v5-state.json"
+
+    @property
+    def continuation_source_file(self):
+        return WORK / "coverage-remediation-v4-state.json"
+
+    @property
+    def log_directory(self):
+        return ROOT / ".logs/answer-coverage-security-20261109/candidate-v5"
+
+    @property
+    def additional_call_limit(self):
+        return FIFTH_REVISION_CALL_LIMIT
+
+    def evaluation_key(self, name):
+        """每版独立命令与运行身份，不复用已有模型结果重抽。"""
+        return stable_id("coverage-remediation-v5:" + name)
+
+    def initial_state(self):
+        """v4原状态保留失败快照，必须另核对原任务已恢复及成功前缀未变。"""
+        from quality_remediation_report import checkpoint_selection
+
+        resume = read_json(WORK / "coverage-remediation-v4-quality-resume-state.json")
+        if (
+            resume.get("processes")
+            or not resume["runs"].get("quality-resume", {}).get("collected")
+            or resume["runs"]["quality-resume"].get("executionStatus") != "SUCCEEDED"
+        ):
+            raise RuntimeError("V4_RESUME_NOT_TERMINAL")
+        checkpoint_selection(REMEDIATION_OUT / "candidate-v4")
+        state = super().initial_state()
+        state["continuationResumeDigest"] = digest(resume)
+        return state
+
+    def usage_profiles(self):
+        """绑定各组固定资金来源，不能因当前余额改变同组路由。"""
+        profiles = Runtime.usage_profiles(self)
+        funding_key = self.run_funding_key(getattr(self, "active_label", "quality"))
+        profiles["CHAT"]["profileId"] = {
+            "CHAT_V3": SUPPLEMENTAL_CHAT_PROFILE,
+            "CHAT_V4": FOURTH_CHAT_PROFILE,
+            "CHAT_V5": self.supplemental_chat_profile,
+        }[funding_key]
+        return profiles
+
+    def run_funding_key(self, label):
+        """首组对照固定复用v3，其余按质量/配对分池，不跨组借余额。"""
+        if label.removesuffix("-recovery") == "control-1":
+            return "CHAT_V3"
+        return super().run_funding_key(label)
+
+    def funding_accounts(self):
+        """原池、v3、v4、v5及Embedding分列，未知费用不会随新版本消失。"""
+        original = Runtime.accounts(self)
+        return {
+            "CHAT_ORIGINAL": original["CHAT"],
+            "CHAT_V3": funding_account(stable_id("coverage-remediation-v3:account:CHAT")),
+            "CHAT_V4": funding_account(stable_id("coverage-remediation-v4:account:CHAT")),
+            "CHAT_V5": funding_account(self.evaluation_key("account:CHAT")),
+            "EMBEDDING": original["EMBEDDING"],
+        }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("phase", type=Command, choices=tuple(Command))
@@ -524,7 +616,7 @@ def main():
         default=CandidateRevision.V1,
     )
     parser.add_argument("--approved-additional-calls", type=int, required=True)
-    parser.add_argument("--approved-extra-chat-cny", choices=("0", "2", "3"), default="0")
+    parser.add_argument("--approved-extra-chat-cny", choices=("0", "1.5", "2", "3"), default="0")
     parser.add_argument("--label", choices=tuple(LABELS | RECOVERY_LABELS))
     args = parser.parse_args()
     runtime_type = {
@@ -532,6 +624,7 @@ def main():
         CandidateRevision.V2: FinalRemediationRuntime,
         CandidateRevision.V3: ThirdRemediationRuntime,
         CandidateRevision.V4: FourthRemediationRuntime,
+        CandidateRevision.V5: FifthRemediationRuntime,
     }[args.revision]
     # 此处只读取静态范围；不能在授权核对前运行会写私密状态的__init__。
     proposal = object.__new__(runtime_type)

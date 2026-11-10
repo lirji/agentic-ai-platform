@@ -1,0 +1,86 @@
+{
+  "base": "a2a3fd41dcfd3f1ac9c13a070216a4a4ff7915a1",
+  "branch": "fix/answer-coverage-security-20261109",
+  "sha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "784860e41aab0458ac97f2732632002683aff0b193a88fa22fca8a7581c110fa",
+    "deploy/quality_security.py": "da7ad85466bea9e1127c3866d29200a496246b49eb38a4caa41cdaae63443145",
+    "deploy/quality_security_runtime.py": "352d2da30347c2011817204e678b08c0ed84879bf831799ffb020e482815e8bf",
+    "deploy/quality_remediation_runtime.py": "744fc093e92150c2f8e157c951b4dc9c346c7b50ef1b22c54500d9ce549017b8",
+    "deploy/quality_remediation_report.py": "bc599a2da1be3626c0630e0fe9268d66ce2bc298f99f80a2f86048cf00afd659",
+    "deploy/quality_partial_resume.py": "18e8f6dcc4c957a964f9281a9a6b8c2aef56006ea76407c468ff42345a92d1f9",
+    "ai-runtime/tests/test_quality_remediation.py": "ab6cdb63e129aff2edde67f495121d56119b7cbb44acf219225271561f0c842d",
+    "ai-runtime/tests/test_quality_partial_resume.py": "12742825c5d853b8e693b014c94c53193264c358db4784f59e9496896984ab88"
+  },
+  "promptDigest": "dc0b5845420961dbd862f90dde60b56e5e051581300401582a3e6dec93c681be",
+  "frozenFixturesByteIdentical": {
+    "campaign.json": "e465c95263dfed49f86ef78452c73ffa230cfc79f40e1efa4d442e37db729c3b",
+    "frozen-corpus.json": "3d0d706448633dea14cbcddfc3fbf4e36a5c8c5b05fb5ada1fa250cca0d82f00",
+    "corpus-bindings.json": "c6a379dfe314657b237a8dff97453ba1fb912787ee02d7a202b229b495c156e4",
+    "definition-quality.json": "6e490e043512b627056154492f5db3b2925b4290feef8284b11a05893228ff89",
+    "definition-control.json": "2a114722726005bb29c447eefb9ae5c70c0f39e576c039c9c431420aa5c60a8f",
+    "definition-attack.json": "71f4c66a44246369c8e1678a311875ecb18271dad85bba42f21f75a513e95032"
+  },
+  "pythonFull": {
+    "passed": 921,
+    "skipped": 102,
+    "warnings": 34,
+    "log": ".logs/answer-coverage-security-20261109/v5-final-full-tests.log"
+  },
+  "targeted": {
+    "passed": 122,
+    "log": ".logs/answer-coverage-security-20261109/v5-final-targeted.log"
+  },
+  "format": "PASS:175 files",
+  "static": "PASS",
+  "mypy": "PASS:100 source files",
+  "compile": "PASS",
+  "contracts": "PASS:16 contracts and 16 shared fixtures",
+  "usageBoundaries": "PASS:330 Java sources,5-layer DAG,8 tables/94 commented columns",
+  "historicalReports": "PASS:original,v1,v2,v3,v4 before and after same-task resume",
+  "fixedAccountReadVerified": "Actual fixed-ID SQL balances equal latest historical audit; no historical amount correction required",
+  "oldRegisteredV4ManifestExactMatch": true,
+  "originalLedgersUnchanged": true,
+  "v4ContinuationAndResumeVerified": true,
+  "codeHygieneStatus": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "codeHygieneLimitations": [
+    {
+      "code": "FORMAT_TOOL_NOT_AVAILABLE",
+      "check": "FORMAT"
+    }
+  ],
+  "codeHygieneAdvisories": [
+    {
+      "findingId": "HF-001",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/quality_remediation_runtime.py",
+      "line": 35,
+      "excerpt": "FIFTH_REVISION_CALL_LIMIT = 283",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    }
+  ],
+  "advisoryDisposition": "Call limit is already a named stable constant. Scanner does not discover nested Ruff; canonical 175-file format/lint checks pass.",
+  "initialCheckAdjustments": [
+    "First historical-report command used invalid CLI aliases v1/v2; corrected to existing draft/final aliases, all six report verifications passed.",
+    "Initial 919-pass snapshot preceded fixed-account audit correction; final 921-pass snapshot supersedes it."
+  ],
+  "logSha256": {
+    ".logs/answer-coverage-security-20261109/v5-final-targeted.log": "870ce6627cf46a899e738b8d549c32aa33cbd61d3ed3e0f2183d2cb313746473",
+    ".logs/answer-coverage-security-20261109/v5-final-full-tests.log": "304d52ba2a9fd4a2d9a3a5cf53e8cc80c5440aee493034316cc3921ca4309653",
+    ".logs/answer-coverage-security-20261109/v5-final-format-check.log": "507ad0521c6e9ec215236af0ae168607f21976a1c3f4fda0d22903b690422ecc",
+    ".logs/answer-coverage-security-20261109/v5-final-lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    ".logs/answer-coverage-security-20261109/v5-final-types.log": "491f2304d8f2c8f1671935be0737116adcdf690bd43abfa3132286dc3985dacc",
+    ".logs/answer-coverage-security-20261109/v5-final-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".logs/answer-coverage-security-20261109/v5-final-historical-reports.log": "2b664e8af33112e2e838c3314563b4e493519fd8a6d692a967c60f35207077b7",
+    ".logs/answer-coverage-security-20261109/v5-contract-docs.log": "48e3b9103b2622f7987365c79ca701ae23a117b56e476151367e08209bec48f2",
+    ".logs/answer-coverage-security-20261109/v5-usage-boundaries.log": "5c04c3e43be93b06fe92f5f76956a0825ab5472f63d7623a0d5c687c45ba7b04",
+    ".logs/answer-coverage-security-20261109/v5-code-hygiene.json": "f8e14f3ddf3d8cb492e92940aa2a49cdcbf3d2032f56f4cb78194fef1e7cc970"
+  },
+  "realModelValidation": "UNVERIFIED",
+  "fundingRegistration": "NOT_EXECUTED",
+  "newModelCalls": 0,
+  "v5ReportVerification": "UNVERIFIED:requires new real results; mandatory CI verification is added only after evidence exists",
+  "deliveryGate": "HOLD"
+}

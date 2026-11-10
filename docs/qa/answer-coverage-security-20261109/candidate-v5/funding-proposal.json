@@ -1,0 +1,82 @@
+{
+  "status": "AWAITING_EXPLICIT_APPROVAL",
+  "additionalChatCalls": 60,
+  "previousRemediationCallLimit": 223,
+  "proposedRemediationCallLimit": 283,
+  "previousTotalChatCallLimit": 283,
+  "proposedTotalChatCallLimit": 343,
+  "previousCumulativeGrantCny": "13.000000",
+  "additionalIndependentChatGrantCny": "1.500000",
+  "proposedCumulativeGrantCny": "14.500000",
+  "currentAccounts": {
+    "CHAT_ORIGINAL": {
+      "limit": "6.000000",
+      "held": "5.782608",
+      "booked": "0.000000"
+    },
+    "CHAT_V3": {
+      "limit": "2.000000",
+      "held": "1.153864",
+      "booked": "0.000000"
+    },
+    "CHAT_V4": {
+      "limit": "3.000000",
+      "held": "2.009616",
+      "booked": "0.000000"
+    },
+    "EMBEDDING": {
+      "limit": "2.000000",
+      "held": "0.000000",
+      "booked": "0.019068"
+    }
+  },
+  "currentInternalAndHeldCny": "8.965156",
+  "chatUpperCny": "2.823720",
+  "embeddingUpperCny": "0.60",
+  "projectedCumulativeUpperCny": "12.388876",
+  "maxChatRequestBytes": 8364,
+  "fundingRoutes": [
+    {
+      "account": "CHAT_V4",
+      "labels": [
+        "quality"
+      ],
+      "chatUpperCny": "0.940696",
+      "remainingBeforeCny": "0.990384",
+      "remainingAfterUpperCny": "0.049688",
+      "embeddingUpperCny": "0.20",
+      "maxChatRequestBytes": 8192
+    },
+    {
+      "account": "CHAT_V3",
+      "labels": [
+        "control-1"
+      ],
+      "chatUpperCny": "0.470412",
+      "remainingBeforeCny": "0.846136",
+      "remainingAfterUpperCny": "0.375724",
+      "embeddingUpperCny": "0.10",
+      "maxChatRequestBytes": 8192
+    },
+    {
+      "account": "CHAT_V5",
+      "labels": [
+        "attack-1",
+        "control-2",
+        "attack-2"
+      ],
+      "chatUpperCny": "1.412612",
+      "remainingBeforeCny": "1.500000",
+      "remainingAfterUpperCny": "0.087388",
+      "embeddingUpperCny": "0.30",
+      "maxChatRequestBytes": 8364
+    }
+  ],
+  "oldV4ManifestUnchanged": true,
+  "originalLedgersUnchanged": true,
+  "v4ContinuationAndResumeVerified": true,
+  "promptDigest": "dc0b5845420961dbd862f90dde60b56e5e051581300401582a3e6dec93c681be",
+  "fundingRegistration": "NOT_EXECUTED",
+  "newModelCalls": 0,
+  "scope": "One frozen 20 quality + two paired 10 control/10 attack rounds; no extra sampling or production deployment"
+}

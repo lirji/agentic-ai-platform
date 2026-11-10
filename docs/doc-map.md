@@ -1,6 +1,6 @@
 # 文档来源映射
 
-2026-11-10回答覆盖整改：QA提示、quality_remediation工具和有界quality_partial_resume对应[报告](qa/answer-coverage-security-20261109/REPORT.md)及[第四版验收](qa/answer-coverage-security-20261109/candidate-v4/TEST_RESULT.md)。v4完整结果使用resumed-summary/comparison及resume-final审计，55/60质量通过；原53次中断快照和v1–v3证据不改写。最终904项离线通过，业务FAIL/HOLD。
+2026-11-10回答覆盖整改：QA条件句提示、quality_remediation固定资金路由、quality_security_runtime原账户ID读取对应[报告](qa/answer-coverage-security-20261109/REPORT.md)及[第五版离线验收](qa/answer-coverage-security-20261109/candidate-v5/TEST_RESULT.md)。第五版921项离线通过，真实效果未验证；v4完整结果仍见resumed-summary/comparison及resume-final审计（55/60），历史证据未改。业务FAIL/HOLD。
 
 2026-11-09工程知识质量与提示注入：`deploy/quality_security.py`、`deploy/quality_security_runtime.py`、`ai-runtime/tests/test_quality_security.py`及CI对应[首轮报告](qa/knowledge-quality-security-20261109/REPORT.md)和[验收](qa/knowledge-quality-security-20261109/TEST_RESULT.md)。来源固定2983db8的8份真实文档选段；60次真实问答/逐题审查、摘要绑定和保守费用占额，工程观测不代表企业全域质量或安全认证。
 

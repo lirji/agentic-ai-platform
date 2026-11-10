@@ -1,7 +1,10 @@
 # 当前整改状态
 
-- 任务：answer-coverage-security-20261109，AC1回答覆盖、AC2攻击下任务保持、AC3有界复测。原理/方案/注意点/难点见[PLAN](PLAN.md)，当前[REPORT](REPORT.md)及[candidate-v4/TEST_RESULT](candidate-v4/TEST_RESULT.md)为验收入口。
-- 最新状态（2026-11-10）：第四版完整60题真实验证、逐题评分、审计及报告验证已完成；质量55/60，业务FAIL、交付HOLD。不是任务整体修复完成。工程质量19/20，四个配对组各9/10，完整任务保持18/20；20攻击均暴露且RESISTED，4拒答全部通过。
+- 任务：answer-coverage-security-20261109，AC1回答覆盖、AC2攻击下任务保持、AC3有界复测。原理/方案/注意点/难点见[PLAN](PLAN.md)，当前[REPORT](REPORT.md)及[candidate-v5/TEST_RESULT](candidate-v5/TEST_RESULT.md)为验收入口；v4真实结果保持。
+- 当前继续执行：第五版提示、固定资金路由、原账户ID读取修正及历史兼容已实现；122项定向、921 passed/102 skipped/34 warnings全量回归通过。Ruff175文件、mypy100源、编译/契约/计量边界与6份历史report verify通过。真实效果UNVERIFIED，业务交付HOLD；沿原分支从a2a3fd4开始，准备本地WIP保存。
+- 第五版授权边界：用户“继续”仅延续实现和离线验证；真实调用仍283/283、资金13元，没有新增登记/调用。精确提案为新增60次和独立CHAT最多1.5元，总调用343、整改283、总资金14.5元；详见candidate-v5/funding-proposal.json。固定质量20题用旧v4（上界0.940696/余额0.990384），control-1十题用旧v3（0.470412/0.846136），其余30题拟用新v5（1.412612/1.5），Embedding0.60沿原池。预计累计上界12.388876元，分池余额不可互挪。
+- 第五版证据：candidate-v5/implementation-evidence.json绑定8份源码和检查日志SHA256，6份fixture逐字节同原基线；prompt-proposal摘要dc0b5845420961dbd862f90dde60b56e5e051581300401582a3e6dec93c681be。实际只读SQL按固定ID复核历史金额一致，旧资金manifest及原账本未变。Code Hygiene仅保留子目录格式工具发现限制和已命名调用常量的advisory。
+- 第四版终态（2026-11-10）：第四版完整60题真实验证、逐题评分、审计及报告验证已完成；质量55/60，业务FAIL、交付HOLD。不是任务整体修复完成。工程质量19/20，四个配对组各9/10，完整任务保持18/20；20攻击均暴露且RESISTED，4拒答全部通过。
 - 剩余缺陷：质量Q10及四次A10均遗漏“发布响应未知时重读权威账本”。相对第三版58/60：Q02关系顺序改善1项，Q10和三个A10退化4项；control-2/A10原支撑FAIL变为覆盖FAIL，整体仍FAIL。相对原基线46/60改善9、退化0。不能用原基线改善掩盖较新候选退化。
 - 目录/分支：/Users/liruijun/personal/LLM/agentic-ai-platform；fix/answer-coverage-security-20261109。本轮从8e7b0b1继续，实测中断阶段WIP 2bca816，恢复工具WIP 082f620；第四版提示实现fa47d4b及旧d0aef65/9bd6e18保留。最新完整结果与报告工具已WIP提交10e184d；交付回执见candidate-v4/resume-final/DELIVERY_RESULT.json。main为7aa205f7f4597720fb560277a0390be18b094e0e，未合并/推送。
 - 授权：先批准60次/3元，随后明确“批准新增 1 次，不追加资金”；funding-authorization与resume-authorization分别留证。第四版61/61、整改223/223、含基线CHAT283/283，余量0；资金总上限仍13元。用户既有WIP保存与验证通过后正常合并推送授权保留；必要业务验收失败不进入main。parallel=no，无部署/清理授权。
@@ -15,6 +18,7 @@
 - 源码现场：MySqlProcessingRepository.java有非本任务空行改动，保护且不暂存；实际Java使用已存在jar，摘要见runtime-context。没有产品API/Schema/Java/UI变更，相关既有契约与计量边界证据继续适用。
 - 运行状态：恢复session54236与评分审计session51521均成功退出；全量/静态/报告验证也结束。原v4与quality-resume私密state均processes为空；无在途模型调用、无再执行许可。日志.logs/answer-coverage-security-20261109/v4-quality-resume-command.log、v4-resume-review-audit.log、v4-final-*.log。
 - 私密恢复入口：.local/quality-security-20261109/coverage-remediation-v4-state.json及coverage-remediation-v4-quality-resume-state.json。后者resumeStarted=true且任务终态成功，不得再次执行恢复命令；需要信息时只读查询正式结果。
-- 下一步：本轮WIP提交和交付回执已保存。验证工作已完成但覆盖修复未通过；若后续开启新候选，应先重新评估覆盖与范围约束的取舍、写有界方案并离线验证，再另行申请真实调用额度。不得直接重跑既有组、放宽rubric、把旧失败改为PASS或无限追加抽样。
+- 下一步：完成第五版本地WIP交付回执，然后请求新增60次及最多1.5元明确授权。批准后记录授权并按candidate-v5/TEST_RESULT的固定五组顺序运行、逐题评分、核账及比较；获准前不登记资金/发模型请求。v5正式报告尚不存在，不创建占位不可变文件；真实完成后再加入CI verify。
+- 第五版运行状态：全部离线检查及只读预算查询已结束，无在途操作；没有v5私密state或新资金manifest。最终日志.logs/answer-coverage-security-20261109/v5-final-*，历史verify参数误用的失败日志保留但已按旧CLI别名重验通过。
 - Git/目录保留：复用原任务分支，无新worktree；main在~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027，未切换/清理。.local/.logs保存必要私密状态/账本/失败日志，应保留；无清理授权。远程CI未执行，无生产部署。
 - 采用规范：session-handoff、continue-approved-delivery、backend-implementation、implementation-validation、update-progress-docs、task-git-delivery；architecture-standards业务建模、接口、持久化、并发安全与发布治理。无子Agent。

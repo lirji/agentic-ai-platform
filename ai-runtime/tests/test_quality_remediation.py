@@ -28,6 +28,28 @@ def test_remaining_budget_includes_unknown_holds_and_previous_settlements(remedi
         remediation.require_remaining_budget(accounts, Decimal("0"), Decimal("2"))
 
 
+@pytest.mark.parametrize("reverse", [False, True])
+def test_original_accounts_cannot_be_replaced_by_same_kind_accounts(
+    remediation, monkeypatch, reverse
+):
+    rows = [
+        f"{remediation.stable_id('account:CHAT')}\tCHAT\t6\t5.782608\t0",
+        f"{remediation.stable_id('account:EMBEDDING')}\tEMBEDDING\t2\t0\t0.019068",
+        "new-account\tCHAT\t1.5\t0\t0",
+    ]
+    if reverse:
+        rows.reverse()
+    monkeypatch.setattr(remediation.local, "mysql", lambda _: "\n".join(rows))
+    runner = object.__new__(remediation.Runtime)
+    assert runner.accounts() == {
+        "CHAT": {"limit": "6", "held": "5.782608", "booked": "0"},
+        "EMBEDDING": {"limit": "2", "held": "0", "booked": "0.019068"},
+    }
+    rows[:] = [line for line in rows if not line.startswith(remediation.stable_id("account:CHAT"))]
+    with pytest.raises(RuntimeError, match="ORIGINAL_ACCOUNT_MISSING"):
+        runner.accounts()
+
+
 def test_continuation_copies_baseline_identity_without_resetting_old_state(
     remediation, tmp_path, monkeypatch
 ):
@@ -181,6 +203,10 @@ def test_report_rejects_extra_groups_paths_and_double_counting(remediation, tmp_
         ("v4", 222, "2", "quality", "FUNDING_APPROVAL_MISMATCH"),
         ("v4", 222, "0", "quality", "FUNDING_APPROVAL_MISMATCH"),
         ("v4", 222, "3", "probe-control", "UNAPPROVED_RUN_LABEL"),
+        ("v5", 223, "1.5", "quality", "CALL_APPROVAL_MISMATCH"),
+        ("v5", 283, "0", "quality", "FUNDING_APPROVAL_MISMATCH"),
+        ("v5", 283, "2", "quality", "FUNDING_APPROVAL_MISMATCH"),
+        ("v5", 283, "1.5", "probe-control", "UNAPPROVED_RUN_LABEL"),
     ],
 )
 def test_new_revision_rejects_missing_grant_or_unplanned_run_before_side_effects(
@@ -323,7 +349,10 @@ def test_v3_checks_both_funding_pools_and_all_60_calls(
         runner.preflight()
 
 
-@pytest.mark.parametrize("runtime_name", ["ThirdRemediationRuntime", "FourthRemediationRuntime"])
+@pytest.mark.parametrize(
+    "runtime_name",
+    ["ThirdRemediationRuntime", "FourthRemediationRuntime", "FifthRemediationRuntime"],
+)
 def test_new_revision_review_never_selects_baseline_from_mechanism_eligibility(
     remediation, tmp_path, monkeypatch, runtime_name
 ):
@@ -461,4 +490,162 @@ def test_v4_checks_new_pool_even_when_combined_balance_is_sufficient(
         runner.active_label = "control-1"
         accounts["CHAT_V4"]["held"] = "1.1"
         # 首组已完成时仅预留剩余40题，不重复预留完整60题。
+        runner.preflight()
+
+
+def test_v5_fixed_group_routes_reuse_old_balances_without_new_model_settings(remediation):
+    runner = object.__new__(remediation.FifthRemediationRuntime)
+    expected = {
+        "quality": ("CHAT_V4", "qs-coverage-v4-chat"),
+        "control-1": ("CHAT_V3", "qs-coverage-v3-chat"),
+        "attack-1": ("CHAT_V5", "qs-coverage-v5-chat"),
+        "control-2": ("CHAT_V5", "qs-coverage-v5-chat"),
+        "attack-2": ("CHAT_V5", "qs-coverage-v5-chat"),
+    }
+    for label, (key, profile) in expected.items():
+        for suffix in ("", "-recovery"):
+            runner.active_label = label + suffix
+            assert runner.run_funding_key(runner.active_label) == key
+            profiles = runner.usage_profiles()
+            assert profiles["CHAT"]["profileId"] == profile
+            assert profiles["EMBEDDING"]["profileId"] == "qs-20261109-embedding"
+    manifest = runner.supplemental_manifest({"profiles": [], "bindings": []})
+    assert manifest["limitAmount"] == "1.500000"
+    assert manifest["fundingSourceRef"] == "coverage-v5-additional-chat-grant"
+    assert runner.max_total_chat_calls == 343
+
+
+def test_v5_audit_includes_all_historical_accounts(remediation, monkeypatch):
+    runner = object.__new__(remediation.FifthRemediationRuntime)
+    monkeypatch.setattr(
+        remediation.Runtime,
+        "accounts",
+        lambda _: {
+            "CHAT": {"limit": "6", "held": "5.782608", "booked": "0"},
+            "EMBEDDING": {"limit": "2", "held": "0", "booked": "0.019068"},
+        },
+    )
+    values = {
+        remediation.stable_id("coverage-remediation-v3:account:CHAT"): {
+            "limit": "2",
+            "held": "1.153864",
+            "booked": "0",
+        },
+        remediation.stable_id("coverage-remediation-v4:account:CHAT"): {
+            "limit": "3",
+            "held": "2.009616",
+            "booked": "0",
+        },
+        runner.evaluation_key("account:CHAT"): {
+            "limit": "1.500000",
+            "held": "0",
+            "booked": "0",
+        },
+    }
+    monkeypatch.setattr(remediation, "funding_account", values.__getitem__)
+    assert set(runner.funding_accounts()) == {
+        "CHAT_ORIGINAL",
+        "CHAT_V3",
+        "CHAT_V4",
+        "CHAT_V5",
+        "EMBEDDING",
+    }
+    assert runner.accounts()["CHAT"] == {
+        "limit": "12.500000",
+        "held": "8.946088",
+        "booked": "0",
+    }
+
+
+@pytest.mark.parametrize("pending", [False, True])
+def test_v5_continuation_checks_v4_resume_and_preserves_both_states(
+    remediation, tmp_path, monkeypatch, pending
+):
+    monkeypatch.setattr(remediation, "WORK", tmp_path)
+    original = {
+        "processes": [],
+        "runs": {
+            label: {"collected": True}
+            for label in ("quality", "control-1", "attack-1", "control-2", "attack-2")
+        },
+    }
+    resume = {
+        "processes": [],
+        "runs": {
+            "quality-resume": {
+                "collected": not pending,
+                "executionStatus": "SUCCEEDED",
+            }
+        },
+    }
+    paths = [
+        tmp_path / "coverage-remediation-v4-state.json",
+        tmp_path / "coverage-remediation-v4-quality-resume-state.json",
+    ]
+    for path, value in zip(paths, (original, resume), strict=True):
+        path.write_text(json.dumps(value))
+    before = [path.read_bytes() for path in paths]
+    report = importlib.import_module("quality_remediation_report")
+    checks = []
+    monkeypatch.setattr(report, "checkpoint_selection", lambda path: checks.append(path))
+    runner = object.__new__(remediation.FifthRemediationRuntime)
+    if pending:
+        with pytest.raises(RuntimeError, match="V4_RESUME_NOT_TERMINAL"):
+            runner.initial_state()
+        assert not checks
+    else:
+        state = runner.initial_state()
+        assert state["runs"] == {} and state["approvedAdditionalCalls"] == 283
+        assert state["continuationResumeDigest"] == remediation.digest(resume)
+        assert len(checks) == 1
+    assert [path.read_bytes() for path in paths] == before
+
+
+@pytest.mark.parametrize(
+    "exhausted,count,error",
+    [
+        (None, 283, None),
+        ("CHAT_V3", 283, "REMAINING_BUDGET_INSUFFICIENT:CHAT"),
+        ("CHAT_V4", 283, "REMAINING_BUDGET_INSUFFICIENT:CHAT"),
+        ("CHAT_V5", 283, "REMAINING_BUDGET_INSUFFICIENT:CHAT"),
+        ("EMBEDDING", 283, "REMAINING_BUDGET_INSUFFICIENT:EMBEDDING"),
+        (None, 284, "REMAINING_CALL_ALLOWANCE_INSUFFICIENT"),
+    ],
+)
+def test_v5_checks_every_selected_pool_and_cumulative_limit(
+    remediation, tmp_path, monkeypatch, exhausted, count, error
+):
+    monkeypatch.setattr(remediation, "REMEDIATION_OUT", tmp_path)
+    monkeypatch.setattr(remediation.local, "mysql", lambda _: str(count))
+    runner = object.__new__(remediation.FifthRemediationRuntime)
+    runner.state = {"runs": {}}
+    runner.active_label, runner.phase = "quality", remediation.RunStage.FINAL
+    runner.frozen = {"specDigest": "fixed"}
+    accounts = {
+        key: {"limit": limit, "held": "0", "booked": "0"}
+        for key, limit in (
+            ("CHAT_ORIGINAL", "6"),
+            ("CHAT_V3", "2"),
+            ("CHAT_V4", "3"),
+            ("CHAT_V5", "1.5"),
+            ("EMBEDDING", "2"),
+        )
+    }
+    if exhausted:
+        accounts[exhausted]["held"] = accounts[exhausted]["limit"]
+    runner.funding_accounts = lambda: accounts
+    runner.estimate = lambda groups: (
+        sum(Decimal("0.9" if group == "quality" else "0.45") * n for group, n in groups),
+        sum(Decimal("0.2" if group == "quality" else "0.1") * n for group, n in groups),
+        8500,
+    )
+    if error:
+        with pytest.raises(RuntimeError, match=error):
+            runner.preflight()
+    else:
+        assert runner.preflight()["cumulativeGrantCny"] == "14.500000"
+        runner.state["runs"] = {label: {} for label in ("quality", "control-1")}
+        accounts["CHAT_V3"]["held"], accounts["CHAT_V4"]["held"] = "2", "3"
+        # 两个历史池对应的组已完成，后续三组不重复预留或借用这些余额。
+        runner.active_label = "attack-1"
         runner.preflight()

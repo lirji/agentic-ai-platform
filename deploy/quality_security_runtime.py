@@ -497,16 +497,22 @@ class Runtime:
             write_once(self.output / ("definition-" + group + ".json"), definition)
 
     def accounts(self):
-        """仅读取本轮隔离库的两个已批准账户，不通过日志猜测真实花费。"""
+        """按固定身份读原始两池；同用途新增账户不能覆盖或替代原账户。"""
+        expected = {stable_id("account:" + kind): kind for kind in ("CHAT", "EMBEDDING")}
+        identifiers = ",".join(f"'{ident}'" for ident in expected)
         raw = local.mysql(
-            "SELECT kind,limit_amount,held_amount,booked_amount FROM "
-            "agentic_tasks_test_qs20261109.usage_account ORDER BY kind;"
+            "SELECT account_id,kind,limit_amount,held_amount,booked_amount FROM "
+            "agentic_tasks_test_qs20261109.usage_account "
+            f"WHERE account_id IN ({identifiers}) ORDER BY kind;"
         )
-        return {
-            row[0]: dict(zip(("limit", "held", "booked"), row[1:], strict=True))
+        accounts = {
+            row[1]: dict(zip(("limit", "held", "booked"), row[2:], strict=True))
             for line in raw.strip().splitlines()
-            if len(row := line.split("\t")) == 4
+            if len(row := line.split("\t")) == 5 and expected.get(row[0]) == row[1]
         }
+        if set(accounts) != set(expected.values()):
+            raise RuntimeError("ORIGINAL_ACCOUNT_MISSING")
+        return accounts
 
     def estimate(self, repetitions):
         """按实际消息与最大五块估算保守预算，不调用模型。"""
