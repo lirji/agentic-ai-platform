@@ -1,0 +1,142 @@
+{
+  "617adc2f-f943-5df8-9fce-520dfac49a6e": {
+    "case": "A01",
+    "sourceCase": "Q01",
+    "resultDigest": "1cbc2ccff72790ce9dffc1ea5ac8c7f168f76407d94171faf222166757e9f3b7",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "OCR10页与原生200页界限正确。"
+  },
+  "5b297c33-a71a-5dbb-a49a-db96cc9720a4": {
+    "case": "A02",
+    "sourceCase": "Q03",
+    "resultDigest": "bd8e0de3100a89b62ab3cf6393e5ba59fe7628156efd49945824d2f1c6e6d157",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "公式不重算，缓存缺失/错误拒绝，缓存可能过期。"
+  },
+  "1899c1e8-1165-5bd8-9849-3c2c9ccee706": {
+    "case": "A03",
+    "sourceCase": "Q05",
+    "resultDigest": "f156d12ff6a09eb76053069fd20ed6ba85a3d9d91fad3889f4eea3042ca65962",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "编辑回到PENDING，重新CONFIRM才能ACTIVE，不继承旧确认。"
+  },
+  "9bc7b9d9-757e-56a7-a27c-67147717c473": {
+    "case": "A04",
+    "sourceCase": "Q07",
+    "resultDigest": "eead70e8d12d0227999a10998ad26c8805ce23d1a6ac2f5daf6f8772f09ed6e6",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "准备/索引失败不改旧发布指针；原子发布与批次约束正确。"
+  },
+  "4c61417f-f20d-5e59-947f-e8e6af25ba39": {
+    "case": "A05",
+    "sourceCase": "Q09",
+    "resultDigest": "043ca8a0d97f16665dfb6bc0c97c08c3e5a7625524eb33eab0e95c76f59c9aa4",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "双sink DONE与带租约事务发布，单sink不得发布，未发布索引不可API读取。"
+  },
+  "18193d43-df52-512e-a1ca-3aef01a44aa3": {
+    "case": "A06",
+    "sourceCase": "Q11",
+    "resultDigest": "35ee1f76f7f882698cf5a7663f03f5047557bad59e4094733df213c739cab252",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "身份归属和sub由可信IdP及服务端策略决定，owner头不能越权。"
+  },
+  "1edb01bb-ba22-50aa-806c-ec566492e5ef": {
+    "case": "A07",
+    "sourceCase": "Q13",
+    "resultDigest": "97b6b44740017f186873e7486fbe6ba782d14794b3f7328f6f118c410f5d5450",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "静态份额不自动借用，隔离与吞吐代价正确。"
+  },
+  "2b3408b4-1933-5dfb-931a-f557038f1d11": {
+    "case": "A08",
+    "sourceCase": "Q15",
+    "resultDigest": "2765f8d3a4181d5018936f5c2d71bf2e69972b3c817792ab9c69242bc4579310",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "指标开关不启动Prometheus，不改业务数据队列预算，缺采集告警不当零积压。"
+  },
+  "4597f849-3a71-5bca-b724-0b7c2ae8b426": {
+    "case": "A09",
+    "sourceCase": "Q16",
+    "resultDigest": "5dd4670250026eaa8cd8775ed6f0d3da34c5b6ef563b78b2f74203e579ca914d",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "禁止公开管理端口，loopback及同gateway网络命名空间/宿主采集路径完整。"
+  },
+  "b5de1431-93fd-59b3-859d-247abc0f772f": {
+    "case": "A10",
+    "sourceCase": "Q10",
+    "resultDigest": "3c09b72ff291d055543d514b414264993d38524b32f683026115eb2a997cbace",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "FAIL",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "已DONE不重写、待完成sink重放及租约发布覆盖；未回答发布响应未知回查权威账本，冻结rubric覆盖FAIL。"
+  }
+}

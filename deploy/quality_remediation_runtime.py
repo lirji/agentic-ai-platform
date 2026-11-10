@@ -10,8 +10,10 @@ import json
 import os
 from decimal import Decimal
 from enum import StrEnum
+from uuid import UUID
 
 import local
+from quality_remediation_report import validate_empty_failure
 from quality_security import (
     MAX_CHAT_BYTES,
     OUT,
@@ -266,8 +268,10 @@ class RemediationRuntime(Runtime):
         if label in RECOVERY_LABELS:
             original = label.removesuffix("-recovery")
             report = read_json(self.output / "runs" / f"{original}.json")
-            if (
+            empty = self.empty_failure_evidence(original, report)
+            if empty is None and (
                 report["task"]["status"] != "FAILED"
+                or report["report"] is None
                 or report["report"]["succeeded"] != 0
                 or report["report"]["failed"] != 1
             ):
@@ -278,13 +282,23 @@ class RemediationRuntime(Runtime):
                     "original": original,
                     "recovery": label,
                     "reason": (
-                        "Known transport failure with zero successful samples; original retained"
+                        "Pre-generation dependency failure with zero metered operations"
+                        if empty is not None
+                        else (
+                            "Known transport failure with zero successful samples; "
+                            "original retained"
+                        )
                     ),
+                    **({"emptyFailure": empty} if empty is not None else {}),
                 },
             )
         self.active_label = label
         self.phase = RunStage.PROBE if label.startswith("probe-") else RunStage.FINAL
         await super().execute(label, group)
+
+    def empty_failure_evidence(self, original, report):
+        """旧版入口保持原门槛，不能把未知空报告解释成可重抽。"""
+        return None
 
 
 class FinalRemediationRuntime(RemediationRuntime):
@@ -627,6 +641,30 @@ class SixthRemediationRuntime(ThirdRemediationRuntime):
     paired_funding_key = "CHAT_V6"
     require_successful_continuation = True
 
+    def empty_failure_evidence(self, original, report):
+        """生成前失败只有在原任务零计量、零候选且终态明确时才恢复一次。"""
+        if report.get("report") is not None:
+            return None
+        task_id = str(UUID(report["task"]["taskId"]))
+        proof = {
+            "runId": report["summary"]["runId"],
+            "taskId": task_id,
+            "failedSnapshotDigest": digest(report),
+            "chatOperations": 0,
+            "embeddingOperations": 0,
+        }
+        validate_empty_failure(self.output, original, report, proof)
+        # operation早于真实请求登记，任何已登记操作（含未决/未知）均禁止走此恢复。
+        count = int(
+            local.mysql(
+                "SELECT COUNT(*) FROM agentic_tasks_test_qs20261109.usage_operation "
+                f"WHERE context_id='{task_id}';"
+            ).strip()
+        )
+        if count != 0:
+            raise RuntimeError("EMPTY_FAILURE_HAS_METERED_OPERATIONS")
+        return proof
+
     @property
     def output(self):
         return REMEDIATION_OUT / "candidate-v6"
@@ -723,6 +761,10 @@ def main():
         previous = dict(os.environ)
         try:
             os.environ.update(runtime.ai_env)
+            # 使用现有脱敏阶段日志定位依赖故障，不输出请求正文/令牌，不改变超时或重试。
+            from agentic_ai.diagnostics.telemetry import configure_logging
+
+            configure_logging()
             if args.phase == Command.REVIEW_ALL:
                 for label in runtime.state["runs"]:
                     runtime.review(label)

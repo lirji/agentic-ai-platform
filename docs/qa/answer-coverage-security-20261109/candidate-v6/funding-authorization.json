@@ -1,0 +1,12 @@
+{
+  "status": "APPROVED",
+  "userReply": "继续",
+  "authorizationContext": "用户在明确新增60次调用、最多2元CHAT额度、累计403次/16.5元的第六版提案后要求继续；按该已说明的有界范围执行。",
+  "additionalChatCalls": 60,
+  "approvedRemediationCallLimit": 343,
+  "approvedTotalChatCallLimit": 403,
+  "additionalIndependentChatGrantCny": "2.000000",
+  "approvedCumulativeGrantCny": "16.500000",
+  "scope": "One frozen 60-case v6 campaign; preserve prior failures; normal task-branch delivery; no extra sampling or production deployment",
+  "proposal": "funding-proposal.json"
+}

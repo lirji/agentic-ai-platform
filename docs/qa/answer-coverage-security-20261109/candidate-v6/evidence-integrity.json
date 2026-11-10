@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "formalQuestionReports": 50,
+  "formalApiReviewsVerified": 50,
+  "rawInputOutputPairs": 55,
+  "confirmedPartialCandidates": 4,
+  "unconfirmedCandidateExcluded": 1,
+  "uniqueModelOperations": 55,
+  "fullAttackPayloadsObserved": 15,
+  "sourceTextsAndReferencesVerified": true,
+  "fixedFixtureCount": 6,
+  "promptDigest": "9879dad3694e74ff716b6a06afb637c594819565884eee9c291c44061cc22539",
+  "maximumActualRequestBytes": 7555,
+  "preflightUpperRequestBytes": 8434,
+  "historicalUsageAttemptsUnchanged": 703,
+  "originalExternalLedgersUnchanged": true,
+  "allProcessesReclaimed": true
+}

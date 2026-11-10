@@ -66,14 +66,15 @@ jobs:
           uv run --frozen python ../deploy/quality_security.py verify
       - name: Answer coverage remediation regression
         run: |
-          uv run --frozen ruff format --check ../deploy/quality_remediation_runtime.py ../deploy/quality_remediation_report.py ../deploy/quality_partial_resume.py
-          uv run --frozen ruff check ../deploy/quality_remediation_runtime.py ../deploy/quality_remediation_report.py ../deploy/quality_partial_resume.py
-          uv run --frozen python -m py_compile ../deploy/quality_partial_resume.py
+          uv run --frozen ruff format --check ../deploy/quality_remediation_runtime.py ../deploy/quality_remediation_report.py ../deploy/quality_partial_resume.py ../deploy/quality_sixth_resume.py
+          uv run --frozen ruff check ../deploy/quality_remediation_runtime.py ../deploy/quality_remediation_report.py ../deploy/quality_partial_resume.py ../deploy/quality_sixth_resume.py
+          uv run --frozen python -m py_compile ../deploy/quality_partial_resume.py ../deploy/quality_sixth_resume.py
           uv run --frozen python ../deploy/quality_remediation_report.py verify
           uv run --frozen python ../deploy/quality_remediation_report.py verify --candidate v3
           uv run --frozen python ../deploy/quality_remediation_report.py verify --candidate v4
           uv run --frozen python ../deploy/quality_remediation_report.py verify --candidate v4 --checkpoint-resume
           uv run --frozen python ../deploy/quality_remediation_report.py verify --candidate v5
+          uv run --frozen python ../deploy/quality_remediation_report.py verify --candidate v6
 
   documents:
     runs-on: ubuntu-24.04

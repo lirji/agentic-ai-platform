@@ -155,6 +155,106 @@ def test_recovery_cannot_reroll_successful_samples(remediation, tmp_path, monkey
         asyncio.run(runner.execute("quality-recovery", "quality"))
 
 
+@pytest.fixture
+def empty_v6_failure(remediation, tmp_path, monkeypatch):
+    """真实失败形状为中央FAILED且report缺席，不能借普通单题失败伪装。"""
+    monkeypatch.setattr(remediation, "REMEDIATION_OUT", tmp_path)
+    runner = object.__new__(remediation.SixthRemediationRuntime)
+    (runner.output / "runs").mkdir(parents=True)
+    (runner.output / "transcripts").mkdir()
+    failed = {
+        "summary": {"runId": "empty-run"},
+        "task": {
+            "taskId": "cdc419a0-0207-4133-bf3f-c9a65c2da28e",
+            "status": "FAILED",
+            "retryable": True,
+        },
+        "report": None,
+    }
+    (runner.output / "runs/control-1.json").write_text(json.dumps(failed))
+    (runner.output / "runs/control-1-questions.json").write_text("{}")
+    return runner, failed
+
+
+def test_empty_failure_recovery_requires_database_evidence_before_execution(
+    remediation, empty_v6_failure, monkeypatch
+):
+    runner, failed = empty_v6_failure
+    calls = []
+
+    def query(sql):
+        assert failed["task"]["taskId"] in sql and "usage_operation" in sql
+        calls.append("verified-zero-operations")
+        return "0"
+
+    async def execute(self, label, group):
+        calls.append((label, group, self.run_funding_key(label)))
+
+    monkeypatch.setattr(remediation.local, "mysql", query)
+    monkeypatch.setattr(remediation.Runtime, "execute", execute)
+    asyncio.run(runner.execute("control-1-recovery", "control"))
+    selection = remediation.read_json(runner.output / "selections/control-1.json")
+    assert calls == ["verified-zero-operations", ("control-1-recovery", "control", "CHAT_V3")]
+    assert selection["emptyFailure"]["failedSnapshotDigest"] == remediation.digest(failed)
+    assert remediation.read_json(runner.output / "runs/control-1.json") == failed
+
+
+@pytest.mark.parametrize("count", ["1", "10"])
+def test_empty_report_with_any_metered_operation_cannot_recover(
+    remediation, empty_v6_failure, monkeypatch, count
+):
+    runner, _ = empty_v6_failure
+    monkeypatch.setattr(remediation.local, "mysql", lambda sql: count)
+    with pytest.raises(RuntimeError, match="EMPTY_FAILURE_HAS_METERED_OPERATIONS"):
+        asyncio.run(runner.execute("control-1-recovery", "control"))
+    assert not (runner.output / "selections/control-1.json").exists()
+
+
+@pytest.mark.parametrize("change", ["running", "not-retryable", "candidate", "input", "output"])
+def test_empty_failure_recovery_rejects_ambiguous_or_started_work(
+    remediation, empty_v6_failure, monkeypatch, change
+):
+    runner, failed = empty_v6_failure
+    if change == "running":
+        failed["task"]["status"] = "RUNNING"
+    elif change == "not-retryable":
+        failed["task"]["retryable"] = False
+    elif change == "candidate":
+        (runner.output / "runs/control-1-questions.json").write_text('{"q":{}}')
+    else:
+        (runner.output / "transcripts" / f"control-1-01-{change}.json").write_text("{}")
+    monkeypatch.setattr(remediation.local, "mysql", lambda sql: pytest.fail("no DB access"))
+    with pytest.raises(ValueError, match="EMPTY_FAILURE_EVIDENCE_INVALID"):
+        runner.empty_failure_evidence("control-1", failed)
+
+
+@pytest.mark.parametrize(
+    "field", ["runId", "taskId", "failedSnapshotDigest", "chatOperations", "embeddingOperations"]
+)
+def test_empty_failure_report_rejects_proof_drift(
+    remediation, empty_v6_failure, monkeypatch, field
+):
+    runner, failed = empty_v6_failure
+    monkeypatch.setattr(remediation.local, "mysql", lambda sql: "0")
+    proof = runner.empty_failure_evidence("control-1", failed)
+    proof[field] = "changed"
+    with pytest.raises(ValueError, match="EMPTY_FAILURE_EVIDENCE_INVALID"):
+        remediation.validate_empty_failure(runner.output, "control-1", failed, proof)
+
+
+def test_old_revision_still_rejects_empty_report_without_crashing(
+    remediation, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(remediation, "REMEDIATION_OUT", tmp_path)
+    (tmp_path / "runs").mkdir()
+    (tmp_path / "runs/quality.json").write_text(
+        json.dumps({"task": {"status": "FAILED"}, "report": None})
+    )
+    runner = object.__new__(remediation.RemediationRuntime)
+    with pytest.raises(RuntimeError, match="RECOVERY_REQUIRES_EMPTY_FAILED_RUN"):
+        asyncio.run(runner.execute("quality-recovery", "quality"))
+
+
 @pytest.mark.parametrize("already_called,allowed", [(102, True), (103, False)])
 def test_final_run_reserves_all_unstarted_calls_before_first_request(
     remediation, tmp_path, monkeypatch, already_called, allowed

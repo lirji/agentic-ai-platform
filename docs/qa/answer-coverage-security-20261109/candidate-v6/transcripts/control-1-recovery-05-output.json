@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4c61417f-f20d-5e59-947f-e8e6af25ba39:b0dd9c73-49c3-4cc0-b830-be659bdd2408",
+  "answer": "不能发布。两个 sink 都记为 DONE 后才在带租约条件的短事务中提交任务与文档发布状态；仅单 sink 完成无法发布[1]。全文索引（ES Bulk）需 `refresh=wait_for`、逐条确认 ID/状态且无 errors 才记 DONE，超时或部分失败保持 PENDING 并显式重试该 sink[1]。未完成发布的数据即使在索引可见也不能从 API 返回[1]。"
+}

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b5de1431-93fd-59b3-859d-247abc0f772f:b0dd9c73-49c3-4cc0-b830-be659bdd2408",
+  "answer": "不会重写已成功的部分：证据明确说明“已 DONE 的 sink 不重写”[1]；超时或部分失败时保持 PENDING，显式重试的是幂等重放该 sink，已 DONE 的 sink 不重写[1]。两个 sink 都 DONE 后才在带租约条件的短事务中一起提交任务 READY/COMPLETE 和文档 READY/publishedVersion=version 并记事件，单 sink 完成无法发布[1]。"
+}

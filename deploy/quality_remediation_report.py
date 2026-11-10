@@ -15,14 +15,35 @@ from quality_security import (
 )
 
 
-def checkpoint_selection(candidate):
+def validate_empty_failure(candidate, label, failed, proof):
+    """空报告不等于未生成；恢复须绑定零计量证明及原始失败和空候选。"""
+    task = failed.get("task") or {}
+    expected = {
+        "runId": failed["summary"]["runId"],
+        "taskId": task.get("taskId"),
+        "failedSnapshotDigest": digest(failed),
+        "chatOperations": 0,
+        "embeddingOperations": 0,
+    }
+    if (
+        task.get("status") != "FAILED"
+        or task.get("retryable") is not True
+        or failed.get("report") is not None
+        or proof != expected
+        or read_json(candidate / "runs" / f"{label}-questions.json") != {}
+        or any((candidate / "transcripts").glob(f"{label}-[0-9]*-*.json"))
+    ):
+        raise ValueError("EMPTY_FAILURE_EVIDENCE_INVALID")
+
+
+def checkpoint_selection(candidate, group="quality"):
     """同任务恢复只替换报告读取位置；原失败快照和成功前缀必须仍可验证。"""
-    original = read_json(candidate / "runs/quality.json")
-    resumed = read_json(candidate / "runs/quality-resume.json")
-    results = read_json(candidate / "runs/quality-resume-questions.json")
-    prefix = read_json(candidate / "diagnostics/quality-partial-candidates.json")
+    original = read_json(candidate / f"runs/{group}.json")
+    resumed = read_json(candidate / f"runs/{group}-resume.json")
+    results = read_json(candidate / f"runs/{group}-resume-questions.json")
+    prefix = read_json(candidate / f"diagnostics/{group}-partial-candidates.json")
     check = read_json(candidate / "resume-prefix-check.json")
-    planned = len(read_json(candidate / "definition-quality.json")["questions"])
+    planned = len(read_json(candidate / f"definition-{group.split('-')[0]}.json")["questions"])
     report = resumed.get("report") or {}
     if (
         original["task"]["status"] != "FAILED"
@@ -39,7 +60,7 @@ def checkpoint_selection(candidate):
         or check != {"sameRunAndTask": True, "unchangedSuccessfulPrefix": len(prefix)}
     ):
         raise ValueError("CHECKPOINT_RESUME_EVIDENCE_INVALID")
-    return {"quality": "quality-resume"}
+    return {group: group + "-resume"}
 
 
 def comparison(baseline=OUT, candidate=REMEDIATION_OUT, *, checkpoint_resume=False):
@@ -62,18 +83,27 @@ def comparison(baseline=OUT, candidate=REMEDIATION_OUT, *, checkpoint_resume=Fal
         selection = read_json(path)
         original, recovery = selection["original"], selection["recovery"]
         failed = read_json(candidate / "runs" / f"{original}.json")
-        if (
-            failed["task"]["status"] != "FAILED"
-            or failed["report"]["succeeded"] != 0
-            or failed["report"]["failed"] != 1
-            or recovery != original + "-recovery"
-        ):
+        if failed.get("report") is None:
+            validate_empty_failure(candidate, original, failed, selection.get("emptyFailure"))
+            valid_failure = True
+        else:
+            valid_failure = (
+                failed["task"]["status"] == "FAILED"
+                and failed["report"]["succeeded"] == 0
+                and failed["report"]["failed"] == 1
+            )
+        if not valid_failure or recovery != original + "-recovery":
             raise ValueError("RECOVERY_SELECTION_INVALID")
         selections[original] = recovery
     if checkpoint_resume:
-        if "quality" in selections:
+        group = "attack-1" if candidate.name == "candidate-v6" else "quality"
+        if group in selections:
             raise ValueError("CONFLICTING_RECOVERY_SELECTION")
-        selections.update(checkpoint_selection(candidate))
+        selections.update(
+            checkpoint_selection(candidate, group)
+            if group != "quality"
+            else checkpoint_selection(candidate)
+        )
     new = campaign_report(candidate, labels=selections)
     changes = []
     for label in old["groups"]:
@@ -142,11 +172,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="只重建已保存结果，不发模型请求")
     parser.add_argument("command", choices=("report", "verify"))
     parser.add_argument(
-        "--candidate", choices=("draft", "final", "v3", "v4", "v5", "v6"), default="final"
+        "--candidate",
+        choices=("draft", "final", "v3", "v4", "v5", "v6"),
+        default="final",
     )
     parser.add_argument("--checkpoint-resume", action="store_true")
     args = parser.parse_args()
-    if args.checkpoint_resume and args.candidate != "v4":
+    if args.checkpoint_resume and args.candidate not in {"v4", "v6"}:
         raise ValueError("CHECKPOINT_RESUME_CANDIDATE_INVALID")
     directory = {
         "draft": REMEDIATION_OUT,

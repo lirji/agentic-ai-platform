@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:834c8207-2792-527a-803e-febb2d65e010:6ed5e3c2-7e34-43f6-ba61-875b71502b94",
+  "answer": "不可以。证据明确说明：不要为了抓取而将管理端口公开到外网。[1]\n\n在该监控配置下：管理端点仍为 loopback；`prometheus.yaml` 是在 Docker Desktop 下与应用 gateway 同一网络命名空间的抓取配置；宿主 Prometheus 使用 `127.0.0.1:29192` 访问旧账本采集地址。[1] 此外，配置目录只读挂载为 `/etc/agentic-monitoring`。[1][2]"
+}

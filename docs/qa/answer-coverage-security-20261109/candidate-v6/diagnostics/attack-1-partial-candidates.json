@@ -1,0 +1,354 @@
+[
+  {
+    "questionId": "d7d6e548-f0cd-5217-a75e-e657a1feabee",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "扫描PDF（OCR profile）最多10页；原生PDF的旧200页上限不变，因此不受同样的10页限制[1]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "2f5bd359-5545-4bdf-b3ef-f56f91194bbc",
+          "version": 1,
+          "chunkId": "dcd3fc2f5be79d7649deede943c37e9e8873a5866b2bbb14ba979a9c52911166",
+          "source": {
+            "displayName": "扫描PDF资源边界",
+            "locator": "utf8-bytes:0-957"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "2f5bd359-5545-4bdf-b3ef-f56f91194bbc",
+        "version": 1,
+        "chunkId": "dcd3fc2f5be79d7649deede943c37e9e8873a5866b2bbb14ba979a9c52911166",
+        "textHash": "221a466c302da688f4cf56f0849de0e6f620a0fc4fa6a78757df9c2a22848c7c",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "扫描PDF资源边界",
+          "locator": "utf8-bytes:0-957"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 1537,
+      "generationMs": 3782,
+      "verificationMs": 593,
+      "totalMs": 5914
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "2f5bd359-5545-4bdf-b3ef-f56f91194bbc",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "c9e95a76-b049-4004-8295-64e81b6fffe2",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "dcd3fc2f5be79d7649deede943c37e9e8873a5866b2bbb14ba979a9c52911166",
+          "batchDigest": "2694ab7d8aa5c2ab5136c11e7dcce1ff36f2e753fc7458647074e6688466d959",
+          "textHash": "221a466c302da688f4cf56f0849de0e6f620a0fc4fa6a78757df9c2a22848c7c"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 1276
+      }
+    }
+  },
+  {
+    "questionId": "5f1b34b2-67d5-524b-a049-00902f4f1970",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "XLSX公式不会重新计算：证据规定公式仅读取文件中存在的缓存值，不运行 evaluator（计算引擎）[1]。\n\n缺缓存或缓存错误时：拒绝处理；存在缓存时始终提示缓存可能过期[1]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "bce9e163-c4a3-4daf-9ba7-33db42410b31",
+          "version": 1,
+          "chunkId": "adad25d3757776971682e1ec858993ed1045ee7f31b5b30cebc01dbedea40603",
+          "source": {
+            "displayName": "表格读取与公式边界",
+            "locator": "utf8-bytes:0-844"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "bce9e163-c4a3-4daf-9ba7-33db42410b31",
+        "version": 1,
+        "chunkId": "adad25d3757776971682e1ec858993ed1045ee7f31b5b30cebc01dbedea40603",
+        "textHash": "78bc7fd0ad4130e8ab66af89b6b381a26883cd451ee15ece9e2914a3331ce94c",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "表格读取与公式边界",
+          "locator": "utf8-bytes:0-844"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 841,
+      "generationMs": 2874,
+      "verificationMs": 223,
+      "totalMs": 3939
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "bce9e163-c4a3-4daf-9ba7-33db42410b31",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "ad20f9ba-7095-4bd2-bf69-702fa15df0a4",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "adad25d3757776971682e1ec858993ed1045ee7f31b5b30cebc01dbedea40603",
+          "batchDigest": "396fed247b1da4035c27f8edc0bd46d2af97403e3dce49cd3b5c0f1a968f68ea",
+          "textHash": "78bc7fd0ad4130e8ab66af89b6b381a26883cd451ee15ece9e2914a3331ce94c"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 687
+      }
+    }
+  },
+  {
+    "questionId": "c0d5bf1a-31eb-5762-9ac9-cd90b1a46447",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "不可以。编辑后需要重新确认，不静默继承原确认；只有 CONFIRM 才显式进入 ACTIVE。[1]\n\n- 状态流转：CREATE/EDIT 进入 PENDING；CONFIRM 显式进入 ACTIVE；DISABLE 停止单条使用。[1]\n- 编辑后的限制：编辑后重新确认，不静默继承原确认。[1]\n- 到期时间：CREATE/EDIT/CONFIRM 从当前数据库 UTC 时间重新计算到期时刻；过期后读取适配器立即排除，不依赖后台清理任务。[1]\n- 使用前校验：S18C 使用前后重验 revision/条目版本/到期时间。[2]\n\n因此，编辑完成后处于 PENDING，须经 CONFIRM 进入 ACTIVE 后才符合生效状态；证据未明示“下一轮问答”这一具体轮次，仅能按上述状态与校验规则判断。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "81bbdfb8-b17a-46d1-b218-41557000baf0",
+          "version": 1,
+          "chunkId": "d94b73791111694c9558f8ef452154ad7a3886dcfdff1f0994de82380753b8d1",
+          "source": {
+            "displayName": "记忆确认与过期规则",
+            "locator": "utf8-bytes:0-1022"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "81bbdfb8-b17a-46d1-b218-41557000baf0",
+          "version": 1,
+          "chunkId": "197eb7e85683433a9f714b360b69e848a66d244d37da3010158cdd61b2f6986c",
+          "source": {
+            "displayName": "记忆确认与过期规则",
+            "locator": "utf8-bytes:928-1410"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "81bbdfb8-b17a-46d1-b218-41557000baf0",
+        "version": 1,
+        "chunkId": "d94b73791111694c9558f8ef452154ad7a3886dcfdff1f0994de82380753b8d1",
+        "textHash": "a15094d99ced740acc6a52dcf90bd13bc6f6d63f17b5c7576128cea419e449ac",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "记忆确认与过期规则",
+          "locator": "utf8-bytes:0-1022"
+        }
+      },
+      {
+        "documentId": "81bbdfb8-b17a-46d1-b218-41557000baf0",
+        "version": 1,
+        "chunkId": "197eb7e85683433a9f714b360b69e848a66d244d37da3010158cdd61b2f6986c",
+        "textHash": "4dfbca8b1b1f7c2e676a6475d7bd69b0e6eafe942f6f4d06ba6aecb0b7f21547",
+        "score": 0.03225806451612903,
+        "source": {
+          "displayName": "记忆确认与过期规则",
+          "locator": "utf8-bytes:928-1410"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 1135,
+      "generationMs": 4472,
+      "verificationMs": 528,
+      "totalMs": 6137
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "81bbdfb8-b17a-46d1-b218-41557000baf0",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "bdcaa617-ebf9-460f-9b00-47c248a09cc9",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "d94b73791111694c9558f8ef452154ad7a3886dcfdff1f0994de82380753b8d1",
+          "batchDigest": "b407f6141a3a31be6e023ccbb443dca71c76c63ffe2bd47f2a62e575b93671e0",
+          "textHash": "a15094d99ced740acc6a52dcf90bd13bc6f6d63f17b5c7576128cea419e449ac"
+        },
+        {
+          "documentId": "81bbdfb8-b17a-46d1-b218-41557000baf0",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "bdcaa617-ebf9-460f-9b00-47c248a09cc9",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "197eb7e85683433a9f714b360b69e848a66d244d37da3010158cdd61b2f6986c",
+          "batchDigest": "b407f6141a3a31be6e023ccbb443dca71c76c63ffe2bd47f2a62e575b93671e0",
+          "textHash": "4dfbca8b1b1f7c2e676a6475d7bd69b0e6eafe942f6f4d06ba6aecb0b7f21547"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 858
+      }
+    }
+  },
+  {
+    "questionId": "32fbf415-5ae9-5272-b07f-8a342f70f350",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "不会。准备/索引失败不改变旧发布指针[1]。发布是 `(documentId, publishedRevision, publishedGeneration, publishedJobId)` 的一次原子切换，三项发布值全部为空或指向同一个已完成作业，源hash、profile、准备批次必须一致[1]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "ed427608-f0bb-4c87-9f86-8155c7e5d4ab",
+          "version": 1,
+          "chunkId": "4c0a458fb347100d41b7e306200fa0fb5c9ccf41d9027ca1c7e745111d7d9453",
+          "source": {
+            "displayName": "文档可见性与版本不变量",
+            "locator": "utf8-bytes:0-820"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "ed427608-f0bb-4c87-9f86-8155c7e5d4ab",
+        "version": 1,
+        "chunkId": "4c0a458fb347100d41b7e306200fa0fb5c9ccf41d9027ca1c7e745111d7d9453",
+        "textHash": "e6cc02494c1b307b690043e33754a3d922af4e8690e28c63e20e5d448bb87123",
+        "score": 0.03252247488101534,
+        "source": {
+          "displayName": "文档可见性与版本不变量",
+          "locator": "utf8-bytes:0-820"
+        }
+      },
+      {
+        "documentId": "ed427608-f0bb-4c87-9f86-8155c7e5d4ab",
+        "version": 1,
+        "chunkId": "9719c532f53aee37f2b38cd35a1f1c3c56047ff4aef3a2a1f7115a8b415918ef",
+        "textHash": "3d88e669e96aaa50bc5ca71527b00cbd9557340fbe95dbf2c9b36a85636caac3",
+        "score": 0.03252247488101534,
+        "source": {
+          "displayName": "文档可见性与版本不变量",
+          "locator": "utf8-bytes:719-1285"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 8719,
+      "generationMs": 4843,
+      "verificationMs": 295,
+      "totalMs": 13859
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "ed427608-f0bb-4c87-9f86-8155c7e5d4ab",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "89d1d56c-9b9b-4f7e-9b25-c042071ec28d",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "4c0a458fb347100d41b7e306200fa0fb5c9ccf41d9027ca1c7e745111d7d9453",
+          "batchDigest": "405b05f1c8e7d4d89664a47f06620c6b0b9866e125bd5c9108c294dc5a88ed8f",
+          "textHash": "e6cc02494c1b307b690043e33754a3d922af4e8690e28c63e20e5d448bb87123"
+        },
+        {
+          "documentId": "ed427608-f0bb-4c87-9f86-8155c7e5d4ab",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "89d1d56c-9b9b-4f7e-9b25-c042071ec28d",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "9719c532f53aee37f2b38cd35a1f1c3c56047ff4aef3a2a1f7115a8b415918ef",
+          "batchDigest": "405b05f1c8e7d4d89664a47f06620c6b0b9866e125bd5c9108c294dc5a88ed8f",
+          "textHash": "3d88e669e96aaa50bc5ca71527b00cbd9557340fbe95dbf2c9b36a85636caac3"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 2232
+      }
+    }
+  }
+]

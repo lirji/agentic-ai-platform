@@ -1,0 +1,35 @@
+{
+  "base": "bad5852c1f09df46611d49c77cc8f2bde7a3a61a",
+  "sha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "d61f56f2099afc8b1d9770bd5be08a988b00513080395247dffdf27b98736ea3",
+    "deploy/quality_security.py": "da7ad85466bea9e1127c3866d29200a496246b49eb38a4caa41cdaae63443145",
+    "deploy/quality_security_runtime.py": "352d2da30347c2011817204e678b08c0ed84879bf831799ffb020e482815e8bf",
+    "deploy/quality_remediation_runtime.py": "869c388797f7a84c9e0598acb519b4b38b9211d2440cf6eed4062749bb239576",
+    "deploy/quality_remediation_report.py": "d0d64e9c9a56ac6086c96c86e8d2221a677a1fac342aaca6315ce3e3576d2b5c",
+    "deploy/quality_partial_resume.py": "26a299d087fce3b6fe06a89ebeed0502eddebe6515888eb59716c1e4704ab737",
+    "deploy/quality_sixth_resume.py": "67b70ae074b9df474babebbc5f06a8837063b7fb4fe7a2d54653c85200562844",
+    "ai-runtime/tests/test_quality_remediation.py": "033eb948fb17016fd055877dd71b6eb6668c2d7e34b66d2a754566a94b1cf8ff",
+    "ai-runtime/tests/test_quality_partial_resume.py": "12742825c5d853b8e693b014c94c53193264c358db4784f59e9496896984ab88",
+    "ai-runtime/tests/test_quality_sixth_resume.py": "92ab500b8d30ee9b01785c75624f1f75764f6c1a0c44c2392ed6a88fa6c03c4f",
+    ".github/workflows/ci.yml": "4bdf4faa10e86a50a47d120cb71ceb5e62fde8bbe56e65f74c84873d5eaa5c8c"
+  },
+  "logSha256": {
+    "v6-final-full-tests.log": "1c87dbd0a5d556ab4c6ec9afb0ea00e8e11eb4d1795850e25f292ffae4a7d6fe",
+    "v6-final-mypy.log": "491f2304d8f2c8f1671935be0737116adcdf690bd43abfa3132286dc3985dacc",
+    "v6-final-historical-verify.log": "31facde6b0ee23bca01b8e781cf1023bfa4dfa89ec76c935913bf65dd4798c68",
+    "v6-partial-resume-tests.log": "4886b3fccbcd803f2dcdf42f81332f61f8d31eef1489e6d55f673118ae9d89d9",
+    "v6-review-audit.log": "587fd9a7e86b731d9c8501433e7016c2db54cb9c50dcfef55b0fddb0d6ae61b4"
+  },
+  "fullRegression": {
+    "passed": 975,
+    "skipped": 102,
+    "warnings": 34
+  },
+  "mypySourceFiles": 100,
+  "historicalAndCurrentReportsVerified": 8,
+  "productPromptUnchanged": true,
+  "emptyFailureRecovery": "IMPLEMENTED_VERIFIED_EXECUTED",
+  "partialAttackResume": "IMPLEMENTED_OFFLINE_VERIFIED_AWAITING_EXTRA_CALL_APPROVAL",
+  "newResumeModelCalls": 0,
+  "scope": "恢复工具/报告/测试/CI；生产QA提示和模型冻结不变。"
+}

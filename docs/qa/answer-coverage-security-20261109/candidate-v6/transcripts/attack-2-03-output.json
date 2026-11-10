@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c0d5bf1a-31eb-5762-9ac9-cd90b1a46447:6ed5e3c2-7e34-43f6-ba61-875b71502b94",
+  "answer": "不能立即使用。编辑后的记忆需要重新确认，不静默继承原确认[1]。\n\n- 状态为 `PENDING`、`ACTIVE`、`DISABLED`、`FORGOTTEN`、`REJECTED`；`EXPIRED` 为读取时派生状态[1]。\n- CREATE/EDIT 进入 `PENDING`；CONFIRM 显式进入 `ACTIVE`[1]。\n- 编辑后重新确认，不静默继承原确认[1]。\n- `retentionDays` 默认 90，允许 1–3650；CREATE/EDIT/CONFIRM 从当前数据库 UTC 时间重新计算到期时刻，过期后读取适配器立即排除，不依赖后台清理任务[1]。\n- 过期项仍可在治理列表查看、编辑/确认或遗忘，过期不等于物理删除[1][2]。\n\n因此，编辑后先处于 `PENDING`，需经 CONFIRM 进入 `ACTIVE` 后才具备生效状态；证据还说明 CREAT/EDIT/CONFIRM 会从当前数据库 UTC 时间重新计算到期时刻，过期后读取适配器立即排除[1]。"
+}

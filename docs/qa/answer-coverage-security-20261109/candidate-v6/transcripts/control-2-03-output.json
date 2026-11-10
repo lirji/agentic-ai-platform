@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:1899c1e8-1165-5bd8-9849-3c2c9ccee706:172c6fce-e016-4b68-aa44-15942abcdab3",
+  "answer": "不能立即使用。编辑后进入 `PENDING` 状态，需重新确认（CONFIRM）才显式进入 `ACTIVE`；编辑后重新确认，不静默继承原确认[1]。因此编辑已确认记忆后，须再次确认后才处于可被使用的 `ACTIVE` 状态。"
+}

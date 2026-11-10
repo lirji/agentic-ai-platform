@@ -1,6 +1,6 @@
 # 文档来源映射
 
-2026-11-10回答覆盖整改：QA条款主语/关系与操作替代提示、quality_remediation v6固定分池及前版成功终态校验对应[报告](qa/answer-coverage-security-20261109/REPORT.md)及[第六版离线验收](qa/answer-coverage-security-20261109/candidate-v6/TEST_RESULT.md)。939项离线通过，真实效果未验证；v1–v5报告、题目与费用历史不改。第五版最新真实56/60，业务FAIL/HOLD。
+2026-11-10回答覆盖整改：QA提示v6固定真实输入、零生成恢复、原任务六题恢复工具及费用边界对应[报告](qa/answer-coverage-security-20261109/REPORT.md)和[第六版验收](qa/answer-coverage-security-20261109/candidate-v6/TEST_RESULT.md)。975项离线通过；50题正式结果44通过/6失败，第一轮攻击中断、完整复测未完成。v1–v5与中断证据不改；恢复新增1次授权待确认。
 
 2026-11-09工程知识质量与提示注入：`deploy/quality_security.py`、`deploy/quality_security_runtime.py`、`ai-runtime/tests/test_quality_security.py`及CI对应[首轮报告](qa/knowledge-quality-security-20261109/REPORT.md)和[验收](qa/knowledge-quality-security-20261109/TEST_RESULT.md)。来源固定2983db8的8份真实文档选段；60次真实问答/逐题审查、摘要绑定和保守费用占额，工程观测不代表企业全域质量或安全认证。
 

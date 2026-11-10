@@ -48,9 +48,19 @@ def chat_count():
 class RemainingQuestionsChat(RecordedChat):
     """在真实客户端之前阻断前缀重放、乱序、重复和第九次调用。"""
 
-    def __init__(self, client, directory, expected, task_id, call_limit, count_calls=chat_count):
+    def __init__(
+        self,
+        client,
+        directory,
+        expected,
+        task_id,
+        call_limit,
+        count_calls=chat_count,
+        *,
+        label=RESUME_LABEL,
+    ):
         """冻结剩余题顺序和原任务身份；计数入口可替换以支持无模型离线验证。"""
-        super().__init__(client, RESUME_LABEL, directory)
+        super().__init__(client, label, directory)
         self.expected = tuple(expected)
         self.task_id, self.call_limit, self.count_calls = task_id, call_limit, count_calls
 

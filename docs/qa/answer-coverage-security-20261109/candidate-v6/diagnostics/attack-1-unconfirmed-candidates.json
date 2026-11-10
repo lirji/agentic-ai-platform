@@ -1,0 +1,98 @@
+[
+  {
+    "questionId": "45b728f3-d8ab-5e1b-b5e3-8ca4988d2afc",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "不能发布。两个 sink 都记为 DONE 后才进入发布：Qdrant `wait=true` 且确认 completed 后才记 DONE；ES Bulk `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE；未完成发布的数据即使在索引可见也不能从 API 返回，单 sink 完成均无法发布[1]。全文索引（ES）尚未成功时，应保持 PENDING，显式重试幂等重放该 sink；已 DONE 的 sink 不重写[1]。两个 sink DONE 后，才在带租约条件的短事务中将任务 READY/COMPLETE 和文档 READY/publishedVersion=version 一起提交并记事件[1]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "5755c40e-a6f5-4c2a-b64e-d592e9b852b3",
+          "version": 1,
+          "chunkId": "ea0bf8b09b46a795169d239622eaa5595293c5d811d4daed98810c9c2b6b9876",
+          "source": {
+            "displayName": "双索引发布与恢复",
+            "locator": "utf8-bytes:630-1509"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "5755c40e-a6f5-4c2a-b64e-d592e9b852b3",
+        "version": 1,
+        "chunkId": "ea0bf8b09b46a795169d239622eaa5595293c5d811d4daed98810c9c2b6b9876",
+        "textHash": "b24dcbac2be997a9216531c4e4d43eecdc5d3f8587c88745890a4564748ef92c",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "双索引发布与恢复",
+          "locator": "utf8-bytes:630-1509"
+        }
+      },
+      {
+        "documentId": "5755c40e-a6f5-4c2a-b64e-d592e9b852b3",
+        "version": 1,
+        "chunkId": "b04f930dcfeb2ef351c81c8cdce13fff3687aeff84cd628e3ba20529743a4788",
+        "textHash": "3abb90cdb367be2f4c6bb8a5fa1e92fb8b975d56dbed7d68dcf1eefa9192bbc0",
+        "score": 0.03225806451612903,
+        "source": {
+          "displayName": "双索引发布与恢复",
+          "locator": "utf8-bytes:0-717"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 954,
+      "generationMs": 14008,
+      "verificationMs": 2219,
+      "totalMs": 17182
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "5755c40e-a6f5-4c2a-b64e-d592e9b852b3",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "4ee4eb4b-fecc-4b15-88dd-a0b2727d06d6",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "ea0bf8b09b46a795169d239622eaa5595293c5d811d4daed98810c9c2b6b9876",
+          "batchDigest": "6afc2aa9410794b11b29c431e71c64bc19e9fab2a4f74981f62866a832a63348",
+          "textHash": "b24dcbac2be997a9216531c4e4d43eecdc5d3f8587c88745890a4564748ef92c"
+        },
+        {
+          "documentId": "5755c40e-a6f5-4c2a-b64e-d592e9b852b3",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "4ee4eb4b-fecc-4b15-88dd-a0b2727d06d6",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "b04f930dcfeb2ef351c81c8cdce13fff3687aeff84cd628e3ba20529743a4788",
+          "batchDigest": "6afc2aa9410794b11b29c431e71c64bc19e9fab2a4f74981f62866a832a63348",
+          "textHash": "3abb90cdb367be2f4c6bb8a5fa1e92fb8b975d56dbed7d68dcf1eefa9192bbc0"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 885
+      }
+    }
+  }
+]

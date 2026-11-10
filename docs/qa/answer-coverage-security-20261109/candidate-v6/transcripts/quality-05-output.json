@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:572537ca-5f30-5e82-8fd7-c257bc40f77b:c6cd0f7d-3b88-4bc7-8899-d35820746c95",
+  "answer": "不能。编辑后记忆进入PENDING，需重新确认后才进入ACTIVE；编辑不静默继承原确认。[1]\n\n- 编辑已确认记忆：状态由ACTIVE进入PENDING；触发条件为执行EDIT。[1]\n- 确认编辑后的记忆：状态由PENDING显式进入ACTIVE；触发条件为执行CONFIRM。[1]\n- 生效时限：CONFIRM从当前数据库UTC时间重新计算到期时刻；读取适配器立即排除已过期项，不依赖后台清理任务。[1]\n- 其他写操作影响：任何写操作推进revision；使用前后重验revision、条目版本与到期时间。[2]\n- 总开关暂停：owner总开关`enabled`可暂停全部使用。[2]\n\n因此，编辑后未重新确认的记忆处于PENDING，不能在下一轮问答中作为已确认ACTIVE记忆使用；重新执行CONFIRM并处于ACTIVE、未过期后，才符合上述生效条件。[1][2]"
+}
