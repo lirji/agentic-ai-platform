@@ -1,7 +1,7 @@
 # Codex Progress
 
 - 当前任务：answer-coverage-security-20261109。用户要求修复覆盖不足与攻击下任务保持问题，并要求每项任务先写原理、实施改造方案、注意点和难点。
-- 唯一状态与恢复入口：[整改 PROGRESS_STATE](docs/qa/answer-coverage-security-20261109/PROGRESS_STATE.md)。第四版真实53/60调用，配对质量36/40、任务保持18/20；质量组中断（12候选/13调用、无正式manifest），完整验证PARTIAL、业务FAIL/HOLD。40份审阅落库，累计占额及内部结算8.654776/13元；剩7次不足原检查点恢复所需8次。源码离线884通过/102跳过证据仍匹配；结果正在本地WIP保存，未合并/推送。
+- 唯一状态与恢复入口：[整改 PROGRESS_STATE](docs/qa/answer-coverage-security-20261109/PROGRESS_STATE.md)。第四版真实53/60调用，配对质量36/40、任务保持18/20；质量组中断（12候选/13调用、无正式manifest），完整验证PARTIAL、业务FAIL/HOLD。40份审阅落库，累计占额及内部结算8.654776/13元；剩7次不足原检查点恢复所需8次。源码离线884通过/102跳过证据仍匹配；实测证据WIP 2bca816已保存；恢复工具另获898项离线通过，真实恢复待额外1次调用授权（不加钱），未合并/推送。
 - 前一轮基线已交付：[原观测状态](docs/qa/knowledge-quality-security-20261109/PROGRESS_STATE.md)，结果和预算占额保留；parallel=no，无生产部署。
 
 ## 前期可行性任务记录

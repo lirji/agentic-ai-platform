@@ -678,7 +678,7 @@ class Runtime:
                 stack.push_async_callback(embedding.aclose)
                 client = ChatClient(config, None, usage=gate)
                 stack.push_async_callback(client.aclose)
-                recorder = RecordedChat(client, label, self.output)
+                recorder = self.chat_recorder(client, label)
                 profile = model_profile(config).model_copy(update={"retrieval_profile": STRATEGY})
                 with tracing_context(enabled=False):
                     final = await execute_qa_task(
@@ -701,6 +701,10 @@ class Runtime:
         if not account_snapshot.exists():
             # 恢复已终态任务时保留该组完成时快照，不能用后续组累计占额改写历史。
             write_once(account_snapshot, self.accounts())
+
+    def chat_recorder(self, client, label):
+        """恢复工具可收紧调用顺序；普通运行继续保留原始输入输出。"""
+        return RecordedChat(client, label, self.output)
 
     def collect(self, label, group):
         record = self.state["runs"][label]

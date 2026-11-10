@@ -31,8 +31,8 @@
 
 本轮CHAT保守占额1.699468元、Embedding新增内部结算0.001904元，合计1.701372元；累计8.654776/13元，提供方最终账单未知。资金与调用见[acceptance-audit.json](acceptance-audit.json)、[usage-audit.json](usage-audit.json)和[账户](funding-accounts.json)。授权凭据见[funding-authorization.json](funding-authorization.json)，提案与实施证据中的待批准/0次状态保留为历史快照。
 
-从12题检查点原地恢复需再调用Q13–20共8次，但当前仅剩7次额度。现有runner仅支持零成功首题失败的恢复，不能直接重跑quality。下一步须先做有界原任务恢复适配及离线验证，再取得额外1次调用授权；无需新增资金。具体前置条件见[恢复评估](diagnostics/quality-recovery-assessment.json)。即使补完剩余题，本版已确认的覆盖失败仍保持FAIL。
+从12题检查点原地恢复需再调用Q13–20共8次，但当前仅剩7次额度。现有runner仅支持零成功首题失败的恢复，不能直接重跑quality。有界原任务恢复工具现已完成，79项针对性及898项全量回归通过；真实恢复仍须额外1次调用授权，无需新增资金。见[恢复工具验证](RESUME_TEST_RESULT.md)。具体前置条件见[恢复评估](diagnostics/quality-recovery-assessment.json)。即使补完剩余题，本版已确认的覆盖失败仍保持FAIL。
 
 [证据一致性](evidence-integrity.json)确认生产提示、7份源码及既有Java jar未变；6份冻结fixture与原基线字节一致。工作树另有非本任务`MySqlProcessingRepository.java`空行改动，本轮运行期间其摘要发生变化，未改写或暂存该文件；运行使用已有jar。所有自有验证进程已退出，`.local`私密恢复态和`.logs`审计日志保留，无清理或部署。
 
-首次Ruff工作目录选择不同配置的失败日志保留；此前已在规范ai-runtime目录修正并通过全部离线检查。本轮源码未变，因此没有重复调用模型或重复运行全套离线测试。
+首次Ruff工作目录选择不同配置的失败日志保留；此前已在规范ai-runtime目录修正并通过全部离线检查。53次实际验证阶段源码未变，沿用原离线证据；随后恢复工具增加记录器工厂、新入口和测试，另做898项回归，未再调用模型。原evidence-integrity绑定恢复前实测版本，新工具版本以resume-implementation-evidence为准。
