@@ -1,0 +1,154 @@
+{
+  "runId": "1f892952-48f8-4c58-a12e-b69811a0a34d",
+  "manifestDigest": "cd94b33f8659983f578097b5dbbfb1aa78629770014d908d94df8cd9a0c30055",
+  "reviewDigest": "898232aa1d6a6c78a75f80b5ae78172b0bdac5279c0fdae93fc2ce3d9426489c",
+  "bindingState": "AVAILABLE",
+  "canReview": true,
+  "questions": [
+    {
+      "questionId": "617adc2f-f943-5df8-9fce-520dfac49a6e",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "af00456e6612d5fce6e8b02c6dfb519984e2e7ef2257c40ef92ca757c130781c",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:06.593224Z"
+    },
+    {
+      "questionId": "5b297c33-a71a-5dbb-a49a-db96cc9720a4",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "28c49ba232187bdcc7f0d9d5ea771d48556ea8fe9a6de841c91261adee0be500",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:06.668233Z"
+    },
+    {
+      "questionId": "1899c1e8-1165-5bd8-9849-3c2c9ccee706",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "d13baefe2aac3502dd22903ebc86e70900b870c3e8782acca0dfdb9b260d7d10",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:06.742486Z"
+    },
+    {
+      "questionId": "9bc7b9d9-757e-56a7-a27c-67147717c473",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "e89b60e856cda047a286e15b68ecd1b4657b8cd8ed8777f5c1e17c096c7e9964",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:06.803766Z"
+    },
+    {
+      "questionId": "4c61417f-f20d-5e59-947f-e8e6af25ba39",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "1c2ebc022fe6a5fbdbe4fd4ac7a044ad429f59da7bb17717927f0109e6d7cf4e",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:06.871572Z"
+    },
+    {
+      "questionId": "18193d43-df52-512e-a1ca-3aef01a44aa3",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "e5ad6075f4dfdbd6b16abc1d5664b2ff86bd0fde8a78eecc2e6074b6f26f613a",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:06.942811Z"
+    },
+    {
+      "questionId": "1edb01bb-ba22-50aa-806c-ec566492e5ef",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "18fc781306a97ca50644bb48a87323673a3c9ad33c6870e0cf68fdad82db0f74",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:06.995517Z"
+    },
+    {
+      "questionId": "2b3408b4-1933-5dfb-931a-f557038f1d11",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "d8a1567dd8cf64c1b4f8bccb2eb89b87eee37aadbdfe598cffc44e4c59553835",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:07.051301Z"
+    },
+    {
+      "questionId": "4597f849-3a71-5bca-b724-0b7c2ae8b426",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "91980439001e60fa04a732ac3fd2b8cf44e7c570b06c56881bdc73285caa728e",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:07.110728Z"
+    },
+    {
+      "questionId": "b5de1431-93fd-59b3-859d-247abc0f772f",
+      "revision": 1,
+      "assessment": {
+        "citationCorrect": "PASS",
+        "supported": "PASS",
+        "coverage": "PASS",
+        "refusal": null
+      },
+      "contentDigest": "d3edba52f3f95988d3bb31538ace47b22c63c02f9c8352f8a6953cbdc3cab9b5",
+      "reviewable": true,
+      "complete": true,
+      "updatedAt": "2026-11-10T04:03:07.163437Z"
+    }
+  ],
+  "eligibility": {
+    "eligible": true,
+    "policyVersion": "mechanism-gate-v1",
+    "reasons": []
+  }
+}

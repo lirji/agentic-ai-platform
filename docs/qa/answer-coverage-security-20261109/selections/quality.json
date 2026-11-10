@@ -1,0 +1,5 @@
+{
+  "original": "quality",
+  "recovery": "quality-recovery",
+  "reason": "Known transport failure with zero successful samples; original retained"
+}

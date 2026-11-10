@@ -1,8 +1,8 @@
 # Codex Progress
 
-- 当前任务：quality-security-baseline-20261109。用户要求先建立真实质量基线及持续提示注入攻击验证，已确认使用当前项目真实架构、操作和运行文档，结果仅代表工程知识场景。
-- 唯一状态与恢复入口：[本轮 PROGRESS_STATE](docs/qa/knowledge-quality-security-20261109/PROGRESS_STATE.md)。本轮60次真实问答与逐题审查已完成，实现已合并推main、本地及远程CI通过；工程质量16/20，关键覆盖不足，未认定业务质量达标。
-- 前一任务已交付：[capability-delivery-20261021](docs/design/knowledge-first-20261020/PROGRESS_STATE.md)。S9E/F、S18B/C及本地Docker已验收，保持原证据；本轮不启动S17B–D。parallel=no，无子Agent。
+- 当前任务：answer-coverage-security-20261109。用户要求修复覆盖不足与攻击下任务保持问题，并要求每项任务先写原理、实施改造方案、注意点和难点。
+- 唯一状态与恢复入口：[整改 PROGRESS_STATE](docs/qa/answer-coverage-security-20261109/PROGRESS_STATE.md)。第六版已用55次调用，50题正式结果44通过/6失败；攻击组4题检查点确认、1题未确认，完整复测未完成。累计398/403次、12.867910/16.5元。六题恢复工具975项回归通过，尚需新增1次调用、不追加资金；未获追加授权前不执行恢复。本批结果/工具已WIP提交b1f6a94并推送同任务分支，远程CI四项PASS；用户最新明确要求合并main并推远程，按该授权进行Git交付；业务FAIL与恢复待授权仍保留，最终main/远端/CI回执见权威进度。
+- 前一轮基线已交付：[原观测状态](docs/qa/knowledge-quality-security-20261109/PROGRESS_STATE.md)，结果和预算占额保留；parallel=no，无生产部署。
 
 ## 前期可行性任务记录
 

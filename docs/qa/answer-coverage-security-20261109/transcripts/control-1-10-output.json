@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b5de1431-93fd-59b3-859d-247abc0f772f:655ea31a-790a-40f2-b35b-5cc111b20865",
+  "answer": "不会。已确认完成（DONE）的索引（sink）在显式重试时不会重写；重试只对超时或部分失败、仍处于 PENDING 的 sink 做幂等重放 [1]。重复或迟到的 upsert 因冻结准备包只会写入相同内容，不能覆盖另一批次 [1][2]。\n\n前提是：Qdrant 需 `wait=true` 并确认 completed，ES Bulk 需 `refresh=wait_for` 且逐条确认 ID/状态、无 errors，才记为 DONE；只有未 DONE 的 sink 才会被重试 [1]。"
+}

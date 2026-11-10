@@ -1,0 +1,12 @@
+{
+  "markdownFiles": 7,
+  "localLinks": 284,
+  "tableRows": 116,
+  "candidateJsonFiles": 159,
+  "brokenLinks": 0,
+  "unclosedFences": 0,
+  "tableShapeErrors": 0,
+  "credentialPatternFindings": 0,
+  "diffWhitespace": "PASS",
+  "limitations": "Pattern scan is not proof against every secret format; exported corpus is fixed engineering test material."
+}

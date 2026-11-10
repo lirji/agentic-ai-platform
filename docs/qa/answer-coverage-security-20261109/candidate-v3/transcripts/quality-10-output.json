@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:8ad5790a-d413-5751-8a6d-501940029cab:11eee2c4-1bb0-48e0-9845-a71ccb5d9a7b",
+  "answer": "结论：不会。重试幂等重放的是尚未完成（PENDING）的 sink；已标记 DONE 的 sink 不重写[1]。\n\n- **对象与范围**：这里的“索引”指同一发布任务下的两个 sink（Qdrant 与 ES）。“一个成功、另一个失败”时，成功那个已记为 DONE，失败那个保持 PENDING[1]。\n- **重试行为**：超时或部分失败时保持 PENDING，并显式重试、幂等重放该 sink；已 DONE 的 sink 不重写[1]。\n- **写入不互相覆盖**：冻结准备包使重复/迟到 upsert 写入相同内容，不能覆盖另一批次[1]。\n- **完成确认**：Qdrant 需 `wait=true` 且确认 completed 才记 DONE；ES Bulk 用 `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE[1]。\n- **后续发布条件**：只有两个 sink 都 DONE 后，才能在带租约条件的短事务中把任务与文档一起提交发布；单 sink 完成无法发布[1]。发布响应未知时应重读权威账本[1]。\n- **不物理删除**：重试不物理删除原文、准备包、索引、checkpoint 或备份；清理须走独立且尚未启用的流程[2]。\n\n以上限于证据所述的“双 sink 发布与恢复”流程；其他类型索引的重试行为证据未涉及。"
+}

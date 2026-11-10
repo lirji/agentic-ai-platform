@@ -1,0 +1,144 @@
+{
+  "summary": {
+    "runId": "cc536b8d-7081-41e2-91a4-9466b9bdda71",
+    "datasetId": "d4fdbffe-5430-407c-9e47-3cb149e29bc9",
+    "datasetRevision": 1,
+    "definitionDigest": "12dbd9571890c1a82d590f06c8de8e344267bd63da11cb4fe5cb26f320b2e197",
+    "topK": 5,
+    "revision": 1,
+    "dispatchState": "SUBMITTED",
+    "cancelRequested": false,
+    "createdAt": "2026-11-09T14:33:51.051789Z",
+    "retrievalStrategy": "LLAMA_RRF_V1"
+  },
+  "bindingState": "AVAILABLE",
+  "task": {
+    "taskId": "17351a26-1ed4-49e3-8fdb-d3e13831b0f0",
+    "kind": "KNOWLEDGE_EVALUATION",
+    "status": "SUCCEEDED",
+    "revision": 2,
+    "attemptCount": 1,
+    "resumeCount": 0,
+    "retryable": false,
+    "errorCode": null,
+    "result": {
+      "schemaVersion": "evaluation-completion-v1",
+      "runId": "cc536b8d-7081-41e2-91a4-9466b9bdda71",
+      "epoch": 1,
+      "manifestDigest": "8ccaf4bc3cb0195314a4f22719b1d24a3deefc91bd3a2bcc859a49b95833f67f"
+    },
+    "resultSha256": "14668710f582d266bf608b15c3631d9cb28c0f60d188d930e2656b25f17f04ff",
+    "createdAt": "2026-11-09T14:33:51.974999Z",
+    "updatedAt": "2026-11-09T14:34:42.120950Z"
+  },
+  "report": {
+    "epoch": 1,
+    "manifestDigest": "8ccaf4bc3cb0195314a4f22719b1d24a3deefc91bd3a2bcc859a49b95833f67f",
+    "complete": true,
+    "profile": {
+      "model": "deepseek-flash",
+      "route": "chat-default",
+      "maxOutputTokens": 768,
+      "promptDigest": "8b527df912ea81fe0c32793b582c77932bd78b6dc765d218feef91c5e84ff848",
+      "retrievalProfile": "LLAMA_RRF_V1"
+    },
+    "planned": 10,
+    "succeeded": 10,
+    "failed": 0,
+    "unstarted": 0,
+    "questions": [
+      {
+        "questionId": "617adc2f-f943-5df8-9fce-520dfac49a6e",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 4858
+      },
+      {
+        "questionId": "5b297c33-a71a-5dbb-a49a-db96cc9720a4",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 2686
+      },
+      {
+        "questionId": "1899c1e8-1165-5bd8-9849-3c2c9ccee706",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3929
+      },
+      {
+        "questionId": "9bc7b9d9-757e-56a7-a27c-67147717c473",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3786
+      },
+      {
+        "questionId": "4c61417f-f20d-5e59-947f-e8e6af25ba39",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 5821
+      },
+      {
+        "questionId": "18193d43-df52-512e-a1ca-3aef01a44aa3",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 8078
+      },
+      {
+        "questionId": "1edb01bb-ba22-50aa-806c-ec566492e5ef",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 4371
+      },
+      {
+        "questionId": "2b3408b4-1933-5dfb-931a-f557038f1d11",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3979
+      },
+      {
+        "questionId": "4597f849-3a71-5bca-b724-0b7c2ae8b426",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3456
+      },
+      {
+        "questionId": "b5de1431-93fd-59b3-859d-247abc0f772f",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 4190
+      }
+    ]
+  },
+  "errorCode": null,
+  "resumeRequested": false
+}

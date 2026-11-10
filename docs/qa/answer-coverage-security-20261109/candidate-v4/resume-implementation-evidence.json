@@ -1,0 +1,40 @@
+{
+  "base": "2bca816",
+  "scope": "AC3 bounded same-task partial resume; no production prompt or model changes",
+  "sha256": {
+    "deploy/quality_partial_resume.py": "18e8f6dcc4c957a964f9281a9a6b8c2aef56006ea76407c468ff42345a92d1f9",
+    "deploy/quality_security_runtime.py": "61715902996a2ddb7d28f3e91fac6388cd38268e0c585d23c14473238243fe0e",
+    "ai-runtime/tests/test_quality_partial_resume.py": "70cd8373c606e51351470f4aa779936599232b15b44780cb1e0140c51f96ba57",
+    ".github/workflows/ci.yml": "6ca09fa6537b47875e520bb126388b323e7fa82f6f45a750b49f9fbea19f2955"
+  },
+  "targeted": {
+    "passed": 79,
+    "log": ".logs/answer-coverage-security-20261109/resume-targeted-final-comments.log"
+  },
+  "full": {
+    "passed": 898,
+    "skipped": 102,
+    "warnings": 34,
+    "log": ".logs/answer-coverage-security-20261109/resume-python-all.log"
+  },
+  "format": "PASS:172 files",
+  "static": "PASS",
+  "mypy": "PASS:100 source files",
+  "compile": "PASS",
+  "reportsVerify": "PASS: original,v1,v2,v3,v4",
+  "codeHygiene": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "limitations": [
+    "FORMAT_TOOL_NOT_AVAILABLE: scanner did not discover nested Ruff, actual canonical Ruff command passed"
+  ],
+  "initialCheckCorrections": [
+    "Removed unused ROOT import before tests.",
+    "Initial targeted command referenced nonexistent runtime test file; corrected to test_quality_security.py.",
+    "Existing project uses asyncio.run rather than pytest-asyncio; test corrected without adding dependency.",
+    "Read-only preflight probe initially omitted documents from an object-created fixture state; retried with full original state, no live runtime constructed."
+  ],
+  "invalidCliApprovalNoSideEffects": true,
+  "realNativeResume": "UNVERIFIED: awaiting exactly1 additional call authorization; no extra funding",
+  "newModelCallsDuringToolPreparation": 0,
+  "gate": "HOLD_FOR_REAL_RESUME",
+  "afterFullSuite": "Only two public-method Chinese docstrings added; format/static/compile and79 targeted tests rerun successfully."
+}

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:75052ba8-1f9d-594c-b4e1-5b0aa5243912:81d0eebe-03d6-4d5a-abd4-73423918abba",
+  "answer": "不会。\n\n- 设置 `OPERATIONS_METRICS_ENABLED=true` 是宿主启动时需要做的操作；部署时还需在下次明确部署时给已有的 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`，该开关参与固定制品摘要，默认关闭[1]。\n- 该开关明确**不启动 Prometheus**，也不改变业务数据、队列或预算；资料未说明它有任何启动 Prometheus 的效果[1]。\n- 指标缺失时必须显示采集告警，不能解释为零积压[1]。\n\n补充边界：`prometheus.yaml` 只是 Docker Desktop 下与应用 gateway 同一网络命名空间的抓取配置，管理端点仍是 loopback；宿主 Prometheus 需把旧账本采集地址由 `host.docker.internal:29192` 改为 `127.0.0.1:29192`，且不应为抓取把管理端口公开到外网[1]。"
+}

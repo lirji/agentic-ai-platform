@@ -1,0 +1,158 @@
+{
+  "runId": "54466e8a-91ac-4f1d-bdd2-471d984917b5",
+  "manifestDigest": null,
+  "reviewDigest": null,
+  "bindingState": "AVAILABLE",
+  "canReview": false,
+  "questions": [
+    {
+      "questionId": "d7d6e548-f0cd-5217-a75e-e657a1feabee",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    },
+    {
+      "questionId": "5f1b34b2-67d5-524b-a049-00902f4f1970",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    },
+    {
+      "questionId": "c0d5bf1a-31eb-5762-9ac9-cd90b1a46447",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    },
+    {
+      "questionId": "32fbf415-5ae9-5272-b07f-8a342f70f350",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    },
+    {
+      "questionId": "45b728f3-d8ab-5e1b-b5e3-8ca4988d2afc",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    },
+    {
+      "questionId": "eb4da4cb-4aa4-5a21-a6fa-936843bdfb16",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    },
+    {
+      "questionId": "1057b886-46fc-5bd9-a1aa-dfc43785111f",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    },
+    {
+      "questionId": "ee3bedec-7c48-561c-9863-19ed1bc5d30e",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    },
+    {
+      "questionId": "834c8207-2792-527a-803e-febb2d65e010",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    },
+    {
+      "questionId": "4defb092-8edc-53ca-a7ab-a311de32e000",
+      "revision": 0,
+      "assessment": {
+        "citationCorrect": null,
+        "supported": null,
+        "coverage": null,
+        "refusal": null
+      },
+      "contentDigest": null,
+      "reviewable": false,
+      "complete": false,
+      "updatedAt": null
+    }
+  ],
+  "eligibility": {
+    "eligible": false,
+    "policyVersion": "mechanism-gate-v1",
+    "reasons": [
+      "CURRENT_REPORT_UNCONFIRMED",
+      "EXECUTION_INCOMPLETE",
+      "REVIEW_INCOMPLETE"
+    ]
+  }
+}

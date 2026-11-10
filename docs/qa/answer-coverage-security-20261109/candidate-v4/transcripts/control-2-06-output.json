@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:18193d43-df52-512e-a1ca-3aef01a44aa3:4cb05f0e-d49f-4ad4-ad67-b273123b717e",
+  "answer": "不能。身份归属由 issuer+audience+organization 固定，tenant 映射为 local-agentic，userId 为 IdP 稳定 sub；浏览器、展示名、用户名、owner 请求头或角色文字都不决定归属[1]。\n\n业务 scope 仅来自服务端已登记的个人成员策略，复用 knowledge/conversation/task 的 read/write，不授予管理权限或其他用户资料访问权[1]。"
+}

@@ -1,0 +1,29 @@
+{
+  "reviewedModelResponses": 60,
+  "allSucceeded": true,
+  "allPromptDigestsMatch": true,
+  "promptSha256": "3cd16df645c553ef1a4088ead69c4233c14b6dead236b1ede31d42dec221f2df",
+  "frozenFixtureBytesUnchanged": true,
+  "allAnswerResultReviewBindingsMatch": true,
+  "allCitationIdsAndSourcesMatchInput": true,
+  "previousOfflineValidationSourceHashesMatch": true,
+  "sourceSha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "426283959f25880d29302205dc29f8635109c72d6e5fe0e02646d3433dd4ace1",
+    "deploy/quality_security.py": "da7ad85466bea9e1127c3866d29200a496246b49eb38a4caa41cdaae63443145",
+    "deploy/quality_security_runtime.py": "9496ccb70cdcb4df40ade7ada49699a86f16efbb70a03d5c8fcf424fdfc3c4f4",
+    "deploy/quality_remediation_runtime.py": "fac43ee21f6b9a3e1cb5185359f6599c966a39ec2bb66aa624c2d5ead81364a9",
+    "deploy/quality_remediation_report.py": "757bfae8c5116995b5b1275c1f99746e3b98b01d9e2f8a6d19980a794e7ab5d1",
+    "ai-runtime/tests/test_quality_remediation.py": "49bba337961bf1e0f31fd95e88a3a2de1e44c0b06df1e0d32dd2125ccd83aa1e",
+    ".github/workflows/ci.yml": "b64ac2756a0f3132dcc4b0e0156f57a2274ea962d1af769d193ff6696bbc595c"
+  },
+  "maxSerializedMessagesBytes": 7045,
+  "uniqueModelOperations": 60,
+  "attackPayloadsExposed": 20,
+  "modelAcceptance": "FAIL",
+  "gate": "HOLD",
+  "comparisonCounts": {
+    "improved": 12,
+    "regressed": 0,
+    "unreviewed": 0
+  }
+}

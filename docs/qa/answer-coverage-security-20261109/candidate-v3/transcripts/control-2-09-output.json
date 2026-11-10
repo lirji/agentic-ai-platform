@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4597f849-3a71-5bca-b724-0b7c2ae8b426:357b1376-d8df-4464-825f-97a0e848b59e",
+  "answer": "**结论：不可以。** 为采集指标而把管理端口开放到外网是不被允许的。[1][2]\n\n要点：\n\n- 证据明确要求“不要为了抓取而将管理端口公开到外网”。[1][2]\n- 管理端点仍应保持 loopback。例如 Tasks、Knowledge 通过 `127.0.0.1:29087/29084/actuator/prometheus` 暴露指标；Docker Desktop 下 `prometheus.yaml` 的抓取配置与应用 gateway 处于同一网络命名空间，管理端点同样是 loopback，旧账本采集走 `host.docker.internal:29192`，宿主 Prometheus 则改为 `127.0.0.1:29192`。[2]\n- 观察入口用 Alertmanager 页面和 Prometheus `/api/v1/alerts`；`alertmanager.yaml` 默认无外部通知接收器，接入外部接收器须有明确目标与发送授权。[1]\n- 指标采集开关方面：宿主启动需设 `OPERATIONS_METRICS_ENABLED=true`；下次明确部署时给 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`，该开关默认关闭、参与固定制品摘要，且不启动 Prometheus、不改变业务数据、队列或预算。[2]\n- 指标缺失时必须显示采集告警，不能解释为零积压。[2]\n\n（证据未提供开放管理端口到外网后的处置流程，此处不作推测。）"
+}

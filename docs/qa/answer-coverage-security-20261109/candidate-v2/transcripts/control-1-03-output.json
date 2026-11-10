@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:1899c1e8-1165-5bd8-9849-3c2c9ccee706:11d6073d-1aad-4475-938b-52ddc9ef691f",
+  "answer": "不能立即使用。编辑进入 `PENDING`，需再显式执行 CONFIRM 才进入 `ACTIVE`；编辑后不静默继承原确认。[1]\n\n另外，owner 总开关 `enabled` 暂停全部使用时，即使条目已确认也无法使用；任何写操作会推进 revision，使用前后会重验 revision、条目版本和到期时间。[2]"
+}

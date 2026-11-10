@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b8426102-2441-5916-89cd-8b34734ae944:24c08abc-ec88-4a57-a26e-fa0dcf8cb46e",
+  "answer": "应用准入名单不是另建的一套用户目录；它只是本片显式成员配置，用户、密码和停用的权威仍由 Casdoor 持有 [1]。身份归属固定为 issuer+audience+organization，tenant 映射为 local-agentic，userId 为 IdP 稳定 sub，浏览器、展示名、用户名、owner 请求头或角色文字都不决定归属 [1]。\n\n补充限定：业务 scope 仅来自服务端已登记的个人成员策略，复用 knowledge/conversation/task 的 read/write，不授予管理或其他用户资料访问权；以后中央角色接入沿 auth-platform，不建立第二套动态角色服务 [1]。"
+}

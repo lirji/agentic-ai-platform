@@ -1,0 +1,81 @@
+{
+  "base": "caf5aa9bef5e4bed5014c5e09907f1a2ae96ab19",
+  "branch": "fix/answer-coverage-security-20261109",
+  "sha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "d61f56f2099afc8b1d9770bd5be08a988b00513080395247dffdf27b98736ea3",
+    "deploy/quality_security.py": "da7ad85466bea9e1127c3866d29200a496246b49eb38a4caa41cdaae63443145",
+    "deploy/quality_security_runtime.py": "352d2da30347c2011817204e678b08c0ed84879bf831799ffb020e482815e8bf",
+    "deploy/quality_remediation_runtime.py": "d56c0aad68d444faa60b13ea5eb9db40a23ca36d9d13f5dc8b07adfecdb04cd0",
+    "deploy/quality_remediation_report.py": "96f2c97ccd8f1ce824195387dcad2332d3d01063e24b36959ea4cd2226579ad0",
+    "deploy/quality_partial_resume.py": "18e8f6dcc4c957a964f9281a9a6b8c2aef56006ea76407c468ff42345a92d1f9",
+    "ai-runtime/tests/test_quality_remediation.py": "0d669ce8f926713763ecaa4f482d23c3f79db04a595fb26639e0d78574d7d6e3",
+    "ai-runtime/tests/test_quality_partial_resume.py": "12742825c5d853b8e693b014c94c53193264c358db4784f59e9496896984ab88"
+  },
+  "promptDigest": "9879dad3694e74ff716b6a06afb637c594819565884eee9c291c44061cc22539",
+  "frozenFixturesByteIdentical": {
+    "campaign.json": "e465c95263dfed49f86ef78452c73ffa230cfc79f40e1efa4d442e37db729c3b",
+    "frozen-corpus.json": "3d0d706448633dea14cbcddfc3fbf4e36a5c8c5b05fb5ada1fa250cca0d82f00",
+    "corpus-bindings.json": "c6a379dfe314657b237a8dff97453ba1fb912787ee02d7a202b229b495c156e4",
+    "definition-quality.json": "6e490e043512b627056154492f5db3b2925b4290feef8284b11a05893228ff89",
+    "definition-control.json": "2a114722726005bb29c447eefb9ae5c70c0f39e576c039c9c431420aa5c60a8f",
+    "definition-attack.json": "71f4c66a44246369c8e1678a311875ecb18271dad85bba42f21f75a513e95032"
+  },
+  "pythonFull": {
+    "passed": 939,
+    "skipped": 102,
+    "warnings": 34,
+    "log": ".logs/answer-coverage-security-20261109/v6-full-tests.log"
+  },
+  "targeted": {
+    "passed": 140,
+    "log": ".logs/answer-coverage-security-20261109/v6-targeted.log"
+  },
+  "format": "PASS:175 files",
+  "static": "PASS",
+  "mypy": "PASS:100 source files",
+  "compile": "PASS",
+  "contracts": "PASS:16 contracts and 16 shared fixtures",
+  "usageBoundaries": "PASS:330 Java sources,5-layer DAG,8 tables/94 commented columns",
+  "historicalReports": "PASS:original,v1,v2,v3,v4 before/after same-task resume,v5",
+  "oldRegisteredV5ManifestExactMatch": true,
+  "originalLedgersUnchanged": true,
+  "v5TerminalStateVerifiedAndUnchanged": true,
+  "codeHygieneStatus": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "codeHygieneLimitations": [
+    {
+      "code": "FORMAT_TOOL_NOT_AVAILABLE",
+      "check": "FORMAT"
+    }
+  ],
+  "codeHygieneAdvisories": [
+    {
+      "findingId": "HF-001",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/quality_remediation_runtime.py",
+      "line": 38,
+      "excerpt": "SIXTH_REVISION_CALL_LIMIT = 343",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    }
+  ],
+  "advisoryDisposition": "Call limit already has a named stable constant; canonical nested Ruff commands pass despite discovery limitation.",
+  "logSha256": {
+    ".logs/answer-coverage-security-20261109/v6-targeted.log": "9f94a0d89a68e4c6fe653ed10976a7482f456cb18969406484038486012d931f",
+    ".logs/answer-coverage-security-20261109/v6-full-tests.log": "2f2427f481174a91c3d735dd34d3d4a38685a2e1f3a804c2a10d0031f334f884",
+    ".logs/answer-coverage-security-20261109/v6-format-check.log": "507ad0521c6e9ec215236af0ae168607f21976a1c3f4fda0d22903b690422ecc",
+    ".logs/answer-coverage-security-20261109/v6-static.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    ".logs/answer-coverage-security-20261109/v6-types.log": "491f2304d8f2c8f1671935be0737116adcdf690bd43abfa3132286dc3985dacc",
+    ".logs/answer-coverage-security-20261109/v6-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".logs/answer-coverage-security-20261109/v6-historical-reports.log": "9a184d4814ab1a6fae4c868a98942c4cafc4f9dba6f550e15ea69760635b001b",
+    ".logs/answer-coverage-security-20261109/v6-contract-docs.log": "48e3b9103b2622f7987365c79ca701ae23a117b56e476151367e08209bec48f2",
+    ".logs/answer-coverage-security-20261109/v6-usage-boundaries.log": "5c04c3e43be93b06fe92f5f76956a0825ab5472f63d7623a0d5c687c45ba7b04",
+    ".logs/answer-coverage-security-20261109/v6-code-hygiene.json": "083d9d89ebdcfe06faa4694a11e73b83735d2a6519c90a29f380715a37672c80"
+  },
+  "realModelValidation": "UNVERIFIED",
+  "fundingRegistration": "NOT_EXECUTED",
+  "newModelCalls": 0,
+  "v6ReportVerification": "UNVERIFIED:requires new real results; mandatory CI verification added only after evidence exists",
+  "deliveryGate": "HOLD"
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "kind": "CHAT",
+    "profileId": "qs-20261109-chat",
+    "accountId": "b9ab1317-7ec2-5bbe-8ef6-bb32b5e74ac7",
+    "attempts": 182
+  },
+  {
+    "kind": "CHAT",
+    "profileId": "qs-coverage-v3-chat",
+    "accountId": "768ba3f7-beb3-5de1-b5af-87f379334807",
+    "attempts": 40
+  },
+  {
+    "kind": "CHAT",
+    "profileId": "qs-coverage-v4-chat",
+    "accountId": "aa858411-c4d1-5e6e-a1b7-6c9fe1306dfe",
+    "attempts": 53
+  },
+  {
+    "kind": "EMBEDDING",
+    "profileId": "qs-20261109-embedding",
+    "accountId": "0e64d8fe-a8e7-5357-a9bd-88c75782f668",
+    "attempts": 292
+  }
+]

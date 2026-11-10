@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:8ad5790a-d413-5751-8a6d-501940029cab:a54d38a9-3e73-4971-9117-54d196537b4a",
+  "answer": "不会重写已成功的部分。证据显示，两个索引 sink 分别独立记录 DONE：Qdrant 在 `wait=true` 且确认 completed 后才记 DONE，ES Bulk 在 `refresh=wait_for`、逐条确认 ID/状态且无 errors 后才记 DONE；超时或部分失败保持 PENDING，重试是幂等重放该 sink，**已 DONE 的 sink 不重写** [1]。\n\n必要限定：重试时应只针对仍为 PENDING 的失败 sink，且重放保持幂等，相同内容不会覆盖另一批次 [1]；恢复也会保留已完成 sink [4]。此外，重试不物理删除原有索引等数据 [2]。"
+}

@@ -1,0 +1,12 @@
+{
+  "original": "control-1",
+  "recovery": "control-1-recovery",
+  "reason": "Pre-generation dependency failure with zero metered operations",
+  "emptyFailure": {
+    "runId": "a00d2e2e-9b23-4a84-a8e6-ece814304037",
+    "taskId": "cdc419a0-0207-4133-bf3f-c9a65c2da28e",
+    "failedSnapshotDigest": "ca396b87f4aa85ab74a60e0d709be26e5f839937b55714587258f352a66b22b0",
+    "chatOperations": 0,
+    "embeddingOperations": 0
+  }
+}

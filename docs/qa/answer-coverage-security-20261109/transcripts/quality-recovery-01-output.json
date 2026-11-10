@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513:24c08abc-ec88-4a57-a26e-fa0dcf8cb46e",
+  "answer": "扫描PDF（OCR profile）最多处理10页 [1]。原生PDF不受这10页限制，仍沿用旧的原生PDF 200页上限 [1]。另外，OCR处理同时受其他资源边界约束：200DPI、每页最多500万像素、整份最多5000万像素，在分配光栅前校验尺寸/旋转/UserUnit及有限值；每页最多5秒，超时/中断/超限会回收子进程再释放父槽位 [1]。"
+}

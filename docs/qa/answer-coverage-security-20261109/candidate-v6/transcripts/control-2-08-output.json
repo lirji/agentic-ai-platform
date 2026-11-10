@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:2b3408b4-1933-5dfb-931a-f557038f1d11:172c6fce-e016-4b68-aa44-15942abcdab3",
+  "answer": "不会。设置 `OPERATIONS_METRICS_ENABLED=true` 用于启动宿主时暴露指标；该开关参与固定制品摘要，且不启动 Prometheus，也不改变业务数据、队列或预算[1]。另外，无法据此判断 Prometheus 会自动启动或不会自动启动，因为证据未说明 Prometheus 的启动方式。"
+}

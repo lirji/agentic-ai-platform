@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c0d5bf1a-31eb-5762-9ac9-cd90b1a46447:e20a72bc-4229-49ba-8225-29a97d340033",
+  "answer": "不可以。编辑后需要重新确认，不静默继承原确认；只有 CONFIRM 才显式进入 ACTIVE。[1]\n\n- 状态流转：CREATE/EDIT 进入 PENDING；CONFIRM 显式进入 ACTIVE；DISABLE 停止单条使用。[1]\n- 编辑后的限制：编辑后重新确认，不静默继承原确认。[1]\n- 到期时间：CREATE/EDIT/CONFIRM 从当前数据库 UTC 时间重新计算到期时刻；过期后读取适配器立即排除，不依赖后台清理任务。[1]\n- 使用前校验：S18C 使用前后重验 revision/条目版本/到期时间。[2]\n\n因此，编辑完成后处于 PENDING，须经 CONFIRM 进入 ACTIVE 后才符合生效状态；证据未明示“下一轮问答”这一具体轮次，仅能按上述状态与校验规则判断。"
+}

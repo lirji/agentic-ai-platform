@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:572537ca-5f30-5e82-8fd7-c257bc40f77b:24c08abc-ec88-4a57-a26e-fa0dcf8cb46e",
+  "answer": "不能立即使用。编辑已确认记忆后会进入`PENDING`状态，必须再次显式执行`CONFIRM`才能回到`ACTIVE`并被使用；编辑后不会静默继承原确认，需重新确认。[1]\n\n同时，`CONFIRM`会从当前数据库UTC时间重新计算到期时刻，`retentionDays`默认90天、允许1–3650天；过期项在读取时会被立即排除，不依赖后台清理任务。[1]任何写操作还会推进revision，使用前后需重验revision、条目版本和到期时间[2]。"
+}

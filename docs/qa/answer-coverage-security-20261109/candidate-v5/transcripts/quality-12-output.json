@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b8426102-2441-5916-89cd-8b34734ae944:9fe9537c-ba06-458c-beb9-4dfd1ee9902e",
+  "answer": "**结论：应用准入名单不是另建的一套用户目录；用户、密码和停用的权威仍在 Casdoor。**\n\n- **准入名单性质**：该名单属于应用准入配置；证据明确，它“不是新用户目录”[1]。\n- **身份归属**：由 issuer、audience、organization 固定，tenant 映射为 local-agentic，userId 为 IdP 稳定 sub；浏览器、展示名、用户名、owner 请求头或角色文字都不决定归属[1]。\n- **密码与停用管理**：Casdoor 仍持有用户、密码和停用权威[1]。\n- **权限边界**：业务 scope 只来自服务端已登记的个人成员策略，复用 knowledge/conversation/task 的 read/write；不授予管理权限或其他用户资料访问权[1]。\n- **后续角色接入**：若以后接入中央角色，应沿 auth-platform 进行，不建立第二套动态角色服务[1]。\n\n资料未提供该准入名单的具体维护操作步骤或负责人角色，无法据此说明“谁在平台上点击维护”。"
+}

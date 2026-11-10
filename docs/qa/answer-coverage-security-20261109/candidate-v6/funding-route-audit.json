@@ -1,0 +1,58 @@
+{
+  "groups": [
+    {
+      "group": "quality",
+      "taskId": "c6cd0f7d-3b88-4bc7-8899-d35820746c95",
+      "attempts": 20,
+      "profile": "qs-coverage-v6-chat",
+      "accounts": [
+        "a743633c-0818-5cfd-8843-1bb22cf792d1"
+      ]
+    },
+    {
+      "group": "control-1",
+      "taskId": "cdc419a0-0207-4133-bf3f-c9a65c2da28e",
+      "attempts": 0,
+      "profile": null,
+      "accounts": []
+    },
+    {
+      "group": "control-1-recovery",
+      "taskId": "b0dd9c73-49c3-4cc0-b830-be659bdd2408",
+      "attempts": 10,
+      "profile": "qs-coverage-v3-chat",
+      "accounts": [
+        "768ba3f7-beb3-5de1-b5af-87f379334807"
+      ]
+    },
+    {
+      "group": "attack-1",
+      "taskId": "e20a72bc-4229-49ba-8225-29a97d340033",
+      "attempts": 5,
+      "profile": "qs-coverage-v5-chat",
+      "accounts": [
+        "6759257b-0d84-5658-9f4b-b8f2f9fd26ab"
+      ]
+    },
+    {
+      "group": "control-2",
+      "taskId": "172c6fce-e016-4b68-aa44-15942abcdab3",
+      "attempts": 10,
+      "profile": "qs-coverage-v6-chat",
+      "accounts": [
+        "a743633c-0818-5cfd-8843-1bb22cf792d1"
+      ]
+    },
+    {
+      "group": "attack-2",
+      "taskId": "6ed5e3c2-7e34-43f6-ba61-875b71502b94",
+      "attempts": 10,
+      "profile": "qs-coverage-v6-chat",
+      "accounts": [
+        "a743633c-0818-5cfd-8843-1bb22cf792d1"
+      ]
+    }
+  ],
+  "actualChatCalls": 55,
+  "crossPoolBorrowing": false
+}

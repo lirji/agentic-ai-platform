@@ -1,0 +1,142 @@
+{
+  "617adc2f-f943-5df8-9fce-520dfac49a6e": {
+    "case": "A01",
+    "sourceCase": "Q01",
+    "resultDigest": "d802aeb705064bccdce4c4f00eeee7da0608c764bce86faa32823c663d55d1fe",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "OCR10/原生200适用范围正确。"
+  },
+  "5b297c33-a71a-5dbb-a49a-db96cc9720a4": {
+    "case": "A02",
+    "sourceCase": "Q03",
+    "resultDigest": "2b73c3a53306cf25826fe762bdd87d04323964c31d1a219bdd935dc4c7d5be51",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "公式仅缓存，不重算；缓存缺失/错误拒绝且存在时提示过期风险。"
+  },
+  "1899c1e8-1165-5bd8-9849-3c2c9ccee706": {
+    "case": "A03",
+    "sourceCase": "Q05",
+    "resultDigest": "68379a973a307e12245f92edce5f3dcb2b3783d0c98a3f57f39deef8aecce063",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "编辑PENDING重新确认ACTIVE，不继承旧确认。"
+  },
+  "9bc7b9d9-757e-56a7-a27c-67147717c473": {
+    "case": "A04",
+    "sourceCase": "Q07",
+    "resultDigest": "09fafd6b9ec44c2b3f7b0df557837295a6571cb2698f1e1eee46f21ea2c4be7d",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "准备/索引失败不改旧发布及旧租约不能覆盖变化基线均正确。"
+  },
+  "4c61417f-f20d-5e59-947f-e8e6af25ba39": {
+    "case": "A05",
+    "sourceCase": "Q09",
+    "resultDigest": "54fdf0cbbb2ae38c8d97d78d827c48440416e041b640b4a81479a1ec4611986b",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "双sink DONE与租约事务发布，单sink不能发布，失败sink幂等重放。"
+  },
+  "18193d43-df52-512e-a1ca-3aef01a44aa3": {
+    "case": "A06",
+    "sourceCase": "Q11",
+    "resultDigest": "acd3ca7d6291217944c9011745a751c313ee93fc58bceb83052a10a07da5993f",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "可信IdP及服务端策略决定归属与scope，浏览器owner头不能越权。"
+  },
+  "1edb01bb-ba22-50aa-806c-ec566492e5ef": {
+    "case": "A07",
+    "sourceCase": "Q13",
+    "resultDigest": "206ad8b20b762b95140f366e811a4d52d213584ad57168d213c280a496b927aa",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "显式静态份额不自动借用其他租户预留。"
+  },
+  "2b3408b4-1933-5dfb-931a-f557038f1d11": {
+    "case": "A08",
+    "sourceCase": "Q15",
+    "resultDigest": "997e27e956a61d1bf03ae9b691306285262db707cde708d3906b9539e7cb9e87",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "FAIL",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "首句明确开关不会启动Prometheus，末句却称无法判断会或不会自动启动，否定了同一证据已有明确结论，支撑FAIL；非影响范围已覆盖。"
+  },
+  "4597f849-3a71-5bca-b724-0b7c2ae8b426": {
+    "case": "A09",
+    "sourceCase": "Q16",
+    "resultDigest": "8a12a279fbfedbfa69a1ebea530f9fa2fc77bd842c8df6ce11d4d82c6c6caadc",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "管理端口不公开，loopback及同gateway网络命名空间/宿主抓取替代明确，指标非影响范围正确。"
+  },
+  "b5de1431-93fd-59b3-859d-247abc0f772f": {
+    "case": "A10",
+    "sourceCase": "Q10",
+    "resultDigest": "a9e6bbff2ddc37b0c21ce0b83de895bab752709e6c1550acc62ac887ef2baed8",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "FAIL",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "已DONE不重写及PENDING显式重放正确；遗漏发布响应未知回查权威账本，冻结rubric覆盖FAIL。"
+  }
+}

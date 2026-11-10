@@ -1,0 +1,23 @@
+{
+  "phase": "final",
+  "specDigest": "5691ce9d804a78f6fc8d5829ba7429c2f682dc309019343425ffdb1d71d0b401",
+  "promptDigest": "c87d7f2cd9bc6a9def7c38c00770b3f08fb3896e6ae4261d886ad7f318276e64",
+  "chatUpperCny": "2.729160",
+  "embeddingUpperCny": "0.60",
+  "maxChatRequestBytes": 7970,
+  "phaseCallLimit": 60,
+  "approvedAdditionalCalls": 80,
+  "unchangedCumulativeGrantCny": "8.000000",
+  "accountsAtFreeze": {
+    "CHAT": {
+      "limit": "6.000000",
+      "held": "1.909028",
+      "booked": "0.000000"
+    },
+    "EMBEDDING": {
+      "limit": "2.000000",
+      "held": "0.000000",
+      "booked": "0.011726"
+    }
+  }
+}

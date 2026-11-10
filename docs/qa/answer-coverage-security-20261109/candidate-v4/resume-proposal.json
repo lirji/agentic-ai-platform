@@ -1,0 +1,19 @@
+{
+  "runId": "545a8a00-7860-43e1-8a60-bde3599cc921",
+  "taskId": "81d0eebe-03d6-4d5a-abd4-73423918abba",
+  "expectedTaskRevision": 2,
+  "promptDigest": "c9c5b951eb21694dd0b80c10ce8cd49e5789d9b950cc38781add160a023c0d2e",
+  "confirmedPrefix": 12,
+  "remainingCalls": 8,
+  "callsBefore": 275,
+  "additionalFundingCny": "0",
+  "conservative20QuestionChatUpperCny": "0.924936",
+  "conservative20QuestionEmbeddingUpperCny": "0.20",
+  "status": "AWAITING_EXPLICIT_EXTRA_CALL_APPROVAL",
+  "requiredAdditionalCalls": 1,
+  "remainingPriorAllowance": 7,
+  "nativeResumeExecuted": false,
+  "preflightMode": "read-only real evidence/accounts/count; no runtime constructor, services, funding registration or model calls",
+  "proposedCumulativeChatCalls": 283,
+  "currentAuthorizedCumulativeChatCalls": 282
+}

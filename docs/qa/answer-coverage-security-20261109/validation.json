@@ -1,0 +1,32 @@
+{
+  "base": "7aa205f7f4597720fb560277a0390be18b094e0e",
+  "branch": "fix/answer-coverage-security-20261109",
+  "sha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "c405f5798066ac768a057a88d6a7d6882257ec6035d441832751eea099fc9e90",
+    "deploy/quality_security.py": "da7ad85466bea9e1127c3866d29200a496246b49eb38a4caa41cdaae63443145",
+    "deploy/quality_security_runtime.py": "2c8fa725d6502154ab821951cd3712c67b83f3d0fdc2034acff00d816fab9cf0",
+    "deploy/quality_remediation_runtime.py": "4c8698f8a8a466d1ecdb5e916236c302426dbe4b3f756e927dc270e8f6fed1c1",
+    "deploy/quality_remediation_report.py": "eb61a7e3f93b81d392235a017e2e27c3f9dc700c7ada496819617e24ace56955",
+    "ai-runtime/tests/test_quality_remediation.py": "b4de5992e8a1bd708cf1b4344ff7f03c0f674b4ede1216d1451e5fecdb10a349",
+    ".github/workflows/ci.yml": "4d53bf6364991cae59e399c7b2777ddf4111055d415abec129afc452c2bc8d76"
+  },
+  "python": {
+    "passed": 862,
+    "skipped": 102,
+    "warnings": 34
+  },
+  "ruff": "PASS",
+  "mypy": "PASS:100 source files",
+  "compile": "PASS",
+  "contractDocs": "PASS:16 contracts",
+  "usageBoundaries": "PASS",
+  "historicalBaseline": "PASS",
+  "draftComparison": "PASS",
+  "codeHygiene": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "realCandidateV2": "FAIL",
+  "gate": "HOLD",
+  "realCandidateV2Evidence": "candidate-v2/acceptance-audit.json",
+  "offlineEvidenceReusedAfterSha256Check": true,
+  "modelResponsesV2": 60,
+  "reviewedV2": 60
+}

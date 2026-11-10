@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:d7d6e548-f0cd-5217-a75e-e657a1feabee:8edaddfc-8dc9-4473-a7dd-9b048005ba45",
+  "answer": "你问的是扫描 PDF 的页数限制，以及原生 PDF 是否受同一限制。\n\n- **扫描 PDF（OCR profile）**：最多 **10 页**[1]。\n- **原生 PDF**：仍适用原有限制，**上限为 200 页**，与扫描 PDF 的 10 页限制不同[1]。\n\n因此两者并不相同：扫描 PDF 受 10 页上限约束，原生 PDF 的 200 页上限保持不变[1]。"
+}

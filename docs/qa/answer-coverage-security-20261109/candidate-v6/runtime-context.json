@@ -1,0 +1,15 @@
+{
+  "head": "bad5852c1f09df46611d49c77cc8f2bde7a3a61a",
+  "runtimeJarSha256": {
+    "async-task-service/target/async-task-service-0.1.0-SNAPSHOT.jar": "b7ccfaa371b57af34cf461f7149f06f51752e9511a2df21e10b43af1602e544b",
+    "knowledge-service/target/knowledge-service-0.1.0-SNAPSHOT.jar": "f86a39114594f5ebd344c19b0a9bf2156ace24a19be685d5de4ee8bee82474d0"
+  },
+  "unrelatedWorkingTreeChanges": [
+    {
+      "path": "knowledge-service/src/main/java/com/lrj/agentic/knowledge/infrastructure/persistence/MySqlProcessingRepository.java",
+      "sha256": "3d10dc0eb61f338e1060705604daed931ab6d06ceceaf111d09b33be77e4aa25",
+      "classification": "Existing whitespace-only edit; preserved and excluded from this task; Java runtime uses unchanged jars"
+    }
+  ],
+  "runtimeBuild": "Same existing jars as V5; SHA256 verified before execution; unrelated whitespace preserved"
+}

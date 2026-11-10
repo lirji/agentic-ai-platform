@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4defb092-8edc-53ca-a7ab-a311de32e000:ccb3f41f-1e6b-44e9-8a36-3309731782fc",
+  "answer": "**结论：不会。** 在双索引发布流程中，已标记为 DONE 的 sink 不会被重写；重试只对处于 PENDING 状态的 sink 进行幂等重放。\n\n**按询问点说明：**\n\n- **已成功的一侧**：已 DONE 的 sink 不重写 [1]。\n- **失败或状态未知的一侧**：如果某个 sink 超时或部分失败，该 sink 保持 PENDING；此时显式重试会幂等重放这个 sink [1]。\n- **重放本身的安全性**：冻结准备包使重复或迟到的 upsert 写入相同内容，因此不能覆盖另一批次 [1][2]；Qdrant point ID 和 ES ID 都带有 batchDigest，也保证同一批次重放会命中相同记录 [2]。\n- **完成确认**：Qdrant 需 `wait=true` 且确认 completed，ES Bulk 需 `refresh=wait_for`、逐条确认 ID/状态且无 errors，才记 DONE [1]。\n- **发布条件**：两个 sink 都 DONE 后，才能在带租约条件的短事务中一并提交任务 READY/COMPLETE 与文档 READY/publishedVersion；单 sink 完成无法发布 [1]；发布响应未知时重读权威账本 [1]。\n\n因此，重试不会改动已成功部分，只会重放未完成的那一侧。"
+}

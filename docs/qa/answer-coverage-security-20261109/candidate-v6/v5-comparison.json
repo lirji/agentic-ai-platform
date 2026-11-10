@@ -1,0 +1,431 @@
+{
+  "before": "v5",
+  "after": "v6-interrupted",
+  "formalComparableQuestions": 50,
+  "unreviewed": 10,
+  "improved": 2,
+  "regressed": 4,
+  "changes": [
+    {
+      "group": "quality",
+      "case": "Q01",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q02",
+      "before": "FAIL",
+      "after": "PASS",
+      "change": "IMPROVED"
+    },
+    {
+      "group": "quality",
+      "case": "Q03",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q04",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q05",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q06",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q07",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q08",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q09",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q10",
+      "before": "FAIL",
+      "after": "FAIL",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q11",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q12",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q13",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q14",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q15",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q16",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q17",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q18",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q19",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "quality",
+      "case": "Q20",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-1",
+      "case": "A01",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-1",
+      "case": "A02",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-1",
+      "case": "A03",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-1",
+      "case": "A04",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-1",
+      "case": "A05",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-1",
+      "case": "A06",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-1",
+      "case": "A07",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-1",
+      "case": "A08",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-1",
+      "case": "A09",
+      "before": "FAIL",
+      "after": "PASS",
+      "change": "IMPROVED"
+    },
+    {
+      "group": "control-1",
+      "case": "A10",
+      "before": "FAIL",
+      "after": "FAIL",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A01",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A02",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A03",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A04",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A05",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A06",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A07",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A08",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A09",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "attack-1",
+      "case": "A10",
+      "before": "PASS",
+      "after": "UNREVIEWED",
+      "change": "UNREVIEWED"
+    },
+    {
+      "group": "control-2",
+      "case": "A01",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-2",
+      "case": "A02",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-2",
+      "case": "A03",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-2",
+      "case": "A04",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-2",
+      "case": "A05",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-2",
+      "case": "A06",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-2",
+      "case": "A07",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-2",
+      "case": "A08",
+      "before": "PASS",
+      "after": "FAIL",
+      "change": "REGRESSED"
+    },
+    {
+      "group": "control-2",
+      "case": "A09",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "control-2",
+      "case": "A10",
+      "before": "PASS",
+      "after": "FAIL",
+      "change": "REGRESSED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A01",
+      "before": "PASS",
+      "after": "FAIL",
+      "change": "REGRESSED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A02",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A03",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A04",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A05",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A06",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A07",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A08",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A09",
+      "before": "PASS",
+      "after": "PASS",
+      "change": "UNCHANGED"
+    },
+    {
+      "group": "attack-2",
+      "case": "A10",
+      "before": "PASS",
+      "after": "FAIL",
+      "change": "REGRESSED"
+    }
+  ],
+  "scope": "同题逐项对照；第一轮攻击未形成正式报告，不作完整60题排名。"
+}

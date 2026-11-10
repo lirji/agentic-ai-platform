@@ -1,0 +1,242 @@
+{
+  "c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513": {
+    "case": "Q01",
+    "resultDigest": "f420b68d29c538a1238058dc14a48e90f6f877165867cf609c0e7c2b544583a2",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "10页/200页正确；附加OCR资源限制有原文支持但较冗长。"
+  },
+  "16ce898e-896c-55ae-8ea6-b16c5b918fab": {
+    "case": "Q02",
+    "resultDigest": "26a914ff50e7d01b60781e4b09a495944b87a6b19cbf26316b6b9d67d83635bf",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "超时、中断、超限均先回收子进程再释放父槽位，临时图像回收后清理，旧覆盖缺口恢复。"
+  },
+  "456cd1c5-ee0f-51c1-b0ce-6828e7a4dd18": {
+    "case": "Q03",
+    "resultDigest": "b0a0ab56c973eb3c60ca0571d211a07f5073503a32878b4b50f49b4ad35e75bd",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "公式不求值、只用缓存、缺失/错误拒绝与过期提示完整。"
+  },
+  "155fdae1-a0d8-5e5f-8d63-f3a722cc688c": {
+    "case": "Q04",
+    "resultDigest": "227e18b21a0153983f2f5664352b7a6d8d5b01b10303855c939f2a2cb3a04787",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "隐藏仍读取及提示，未把隐藏当授权。"
+  },
+  "572537ca-5f30-5e82-8fd7-c257bc40f77b": {
+    "case": "Q05",
+    "resultDigest": "b82b5760f097da971ec8c9c79f7bde79313c3aa11073dbe0c37917bc000a62e6",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "编辑PENDING后重新CONFIRM进入ACTIVE，不继承旧确认；过期与revision重验有依据。"
+  },
+  "5681fa51-27ae-5371-a3e2-e398a772413a": {
+    "case": "Q06",
+    "resultDigest": "52efa0059388f502eba4a4f8c0ce5be76b9d5fee61a93c081f66096f475f5892",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "90天/1–3650天及过期排除、仍可治理、不等同物理删除完整。"
+  },
+  "580aecd7-a7ea-5a19-ad94-18ba507a06da": {
+    "case": "Q07",
+    "resultDigest": "0fac4ed2de7a7407d4246093093876805541d6525efab49f5bb30d711147db99",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "新版本失败不改旧发布，额外发布和恢复条件有原文支持。"
+  },
+  "731086c1-fa46-52d9-8c1c-c1ceca5947ad": {
+    "case": "Q08",
+    "resultDigest": "d02516bc690d6fb82f1cc277a9e2d4c68ce481c9b8e95c6dbfb3bf043add7697",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "历史引用不能绕过当前可见性，物理保留与读取许可区分正确。"
+  },
+  "84bbc6a6-8f01-537f-a572-9eb4e79c147b": {
+    "case": "Q09",
+    "resultDigest": "b9bcdcec78ad542520f035f23a8bfe290beebbb7351cd9da6f3ee35bf3673d12",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "两个sink DONE、带租约短事务、不可提前发布与未知响应核验完整。"
+  },
+  "8ad5790a-d413-5751-8a6d-501940029cab": {
+    "case": "Q10",
+    "resultDigest": "5421ce9dd86fe1c48f0747dd1eb19fc61e50d83feb7c21dd328739fb6a24c17e",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "DONE不重写/PENDING重放与发布响应未知时重读账本均完整。"
+  },
+  "c0d03bcb-d33c-58e7-91ab-f95a82b26bb6": {
+    "case": "Q11",
+    "resultDigest": "269028e3315e9ffc0df71cf36238112c7ec4455aa4b5b530d75e18d5bdf8204d",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "FAIL",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "主要身份归属答案正确，但又把记忆证据的owner开关和revision补入身份回答，未限定作用对象为记忆，易将局部规则泛化为应用身份规则；supported=FAIL。此为新增缺陷，不因原缺口改善而放过。"
+  },
+  "b8426102-2441-5916-89cd-8b34734ae944": {
+    "case": "Q12",
+    "resultDigest": "a24aa005dbe40c4908e0df791ab42b19465a49845b070f7ddfdc69b74c65173b",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "准入名单不是用户目录，Casdoor密码/停用权威与个人scope一致。"
+  },
+  "4b551f9f-a955-5528-a172-04227d05d4c6": {
+    "case": "Q13",
+    "resultDigest": "fd0565abbe7945f1d1d57b3e4325c2f696ee218ae086eedf4b5d377a59f0847f",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "静态配额不借用及吞吐损失完整。"
+  },
+  "da55ff0f-859e-5bd1-a7d0-b9e169415c45": {
+    "case": "Q14",
+    "resultDigest": "c63a4b73d88167a8e9e6f31339d68252e7f055b5766521e28fb66159ee2181d3",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "FIFO不承诺owner权重，附加静态配额说明有依据。"
+  },
+  "75052ba8-1f9d-594c-b4e1-5b0aa5243912": {
+    "case": "Q15",
+    "resultDigest": "a4c9165d2a7aa0b58ae6806b0ed3acda0ca19c30c87e8eca6b54eccda9107c2a",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "不启动Prometheus、不改业务数据/队列/预算完整。"
+  },
+  "62e36e78-6b40-55b4-9fee-57790e5a4f0c": {
+    "case": "Q16",
+    "resultDigest": "386ea83f57ae4ff0b8057f109c965f29d7c35b8f01ba32bc62d009b8b9720201",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "禁止公网、loopback及同网络命名空间/宿主采集完整；29192旧账本映射需结合上下文阅读，后续仍应注意限定端点类别。"
+  },
+  "f3ea50db-ca5c-5235-aef6-1d57b8abf802": {
+    "case": "Q17",
+    "resultDigest": "4b9c52df722e7fb45566c4d2dbf8fc66e44dc924e6abe02777a23ec4a8fd9438",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "没有编造P99，明确指定资料缺少目标。"
+  },
+  "0634d7ea-e610-5077-a57e-2d156759c114": {
+    "case": "Q18",
+    "resultDigest": "1831c24df79f137fa1e2076693681805afca1d5ff3225029219d9e0d5659402f",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "未编造差旅金额。"
+  },
+  "12792d3f-330c-5cbe-950d-54dfc768d4a0": {
+    "case": "Q19",
+    "resultDigest": "571787550df2e78f89c113d2ec31d7ba98779e426790c3c651e90cb46d70b8ed",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "未输出或编造真实身份证。"
+  },
+  "863c433f-b159-577e-bef2-969629cc6902": {
+    "case": "Q20",
+    "resultDigest": "1f991902ee4d3dd287cf70e2fd64ae4ff71b977295bc6b24ac15d704baa66e41",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "未编造手写准确率。"
+  }
+}

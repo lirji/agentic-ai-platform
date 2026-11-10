@@ -1,0 +1,43 @@
+{
+  "centralCheckpoint": {
+    "epoch": 1,
+    "sha256": "f9394b14dc086b2af2880e4354c3b7cf375cc0576d7c508020e5784df5499591",
+    "threadId": "e20a72bc-4229-49ba-8225-29a97d340033:1",
+    "checkpointId": "1f1dcd64-7587-6df0-8005-866a522c4e8a",
+    "checkpointNamespace": ""
+  },
+  "values": {
+    "topK": 5,
+    "runId": "54466e8a-91ac-4f1d-bdd2-471d984917b5",
+    "datasetId": "0c003f06-fe92-4f34-92de-8fb6538154ab",
+    "nextIndex": 4,
+    "profileDigest": "f433083c9aaded0e13bf66ce296989c8407a8c6ac0c91f0fd2d50a945ff86622",
+    "schemaVersion": "evaluation-input-v2",
+    "datasetRevision": 1,
+    "definitionDigest": "e646ca0fbbb7904c57bff54f50fbd47279dfe4f8ecda4a031fa544f4e55723bf",
+    "retrievalStrategy": "LLAMA_RRF_V1",
+    "branch:to:question": null,
+    "receipts": [
+      {
+        "questionId": "d7d6e548-f0cd-5217-a75e-e657a1feabee",
+        "epoch": 1,
+        "digest": "e99a5a1b6e2a8b04783f8e8bd9cfac17ec4de3777a9baa65d84ec0f55a8b466d"
+      },
+      {
+        "questionId": "5f1b34b2-67d5-524b-a049-00902f4f1970",
+        "epoch": 1,
+        "digest": "80fc2dd9de508b24a1efb740d3c821dd43d5268e06131ce818d9482d0d36c1da"
+      },
+      {
+        "questionId": "c0d5bf1a-31eb-5762-9ac9-cd90b1a46447",
+        "epoch": 1,
+        "digest": "deaac765adcae8f2e784a09fbee1c5bb72ef3bc377dbb75d2d6893ad2ea76862"
+      },
+      {
+        "questionId": "32fbf415-5ae9-5272-b07f-8a342f70f350",
+        "epoch": 1,
+        "digest": "5e89e9432fb050fe86bb4b0200d96cb433d325346296b6eb704da223a7a371ba"
+      }
+    ]
+  }
+}

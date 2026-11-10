@@ -1,0 +1,13 @@
+{
+  "status": "APPROVED",
+  "userReply": "批准新增 1 次，不追加资金",
+  "additionalCalls": 1,
+  "v4CallLimit": 61,
+  "remediationCallLimit": 223,
+  "cumulativeChatCallLimit": 283,
+  "additionalFundingCny": "0",
+  "cumulativeFundingLimitCny": "13.000000",
+  "resumeExpectedCalls": 8,
+  "preservedSuccessfulPrefix": 12,
+  "implementationCommit": "082f620c3597bba9e4b5b7f999eb29c2b87e7303"
+}

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:d7d6e548-f0cd-5217-a75e-e657a1feabee:ccb3f41f-1e6b-44e9-8a36-3309731782fc",
+  "answer": "扫描PDF（OCR）最多 **10 页**；原生PDF的 **200 页上限不变**，两者不适用同一页数限制。[1]\n\n补充边界：该10页限制属于OCR profile；OCR另有200 DPI、每页最多500万像素、整份最多5000万像素等限制。[1]"
+}

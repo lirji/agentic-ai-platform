@@ -1,0 +1,10 @@
+{
+  "markdownFiles": 7,
+  "localLinks": 309,
+  "tableRows": 124,
+  "tableAndFences": "PASS",
+  "allLocalLinksResolve": true,
+  "credentialPatterns": "NO_FINDINGS",
+  "credentialScanFiles": 162,
+  "scope": "v4 partial real validation and 53-call evidence; business FAIL/HOLD"
+}

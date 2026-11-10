@@ -1,0 +1,50 @@
+{
+  "completeFixedCases": 60,
+  "qualityPass": 55,
+  "qualityFail": 5,
+  "reviewApiAssessmentsMatch": 60,
+  "chatCalls": 283,
+  "embeddingCalls": 300,
+  "v4ChatCalls": 61,
+  "approvedV4Calls": 61,
+  "actualRemediationCalls": 223,
+  "approvedRemediationCalls": 223,
+  "remainingCalls": 0,
+  "resumeChatCalls": 8,
+  "successfulPrefixPreserved": 12,
+  "unconfirmedPriorAttemptPreserved": true,
+  "allPriorAttemptsUnchanged": true,
+  "cumulativeInternalAndHeldCny": "8.965156",
+  "cumulativeLimitCny": "13.000000",
+  "v4InternalAndHeldCny": "2.011752",
+  "resumeInternalAndHeldCny": "0.310380",
+  "providerBillCny": null,
+  "fundingAccounts": {
+    "CHAT_ORIGINAL": {
+      "limit": "6.000000",
+      "held": "5.782608",
+      "booked": "0.000000"
+    },
+    "CHAT_V3": {
+      "limit": "2.000000",
+      "held": "1.153864",
+      "booked": "0.000000"
+    },
+    "CHAT_V4": {
+      "limit": "3.000000",
+      "held": "2.009616",
+      "booked": "0.000000"
+    },
+    "EMBEDDING": {
+      "limit": "2.000000",
+      "held": "0.000000",
+      "booked": "0.019068"
+    }
+  },
+  "originalLedgersUnchanged": true,
+  "processesStopped": true,
+  "businessAcceptance": "FAIL",
+  "validationStatus": "COMPLETED",
+  "deliveryGate": "HOLD",
+  "baselineSelected": false
+}

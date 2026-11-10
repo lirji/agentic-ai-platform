@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:8ad5790a-d413-5751-8a6d-501940029cab:81d0eebe-03d6-4d5a-abd4-73423918abba",
+  "answer": "结论：不会。重试只对仍未 DONE 的 sink 做幂等重放；已经 DONE 的 sink 不重写，未完成重试也不会覆盖另一批次。[1]\n\n- 触发条件与确认：Qdrant 需 `wait=true` 且确认 completed，ES Bulk 需 `refresh=wait_for` 并逐条确认 ID/状态且无 errors，才记 DONE。[1]\n- 失败与重试：超时或部分失败保持 PENDING，显式重试时幂等重放该 sink；另一个已 DONE 的 sink 按 INV-04 保留、不重写。[1][4]\n- 批次隔离：冻结准备包使重复/迟到 upsert 写入相同内容，不能覆盖另一批次。[1]\n- 发布限制：旧 owner、错误批次和单 sink 完成均无法发布；只有两个 sink 都 DONE 后才提交发布指针。[1]\n\n因此，一个索引成功、另一个失败时，重试针对失败的那个索引重放，不会重写已成功部分，也不会影响其他批次。"
+}

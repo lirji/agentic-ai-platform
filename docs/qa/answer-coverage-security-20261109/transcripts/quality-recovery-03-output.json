@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:456cd1c5-ee0f-51c1-b0ce-6828e7a4dd18:24c08abc-ec88-4a57-a26e-fa0dcf8cb46e",
+  "answer": "XLSX 公式不会被重新计算：读取时只使用文件中已有的缓存值，不运行 evaluator。[1]\n\n如果缺少缓存值或缓存值有错误，会直接拒绝处理；即使存在缓存值，也始终提示缓存可能已过期。[1]"
+}

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:45b728f3-d8ab-5e1b-b5e3-8ca4988d2afc:c355d336-2bc4-48c8-8dfa-8aa9beb5f8a6",
+  "answer": "不能发布。\n\n- 只有当 Qdrant 和 ES 两个 sink 都记为 DONE 后，才能在带租约条件的短事务中将任务 READY/COMPLETE 和文档 READY/publishedVersion=version 一起提交并记事件；仅有单个 sink 完成无法发布[1]。\n- 超时或部分失败会保持 PENDING；未完成发布的数据即使索引可见，也不能从 API 返回[1]。\n\n因此，向量索引虽已成功，但全文索引未成功时，资料不能发布。"
+}

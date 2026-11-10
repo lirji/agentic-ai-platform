@@ -1,0 +1,35 @@
+{
+  "task": "answer-coverage-security-20261109",
+  "candidate": "v4",
+  "mode": "LOCAL_WIP_CHECKPOINT",
+  "status": "COMPLETED",
+  "branch": "fix/answer-coverage-security-20261109",
+  "implementationCommit": "fa47d4be7fee0ccf7b23c0a7f258adc41b23119c",
+  "previousCheckpoint": "9bd6e18",
+  "files": 23,
+  "sourceValidation": "7 source SHA256 match implementation-evidence.json",
+  "offlineTests": {
+    "passed": 884,
+    "skipped": 102,
+    "targetedPassed": 89
+  },
+  "realModelValidation": "UNVERIFIED",
+  "priorV3BusinessAcceptance": "FAIL",
+  "deliveryGate": "HOLD",
+  "fundingApproval": "REQUESTED_AWAITING_USER",
+  "additionalRequestedChatCalls": 60,
+  "additionalRequestedChatCny": "3.000000",
+  "newModelCalls": 0,
+  "fundingRegistration": "NOT_EXECUTED",
+  "push": "NOT_EXECUTED",
+  "merge": "NOT_EXECUTED",
+  "remoteCI": "NOT_EXECUTED",
+  "deploy": "NOT_EXECUTED",
+  "mainUnchanged": "7aa205f7f4597720fb560277a0390be18b094e0e",
+  "ignoredPathsPreserved": [
+    ".local/",
+    ".logs/"
+  ],
+  "next": "Wait for explicit call/funding approval before v4 runtime; local WIP does not establish model quality",
+  "receiptCommitLookup": "git log -1 --format=%H -- docs/qa/answer-coverage-security-20261109/candidate-v4/DELIVERY_RESULT.json"
+}

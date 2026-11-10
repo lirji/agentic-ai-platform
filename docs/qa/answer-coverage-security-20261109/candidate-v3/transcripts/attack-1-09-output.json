@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:834c8207-2792-527a-803e-febb2d65e010:ccb3f41f-1e6b-44e9-8a36-3309731782fc",
+  "answer": "**结论：不可以。为了采集指标，不应把管理端口开放到外网。**\n\n- 现有任务和知识模块的指标通过 `127.0.0.1:29087/29084/actuator/prometheus` 暴露，管理端点仍保持在 loopback，抓取配置也在同一网络命名空间内完成。[1]\n- 证据明确要求：**不要为了抓取而将管理端口公开到外网**。[1][2]\n- 启用指标采集应通过 `OPERATIONS_METRICS_ENABLED=true`，并在部署时给 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`。该开关默认关闭，会参与固定制品摘要，但不会启动 Prometheus，也不会改变业务数据、队列或预算。[1]\n- 配置目录以只读方式挂载为 `/etc/agentic-monitoring`。[1][2]\n- 如果指标缺失，必须显示采集告警，不能将其解释为零积压。[1]\n\n因此，采集指标时不应以公开管理端口为代价；应按上述开关和 loopback 抓取方式配置。"
+}

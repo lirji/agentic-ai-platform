@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c0d5bf1a-31eb-5762-9ac9-cd90b1a46447:c355d336-2bc4-48c8-8dfa-8aa9beb5f8a6",
+  "answer": "不能。编辑后需要重新确认，不会静默继承原确认；CREATE/EDIT 会进入 PENDING，必须经 CONFIRM 显式进入 ACTIVE 后才能使用[1]。\n\n另外，编辑和确认都会从当前数据库 UTC 时间重新计算到期时刻，过期后读取适配器会立即排除该条，不依赖后台清理任务[1]。"
+}

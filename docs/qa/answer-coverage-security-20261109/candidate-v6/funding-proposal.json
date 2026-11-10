@@ -1,0 +1,87 @@
+{
+  "status": "AWAITING_EXPLICIT_APPROVAL",
+  "additionalChatCalls": 60,
+  "previousRemediationCallLimit": 283,
+  "proposedRemediationCallLimit": 343,
+  "previousTotalChatCallLimit": 343,
+  "proposedTotalChatCallLimit": 403,
+  "previousCumulativeGrantCny": "14.500000",
+  "additionalIndependentChatGrantCny": "2.000000",
+  "proposedCumulativeGrantCny": "16.500000",
+  "currentAccounts": {
+    "CHAT_ORIGINAL": {
+      "limit": "6.000000",
+      "held": "5.782608",
+      "booked": "0.000000"
+    },
+    "CHAT_V3": {
+      "limit": "2.000000",
+      "held": "1.452908",
+      "booked": "0.000000"
+    },
+    "CHAT_V4": {
+      "limit": "3.000000",
+      "held": "2.820196",
+      "booked": "0.000000"
+    },
+    "CHAT_V5": {
+      "limit": "1.500000",
+      "held": "0.907140",
+      "booked": "0.000000"
+    },
+    "EMBEDDING": {
+      "limit": "2.000000",
+      "held": "0.000000",
+      "booked": "0.021174"
+    }
+  },
+  "currentInternalAndHeldCny": "10.984026",
+  "chatUpperCny": "2.840520",
+  "embeddingUpperCny": "0.60",
+  "projectedCumulativeUpperCny": "14.424546",
+  "maxChatRequestBytes": 8434,
+  "fundingRoutes": [
+    {
+      "account": "CHAT_V3",
+      "labels": [
+        "control-1"
+      ],
+      "chatUpperCny": "0.473212",
+      "remainingBeforeCny": "0.547092",
+      "remainingAfterUpperCny": "0.073880",
+      "embeddingUpperCny": "0.10",
+      "maxChatRequestBytes": 8262
+    },
+    {
+      "account": "CHAT_V5",
+      "labels": [
+        "attack-1"
+      ],
+      "chatUpperCny": "0.473900",
+      "remainingBeforeCny": "0.592860",
+      "remainingAfterUpperCny": "0.118960",
+      "embeddingUpperCny": "0.10",
+      "maxChatRequestBytes": 8434
+    },
+    {
+      "account": "CHAT_V6",
+      "labels": [
+        "quality",
+        "control-2",
+        "attack-2"
+      ],
+      "chatUpperCny": "1.893408",
+      "remainingBeforeCny": "2.000000",
+      "remainingAfterUpperCny": "0.106592",
+      "embeddingUpperCny": "0.40",
+      "maxChatRequestBytes": 8434
+    }
+  ],
+  "oldV5ManifestUnchanged": true,
+  "originalLedgersUnchanged": true,
+  "v5TerminalStateVerifiedAndUnchanged": true,
+  "promptDigest": "9879dad3694e74ff716b6a06afb637c594819565884eee9c291c44061cc22539",
+  "fundingRegistration": "NOT_EXECUTED",
+  "newModelCalls": 0,
+  "scope": "One frozen 20 quality + two paired 10 control/10 attack rounds; no extra sampling or production deployment"
+}

@@ -1,0 +1,41 @@
+{
+  "groupBindings": [
+    {
+      "label": "quality",
+      "taskId": "9fe9537c-ba06-458c-beb9-4dfd1ee9902e",
+      "profileId": "qs-coverage-v4-chat",
+      "accountId": "aa858411-c4d1-5e6e-a1b7-6c9fe1306dfe",
+      "chatAttempts": 20
+    },
+    {
+      "label": "control-1",
+      "taskId": "1da9f7aa-65f0-4235-ae5a-fb7e2e363d34",
+      "profileId": "qs-coverage-v3-chat",
+      "accountId": "768ba3f7-beb3-5de1-b5af-87f379334807",
+      "chatAttempts": 10
+    },
+    {
+      "label": "control-2",
+      "taskId": "cd87b5bf-244b-4965-a3e3-0abb72cdcfeb",
+      "profileId": "qs-coverage-v5-chat",
+      "accountId": "6759257b-0d84-5658-9f4b-b8f2f9fd26ab",
+      "chatAttempts": 10
+    },
+    {
+      "label": "attack-1",
+      "taskId": "fc23a526-c5fe-4adf-8332-c0279724e077",
+      "profileId": "qs-coverage-v5-chat",
+      "accountId": "6759257b-0d84-5658-9f4b-b8f2f9fd26ab",
+      "chatAttempts": 10
+    },
+    {
+      "label": "attack-2",
+      "taskId": "c2058c7a-5d87-4b7b-83ef-95447652be4a",
+      "profileId": "qs-coverage-v5-chat",
+      "accountId": "6759257b-0d84-5658-9f4b-b8f2f9fd26ab",
+      "chatAttempts": 10
+    }
+  ],
+  "calls": 60,
+  "fixedRoutesVerified": true
+}

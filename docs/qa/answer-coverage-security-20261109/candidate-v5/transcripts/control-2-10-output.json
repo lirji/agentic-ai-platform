@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b5de1431-93fd-59b3-859d-247abc0f772f:cd87b5bf-244b-4965-a3e3-0abb72cdcfeb",
+  "answer": "**对象与问题**：这里指发布流程中的两个索引 sink——Qdrant 和 ES；问的是其中一个 sink 已成功（DONE），另一个失败（保持 PENDING）后重试，是否会重写已成功的那部分。\n\n**结论：不会。已 DONE 的 sink 不重写；重试只幂等重放未完成的 sink。**[1]\n\n要点：\n- **重试范围**：超时或部分失败保持 PENDING，显式重试时幂等重放该 sink；已 DONE 的 sink 不重写。[1]\n- **幂等基础**：冻结准备包使重复/迟到 upsert 写入相同内容，不能覆盖另一批次；Qdrant point ID 由 `chunkId + \":\" + batchDigest` 的 SHA-256 前 128 位 UUID 表达，ES ID 为 `chunkId:batchDigest`，同一批次重放写入同一位置。[1][2]\n- **DONE 的确认条件**：Qdrant 需 `wait=true` 且确认 completed 才记 DONE；ES Bulk 需 `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE。因此“已成功”须以这些确认为准；仅写入可见不算 DONE。[1]\n- **发布限制**：两个 sink 都 DONE 后，才在带租约条件的短事务中提交任务 READY/COMPLETE 与文档 READY/publishedVersion=version；旧 owner、错误批次和单 sink 完成均无法发布。[1]\n- **结果未知时**：发布响应未知时重读权威账本核验。[1]\n\n**限制**：证据未说明“另一个失败”的具体失败类型（超时、部分失败或其他）对应的差异化处理，仅统一为保持 PENDING 并显式重试幂等重放该 sink。[1]"
+}

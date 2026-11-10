@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513:c6cd0f7d-3b88-4bc7-8899-d35820746c95",
+  "answer": "扫描PDF（OCR profile）最多10页；旧PDF的原生200页上限不变，因此不能把OCR的10页限制套用到原生PDF上[1]。"
+}

@@ -1,0 +1,37 @@
+{
+  "actualV4ModelAttempts": 61,
+  "canonicalAnswers": 60,
+  "uniqueModelOperationIds": 60,
+  "retriedUnconfirmedOperationId": "eval:4b551f9f-a955-5528-a172-04227d05d4c6:81d0eebe-03d6-4d5a-abd4-73423918abba",
+  "canonicalAnswerBindingsAndCitationsVerified": 60,
+  "formalAssessmentsVerified": 60,
+  "allPromptDigestsMatch": true,
+  "promptSha256": "c9c5b951eb21694dd0b80c10ce8cd49e5789d9b950cc38781add160a023c0d2e",
+  "unchangedConfirmedPrefix": 12,
+  "allHistoricalUsageAttemptsUnchanged": true,
+  "sourceSha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "b7ab7692e39c3231c9882283ab1d2ba1c818b6373371e2cd658d5aea1c79a509",
+    "deploy/quality_security_runtime.py": "61715902996a2ddb7d28f3e91fac6388cd38268e0c585d23c14473238243fe0e",
+    "deploy/quality_partial_resume.py": "18e8f6dcc4c957a964f9281a9a6b8c2aef56006ea76407c468ff42345a92d1f9",
+    "deploy/quality_remediation_report.py": "83f1414b1059c9219023a0fd2910df993a25bd0e067fa5a376d81fc02113da0d",
+    "ai-runtime/tests/test_quality_partial_resume.py": "437db0adc30a22e755148673bbb5de8f333ccb74262c24cd7315bb5b65ef5087",
+    ".github/workflows/ci.yml": "09db579e89bf8a0235479f657cb613344cb85090bc4bdb8192ba93a2c28eaee7"
+  },
+  "fullOffline": {
+    "passed": 904,
+    "skipped": 102,
+    "warnings": 34,
+    "log": ".logs/answer-coverage-security-20261109/v4-final-python-all.log"
+  },
+  "targeted": {
+    "passed": 85,
+    "log": ".logs/answer-coverage-security-20261109/resume-report-targeted.log"
+  },
+  "format": "PASS:173 files",
+  "static": "PASS",
+  "mypy": "PASS:100 sources",
+  "compile": "PASS",
+  "historicalAndResumedReports": "PASS",
+  "modelAcceptance": "FAIL",
+  "gate": "HOLD"
+}

@@ -1,0 +1,11 @@
+{
+  "markdownFiles": 8,
+  "localLinks": 313,
+  "tableRows": 146,
+  "tableAndFences": "PASS",
+  "sourceHashesMatch": true,
+  "credentialPatterns": "NO_FINDINGS",
+  "scannedFiles": 201,
+  "allPreResumeCommittedJsonUnchanged": true,
+  "scope": "complete60 results,61 actual calls,904 offline pass; business FAIL/HOLD"
+}

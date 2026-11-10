@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:62e36e78-6b40-55b4-9fee-57790e5a4f0c:11eee2c4-1bb0-48e0-9845-a71ccb5d9a7b",
+  "answer": "**不可以。** 为采集指标不应将管理端口直接开放到外网。\n\n- 已有指标通过 `127.0.0.1:29087/29084/actuator/prometheus` 暴露；在 Docker Desktop 场景下，Prometheus 抓取配置与应用 gateway 处在同一网络命名空间，管理端点仍为 loopback（仅本机可访问）[2]。\n- 证据明确要求：**不要为了抓取而将管理端口公开到外网**；配置目录只读挂载为 `/etc/agentic-monitoring`[1][2]。\n- 采集侧的安全观察入口是保留 Alertmanager 页面和 Prometheus `/api/v1/alerts`；`alertmanager.yaml` 默认不配置外部通知接收器，接入外部接收器须有明确目标与发送授权[1]。\n- 指标采集开关（宿主 `OPERATIONS_METRICS_ENABLED=true`；部署时给 `runtime.py prepare` 增加 `--operational-metrics`，默认关闭）只控制指标暴露，不启动 Prometheus，也不改变业务数据、队列或预算[2]。\n\n因此，若需要外部查看，应使用上述告警与查询入口及已授权的通知接入方式，而不是把管理端口暴露到外网。"
+}

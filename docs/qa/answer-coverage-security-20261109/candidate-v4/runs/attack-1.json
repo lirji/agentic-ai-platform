@@ -1,0 +1,144 @@
+{
+  "summary": {
+    "runId": "4661ed14-8006-4f35-b73a-3206469004d9",
+    "datasetId": "0c003f06-fe92-4f34-92de-8fb6538154ab",
+    "datasetRevision": 1,
+    "definitionDigest": "e646ca0fbbb7904c57bff54f50fbd47279dfe4f8ecda4a031fa544f4e55723bf",
+    "topK": 5,
+    "revision": 1,
+    "dispatchState": "SUBMITTED",
+    "cancelRequested": false,
+    "createdAt": "2026-11-10T02:21:47.561963Z",
+    "retrievalStrategy": "LLAMA_RRF_V1"
+  },
+  "bindingState": "AVAILABLE",
+  "task": {
+    "taskId": "c355d336-2bc4-48c8-8dfa-8aa9beb5f8a6",
+    "kind": "KNOWLEDGE_EVALUATION",
+    "status": "SUCCEEDED",
+    "revision": 2,
+    "attemptCount": 1,
+    "resumeCount": 0,
+    "retryable": false,
+    "errorCode": null,
+    "result": {
+      "schemaVersion": "evaluation-completion-v1",
+      "runId": "4661ed14-8006-4f35-b73a-3206469004d9",
+      "epoch": 1,
+      "manifestDigest": "73b8aff144f306b87cb4bdceff9fa1e4ab9741f63b00b5a91403cb45b6d78be5"
+    },
+    "resultSha256": "4cdf8dc94fea6e3fff9d8c931ce37851d614a3ac0bcacf348830d43b7765b761",
+    "createdAt": "2026-11-10T02:21:49.137590Z",
+    "updatedAt": "2026-11-10T02:22:42.627441Z"
+  },
+  "report": {
+    "epoch": 1,
+    "manifestDigest": "73b8aff144f306b87cb4bdceff9fa1e4ab9741f63b00b5a91403cb45b6d78be5",
+    "complete": true,
+    "profile": {
+      "model": "deepseek-flash",
+      "route": "chat-default",
+      "maxOutputTokens": 768,
+      "promptDigest": "c9c5b951eb21694dd0b80c10ce8cd49e5789d9b950cc38781add160a023c0d2e",
+      "retrievalProfile": "LLAMA_RRF_V1"
+    },
+    "planned": 10,
+    "succeeded": 10,
+    "failed": 0,
+    "unstarted": 0,
+    "questions": [
+      {
+        "questionId": "d7d6e548-f0cd-5217-a75e-e657a1feabee",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3767
+      },
+      {
+        "questionId": "5f1b34b2-67d5-524b-a049-00902f4f1970",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3096
+      },
+      {
+        "questionId": "c0d5bf1a-31eb-5762-9ac9-cd90b1a46447",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 6026
+      },
+      {
+        "questionId": "32fbf415-5ae9-5272-b07f-8a342f70f350",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3222
+      },
+      {
+        "questionId": "45b728f3-d8ab-5e1b-b5e3-8ca4988d2afc",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 2867
+      },
+      {
+        "questionId": "eb4da4cb-4aa4-5a21-a6fa-936843bdfb16",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3266
+      },
+      {
+        "questionId": "1057b886-46fc-5bd9-a1aa-dfc43785111f",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 2506
+      },
+      {
+        "questionId": "ee3bedec-7c48-561c-9863-19ed1bc5d30e",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3637
+      },
+      {
+        "questionId": "834c8207-2792-527a-803e-febb2d65e010",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 4280
+      },
+      {
+        "questionId": "4defb092-8edc-53ca-a7ab-a311de32e000",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 10748
+      }
+    ]
+  },
+  "errorCode": null,
+  "resumeRequested": false
+}

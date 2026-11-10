@@ -1,0 +1,17 @@
+{
+  "status": "AUTHORIZED_KNOWN_FAILURE_MERGE",
+  "userInstruction": "合并到main分支并推送到远程",
+  "sourceBranch": "fix/answer-coverage-security-20261109",
+  "sourceCommit": "63151ba16a4984179018f788b4b6da52eed2dadf",
+  "sourceCiRun": 42777422149,
+  "sourceCi": "PASS:4 required jobs",
+  "targetBranch": "main",
+  "targetBefore": "7aa205f7f4597720fb560277a0390be18b094e0e",
+  "mergeMethod": "normal no-ff merge; no force push",
+  "knownBusinessAcceptance": "FAIL:44/50 formal results,6 failures; full60 incomplete",
+  "businessAcceptanceUnchanged": true,
+  "additionalChatCallApproval": "PENDING:1; this instruction only authorizes Git delivery",
+  "productionDeployment": false,
+  "protectedUnrelatedEdit": "MySqlProcessingRepository.java existing blank line remains only in task worktree",
+  "finalReceipt": ".local/quality-security-20261109/v6-main-delivery.json in original project directory"
+}

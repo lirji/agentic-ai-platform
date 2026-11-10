@@ -1,0 +1,132 @@
+{
+  "617adc2f-f943-5df8-9fce-520dfac49a6e": {
+    "case": "A01",
+    "sourceCase": "Q01",
+    "resultDigest": "304e325311c60906041a88af73e612aeb2e90416d41facd832406167a6900471",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "扫描10页与原生200页明确，OCR资源限制有支撑。"
+  },
+  "5b297c33-a71a-5dbb-a49a-db96cc9720a4": {
+    "case": "A02",
+    "sourceCase": "Q03",
+    "resultDigest": "6f44a13003e3fdb027880b5e9b87c6704cd61d3bc376d37d9a2ca4ad41db605a",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "公式不重算、缓存错误/缺失拒绝、缓存可能过期完整。"
+  },
+  "1899c1e8-1165-5bd8-9849-3c2c9ccee706": {
+    "case": "A03",
+    "sourceCase": "Q05",
+    "resultDigest": "dcc56fc64f2fae0e3f97e719ebebeda1cfac7a062ec9d5b1c4fca01fe0967164",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "编辑PENDING、确认ACTIVE，过期和owner开关边界正确，未创造状态。"
+  },
+  "9bc7b9d9-757e-56a7-a27c-67147717c473": {
+    "case": "A04",
+    "sourceCase": "Q07",
+    "resultDigest": "77e6540853b43b3c29215398546c4575230c75c98eb95528bf194fc08878572f",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "准备/索引失败不使旧发布失效，原子切换与不物理删除范围有支撑。"
+  },
+  "4c61417f-f20d-5e59-947f-e8e6af25ba39": {
+    "case": "A05",
+    "sourceCase": "Q09",
+    "resultDigest": "4c697d184faad17adc520b5f0ba0305fb6b51c3395c6eca8e7db680db107b19a",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "双sink DONE、租约短事务、PENDING幂等重试及未知发布回查完整。"
+  },
+  "18193d43-df52-512e-a1ca-3aef01a44aa3": {
+    "case": "A06",
+    "sourceCase": "Q11",
+    "resultDigest": "9aa0fca61311cef30720b4b36cf289709ad79ce2ccfb2c69c4dcca550ad69668",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "owner请求头不决定身份，可信issuer/audience/organization和IdP sub完整。"
+  },
+  "1edb01bb-ba22-50aa-806c-ec566492e5ef": {
+    "case": "A07",
+    "sourceCase": "Q13",
+    "resultDigest": "d0a687842380518f92095d35fc48090ff4a72088685dc6cb023d1b36215d3332",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "静态份额不借用及闲置吞吐代价、总份额上限有支撑。"
+  },
+  "2b3408b4-1933-5dfb-931a-f557038f1d11": {
+    "case": "A08",
+    "sourceCase": "Q15",
+    "resultDigest": "32fe693020c0ca1dd34927a484cc1d28f02c4e78ee61b377e6547c0fda0e478a",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "开关不启动Prometheus、不改变业务数据/队列/预算完整，抓取与部署边界明确。"
+  },
+  "4597f849-3a71-5bca-b724-0b7c2ae8b426": {
+    "case": "A09",
+    "sourceCase": "Q16",
+    "resultDigest": "6c320493d244e465cbc240004485b03aee47408860fcc8eb03004fdfd829d98b",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "禁止公网，loopback、同网络命名空间和宿主抓取替代完整。"
+  },
+  "b5de1431-93fd-59b3-859d-247abc0f772f": {
+    "case": "A10",
+    "sourceCase": "Q10",
+    "resultDigest": "a5be8475e6d44f1723f7466e7fde21c597ab64fb556f6ac35ab837347ee6f048",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "已DONE不重写/PENDING幂等重放，保留完成确认、带租约发布和未知结果回查，原A10覆盖恢复。"
+  }
+}

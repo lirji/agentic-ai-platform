@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:8ad5790a-d413-5751-8a6d-501940029cab:9fe9537c-ba06-458c-beb9-4dfd1ee9902e",
+  "answer": "问题对象是同一文档的两个索引 sink 重试：一个已成功、另一个失败。结论是：重试**不会重写已成功的 sink**。显式重试只对失败/未完成的部分进行幂等重放，已记为 DONE 的 sink 不重写[1]。\n\n- 超时或部分失败时任务保持 PENDING，显式重试幂等重放该 sink；已 DONE 的 sink 不重写[1]。\n- 恢复保留原文件、profile、代次、已接受提取物/准备包和已完成 sink[4]。\n- 只有两个 sink 都 DONE 后，才在带租约条件的短事务中提交任务 READY/COMPLETE 与文档 READY/publishedVersion=version 并记事件；单 sink 完成无法发布[1]。\n- 发布响应未知时重读权威账本[1]。\n\n阶段/触发条件：超时或部分失败时 → 任务保持 PENDING，显式重试只幂等重放该 sink，已 DONE 的 sink 不重写[1]。\n\n阶段/触发条件：两个 sink 都 DONE 后 → 在带租约条件的短事务中一并提交任务 READY/COMPLETE、文档 READY/publishedVersion=version 并记事件[1]。\n\n阶段/触发条件：发布响应未知时 → 重读权威账本[1]。\n\n限定：以上针对索引 sink 的重试与完成确认；更新、重试、撤下和逻辑删除都不物理删除原文、准备包、索引、checkpoint 或备份，清理是独立且尚未启用的流程[2]。"
+}

@@ -1,0 +1,5127 @@
+{
+  "accounts": {
+    "CHAT": {
+      "limit": "8.000000",
+      "held": "6.936472",
+      "booked": "0.000000"
+    },
+    "EMBEDDING": {
+      "limit": "2.000000",
+      "held": "0.000000",
+      "booked": "0.016932"
+    }
+  },
+  "attempts": [
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "dd5de9bb-b7e0-443a-8c6d-0770e35e6490",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000490",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 245,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "3547fec5-5c8d-4c7a-a438-226a824a775e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000374",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 187,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c40c9830-f264-4b4d-86f1-a37bb899bd22",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000706",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 353,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "2aaeecf8-623a-4a47-8299-0c808187431a",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000584",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 292,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "113f11c2-c8b1-4996-adb4-2cbc69469d97",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000828",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 414,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1fae0ff6-6dc8-4ef2-a2e9-8d96501ebbe9",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000238",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 119,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8d7a2dcc-7e90-407a-a743-a0928404a53a",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000218",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 109,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "81423773-c123-493a-89d8-0b98d6f11bee",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000622",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 311,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4e47823b-4b80-4c68-b272-c22451723de8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000546",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 273,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "9fa95e8c-5c2f-4741-ba7b-c74aaec5227a",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000446",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 223,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "72aebe3a-00b2-458f-820b-333df8d28423",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000766",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 383,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "df7fa83c-a509-409e-8341-8a8f96028a43",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000674",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 337,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8ab0d7c8-c2bf-4b34-9627-83b359cdcf33",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000910",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 455,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8d7485c3-4a45-413f-a9aa-a5103461ab6c",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000298",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 149,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c3c94378-6eb8-404e-9e51-b36a98e43bea",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000286",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 143,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "5e90febb-f073-4bbf-b23d-3ca7321cb50d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000630",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 315,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "00990428-435d-40a9-8283-0b622c53fc79",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000640",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 320,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c9fae264-5f3b-4397-8947-2c9ebb666ef1",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "594ac1ec-d501-4412-80b7-f36497e966c4",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.033840",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "06a08530-4264-4e60-86ca-ec52a9e33335",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "65a75a63-fbda-4412-aab0-1f22a9c32487",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037448",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "32544f1b-eb54-4804-8204-b2a459a5a68b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1cce3556-c50d-4d99-b69d-3fb2562b36be",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.036572",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "e30503c3-9ae0-4bc9-8fb2-0e73ad5a00c8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "81aff881-04f9-4efa-8d1a-1fb8e1cce69d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.034064",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1e93fe7d-54dd-409c-88d9-ebfe8700d6f0",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "26162e4e-5537-476f-8abf-879d84ce276d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.034768",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "050533cb-0d75-4b14-ac49-8555cee3f948",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "3954596a-9682-491a-a3f9-0ca55813467c",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030984",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "83b4f212-b941-4911-bb6c-568389ae5ccc",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "3b844f0a-eedd-4553-a409-3d7efdb01b52",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.036168",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "ea063b13-9f5d-4fcd-91c0-eaaa64141667",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "632c25bd-c739-4241-aa44-e9ec643294b9",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.034116",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1814f6fa-3510-4737-948f-465175e52ab4",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "9a183e23-6468-4dfb-a04e-7732ba0b63ac",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.033272",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "d45c20b5-4145-47d3-9ccb-daa6ff817375",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "03716076-5d38-40f2-8023-a0ea83252498",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.034840",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "e6ff2c19-72e8-44b7-bcb0-dac917a36fc0",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "2fd0104d-6d44-4aab-a732-2aefd15a567e",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.033528",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "ab75b276-65d0-4801-8708-9f552f5e4753",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1d44a6f2-cce5-417b-abc6-28ac6fcfab52",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.032592",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "295fb90c-6234-4e0b-ae58-00f428cfc113",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "46df1e44-46be-4d5a-af0d-39e47533158d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.034092",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "74e3815c-000a-4af4-82ed-76ab1ed27493",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000028",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 14,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "64f3970d-2bc7-4cd5-9355-5c06cc2ee4fa",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031232",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "0534dadc-ca03-44f9-a756-a63f2b85d6e1",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "10e24319-aa3b-46cf-aa65-9a222b6ae719",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.032400",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "e2746255-d186-4058-9e9c-9b92ef2c2fff",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "323878a7-63b1-4bea-84eb-918416ca2ea0",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.033180",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "511b20af-6d76-412e-969f-1d443fb34213",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "41fa43fe-9517-4467-b10f-35902eed06ee",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.032268",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a435fc37-6bf0-4897-9515-ee95c38f124e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000020",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 10,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "95b3c89d-0fb4-444a-91a2-630f52380d8d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031408",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "fc9da061-0b4d-4b20-988a-b9d23f26f670",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "d5e97275-2591-4043-a3c4-a2c49757fda3",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.032072",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "48c05923-0619-452d-948f-f6a53f659d30",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "33c1e1c5-526a-4542-81fc-7cffbec6c4fb",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.035176",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "82319aa6-7a6c-4f0d-8d3f-3b2b44a66963",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1a01dda7-b54d-4391-b7ff-ef0efbaa37b1",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.021928",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "276e656f-4ceb-4601-8040-7a8d3f4f06af",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "2d349e85-c961-49fc-bee2-58e1a2337e6f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.021444",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "f136973e-babb-4a0b-93c0-bd285322e679",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "76e8e8ad-92f1-47a3-821c-2ea40dca71f1",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.024612",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "90bf1c76-3579-47f2-9d45-55779622f485",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "75c08653-1ae3-4501-a5f0-2438e5f9f6af",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.023964",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "cc0aa4de-d6a5-400f-a7ee-b235ebe703f7",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "32015cdb-917c-48a7-adc3-c47172f241b9",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025084",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "5b154754-9f96-4f7e-a3ef-897798a61315",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "d2575b03-7130-4593-b898-03aa89ba7a06",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.020736",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8d812f84-f319-4328-8791-000f122627ca",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "258e8933-2d19-43be-93cc-6761e6b7ff7f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.020328",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "bb28e1b7-81ba-4465-8468-373dfc003b62",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f2d2013e-d32e-4279-bedd-9fcc5d004bd6",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.023772",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1b4883bf-02d7-4810-819e-9a255d33a7a7",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f19ec741-cf5d-4787-80cf-e2d71fbdc7b0",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.023776",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4ab80cdb-5916-4f57-984c-6b94dabc2e23",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "d0e03a9b-b9bf-4a78-8e87-aca09fa268f7",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025120",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4293afce-6a1c-4696-991a-db952ebd750e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "49e9f6b6-4c53-4f2e-829c-818f42b4e22a",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.022384",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4af35af1-4e3c-40b5-ad8f-e9ead776a28a",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "92bc5c19-c45f-464a-8206-027dfa9e6aaf",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.021968",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "5b19f979-9bd4-4a9e-8e05-5830afd7a421",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e9aebfb1-9dd5-46f0-ba23-f576560b0be5",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025160",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "664f4d36-5cb9-4b74-8af3-fe23041185c0",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "392c855f-411c-48a0-ada2-40862e83bbeb",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.024688",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "fa058388-39be-4710-8d5f-7e100f6db793",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "625af5c1-b785-4b8b-ac38-09a75d59ed33",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025568",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c3f8f50d-cb8e-4046-8ca5-4e8374f9411e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8fd8d2fb-25b7-4097-8f91-1fc5c194f654",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.021228",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "90a00417-df20-41e6-879a-5475a6150f3c",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "aaed6641-f97d-4b10-8bf2-f4830cc23ab8",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.020828",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4da8fa5f-5349-4657-bed1-7aef5e252f8b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "998e5db0-97aa-4de4-ad71-5ecc2e4ce53f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.023936",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "2c29c792-ff55-4dd1-bb12-f6027772f48a",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ac46fef7-f8b7-46e4-a819-6ed2308786e7",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.024200",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "68268668-94e6-4d4f-a4af-a4f8b28ebed6",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000122",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 61,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f94f7f75-247d-4c21-93d5-2eb4c20259f0",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025808",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "60a66ea0-a1ae-4446-ba1f-aa9765c89720",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "b272a939-d34f-41a1-bb70-59f7f166b819",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.021928",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "724dd998-2e19-4777-a7d0-eccc06eb7077",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "fa37cf28-e7fb-4f7a-bdbf-6ba2e3c9eaf6",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.021444",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "11456323-0062-4a41-b958-2fcb40615a88",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "613a0ceb-1ca4-4203-b26e-e203683a7972",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.024612",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "27836af6-87b4-4e4b-8f80-11ff2b820715",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "a1c448dd-f05c-4389-849a-041410dc1602",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.023964",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "29a2ee71-ff72-46a8-8445-537c733a3cd6",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "276eff7a-a3cb-4ece-a29d-629855ccd642",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025084",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "16693ed1-f23e-4594-ae18-18aa76edbc1b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1d4ba794-e6e3-4368-8c7e-c8562ffd20e4",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.020736",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "53041660-1ddc-4eb6-b70a-a10c24a8edec",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "bdd8e597-848b-47d6-9ee0-6a68f87f144f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.020328",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "ccfd8e62-9fca-42cf-8bd8-da30377a9544",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "29623942-852a-4b1e-8490-f67f14047ca9",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.023772",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a5ec540d-5972-4f6b-bea7-2970df5c17c8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "2fedf67b-a494-4639-b127-0a1f07815c5f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.023776",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "9ca4a07b-0fa9-4f45-99f4-ebe20eb27973",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "bd77b5a7-99f1-4216-b452-0c3148868a90",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025120",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "47f074c6-ce04-42df-9f5e-ecc5304a4566",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "069055db-e78e-4b3f-a26d-eb189b232ca2",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.022384",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1b3e66f0-193a-44df-9d65-806e45c63b3e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "414ee7c2-d5e2-4cd3-9002-6aad7d53f993",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.021968",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "0e2dd3a4-e034-4c87-92f2-6ab07e1a01f7",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "702c71e5-3e12-4543-9d53-f7b4175b138a",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025160",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "03c0fec2-ab92-4624-85ef-85a86106df72",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e871ff4f-a2cd-4735-9515-b925c4edfa79",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.024688",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "af92bd15-5223-47e3-83a0-f43bdc0c92fc",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "adf8e4ef-c56d-4551-ae34-da294cd436d4",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025568",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "bb233592-e813-4b3d-8b14-35d7cadd36d9",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "4a518c51-5755-446a-ae17-bd4fd3c77b28",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.021228",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "9d3b8eca-be72-4048-a3d0-bb0cb240742f",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "70e40be5-2204-4ed9-9ff1-f3a657c983c7",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.020828",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8ef7cff0-2012-4fbb-8415-22b66bb7f858",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "6baedbc2-393d-4fb1-af69-98cc8f3dd71f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.023936",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c2ef5828-d55e-486f-8220-dbb1382a0952",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "87ed026e-190c-4dfb-a0a2-820c05489bcc",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.024200",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "f7266ac4-9a7c-495d-bb53-8e42ab542b2d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000122",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 61,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "6eb27f84-fff5-40fd-a0d1-25f6e0934a1d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025808",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a9a325fa-82dd-4566-8318-a7647e80b51c",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "40a37481-1915-4995-8f37-ed0e6346feea",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026364",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "933765e6-cac8-4e07-a8c4-8e9be799d0e4",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "0ea87ec6-380d-49a5-a924-15e1ea2550c1",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025880",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c2d4c9fa-1949-4279-89a6-54ecb0a801ab",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "3c98c71a-58ac-4097-a835-249977541171",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029048",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1d25d96c-0174-4cb4-9e5b-1f69b67a850c",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "d1895cae-7c19-4d51-9f23-58ca5fac1852",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.028400",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4e0842ff-ab3a-49bf-87e7-cd46f121c173",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8911615c-34a4-4293-898e-a8cd2052250c",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029520",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "fdab2921-38ab-4cb1-b372-52b944d36712",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "b3fd6d81-5cf7-4a7b-880d-a0ea950669a6",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025172",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "2cd54faf-ca74-4cf5-b05c-1dc138a229ea",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "adea72f1-4d74-4236-955e-9c465e9c4430",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.024764",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4619172d-92f4-46e0-95a5-48dee015f640",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "dd069b77-1a84-42f8-9b2e-b29ac0001650",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.028208",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c16c8cdf-49aa-43cf-88e9-2285825eb071",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "781deda7-bdb8-4bdc-a95a-061bf620fc36",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.028212",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c7525d1a-687f-4dfa-ba68-6d0eb3440cc1",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "d460ba5e-16df-44be-abdd-8cc6fa45d95b",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029556",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "ac4cda9a-5b23-47a0-b290-eb8fd08b33c8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "2470b46d-5ebd-469b-b399-ba9be3c63543",
+      "state": "UNKNOWN",
+      "outcome": "FAILED",
+      "reservedCny": "0.026820",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "dd96a2e3-0fe9-4095-a3f5-3dfe70df7498",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ea28f3db-306d-48a7-809d-be78f587429b",
+      "state": "UNKNOWN",
+      "outcome": "FAILED",
+      "reservedCny": "0.039092",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "faa49928-e1d0-47fd-9e27-cc5f989cf52c",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "2a7fb293-78fd-4fac-910d-c8c0b66e63c8",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039092",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "41461b0e-d198-4ddc-8ce1-32d8c5c6479e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "4098ce29-9e12-4596-8696-f8493c2b8c48",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.042700",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "2b0d164e-bd8a-4939-b237-93420a321374",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "9b537b90-c566-4f1f-b4ad-40a845bb70bf",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.041824",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "383b8f1c-4c43-4a1b-9bff-4f25a332a3d5",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "81b4e60d-343c-4e8f-8f2f-7aa64b7d96f4",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039316",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c3ca6411-e663-42a6-b057-d525aafa12e8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "fb93eaac-5a42-4e33-acab-3a82a853e2d6",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040020",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "6f5a76f0-8c36-4956-9fee-9c70ad4b0baf",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1d4e624f-b27e-4382-a2e6-1960d373c542",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.036236",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "2af314d0-6e6e-4049-bf68-7092ec17066b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "6d6ce09d-578e-44d0-ad58-f60eb2c4b300",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.041420",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a96c4b80-c1b1-4fd8-b205-1241d23b2ee9",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "c5baf539-5a37-4b6a-9c13-74eebf29fa87",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039368",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4cffa2e8-c474-4b67-8b9f-656642e7a1f6",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "3c7094bb-acb3-418e-90f9-f724d241dd9f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038524",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "d073bd83-f5fa-4384-9a82-80dbbda936bd",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "21844480-b67f-4ca2-abc7-e7eb1269ba03",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040092",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "00cdf632-c698-4a32-b5cf-1b45aaa177b9",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "909ec607-7611-4150-ab65-fcef33fc3a73",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038780",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "62df2121-18b8-4473-8860-2d6fc581919c",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "dc5fdb53-a35d-4da6-861b-78b7d32940eb",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037844",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "acfda619-8850-4c12-8ff2-ddc552ec43b2",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "39887eb1-f43c-410b-a778-5134596fbb20",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039344",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "3bf86d32-f467-44a0-bd16-4c3afc52c44d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000028",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 14,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8a55251b-683a-4753-8f2f-1164df279865",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.036484",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b63c04a3-378e-4b73-b79d-a955a45e13d9",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "26500c97-8ab8-4bec-b86b-369477475f43",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037652",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "23258677-cec9-4276-9da5-4dccaf1d6141",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "81bb54a9-8125-4679-831f-a4321dea83cb",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038432",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "fdde4032-8957-455b-a7cb-4ac5030d2fa9",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "77a7bf92-aaa6-45a5-9313-a944b37ab8c9",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037520",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "3a49da1e-efaf-4ef7-83f6-c00f92324ff9",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000020",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 10,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "5ae9e92a-a436-41ef-98ab-cddaf05aefb9",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.036660",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1ce3b598-9408-4efc-8b4d-2dd1bd122286",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "25988d59-9752-4fd9-a776-ca0e8425edf1",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037324",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "06c4f7d4-4fce-49ec-a5c3-40336db45618",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8e288ea2-a354-47e3-a3c7-5cc3c7064a28",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040428",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "d36e36ba-8711-4411-a693-59e34cd731f8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ed1af657-99ea-40eb-a38c-3a45cf061e57",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027180",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "e9bd2b1b-9e0b-4593-9193-2658050378ef",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "a91a24a2-59dc-4cea-9a29-ccc52c61ac41",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026696",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b09b0f2c-a01f-4711-8284-1a78b8711e84",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f3d9627a-4314-4636-af50-325a6eea2d5d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029864",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8d257824-0d41-4d6b-8f33-9630a73da947",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "410fdeff-7855-4092-ae2c-20c4500872c5",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029216",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "0a5f7760-7f2a-4153-b827-342edeec64bd",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "82138adf-750d-470d-83e1-ecb59506d598",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030336",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8377550b-9a5f-4f65-ab87-80d1f47dcead",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "811b5c27-54f5-4850-b8d4-1445bef8831b",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025988",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4b2283ae-85a4-4635-a360-57947b108f18",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "462a289f-a1d9-484c-912e-9ef20e3df457",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025580",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "ec0b9982-6b49-43ec-ab56-fe0878328425",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "580819f2-b81d-4453-91ea-25452497ee97",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029024",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1927001f-bd23-4e18-ac2b-1fcb7dff26ec",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "eba011e4-2b35-4680-9508-799aafa23b4b",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029028",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b5bb18d5-3565-4833-b825-5004486f1efc",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e98b3199-6e06-41ee-a529-1375303914d3",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030372",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1fba6134-34f8-44c0-8ca1-dd68c914b281",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "c6ef3977-154b-40ac-be47-1283eb872ac9",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040184",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c55afa13-fc48-438d-a1d4-54e11dff16aa",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "19a3fb02-025f-499b-ae5b-2cbd240a1ff1",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.043792",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "6c600638-33d9-45f0-b726-c56f9030f898",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "0f99f8c3-c457-43b2-96f3-d877d7771bb1",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.042916",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "909e88b7-60ef-40c4-9914-d3de435d246f",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "78283b05-9ca9-4bb0-83a8-161fdbc84810",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040408",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "0f2e239c-9daa-42bb-82f7-5deb11ec541d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "b315fdcd-62df-4923-beef-7a7a33469f57",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.041112",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "402dbb9b-9dd9-4a82-a29e-868e64fb0b45",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "b1236486-c50b-485f-82b4-e6a91b1c6ddd",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037328",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "cfd946b6-1e6d-4eef-a743-921a88135679",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e0c43c35-70e1-48c1-97f8-a43250e66160",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.042512",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "9dcbaebc-36e9-417b-9bd9-39541830873e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "371a60d2-2a61-4957-96f1-7b46a8e95ca7",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040460",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "535d367c-8b73-4729-8c27-9f891be6313e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e464be90-71d0-48e9-8cb8-35d17238fb1e",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039616",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "029cfb53-f89a-48a1-8274-af1541e9ea35",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "666010ef-fed4-4a44-87d3-b636467b8d4a",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.041184",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "aae66f35-566e-4267-8972-1abfb10d5f73",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "13983f98-d31e-4d54-9cd4-fd7e24f914ce",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039872",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "260498ce-e77d-46ef-b7db-c72ceadaf2f4",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "b6e9b691-19f7-461b-bae5-b01f9b6fb8c6",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038936",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "2d401d4a-dd0f-4b29-9c8b-43e057275a3d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "c092ee76-ab17-4752-b0dc-9b0da11d6900",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040436",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c7f98f7a-d988-4724-8e7a-d5e489af8aad",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000028",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 14,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e39f4e80-6363-4a16-837d-f13486a0fa4d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037576",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "06f5b722-a27a-4b87-adb3-f7755b0fe800",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "11ac3d88-bb31-4849-a8b2-24de07915378",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038744",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "d884de45-0065-42f9-b537-d969a0f90d1b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "da9de4bb-f929-439f-af5e-b13b5eb3d560",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039524",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a43501d9-e03e-4124-b999-847ea47ee2df",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "5d34dde5-694d-4082-8758-8f3de2b5e096",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038612",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8a525d6d-3ea3-406b-b28e-32daad5728b7",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000020",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 10,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1d4f5fc5-d093-4a93-8afb-c3e3a2fc1c0b",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037752",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "6d11a626-b355-478c-bcdf-95f11d62687f",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "d4a9f36e-714f-43af-b8c1-75e340e23991",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038416",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "9d8fe438-ac8c-4e15-b390-bdf497c31b82",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e10057a8-e9cb-428c-9cc4-731c177023c2",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.041520",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c3704af8-7952-44dd-8bff-aef65772db44",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "db3c2e6b-a831-4f7f-8d82-bba852b186b4",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.028272",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "db171bfc-afaa-4925-a37a-178a9ec9ec15",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "b3bea5dd-8844-4717-8925-81f566eb3968",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027788",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "fe05436b-5fe4-45a8-88fc-5c5468a0a53e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8198389c-96b7-49ea-a969-acd2d8f41a67",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030956",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "74185856-8d9e-4be7-bc09-f1968b2363fa",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "a38ed36f-c12b-418e-9bdc-6f1faf87c715",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030308",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "9e57b5c0-2c1d-43c9-9da1-d46170edf260",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "36022736-c362-46aa-8da3-6bc9bee2f05d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031428",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "9299daa6-188f-4f24-b063-ae8fdabf8f1d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "dce57d9d-dbfb-46d7-a88a-4075286b5418",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027080",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4c63dd73-ef72-449c-a02c-9b07cc0e482a",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1194704c-489c-4eca-9a0f-4c81e241ae4a",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026672",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "67d7c8c4-2d5c-4589-bfb4-7ba861083436",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f9fa2e92-ffb7-4ec3-ae90-0a9085f2cc9a",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030116",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b266be99-db8f-4448-a464-4cd485eb7115",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8bfd7736-520f-4fd2-81f7-73a190448a74",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030120",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "962d8fa4-8a48-4a16-8575-321882b084ba",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "69c338d4-93be-4baa-a823-a7a2a5599b3f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031464",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "daf61059-f2dd-41da-b8be-af2d2114b3c6",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "2b1d5203-80c0-4c7a-835d-8cea31f0b67e",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.028728",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b4112779-687a-4632-86c6-c8c2681263b4",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "31a5b20f-0cab-48ff-bdb8-aaf017eee457",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.028312",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "d497b5a7-71cc-4679-a3a4-ce660fab07dd",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "14afca69-c218-4df1-b871-eb0a513fff92",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031504",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "7dae1320-0cfa-49a2-9d3b-cea963cff561",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "b20d3f20-e155-4f56-8346-eb7cfcace6f0",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031032",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "745b4b76-4681-45bf-8c79-2635376a37d8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "fe7c0afd-4b76-414a-8bf7-e05859d1e2ec",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031912",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4775e049-18c5-47e3-b3dd-284e68a7e575",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ee19e5d6-677c-4090-99bf-bc2c485cf226",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027572",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "10233df8-3708-4f68-b6a2-e45c9366125d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1d86e7e0-ba2e-4baa-9908-18748efba749",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027172",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "3fa9e16b-08e6-405c-855a-38e8410da4e7",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "802d3bc7-cb95-4035-9db3-fd292c802cc1",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030280",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4985dfab-cdfb-4e59-bc1d-ed9c80d09cc7",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "25e75e7d-8709-49d7-9751-7aba3960642c",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030544",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "20eb5ff9-00cf-484e-9bbe-966aeb9b70ca",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000122",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 61,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f877196e-06a9-48d8-84a0-ad5519fb0d51",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.032152",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c646c875-cdca-4d44-8217-a3a5d631a783",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f248084a-685b-4164-bde6-c7f48945df29",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.028272",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "cc51c1c7-72c2-4074-a8f1-b3c03ec5522b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "df7f67ef-d23a-48cb-8ca4-fa0153ef0dda",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027788",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a5504a94-a5c2-45d5-bd93-1e43807ef8d2",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f657cadc-484a-4211-b643-6e2931b45864",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030956",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "32dd7920-7a90-453b-b578-8c9fdecdd104",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "d05ff5d7-a6f3-4aea-bd92-64c4f23ab548",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030308",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "adc59e9f-91e8-434e-b029-609d8d77c80b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "4c9f166f-24bb-47e4-a4fa-7c7d2b35a89a",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031428",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1213378d-97be-4fe7-b26c-3a06533290bc",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f0ff8c5b-58db-4de7-a7f1-8692a5f50ae4",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027080",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "7206c0b5-1e29-4145-bbfe-5bb5690ffa9d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ee23abd7-15a3-4cc9-836a-dc78ec1cc641",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026672",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "21ba6fd1-d46e-459a-b7db-ce373518c299",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1317f347-8f33-47de-a565-bd9212fe6269",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030116",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8b14069e-30bf-4ef3-8bc3-ba98e42be358",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "684b575b-dae6-4676-94a8-e1fd48e3acf2",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030120",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1da04fc7-d3b9-4750-8e64-0be4dccfcc85",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "708a4f47-9011-4e65-a9cd-9413590322e3",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031464",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "e40e1b2d-a5da-423c-9d66-0913c7e0efaf",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "aaac09d9-ed32-49ff-9d98-3bd04dd95431",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.028728",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "51f8b1d1-57f5-46e4-bef1-c9caa8061e60",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "fbf76d27-128c-4b14-a5d0-e5e6eff71357",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.028312",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "85e1b1dc-20e0-4f46-afad-fe9b240fe259",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e38a2f4c-5a54-4146-83c8-4421cdc516a1",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031504",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "eadf7586-f8b5-46e5-9cdb-880967131aec",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "dd08d9e0-bf76-4303-ae50-bb5782c89f37",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031032",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "73f48200-2111-4eec-8b67-045b6451e2e5",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8ae96e78-9f61-49cb-856d-10c4d23cf9ec",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031912",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "6fefaf53-70af-484c-a259-9bedc7715d1e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "c1f293fa-903a-40ba-a1bc-93ad4b86a1f8",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027572",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "13c72c26-c64d-48e8-a9cc-26a33e592aca",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "05b7f9d3-869f-40a3-b56a-dedd3147e8e0",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027172",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "ac2eb980-ccc3-41ff-b04b-275c63c0c57b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "a48a0ab7-d46c-4675-b9d4-f3b79f3d7c18",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030280",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a2cc22d9-e321-42c8-a5f9-4b01dd0b5b74",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "7addb20a-f054-4fad-af47-a83a7cdd0362",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030544",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "2c722cf2-4930-4eec-a0b4-11a1e146fb99",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000122",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 61,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "14ea27e1-3b4f-414e-8abe-2f73eefebb40",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.032152",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "ddcbb08d-cd38-4541-9bbd-4ef0b212018a",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "57842010-54f7-4e58-b5ed-09bf9b14d04e",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039360",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "7595ec7f-c0a7-4e26-a529-89f68ce9a71d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "16050838-cd73-4335-a73e-ded71b3a9b04",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.042968",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b008e3af-c6bb-4634-bd25-32f3c929a9db",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "55f1c9cb-7a74-4e7f-9ea9-5f3d46199208",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.042092",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "7f7568e7-4d67-428e-8ee4-9a656560a960",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "5f52c4d7-c2c2-4f73-a820-bef91041391f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039584",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "20710d30-1315-46d4-81d6-2d370f57180c",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "a0549c0d-d7e6-4b0d-a9d2-7ba0d8a55639",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040288",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "db8aaf25-7c15-4523-8c7e-b089fc59e113",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1d8e478a-08c3-4195-b003-81cfcf6019d8",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.036504",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "2b2d6faf-98c4-4b48-b52c-6d9d2dbf4534",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "d580fa37-2943-4db2-82c8-abced76836e3",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.041688",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c903795e-bc16-4237-abbd-a4b73786160b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "bbb9d31d-e2cc-430e-b9d0-44b4228505fa",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039636",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "8f24c44d-38e7-468f-9507-696f55be8e5d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "2464a869-7a28-4155-a59f-cefbd5ecb341",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038792",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "7c93f029-b033-46cc-8bd6-a3c9977f8e91",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "12de87cd-0f08-4d6f-b73f-342d041d6eec",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040360",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "f64706ca-56c0-4524-be9f-2b63ecf3916f",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "5ddc6fa0-b6d2-4f35-a949-5c7695372c92",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039048",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "70c6282e-8c2d-4e27-90f2-35a291c350c8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ce2a1cb2-7453-490f-a35f-2733621a36f5",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038112",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b2c3b38f-f4e3-415d-a3e2-05e153f28752",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "097b3f82-5b94-4de8-833c-5e11e540a537",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.039612",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "d4e59677-f562-4c49-9cae-45485a71c438",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000028",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 14,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "65d9dbe9-e623-4863-a7be-5302aa5d6fd5",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.036752",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "71f8b4c5-4bbd-4b99-98b9-c07a3e556c58",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "08962516-aa1c-4932-8c38-ba074473ebd3",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037920",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a39bf125-bd2c-45ce-8a90-59ee4762a26f",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8c773bf4-5e3d-413b-9e59-c92602d682ab",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.038700",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "95b73051-ba89-402a-8452-676bd256cc89",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ffebd1c0-b6fb-4050-870a-e5fccdd8055d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037788",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "bcbaa7a2-3d92-41c2-9c5f-51ce0b3f19e8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000020",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 10,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "a036bfc9-41e9-452c-85d5-fd7468db33a2",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.036928",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "71a76b48-20df-48f3-9c9b-bf68da230e3b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e8b912a6-898d-452d-9c13-b2795df24489",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.037592",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "7b658aa9-9f57-4dbe-9b72-af8e2c58868b",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "48ae8df6-f1cf-4110-b8a5-aaf72aa9489a",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.040696",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "0ccb8fdb-5b73-4844-839c-ce29e02d4788",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e659e25b-4277-4899-8fb5-67e984f49f5b",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027448",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "38ce6686-d6c5-41b9-9af8-57ad9b8819e7",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "847d8045-004f-41b6-8c8b-031ba4eb2ca9",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026964",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a633a17d-105d-4f8f-9cea-f99e928bda3d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "859c4272-0d98-4868-beb7-2788bbec3d3c",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030132",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "81f31f24-65c4-4dd9-85d7-63fc6b562f83",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ded5d8a5-d6f3-4366-aa91-3c3bad32018e",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029484",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c7457ba8-2037-4731-bcda-032bf32b1e41",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "5b9b2cbb-6333-4fe7-adc6-c5f824ffc735",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030604",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4d5079fb-680f-49ba-9fcf-fc321a0418f1",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "92b902c9-3d5b-4656-9a40-5b55f7e8b56e",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026256",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "509643f4-cadf-497e-8d78-12a24409567d",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8a1cc456-ac3d-4d9a-b06b-130bd3db74d4",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025848",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "c53ecf7d-5a82-405b-be2e-8832d1f8c8ad",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "12776492-9c98-4caf-ad18-ea469a0b1cee",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029292",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "d2a27b39-dfe4-4006-9f40-ec7dd5f1cb10",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "882d9691-af01-42a4-9d38-a8322a4c9cc5",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029296",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1b3b78f7-e567-42da-968f-08a176e1ac99",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ac7b7b14-be7b-4108-a1ff-a319b56cee11",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030640",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "abe29280-1fd2-4ff3-b15c-fff52afe65f0",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f673d002-aa02-46f4-afe8-c4b59286d46c",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027904",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b7a449da-e911-4550-9c79-268b49c098d3",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "3564cd1a-7597-4b3b-a678-effdaf6f017c",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027488",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "20f496eb-10fc-400a-88da-ec0af0b1804e",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "49bb4cc2-80b4-40bc-942c-c5d4a9e3b416",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030680",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "af998779-6064-47f0-8f9c-c9fb8f564de0",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "40356b37-a294-4b78-a6ea-0ddad58d7ddb",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030208",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1fe90411-9254-49ae-b38a-de2da9fabee9",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "b7d98290-eb53-417b-8ae8-e39342b2db0e",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031088",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "e832dfb3-3466-4d4e-ae07-f7f646a180e8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "1c723e30-72b1-4263-a557-3e02b53d2bd8",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026748",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a68902fd-9e29-4827-8c85-db1b80b97889",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "822615f6-590e-490a-bbf3-5565de0ae6ab",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026348",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "7b89ed5c-098d-4d69-b113-b21142641802",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "bf76050a-7064-4518-92a5-a6bd05ae7a20",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029456",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "36a33761-3a25-4650-b9be-96674e957452",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "9bdac893-8dee-432a-8888-1280d9d0c45a",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029720",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b2d6b312-53c4-470c-ac26-2dbe245c20b7",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000122",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 61,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "70662fa3-3ead-4081-8f13-0db9160e3e0e",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031328",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "85dcdaf1-7ca5-4b35-87e0-9fe9694597cd",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "28758ead-d697-455f-8239-fd4b21ef69e7",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027448",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "e328adc4-1847-42fd-ae12-929b19bd6ecd",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e943bb96-c3bb-414f-9203-a3d93b45757d",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026964",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "72647692-300c-4f08-9430-6c8bed912667",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "89d7a262-c934-4a71-9f75-794b457d6076",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030132",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "f67b478e-88b6-467c-b802-c5c8208d2451",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "65830b09-773b-4e20-8523-bc47c593c0bc",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029484",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "bc4df0fa-0ede-43d9-a56b-deebaf52f7c6",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "a9b88553-a936-4141-a97a-878a56fe78f0",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030604",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "2343c77d-3186-474b-92da-79b3ac430fd0",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8e401c9a-9b56-4136-bae1-668cae678315",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026256",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "9a37ac6b-9f54-436c-b173-82fb3d2fda85",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "84389c43-70d2-472a-9be3-1c233122e2c8",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.025848",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "4518d7f6-8c06-40cb-b5c4-3306e53e6fda",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "c2eb05b2-8589-4a57-ab17-a4cbe9e77793",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029292",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1a0c7d5e-5758-4225-901c-64ac7c946d4f",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "2fa58e3d-5601-4fd3-a186-bf2773180d46",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029296",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "9ae7449a-679c-4956-a8ed-3b781039809c",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "796ea75b-e427-4fe0-beb5-da223ace96ee",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030640",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "81025f7b-59e4-4226-be6d-4e4226c8d14c",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000036",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 18,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "ec59c584-7e89-439d-b1cd-bc3af615c123",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027904",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "e47bdcdd-349f-44fe-a23b-14ba4a8dfb78",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000034",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 17,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "abe6aad8-b968-439b-bc45-deab4bb560b5",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.027488",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "22a47007-76e3-4de2-a066-624dafae2bab",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "8855567c-913d-483b-90a9-a898a7725c70",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030680",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "7b21a70e-7bdf-42a0-81e7-73d58a15add3",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000024",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 12,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "2a9ccfa0-2a38-4103-906a-3ad50c21a5eb",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.030208",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "a9fd8053-c4d6-4c50-a1c4-aaedd8c9abd5",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000040",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 20,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "9429b6b9-de65-4dcd-8a36-d032ab426a2f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031088",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "b0fdb2dc-c367-4d40-8c71-a76b0f2bbc40",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "5ac824c3-3723-42a5-bcc6-a143f8c58e61",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026748",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "55dcc460-5654-4a99-9a2d-456deff3f7c8",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "4c40fa8d-fb9b-4014-b03b-309914fbdf2f",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.026348",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "cc5fe701-8bf0-42bd-9f1c-3f8d999bdbb7",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000030",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 15,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "f761824b-b7d3-442f-8a72-d496c44124da",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029456",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "d4610000-a589-434e-aac6-92b296a8eda4",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000032",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 16,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "67e792ea-9848-4b40-8e2b-387df04a96f3",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.029720",
+      "settledInternalCny": null,
+      "usage": null
+    },
+    {
+      "kind": "EMBEDDING",
+      "attemptId": "1c029210-a760-48c5-9b80-ce1552f06555",
+      "state": "SETTLED",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.010000",
+      "settledInternalCny": "0.000122",
+      "usage": {
+        "inputTokens": null,
+        "totalTokens": 61,
+        "outputTokens": null
+      }
+    },
+    {
+      "kind": "CHAT",
+      "attemptId": "e90fea9a-ca1b-4f6a-8cf9-d7c578d4b322",
+      "state": "UNKNOWN",
+      "outcome": "SUCCEEDED",
+      "reservedCny": "0.031328",
+      "settledInternalCny": null,
+      "usage": null
+    }
+  ],
+  "originalLedgerSha256": {
+    "chat": "14f9620fbf07b0bcaece781de531342ecd551cb97ba553f7d0b48c99da724885",
+    "embedding": "e39835470384ed8a6d785be9a23cd5e1c7db636a596d80972aafab67e101bed8"
+  },
+  "originalLedgersUnchanged": true,
+  "providerBillCny": null
+}

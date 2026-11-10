@@ -1,0 +1,62 @@
+{
+  "task": "answer-coverage-security-20261109",
+  "mode": "LOCAL_WIP_CHECKPOINT",
+  "status": "COMPLETED",
+  "businessAcceptance": "FAIL",
+  "deliveryGate": "HOLD",
+  "userIntent": "用户在已知两项业务验收失败后再次要求处理本次代码提交；保存当前成果为本地WIP，不把提交视为验收通过。",
+  "branch": "fix/answer-coverage-security-20261109",
+  "baseCommit": "7aa205f7f4597720fb560277a0390be18b094e0e",
+  "commits": [
+    {
+      "id": "d0aef659d00dfed42e5aa3f146384a2c03864caf",
+      "message": "fix(quality): WIP 保存回答覆盖修复与三版复测证据",
+      "slices": [
+        "AC1",
+        "AC2",
+        "AC3"
+      ],
+      "files": 464
+    }
+  ],
+  "scopeReason": "提示、工具、测试、CI及冻结证据已经联合验证，并由摘要绑定，按一个完整候选保存。后续文档回执单独提交。",
+  "excludedPaths": [
+    ".local/",
+    ".logs/"
+  ],
+  "unrelatedDirtyPaths": [],
+  "verification": {
+    "stagedScope": "PASS",
+    "sourceHashesMatchValidatedRevision": 7,
+    "stagedWorktreeMatch": "PASS",
+    "diffCheck": "PASS",
+    "credentialPatterns": "NO_FINDINGS",
+    "reportVerify": "PASS",
+    "offlineTests": {
+      "passed": 872,
+      "skipped": 102,
+      "finalToolTestsPassed": 47,
+      "method": "Reuse matching source fingerprints and existing logs"
+    },
+    "realModelQuality": {
+      "passed": 58,
+      "total": 60,
+      "result": "FAIL"
+    },
+    "additionalModelCalls": 0
+  },
+  "push": "NOT_EXECUTED",
+  "merge": "NOT_EXECUTED",
+  "remoteCI": "NOT_EXECUTED",
+  "deploy": "NOT_EXECUTED",
+  "mainCommitUnchanged": "7aa205f7f4597720fb560277a0390be18b094e0e",
+  "blockers": [
+    "Q02为图像清理与槽位释放添加无依据顺序",
+    "control-2/A10把发布响应未知回查扩大到一般重试"
+  ],
+  "downstreamRequirements": [
+    "修复剩余事实关系与范围问题后重新验证；新增真实调用须另有明确额度",
+    "必要验证通过后按既有授权推进正常合并和远程main交付"
+  ],
+  "receiptCommitLookup": "git log -1 --format=%H -- docs/qa/answer-coverage-security-20261109/DELIVERY_RESULT.json"
+}

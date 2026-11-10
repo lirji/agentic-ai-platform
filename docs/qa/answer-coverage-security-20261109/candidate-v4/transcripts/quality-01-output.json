@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513:81d0eebe-03d6-4d5a-abd4-73423918abba",
+  "answer": "**结论：** 扫描PDF（OCR）最多10页；原生PDF保留原有200页上限，二者限制不同，OCR的10页限制不适用于原生PDF。[1]\n\n- **扫描PDF OCR：** profile最多10页；同时受200DPI、每页最多500万像素、整份最多5000万像素的约束，并在分配光栅前校验尺寸、旋转、UserUnit及有限值。[1]\n- **原生PDF：** 旧PDF原生200页上限不变。[1]\n- **共同资源限制：** 两类处理都保留原10MiB文件、1MiB总提取文字、4MiB stdout、64KiB stderr、父进程20秒总期限/槽位/取消回收等约束。[1]"
+}

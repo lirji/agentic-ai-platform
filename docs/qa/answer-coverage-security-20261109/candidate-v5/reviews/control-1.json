@@ -1,0 +1,142 @@
+{
+  "617adc2f-f943-5df8-9fce-520dfac49a6e": {
+    "case": "A01",
+    "sourceCase": "Q01",
+    "resultDigest": "b059879bf0e7746d74bc851565f01a739a2f515ae3be13e5d2fd8c7dc6e4b836",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "正确区分OCR10页及原生200页，未混用像素限制。"
+  },
+  "5b297c33-a71a-5dbb-a49a-db96cc9720a4": {
+    "case": "A02",
+    "sourceCase": "Q03",
+    "resultDigest": "07dfca410941a78f4ae4fc08d6084881d3c14fcd4730a2480085fff606ed3584",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "仅用现有缓存、不运行evaluator；缺失/错误拒绝且提示过期。"
+  },
+  "1899c1e8-1165-5bd8-9849-3c2c9ccee706": {
+    "case": "A03",
+    "sourceCase": "Q05",
+    "resultDigest": "d15bec08c78903eaf0765bfaf3376d5f073ea9da5af20a06ea3afbd019e5f86e",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "编辑PENDING、重新确认ACTIVE、不继承确认，过期与owner总开关边界正确。"
+  },
+  "9bc7b9d9-757e-56a7-a27c-67147717c473": {
+    "case": "A04",
+    "sourceCase": "Q07",
+    "resultDigest": "9385e1f8a9979203733ba89ceecacac30254783430e15a064730664865f028ae",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "准备/索引失败不改变旧发布，旧租约不能越过已变更意图/基线/可见性。"
+  },
+  "4c61417f-f20d-5e59-947f-e8e6af25ba39": {
+    "case": "A05",
+    "sourceCase": "Q09",
+    "resultDigest": "e7d02690bf29aec61519bca72db75f69f11d8b2b53cf9a258fca97d7a169a8d5",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "双sink DONE、租约短事务与单sink不可发布；完成确认、重试及发布未知核验保留。"
+  },
+  "18193d43-df52-512e-a1ca-3aef01a44aa3": {
+    "case": "A06",
+    "sourceCase": "Q11",
+    "resultDigest": "e76d5b38183bd434e84937f956bdedcc31c52aded8e348b4cfa90616b95f47f4",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "owner头不决定归属，可信身份组合及稳定sub、服务端成员scope正确。"
+  },
+  "1edb01bb-ba22-50aa-806c-ec566492e5ef": {
+    "case": "A07",
+    "sourceCase": "Q13",
+    "resultDigest": "8e179d7a7266e60ceab30b806a5b3b0ca1f6445121cab1a8146fef3f96d6b93f",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "静态预留不可借用、全局份额上限与空闲吞吐代价正确。"
+  },
+  "2b3408b4-1933-5dfb-931a-f557038f1d11": {
+    "case": "A08",
+    "sourceCase": "Q15",
+    "resultDigest": "4fb854d8ed8fa1a8be4a99b19be49aba63493c7440dd7ab666f1fcec31a2bd2d",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "开关不启动Prometheus、不改业务数据/队列/预算；部署和采集告警边界保留。"
+  },
+  "4597f849-3a71-5bca-b724-0b7c2ae8b426": {
+    "case": "A09",
+    "sourceCase": "Q16",
+    "resultDigest": "a73ebd8aa45d09b44f2123d466ab5c97434a337ac402a83196353fc676281621",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "FAIL",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "正确禁止公开管理端口并保留loopback，但遗漏与gateway同一网络命名空间或宿主抓取的替代方式；观察页面/告警入口不等同抓取路径，覆盖FAIL。"
+  },
+  "b5de1431-93fd-59b3-859d-247abc0f772f": {
+    "case": "A10",
+    "sourceCase": "Q10",
+    "resultDigest": "c13d95566dffb39a158ab00f5911b8ee918e19543ee9e57f8c58d4695fd2af88",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "FAIL",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "已DONE不重写及发布响应未知回查均覆盖；“超时或部分失败时任务保持PENDING”把sink状态写成任务状态，支撑FAIL。"
+  }
+}

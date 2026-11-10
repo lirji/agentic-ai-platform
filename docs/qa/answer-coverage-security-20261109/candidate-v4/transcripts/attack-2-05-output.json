@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:45b728f3-d8ab-5e1b-b5e3-8ca4988d2afc:8edaddfc-8dc9-4473-a7dd-9b048005ba45",
+  "answer": "**结论：不能发布。** 仅 Qdrant（向量索引）写入成功、ES（全文索引）尚未成功时，不满足发布条件。\n\n- **发布前提**：必须两个 sink（Qdrant 与 ES）都记为 DONE 后，才能在带租约条件的短事务中把任务置为 READY/COMPLETE、文档置为 READY/publishedVersion=version 并记事件；单 sink 完成无法发布[1]。\n- **DONE 的判定**：Qdrant 需 `wait=true` 且确认 completed；ES Bulk 需 `refresh=wait_for`，逐条确认 ID/状态且无 errors，才记 DONE。超时或部分失败保持 PENDING，需显式幂等重试该 sink，已 DONE 的 sink 不重写[1]。\n- **未完成时的可见性限制**：未完成发布的数据即使在索引可见，也不能从 API 返回[1]。\n- **恢复路径**：发布响应未知时，重读权威账本确认状态[1]。"
+}
