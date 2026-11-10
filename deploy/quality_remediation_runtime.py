@@ -27,8 +27,11 @@ from quality_security_runtime import ADMIN_COMMAND_TIMEOUT_SECONDS, WORK, Runtim
 ADDITIONAL_CALLS = 80
 BASELINE_CALLS = 60
 THIRD_REVISION_CALL_LIMIT = 162
+FOURTH_REVISION_CALL_LIMIT = 222
 SUPPLEMENTAL_CHAT_GRANT = Decimal("2.000000")
 SUPPLEMENTAL_CHAT_PROFILE = "qs-coverage-v3-chat"
+FOURTH_CHAT_GRANT = Decimal("3.000000")
+FOURTH_CHAT_PROFILE = "qs-coverage-v4-chat"
 
 
 class RunStage(StrEnum):
@@ -44,6 +47,7 @@ class CandidateRevision(StrEnum):
     V1 = "v1"
     V2 = "v2"
     V3 = "v3"
+    V4 = "v4"
 
 
 class Command(StrEnum):
@@ -95,8 +99,25 @@ def require_remaining_budget(accounts, chat, embedding):
             raise RuntimeError("REMAINING_BUDGET_INSUFFICIENT:" + kind)
 
 
+def funding_account(ident):
+    """读取已登记账户，保留未知占额；缺失账户不能被当成新额度或零余额。"""
+    row = (
+        local.mysql(
+            "SELECT limit_amount,held_amount,booked_amount FROM "
+            f"agentic_tasks_test_qs20261109.usage_account WHERE account_id='{ident}';"
+        )
+        .strip()
+        .split("\t")
+    )
+    if len(row) != 3:
+        raise RuntimeError("SUPPLEMENTAL_ACCOUNT_MISSING")
+    return dict(zip(("limit", "held", "booked"), row, strict=True))
+
+
 class RemediationRuntime(Runtime):
     """只隔离命令键/状态/结果，父类固定的数据库与资金manifest身份保持不变。"""
+
+    additional_chat_grant = Decimal(0)
 
     @property
     def output(self):
@@ -282,6 +303,12 @@ class FinalRemediationRuntime(RemediationRuntime):
 class ThirdRemediationRuntime(FinalRemediationRuntime):
     """第三版先用原余额做质量组，再以独立新增2元完成配对；授权参数必须匹配。"""
 
+    # 新版复用登记协议，旧版资金身份、文案和价格保持逐字段兼容。
+    funding_revision = CandidateRevision.V3
+    additional_chat_grant = SUPPLEMENTAL_CHAT_GRANT
+    supplemental_chat_profile = SUPPLEMENTAL_CHAT_PROFILE
+    previous_grant = Decimal("8.000000")
+
     @property
     def output(self):
         return REMEDIATION_OUT / "candidate-v3"
@@ -304,10 +331,9 @@ class ThirdRemediationRuntime(FinalRemediationRuntime):
 
     @property
     def grant_summary(self):
-        original = Decimal(super().grant_summary["unchangedCumulativeGrantCny"])
         return {
-            "cumulativeGrantCny": str(original + SUPPLEMENTAL_CHAT_GRANT),
-            "additionalChatGrantCny": str(SUPPLEMENTAL_CHAT_GRANT),
+            "cumulativeGrantCny": str(self.previous_grant + self.additional_chat_grant),
+            "additionalChatGrantCny": str(self.additional_chat_grant),
         }
 
     @property
@@ -324,29 +350,31 @@ class ThirdRemediationRuntime(FinalRemediationRuntime):
         manifest.update(
             commandId=self.evaluation_key("funding:CHAT"),
             accountId=self.evaluation_key("account:CHAT"),
-            sponsorRef="user-approved-coverage-v3",
-            fundingSourceRef="coverage-v3-additional-chat-grant",
-            limitAmount=str(SUPPLEMENTAL_CHAT_GRANT),
+            sponsorRef=f"user-approved-coverage-{self.funding_revision}",
+            fundingSourceRef=f"coverage-{self.funding_revision}-additional-chat-grant",
+            limitAmount=str(self.additional_chat_grant),
         )
         for profile in manifest["profiles"]:
             profile.update(
-                profileId=SUPPLEMENTAL_CHAT_PROFILE, priceVersion=SUPPLEMENTAL_CHAT_PROFILE
+                profileId=self.supplemental_chat_profile,
+                priceVersion=self.supplemental_chat_profile,
             )
         for binding in manifest["bindings"]:
             binding.update(
-                profileId=SUPPLEMENTAL_CHAT_PROFILE, priceVersion=SUPPLEMENTAL_CHAT_PROFILE
+                profileId=self.supplemental_chat_profile,
+                priceVersion=self.supplemental_chat_profile,
             )
         return manifest
 
     def prepare_supplemental_funding(self):
         """仅CLI完成新增授权核对后进入；中央BOOTSTRAP以固定命令幂等执行。"""
         manifest = self.supplemental_manifest(read_json(WORK / "funding-CHAT.json"))
-        path = WORK / "funding-coverage-v3-CHAT.json"
+        path = WORK / f"funding-coverage-{self.funding_revision}-CHAT.json"
         if path.exists() and read_json(path) != manifest:
             raise ValueError("FUNDING_MANIFEST_DRIFT")
         local.private(path, json.dumps(manifest))
         process = self.start(
-            "admin-v3-CHAT",
+            f"admin-{self.funding_revision}-CHAT",
             [
                 "java",
                 "-jar",
@@ -358,44 +386,32 @@ class ThirdRemediationRuntime(FinalRemediationRuntime):
             ],
         )
         if process.wait(timeout=ADMIN_COMMAND_TIMEOUT_SECONDS) != 0:
-            raise RuntimeError("FUNDING_BOOTSTRAP_FAILED:V3_CHAT")
+            raise RuntimeError(f"FUNDING_BOOTSTRAP_FAILED:{self.funding_revision.upper()}_CHAT")
 
     def usage_profiles(self):
         """质量组使用旧余额，配对组用新增授权；Embedding仍沿原账户。"""
         profiles = super().usage_profiles()
         if getattr(self, "active_label", "quality").removesuffix("-recovery") != "quality":
-            profiles["CHAT"]["profileId"] = SUPPLEMENTAL_CHAT_PROFILE
+            profiles["CHAT"]["profileId"] = self.supplemental_chat_profile
         return profiles
 
     def funding_accounts(self):
         """新旧CHAT账户分列核验，不能以总余额掩盖当前绑定账户不足。"""
         original = super().accounts()
         ident = self.evaluation_key("account:CHAT")
-        row = (
-            local.mysql(
-                "SELECT limit_amount,held_amount,booked_amount FROM "
-                f"agentic_tasks_test_qs20261109.usage_account WHERE account_id='{ident}';"
-            )
-            .strip()
-            .split("\t")
-        )
-        if len(row) != 3:
-            raise RuntimeError("SUPPLEMENTAL_ACCOUNT_MISSING")
         return {
             "CHAT_ORIGINAL": original["CHAT"],
-            "CHAT_SUPPLEMENTAL": dict(zip(("limit", "held", "booked"), row, strict=True)),
+            "CHAT_SUPPLEMENTAL": funding_account(ident),
             "EMBEDDING": original["EMBEDDING"],
         }
 
     def accounts(self):
         """总审计合并同种用途金额，同时保留funding_accounts的独立池校验。"""
         accounts = self.funding_accounts()
+        chat_accounts = [account for kind, account in accounts.items() if kind.startswith("CHAT")]
         return {
             "CHAT": {
-                field: str(
-                    Decimal(accounts["CHAT_ORIGINAL"][field])
-                    + Decimal(accounts["CHAT_SUPPLEMENTAL"][field])
-                )
+                field: str(sum(Decimal(account[field]) for account in chat_accounts))
                 for field in ("limit", "held", "booked")
             },
             "EMBEDDING": accounts["EMBEDDING"],
@@ -418,7 +434,9 @@ class ThirdRemediationRuntime(FinalRemediationRuntime):
                     pending.append((group, 1))
             chat, embedding, _ = self.estimate(pending)
             require_remaining_budget(
-                {"CHAT": accounts[key], "EMBEDDING": accounts["EMBEDDING"]}, chat, embedding
+                {"CHAT": accounts[key], "EMBEDDING": accounts["EMBEDDING"]},
+                chat,
+                embedding,
             )
         return super().preflight()
 
@@ -426,6 +444,74 @@ class ThirdRemediationRuntime(FinalRemediationRuntime):
         """新增资金不覆盖旧审计，以附加快照保留各账户实际占额。"""
         super().audit()
         write_once(self.output / "funding-accounts.json", self.funding_accounts())
+
+
+class FourthRemediationRuntime(ThirdRemediationRuntime):
+    """第四版整轮绑定新资金池，旧两池继续审计，不能借余额绕过当前池检查。"""
+
+    funding_revision = CandidateRevision.V4
+    additional_chat_grant = FOURTH_CHAT_GRANT
+    supplemental_chat_profile = FOURTH_CHAT_PROFILE
+    previous_grant = Decimal("10.000000")
+
+    @property
+    def output(self):
+        return REMEDIATION_OUT / "candidate-v4"
+
+    @property
+    def state_file(self):
+        return WORK / "coverage-remediation-v4-state.json"
+
+    @property
+    def continuation_source_file(self):
+        return WORK / "coverage-remediation-v3-state.json"
+
+    @property
+    def log_directory(self):
+        return ROOT / ".logs/answer-coverage-security-20261109/candidate-v4"
+
+    @property
+    def additional_call_limit(self):
+        return FOURTH_REVISION_CALL_LIMIT
+
+    def evaluation_key(self, name):
+        return stable_id("coverage-remediation-v4:" + name)
+
+    def usage_profiles(self):
+        """全部60题使用新CHAT授权，Embedding沿用原资金与模型。"""
+        profiles = Runtime.usage_profiles(self)
+        profiles["CHAT"]["profileId"] = self.supplemental_chat_profile
+        return profiles
+
+    def funding_accounts(self):
+        """旧v3账户身份固定，不能因当前evaluation_key变化漏计其历史占额。"""
+        accounts = super().funding_accounts()
+        return {
+            "CHAT_ORIGINAL": accounts["CHAT_ORIGINAL"],
+            "CHAT_V3": funding_account(stable_id("coverage-remediation-v3:account:CHAT")),
+            "CHAT_V4": accounts["CHAT_SUPPLEMENTAL"],
+            "EMBEDDING": accounts["EMBEDDING"],
+        }
+
+    def preflight(self):
+        """先检当前新池和Embedding，再由原累计预检冻结提示并核对总调用数。"""
+        accounts = self.funding_accounts()
+        if Decimal(accounts["CHAT_V4"]["limit"]) != self.additional_chat_grant:
+            raise RuntimeError("SUPPLEMENTAL_GRANT_MISMATCH")
+        pending = [
+            (group, 1)
+            for label, group in self.planned_labels.items()
+            if label not in self.state["runs"]
+        ]
+        if self.active_label in RECOVERY_LABELS and self.active_label not in self.state["runs"]:
+            pending.append((RECOVERY_LABELS[self.active_label], 1))
+        chat, embedding, _ = self.estimate(pending)
+        require_remaining_budget(
+            {"CHAT": accounts["CHAT_V4"], "EMBEDDING": accounts["EMBEDDING"]},
+            chat,
+            embedding,
+        )
+        return RemediationRuntime.preflight(self)
 
 
 def main():
@@ -438,22 +524,20 @@ def main():
         default=CandidateRevision.V1,
     )
     parser.add_argument("--approved-additional-calls", type=int, required=True)
-    parser.add_argument("--approved-extra-chat-cny", choices=("0", "2"), default="0")
+    parser.add_argument("--approved-extra-chat-cny", choices=("0", "2", "3"), default="0")
     parser.add_argument("--label", choices=tuple(LABELS | RECOVERY_LABELS))
     args = parser.parse_args()
     runtime_type = {
         CandidateRevision.V1: RemediationRuntime,
         CandidateRevision.V2: FinalRemediationRuntime,
         CandidateRevision.V3: ThirdRemediationRuntime,
+        CandidateRevision.V4: FourthRemediationRuntime,
     }[args.revision]
     # 此处只读取静态范围；不能在授权核对前运行会写私密状态的__init__。
     proposal = object.__new__(runtime_type)
     if args.approved_additional_calls != proposal.additional_call_limit:
         raise ValueError("CALL_APPROVAL_MISMATCH")
-    expected_grant = (
-        SUPPLEMENTAL_CHAT_GRANT if args.revision == CandidateRevision.V3 else Decimal(0)
-    )
-    if Decimal(args.approved_extra_chat_cny) != expected_grant:
+    if Decimal(args.approved_extra_chat_cny) != proposal.additional_chat_grant:
         raise ValueError("FUNDING_APPROVAL_MISMATCH")
     if (
         args.label
@@ -481,7 +565,8 @@ def main():
                     asyncio.run(runtime.execute(args.label, group))
                 else:
                     runtime.collect(
-                        args.label, LABELS.get(args.label, RECOVERY_LABELS.get(args.label))
+                        args.label,
+                        LABELS.get(args.label, RECOVERY_LABELS.get(args.label)),
                     )
             else:
                 raise ValueError("RUN_LABEL_REQUIRED")

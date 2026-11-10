@@ -1,0 +1,62 @@
+{
+  "base": "9bd6e18a5126b99da03670237c39d0740249b3a9",
+  "branch": "fix/answer-coverage-security-20261109",
+  "sha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "b7ab7692e39c3231c9882283ab1d2ba1c818b6373371e2cd658d5aea1c79a509",
+    "deploy/quality_security.py": "da7ad85466bea9e1127c3866d29200a496246b49eb38a4caa41cdaae63443145",
+    "deploy/quality_security_runtime.py": "9496ccb70cdcb4df40ade7ada49699a86f16efbb70a03d5c8fcf424fdfc3c4f4",
+    "deploy/quality_remediation_runtime.py": "387d012e4ec5c8fe0cf71c9f410dca0c0221faaf062a6eb9342c27614057ddc8",
+    "deploy/quality_remediation_report.py": "e628bd8fb85b08c5f8cac75e59c69005126813f874a639769f7bc8c40c8fcca8",
+    "ai-runtime/tests/test_quality_remediation.py": "d28a7f5aae980fb9e4376fdfd1ce214c09c16517cffca6b0e355219c8609de8f",
+    ".github/workflows/ci.yml": "67ad3a8f02e21cb17f7da9b705ab429ff0a8512df992db47271bcf97bb94c57d"
+  },
+  "promptDigest": "c9c5b951eb21694dd0b80c10ce8cd49e5789d9b950cc38781add160a023c0d2e",
+  "pythonFull": {
+    "passed": 884,
+    "skipped": 102,
+    "warnings": 34,
+    "log": ".logs/answer-coverage-security-20261109/v4-python-all.log"
+  },
+  "targeted": {
+    "passed": 89,
+    "log": ".logs/answer-coverage-security-20261109/v4-targeted.log"
+  },
+  "format": "PASS:173 files",
+  "static": "PASS",
+  "mypy": "PASS:100 source files",
+  "compile": "PASS",
+  "contracts": "PASS:16 contracts and 16 shared fixtures",
+  "usageBoundaries": "PASS:330 Java sources,5-layer DAG,8 tables/94 commented columns",
+  "historicalReports": "PASS:original,v1,v2,v3",
+  "oldRegisteredV3ManifestExactMatch": true,
+  "originalLedgersUnchanged": true,
+  "codeHygieneStatus": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+  "codeHygieneLimitations": [
+    {
+      "code": "FORMAT_TOOL_NOT_AVAILABLE",
+      "check": "FORMAT"
+    }
+  ],
+  "codeHygieneAdvisories": [
+    {
+      "findingId": "HF-001",
+      "ruleId": "HYG-MAGIC-NUMBER",
+      "check": "CODE_HYGIENE",
+      "area": "magic-value",
+      "severity": "ADVISORY",
+      "file": "deploy/quality_remediation_runtime.py",
+      "line": 30,
+      "excerpt": "FOURTH_REVISION_CALL_LIMIT = 222",
+      "message": "business-significant number inline; classify as constant / configuration / enum"
+    }
+  ],
+  "initialCheckAdjustments": [
+    "Initial root-directory Ruff invocation selected a different fallback format; repeated from canonical ai-runtime working directory and changed only touched files.",
+    "Decimal zero literal adjusted to Decimal(0) before targeted and full tests."
+  ],
+  "realModelValidation": "UNVERIFIED",
+  "fundingRegistration": "NOT_EXECUTED",
+  "newModelCalls": 0,
+  "v4ReportVerification": "UNVERIFIED:requires new real results",
+  "deliveryGate": "HOLD"
+}

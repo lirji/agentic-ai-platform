@@ -172,15 +172,19 @@ def test_report_rejects_extra_groups_paths_and_double_counting(remediation, tmp_
 
 
 @pytest.mark.parametrize(
-    "calls,grant,label,error",
+    "revision,calls,grant,label,error",
     [
-        (102, "2", "quality", "CALL_APPROVAL_MISMATCH"),
-        (162, "0", "quality", "FUNDING_APPROVAL_MISMATCH"),
-        (162, "2", "probe-control", "UNAPPROVED_RUN_LABEL"),
+        ("v3", 102, "2", "quality", "CALL_APPROVAL_MISMATCH"),
+        ("v3", 162, "0", "quality", "FUNDING_APPROVAL_MISMATCH"),
+        ("v3", 162, "2", "probe-control", "UNAPPROVED_RUN_LABEL"),
+        ("v4", 162, "3", "quality", "CALL_APPROVAL_MISMATCH"),
+        ("v4", 222, "2", "quality", "FUNDING_APPROVAL_MISMATCH"),
+        ("v4", 222, "0", "quality", "FUNDING_APPROVAL_MISMATCH"),
+        ("v4", 222, "3", "probe-control", "UNAPPROVED_RUN_LABEL"),
     ],
 )
-def test_v3_rejects_missing_grant_or_unplanned_run_before_side_effects(
-    remediation, monkeypatch, calls, grant, label, error
+def test_new_revision_rejects_missing_grant_or_unplanned_run_before_side_effects(
+    remediation, monkeypatch, revision, calls, grant, label, error
 ):
     """授权不匹配时不能先写fixture、启动服务或创建资金账户。"""
     monkeypatch.setattr(
@@ -190,7 +194,7 @@ def test_v3_rejects_missing_grant_or_unplanned_run_before_side_effects(
             "quality_remediation_runtime.py",
             "run",
             "--revision",
-            "v3",
+            revision,
             "--approved-additional-calls",
             str(calls),
             "--approved-extra-chat-cny",
@@ -230,6 +234,8 @@ def test_v3_funding_keeps_old_manifest_and_routes_only_pairs_to_new_account(reme
     assert runner.supplemental_manifest(original) == proposed
     assert proposed["accountId"] != original["accountId"]
     assert proposed["fundingSourceRef"] != original["fundingSourceRef"]
+    assert proposed["sponsorRef"] == "user-approved-coverage-v3"
+    assert proposed["fundingSourceRef"] == "coverage-v3-additional-chat-grant"
     assert proposed["limitAmount"] == "2.000000"
     assert proposed["profiles"][0]["pricing"] == original["profiles"][0]["pricing"]
     for label in runner.planned_labels:
@@ -242,7 +248,16 @@ def test_v3_funding_keeps_old_manifest_and_routes_only_pairs_to_new_account(reme
         assert profiles["EMBEDDING"]["profileId"] == "qs-20261109-embedding"
 
 
-def test_v3_continues_terminal_v2_without_rewriting_its_state(remediation, tmp_path, monkeypatch):
+@pytest.mark.parametrize(
+    "runtime_name,previous_revision,call_limit,total",
+    [
+        ("ThirdRemediationRuntime", "v2", 162, 222),
+        ("FourthRemediationRuntime", "v3", 222, 282),
+    ],
+)
+def test_new_revision_continues_previous_terminal_state_without_rewriting(
+    remediation, tmp_path, monkeypatch, runtime_name, previous_revision, call_limit, total
+):
     monkeypatch.setattr(remediation, "WORK", tmp_path)
     old = {
         "processes": [],
@@ -250,15 +265,16 @@ def test_v3_continues_terminal_v2_without_rewriting_its_state(remediation, tmp_p
         "approvedBudget": {"CHAT": "6", "EMBEDDING": "2"},
         "datasets": {"quality": "unchanged"},
     }
-    path = tmp_path / "coverage-remediation-v2-state.json"
+    path = tmp_path / f"coverage-remediation-{previous_revision}-state.json"
     path.write_text(json.dumps(old))
     before = path.read_bytes()
-    runner = object.__new__(remediation.ThirdRemediationRuntime)
+    runner = object.__new__(getattr(remediation, runtime_name))
     state = runner.initial_state()
     assert path.read_bytes() == before
     assert state["approvedBudget"] == old["approvedBudget"]
     assert state["datasets"] == old["datasets"] and state["runs"] == {}
-    assert state["approvedAdditionalCalls"] == 162 and runner.max_total_chat_calls == 222
+    assert state["approvedAdditionalCalls"] == call_limit
+    assert runner.max_total_chat_calls == total
     old["processes"] = [{"name": "active", "pid": 123}]
     path.write_text(json.dumps(old))
     with pytest.raises(RuntimeError, match="BASELINE_NOT_TERMINAL"):
@@ -307,12 +323,13 @@ def test_v3_checks_both_funding_pools_and_all_60_calls(
         runner.preflight()
 
 
-def test_v3_review_never_selects_a_baseline_from_mechanism_eligibility(
-    remediation, tmp_path, monkeypatch
+@pytest.mark.parametrize("runtime_name", ["ThirdRemediationRuntime", "FourthRemediationRuntime"])
+def test_new_revision_review_never_selects_baseline_from_mechanism_eligibility(
+    remediation, tmp_path, monkeypatch, runtime_name
 ):
     """完整业务验收尚未判定时，机制eligible只用于保存评分，不能自动发布基线。"""
     monkeypatch.setattr(remediation, "REMEDIATION_OUT", tmp_path)
-    runner = object.__new__(remediation.ThirdRemediationRuntime)
+    runner = object.__new__(getattr(remediation, runtime_name))
     result = {"outcome": "SUCCEEDED"}
     remediation.write_once(
         runner.output / "reviews/quality.json",
@@ -340,3 +357,108 @@ def test_v3_review_never_selects_a_baseline_from_mechanism_eligibility(
     runner.review("quality")
     assert len(calls) == 2
     assert not (runner.output / "baseline-receipt.json").exists()
+
+
+def test_v4_routes_every_group_to_separate_grant_and_preserves_v3_manifest(remediation):
+    """整轮路由一致，不让质量组继续消费接近耗尽的原CHAT账户。"""
+    original = {
+        "commandId": "original-command",
+        "accountId": "original-account",
+        "limitAmount": "6.000000",
+        "profiles": [{"profileId": "original", "priceVersion": "old", "pricing": {"n": 1}}],
+        "bindings": [{"profileId": "original", "priceVersion": "old", "tenantId": "fixed"}],
+    }
+    before = json.dumps(original, sort_keys=True)
+    previous = object.__new__(remediation.ThirdRemediationRuntime)
+    runner = object.__new__(remediation.FourthRemediationRuntime)
+    old_manifest = previous.supplemental_manifest(original)
+    manifest = runner.supplemental_manifest(original)
+    assert json.dumps(original, sort_keys=True) == before
+    assert previous.supplemental_manifest(original) == old_manifest
+    assert runner.supplemental_manifest(original) == manifest
+    assert manifest["accountId"] not in (original["accountId"], old_manifest["accountId"])
+    assert manifest["commandId"] != old_manifest["commandId"]
+    assert manifest["fundingSourceRef"] == "coverage-v4-additional-chat-grant"
+    assert manifest["limitAmount"] == "3.000000"
+    assert manifest["profiles"][0]["pricing"] == original["profiles"][0]["pricing"]
+    for label in (*runner.planned_labels, "quality-recovery"):
+        runner.active_label = label
+        profiles = runner.usage_profiles()
+        assert profiles["CHAT"]["profileId"] == "qs-coverage-v4-chat"
+        assert profiles["EMBEDDING"]["profileId"] == "qs-20261109-embedding"
+
+
+def test_v4_audit_includes_both_historical_chat_pools(remediation, monkeypatch):
+    """新池只改变本轮路由，不能从累计审计中抹去v3的占额。"""
+    runner = object.__new__(remediation.FourthRemediationRuntime)
+    monkeypatch.setattr(
+        remediation.Runtime,
+        "accounts",
+        lambda _: {
+            "CHAT": {"limit": "6.000000", "held": "5.782608", "booked": "0.000000"},
+            "EMBEDDING": {"limit": "2.000000", "held": "0.000000", "booked": "0.016932"},
+        },
+    )
+    balances = {
+        runner.evaluation_key("account:CHAT"): {
+            "limit": "3.000000",
+            "held": "0.700000",
+            "booked": "0.000000",
+        },
+        remediation.stable_id("coverage-remediation-v3:account:CHAT"): {
+            "limit": "2.000000",
+            "held": "1.153864",
+            "booked": "0.000000",
+        },
+    }
+    monkeypatch.setattr(remediation, "funding_account", balances.__getitem__)
+    assert set(runner.funding_accounts()) == {"CHAT_ORIGINAL", "CHAT_V3", "CHAT_V4", "EMBEDDING"}
+    assert runner.accounts()["CHAT"] == {
+        "limit": "11.000000",
+        "held": "7.636472",
+        "booked": "0.000000",
+    }
+    assert runner.accounts()["EMBEDDING"]["booked"] == "0.016932"
+
+
+@pytest.mark.parametrize(
+    "new_held,embedding_booked,count,error",
+    [
+        ("0", "0.016932", 222, None),
+        ("0.5", "0.016932", 222, "REMAINING_BUDGET_INSUFFICIENT:CHAT"),
+        ("0", "1.5", 222, "REMAINING_BUDGET_INSUFFICIENT:EMBEDDING"),
+        ("0", "0.016932", 223, "REMAINING_CALL_ALLOWANCE_INSUFFICIENT"),
+    ],
+)
+def test_v4_checks_new_pool_even_when_combined_balance_is_sufficient(
+    remediation, tmp_path, monkeypatch, new_held, embedding_booked, count, error
+):
+    monkeypatch.setattr(remediation, "REMEDIATION_OUT", tmp_path)
+    monkeypatch.setattr(remediation.local, "mysql", lambda _: str(count))
+    runner = object.__new__(remediation.FourthRemediationRuntime)
+    runner.state = {"runs": {}}
+    runner.active_label = "quality"
+    runner.phase = remediation.RunStage.FINAL
+    runner.frozen = {"specDigest": "fixed"}
+    accounts = {
+        "CHAT_ORIGINAL": {"limit": "6", "held": "5.782608", "booked": "0"},
+        "CHAT_V3": {"limit": "2", "held": "1.153864", "booked": "0"},
+        "CHAT_V4": {"limit": "3", "held": new_held, "booked": "0"},
+        "EMBEDDING": {"limit": "2", "held": "0", "booked": embedding_booked},
+    }
+    runner.funding_accounts = lambda: accounts
+    runner.estimate = lambda groups: (
+        sum(Decimal("0.9" if group == "quality" else "0.45") * n for group, n in groups),
+        Decimal("0.6"),
+        8200,
+    )
+    if error:
+        with pytest.raises(RuntimeError, match=error):
+            runner.preflight()
+    else:
+        assert runner.preflight()["cumulativeGrantCny"] == "13.000000"
+        runner.state["runs"]["quality"] = {"collected": True}
+        runner.active_label = "control-1"
+        accounts["CHAT_V4"]["held"] = "1.1"
+        # 首组已完成时仅预留剩余40题，不重复预留完整60题。
+        runner.preflight()

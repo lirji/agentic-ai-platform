@@ -1,6 +1,6 @@
 # 整改候选验收
 
-当前候选为第三版，最新验收见[candidate-v3/TEST_RESULT.md](candidate-v3/TEST_RESULT.md)：离线和真实60题验证均已完成，58/60质量通过；两项支撑失败，业务FAIL/HOLD，新增60次已用完。以下是第二版冻结验收记录，不适用于第三版代码。
+当前候选为第四版，最新验收见[candidate-v4/TEST_RESULT.md](candidate-v4/TEST_RESULT.md)：884项离线测试通过、102跳过；真实60题待新增调用/资金授权。第三版58/60及两项支撑失败见[candidate-v3/TEST_RESULT.md](candidate-v3/TEST_RESULT.md)。以下保留第二版冻结验收记录。
 
 ## 第二版历史验收
 

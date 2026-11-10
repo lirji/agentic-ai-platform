@@ -1,0 +1,38 @@
+{
+  "status": "AWAITING_EXPLICIT_APPROVAL",
+  "additionalChatCalls": 60,
+  "previousRemediationCallLimit": 162,
+  "proposedRemediationCallLimit": 222,
+  "proposedTotalChatCallLimit": 282,
+  "previousCumulativeGrantCny": "10.000000",
+  "additionalIndependentChatGrantCny": "3.000000",
+  "proposedCumulativeGrantCny": "13.000000",
+  "currentAccounts": {
+    "CHAT_ORIGINAL": {
+      "limit": "6.000000",
+      "held": "5.782608",
+      "booked": "0.000000"
+    },
+    "CHAT_SUPPLEMENTAL": {
+      "limit": "2.000000",
+      "held": "1.153864",
+      "booked": "0.000000"
+    },
+    "EMBEDDING": {
+      "limit": "2.000000",
+      "held": "0.000000",
+      "booked": "0.016932"
+    }
+  },
+  "currentInternalAndHeldCny": "6.953404",
+  "chatUpperCny": "2.776440",
+  "embeddingUpperCny": "0.60",
+  "projectedCumulativeUpperCny": "10.329844",
+  "maxChatRequestBytes": 8167,
+  "routing": "All 60 CHAT calls use new v4 account; EMBEDDING uses original account; both old CHAT accounts unchanged",
+  "oldV3ManifestUnchanged": true,
+  "originalLedgersUnchanged": true,
+  "fundingRegistration": "NOT_EXECUTED",
+  "newModelCalls": 0,
+  "scope": "One frozen 20 quality + two paired 10 control/10 attack rounds, no extra sampling or production deployment"
+}

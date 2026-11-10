@@ -110,12 +110,13 @@ def comparison(baseline=OUT, candidate=REMEDIATION_OUT):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="只重建已保存结果，不发模型请求")
     parser.add_argument("command", choices=("report", "verify"))
-    parser.add_argument("--candidate", choices=("draft", "final", "v3"), default="final")
+    parser.add_argument("--candidate", choices=("draft", "final", "v3", "v4"), default="final")
     args = parser.parse_args()
     directory = {
         "draft": REMEDIATION_OUT,
         "final": REMEDIATION_OUT / "candidate-v2",
         "v3": REMEDIATION_OUT / "candidate-v3",
+        "v4": REMEDIATION_OUT / "candidate-v4",
     }[args.candidate]
     result = comparison(candidate=directory)
     if args.command == "report":
