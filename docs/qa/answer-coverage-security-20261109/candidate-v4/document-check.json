@@ -1,11 +1,11 @@
 {
   "markdownFiles": 9,
-  "localLinks": 306,
+  "localLinks": 307,
   "tableRows": 166,
   "sourceHashesMatch": true,
   "allLocalLinksResolve": true,
   "tableAndFences": "PASS",
   "credentialPatterns": "NO_FINDINGS",
-  "credentialScanFiles": 10,
-  "scope": "v4 offline implementation and funding proposal; real model validation UNVERIFIED"
+  "credentialScanFiles": 12,
+  "scope": "v4 offline implementation, local WIP receipt and pending funding; real model validation UNVERIFIED"
 }
