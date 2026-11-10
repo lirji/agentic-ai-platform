@@ -1,0 +1,12 @@
+{
+  "status": "APPROVED",
+  "userReply": "继续，昨晚之后提交并推送远程分支",
+  "authorizationContext": "用户在明确60次/最多1.5元提案后要求继续；按完成后提交并推送当前远程任务分支理解后半句，已向用户说明。",
+  "additionalChatCalls": 60,
+  "approvedRemediationCallLimit": 283,
+  "approvedTotalChatCallLimit": 343,
+  "additionalIndependentChatGrantCny": "1.500000",
+  "approvedCumulativeGrantCny": "14.500000",
+  "scope": "One frozen 60-case v5 campaign; commit and normal push of current task branch; no extra sampling, no production deployment",
+  "proposal": "funding-proposal.json"
+}

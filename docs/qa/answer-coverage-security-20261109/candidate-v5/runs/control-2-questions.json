@@ -1,0 +1,928 @@
+{
+  "617adc2f-f943-5df8-9fce-520dfac49a6e": {
+    "questionId": "617adc2f-f943-5df8-9fce-520dfac49a6e",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "**询问点：** 扫描PDF的页数限制；原生PDF是否受同样限制。\n\n- **扫描PDF（OCR）：** 最多10页[1]。\n- **原生PDF：** 仍有原生200页上限，该上限不变[1]。因此原生PDF不受扫描PDF的“10页”限制，而是适用200页上限；两者属于不同类别，不能互相套用[1]。\n\n另需注意，扫描PDF还同时受每页500万像素、整份最多5000万像素、200DPI等资源边界约束[1]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "3a5ca73f-6b58-4cc1-a87a-a2586241544d",
+          "version": 1,
+          "chunkId": "f9cf99e55dbd28ca744f7bc9d89e772f50acd00f34bbd501c53346ccc85213c9",
+          "source": {
+            "displayName": "扫描PDF资源边界",
+            "locator": "utf8-bytes:0-847"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "3a5ca73f-6b58-4cc1-a87a-a2586241544d",
+        "version": 1,
+        "chunkId": "f9cf99e55dbd28ca744f7bc9d89e772f50acd00f34bbd501c53346ccc85213c9",
+        "textHash": "75504554bb50507001c13356e521ec84dd0ae41349b59880350ea09af1b1a532",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "扫描PDF资源边界",
+          "locator": "utf8-bytes:0-847"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 772,
+      "generationMs": 6901,
+      "verificationMs": 2238,
+      "totalMs": 9912
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "3a5ca73f-6b58-4cc1-a87a-a2586241544d",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "81bc2ca4-a323-4c4b-b8c3-c3760b89f5e1",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "f9cf99e55dbd28ca744f7bc9d89e772f50acd00f34bbd501c53346ccc85213c9",
+          "batchDigest": "f11aa8b2a7de6a6657c8dbce244e8fe310f6dee866e33d65e8bccec945b00351",
+          "textHash": "75504554bb50507001c13356e521ec84dd0ae41349b59880350ea09af1b1a532"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 724
+      }
+    }
+  },
+  "5b297c33-a71a-5dbb-a49a-db96cc9720a4": {
+    "questionId": "5b297c33-a71a-5dbb-a49a-db96cc9720a4",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "关于 XLSX 公式的重新计算和缓存值处理：\n\n- **不会重新计算**：XLSX 公式只读取文件中已有的缓存值，不运行 evaluator（求值程序）[1]。\n- **缺缓存或缓存错误时拒绝**：如果公式缺少缓存值，或缓存值有错误，则拒绝该公式[1]。\n- **有缓存仍会提示**：即使存在缓存值，也始终提示该缓存值可能已过期[1]。\n\n以上规则属于 XLSX 的读取边界，不涉及其他格式。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "9ae6245d-241f-42af-b61b-56137f69b992",
+          "version": 1,
+          "chunkId": "39cdba5943de05c4ef928ee1ca91b164aaf831660ac41909f863485490197ef8",
+          "source": {
+            "displayName": "表格读取与公式边界",
+            "locator": "utf8-bytes:0-723"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "9ae6245d-241f-42af-b61b-56137f69b992",
+        "version": 1,
+        "chunkId": "39cdba5943de05c4ef928ee1ca91b164aaf831660ac41909f863485490197ef8",
+        "textHash": "4026ff33783343ffd0d32197cb28f28c193897d96d52c767ff0c50c72e9b0a26",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "表格读取与公式边界",
+          "locator": "utf8-bytes:0-723"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 2121,
+      "generationMs": 3828,
+      "verificationMs": 240,
+      "totalMs": 6191
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "9ae6245d-241f-42af-b61b-56137f69b992",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "b95d06ea-92eb-473c-9bf5-8e1d90b736a2",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "39cdba5943de05c4ef928ee1ca91b164aaf831660ac41909f863485490197ef8",
+          "batchDigest": "f53e9bc65eb06361f0809515684979ec7d52718a84e34ed9f98d63d5238c0e6a",
+          "textHash": "4026ff33783343ffd0d32197cb28f28c193897d96d52c767ff0c50c72e9b0a26"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 1758
+      }
+    }
+  },
+  "1899c1e8-1165-5bd8-9849-3c2c9ccee706": {
+    "questionId": "1899c1e8-1165-5bd8-9849-3c2c9ccee706",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "不能直接认为编辑后下一轮即可使用。编辑后的记忆需按以下规则处理：\n\n- **编辑后状态**：EDIT会进入`PENDING`，不会静默继承原确认；需重新执行CONFIRM，显式进入`ACTIVE`后才可使用[1]。\n- **到期时间重算**：EDIT/CONFIRM会从当前数据库UTC时间重新计算到期时刻；过期后读取适配器立即排除，不依赖后台清理任务[1]。\n- **使用前重验**：S18C使用前后会重验revision、条目版本和到期时间，不持久复制正文到框架Store[2]。\n- **总开关**：owner总开关`enabled`可暂停全部使用；任何写操作推进revision，SET_ENABLED、CLEAR、FORGET、REJECT推进generation，使之前捕获代次的提议不能回填[2]。\n\n因此，编辑已确认记忆后，只有重新确认进入`ACTIVE`、未过期且总开关允许使用时，才可能在后续问答中使用；证据未明确保证“下一轮立即可用”，需以上述使用前后的重验结果为准[1][2]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "97b80c44-0575-49eb-a7c8-9025a4f7bed3",
+          "version": 1,
+          "chunkId": "11898cd9aad8f86946849b03f2970f7b6f4c72ba6f7f86b23a9a0faf1c1122f7",
+          "source": {
+            "displayName": "记忆确认与过期规则",
+            "locator": "utf8-bytes:0-984"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "97b80c44-0575-49eb-a7c8-9025a4f7bed3",
+          "version": 1,
+          "chunkId": "60224b295b31942a5ee17388e2015045f3fbd181d8ec6a3d2cc4cae5550e45ed",
+          "source": {
+            "displayName": "记忆确认与过期规则",
+            "locator": "utf8-bytes:876-1264"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "97b80c44-0575-49eb-a7c8-9025a4f7bed3",
+        "version": 1,
+        "chunkId": "11898cd9aad8f86946849b03f2970f7b6f4c72ba6f7f86b23a9a0faf1c1122f7",
+        "textHash": "f1ed1e43f7df498832985343191d9e284a2dbf9cef55a480f8da69e0f5232bd8",
+        "score": 0.03252247488101534,
+        "source": {
+          "displayName": "记忆确认与过期规则",
+          "locator": "utf8-bytes:0-984"
+        }
+      },
+      {
+        "documentId": "97b80c44-0575-49eb-a7c8-9025a4f7bed3",
+        "version": 1,
+        "chunkId": "60224b295b31942a5ee17388e2015045f3fbd181d8ec6a3d2cc4cae5550e45ed",
+        "textHash": "8696803fdbaa5c5f7199c9a80877f90e512591f841754ba834ec4456af5eeff3",
+        "score": 0.03252247488101534,
+        "source": {
+          "displayName": "记忆确认与过期规则",
+          "locator": "utf8-bytes:876-1264"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 588,
+      "generationMs": 2794,
+      "verificationMs": 92,
+      "totalMs": 3474
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "97b80c44-0575-49eb-a7c8-9025a4f7bed3",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "3f759206-5587-4a2c-9ad7-ff3ba9c93608",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "11898cd9aad8f86946849b03f2970f7b6f4c72ba6f7f86b23a9a0faf1c1122f7",
+          "batchDigest": "9a0d8ab8817e59a7148456508ccd1ff80f44ce73bd4a4b9bf4b4d4c198640522",
+          "textHash": "f1ed1e43f7df498832985343191d9e284a2dbf9cef55a480f8da69e0f5232bd8"
+        },
+        {
+          "documentId": "97b80c44-0575-49eb-a7c8-9025a4f7bed3",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "3f759206-5587-4a2c-9ad7-ff3ba9c93608",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "60224b295b31942a5ee17388e2015045f3fbd181d8ec6a3d2cc4cae5550e45ed",
+          "batchDigest": "9a0d8ab8817e59a7148456508ccd1ff80f44ce73bd4a4b9bf4b4d4c198640522",
+          "textHash": "8696803fdbaa5c5f7199c9a80877f90e512591f841754ba834ec4456af5eeff3"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 472
+      }
+    }
+  },
+  "9bc7b9d9-757e-56a7-a27c-67147717c473": {
+    "questionId": "9bc7b9d9-757e-56a7-a27c-67147717c473",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "结论：不会。准备/索引失败不改变旧发布指针，因此旧发布版不会因新版本处理失败而失效[1]。\n\n- 发布切换以 `(documentId, publishedRevision, publishedGeneration, publishedJobId)` 原子完成，三项发布值需全部为空或指向同一已完成作业，且源hash、profile、准备批次一致[1]。\n- 一个文档至多一个当前处理意图 `activeJobId`；准备/索引失败不改变旧发布指针[1]。\n- 新受理可以取代“已终止失败”的意图，但不能取代正在执行的意图[1]。\n- 恢复保留原文件、profile、代次、已接受提取物/准备包和已完成sink；旧任务即使仍持有有效租约，也不能覆盖已改变的 activeJobId、发布基线或可见性[1]。\n- 更新、重试、撤下和逻辑删除都不物理删除原文、准备包、索引、checkpoint或备份；清理是独立且尚未启用的流程[2]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+          "version": 1,
+          "chunkId": "b3d9c74cff93e5f7c884a1a81a70afc8cb7070878e88c8ff822738c4e75d590a",
+          "source": {
+            "displayName": "文档可见性与版本不变量",
+            "locator": "utf8-bytes:0-980"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+          "version": 1,
+          "chunkId": "a830500bd704e72c24b7c69ba00121d9542b06cac7db32e1c66812824ff59186",
+          "source": {
+            "displayName": "文档可见性与版本不变量",
+            "locator": "utf8-bytes:920-1149"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+        "version": 1,
+        "chunkId": "b3d9c74cff93e5f7c884a1a81a70afc8cb7070878e88c8ff822738c4e75d590a",
+        "textHash": "8023c240d489fbf144e41ad703c829dc185790578943feadb6a204fe9c58b5f7",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "文档可见性与版本不变量",
+          "locator": "utf8-bytes:0-980"
+        }
+      },
+      {
+        "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+        "version": 1,
+        "chunkId": "a830500bd704e72c24b7c69ba00121d9542b06cac7db32e1c66812824ff59186",
+        "textHash": "f45431f92cf7371f620f3117e16caa0cfa211d869ff9c4ae587904b74800022d",
+        "score": 0.016129032258064516,
+        "source": {
+          "displayName": "文档可见性与版本不变量",
+          "locator": "utf8-bytes:920-1149"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 350,
+      "generationMs": 2247,
+      "verificationMs": 82,
+      "totalMs": 2680
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "a29f8ed8-cf7f-4a51-925b-4354848e925b",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "b3d9c74cff93e5f7c884a1a81a70afc8cb7070878e88c8ff822738c4e75d590a",
+          "batchDigest": "2f2b465413d01d3ee20510fc3c0087d3760fe76f1929e3323a0b7b9f3761c950",
+          "textHash": "8023c240d489fbf144e41ad703c829dc185790578943feadb6a204fe9c58b5f7"
+        },
+        {
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "a29f8ed8-cf7f-4a51-925b-4354848e925b",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "a830500bd704e72c24b7c69ba00121d9542b06cac7db32e1c66812824ff59186",
+          "batchDigest": "2f2b465413d01d3ee20510fc3c0087d3760fe76f1929e3323a0b7b9f3761c950",
+          "textHash": "f45431f92cf7371f620f3117e16caa0cfa211d869ff9c4ae587904b74800022d"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 294
+      }
+    }
+  },
+  "4c61417f-f20d-5e59-947f-e8e6af25ba39": {
+    "questionId": "4c61417f-f20d-5e59-947f-e8e6af25ba39",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "**结论：不能发布。** 仅向量索引（Qdrant）写入成功、全文索引（ES）尚未成功时，属于“单 sink 完成”，不能发布。[1]\n\n**执行条件与确认：**\n- Qdrant 需 `wait=true` 且确认 completed 后才记 DONE；ES Bulk 需 `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE。超时或部分失败保持 PENDING，需显式重试幂等重放该 sink；已 DONE 的 sink 不重写。[1]\n- 未完成发布的数据即使在索引可见，也不能从 API 返回。[1]\n- 阶段/触发条件：两个 sink 均 DONE 后，才在带租约条件的短事务中，将任务 READY/COMPLETE 与文档 READY/publishedVersion=version 一起提交并记事件。[1]\n\n**最终生效与结果未知处理：**\n- 旧 owner、错误批次和单 sink 完成均无法发布；发布响应未知时，重读权威账本核验。[1]\n\n因此需先完成 ES 全文索引的 DONE 确认，待两个 sink 均 DONE 后才可发布。[1]",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+          "version": 1,
+          "chunkId": "3040693fb2611e5822ac98defb1c6bc33c6ce4184880b87982ce27fba0b9723e",
+          "source": {
+            "displayName": "双索引发布与恢复",
+            "locator": "utf8-bytes:513-1392"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+        "version": 1,
+        "chunkId": "3040693fb2611e5822ac98defb1c6bc33c6ce4184880b87982ce27fba0b9723e",
+        "textHash": "b24dcbac2be997a9216531c4e4d43eecdc5d3f8587c88745890a4564748ef92c",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "双索引发布与恢复",
+          "locator": "utf8-bytes:513-1392"
+        }
+      },
+      {
+        "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+        "version": 1,
+        "chunkId": "a3910671428ffb8950afa9193cbd249dfac9f554edafa67e459f7277c9d8e0ba",
+        "textHash": "f8d8a7bff14c42c21f85307ebd87f35672f975bfd6055a46ca34f2db41cdb7fd",
+        "score": 0.03225806451612903,
+        "source": {
+          "displayName": "双索引发布与恢复",
+          "locator": "utf8-bytes:0-600"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 343,
+      "generationMs": 3000,
+      "verificationMs": 70,
+      "totalMs": 3414
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "6acbde26-49fa-41d6-8942-fdb3f0c65970",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "3040693fb2611e5822ac98defb1c6bc33c6ce4184880b87982ce27fba0b9723e",
+          "batchDigest": "d664a33377df49588cf463829b5cf05da9664377c0eb352348231886cbc6d473",
+          "textHash": "b24dcbac2be997a9216531c4e4d43eecdc5d3f8587c88745890a4564748ef92c"
+        },
+        {
+          "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "6acbde26-49fa-41d6-8942-fdb3f0c65970",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "a3910671428ffb8950afa9193cbd249dfac9f554edafa67e459f7277c9d8e0ba",
+          "batchDigest": "d664a33377df49588cf463829b5cf05da9664377c0eb352348231886cbc6d473",
+          "textHash": "f8d8a7bff14c42c21f85307ebd87f35672f975bfd6055a46ca34f2db41cdb7fd"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 300
+      }
+    }
+  },
+  "18193d43-df52-512e-a1ca-3aef01a44aa3": {
+    "questionId": "18193d43-df52-512e-a1ca-3aef01a44aa3",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "结论：不能。身份归属固定由 issuer、audience、organization 决定，tenant 映射为 local-agentic，userId 为 IdP 稳定 sub；浏览器、展示名、用户名、owner 请求头或角色文字都不决定归属。[1]\n\n补充边界：\n- 业务 scope 仅来自服务端已登记的个人成员策略，复用 knowledge/conversation/task 各 read/write，不授予管理或其他用户资料访问权。[1]\n- Casdoor 仍持有用户、密码和停用权威；本片显式成员配置是应用准入名单，不是新用户目录。[1]",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "bbf2ea79-2f22-49b2-b792-0f809323e388",
+          "version": 1,
+          "chunkId": "6d29b9c67583cc6fbd4f33fd5633d3c5a12fe2e140d5662ae406e51a54bb9338",
+          "source": {
+            "displayName": "正式身份与准入归属",
+            "locator": "utf8-bytes:0-544"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "bbf2ea79-2f22-49b2-b792-0f809323e388",
+        "version": 1,
+        "chunkId": "6d29b9c67583cc6fbd4f33fd5633d3c5a12fe2e140d5662ae406e51a54bb9338",
+        "textHash": "65a23d8f4b722a4d5f817a9d404f50284b9270a35d641c127320711921d487b2",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "正式身份与准入归属",
+          "locator": "utf8-bytes:0-544"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 251,
+      "generationMs": 1949,
+      "verificationMs": 59,
+      "totalMs": 2260
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "bbf2ea79-2f22-49b2-b792-0f809323e388",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "67780ecb-ad4f-431b-a16f-8f5ebef9c9c8",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "6d29b9c67583cc6fbd4f33fd5633d3c5a12fe2e140d5662ae406e51a54bb9338",
+          "batchDigest": "cd5baaa943d33c23313a14479b60d01ca5fd410b0909e6a92dd3b88343d0febe",
+          "textHash": "65a23d8f4b722a4d5f817a9d404f50284b9270a35d641c127320711921d487b2"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 222
+      }
+    }
+  },
+  "1edb01bb-ba22-50aa-806c-ec566492e5ef": {
+    "questionId": "1edb01bb-ba22-50aa-806c-ec566492e5ef",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "**结论：不能。**按本片采用的显式静态份额规则，空闲份额不会自动借给其他租户使用[1]。\n\n- **借用范围**：本片明确选择显式静态份额，暂不借用空闲份额[1]。\n- **满额租户限制**：满额租户不能领取其他租户的预留容量，因此无需依赖请求竞速实现公平[1]。\n- **代价与后续**：代价是空闲份额不自动贡献吞吐；U06 尚未定义时先保证隔离，后续改变调度策略需独立验证[1]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "f5310342-4706-4239-aa38-a790eec5f735",
+          "version": 1,
+          "chunkId": "ef33e10d56bcbb950dcc831538adaec1daa2f7db06f233b358b56ab71e2d6dc3",
+          "source": {
+            "displayName": "租户公平调度规则",
+            "locator": "utf8-bytes:0-462"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "f5310342-4706-4239-aa38-a790eec5f735",
+        "version": 1,
+        "chunkId": "ef33e10d56bcbb950dcc831538adaec1daa2f7db06f233b358b56ab71e2d6dc3",
+        "textHash": "86da88e02040c35c6781b7ce14e184ad9c86fd64705ff6ac5a7c55d82dbc0b8e",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "租户公平调度规则",
+          "locator": "utf8-bytes:0-462"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 260,
+      "generationMs": 2282,
+      "verificationMs": 47,
+      "totalMs": 2590
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "f5310342-4706-4239-aa38-a790eec5f735",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "7c540845-172a-4828-bcb0-01d4ad843690",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "ef33e10d56bcbb950dcc831538adaec1daa2f7db06f233b358b56ab71e2d6dc3",
+          "batchDigest": "ba1db8c3a9aa1284902727f9607c97a162b278a52fad4fee8d7aec662d4534b3",
+          "textHash": "86da88e02040c35c6781b7ce14e184ad9c86fd64705ff6ac5a7c55d82dbc0b8e"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 206
+      }
+    }
+  },
+  "2b3408b4-1933-5dfb-931a-f557038f1d11": {
+    "questionId": "2b3408b4-1933-5dfb-931a-f557038f1d11",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "**结论：不会。** 设置 `OPERATIONS_METRICS_ENABLED=true` 不会自动启动 Prometheus；该开关明确“不启动 Prometheus”[1]。\n\n各询问点：\n\n- **开关作用**：宿主启动需设置 `OPERATIONS_METRICS_ENABLED=true`；下次明确部署时给已有 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`，该开关参与固定制品摘要，默认关闭[1]。\n- **明确不改变的事项**：该开关不启动 Prometheus，也不改变业务数据、队列或预算[1]。\n- **指标暴露**：Tasks、Knowledge 通过已有 `127.0.0.1:29087/29084/actuator/prometheus` 暴露指标[1]。\n- **指标缺失处理**：指标缺失时必须显示采集告警，不能解释为零积压[1]。\n- **抓取配置**：`prometheus.yaml` 是 Docker Desktop 下与应用 gateway 同一网络命名空间的抓取配置，管理端点仍是 loopback；配置目录只读挂载为 `/etc/agentic-monitoring`，不要为了抓取而将管理端口公开到外网[1][2]。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+          "version": 1,
+          "chunkId": "60bf8f28bf8567a0fac032ac8680f5702bb90d2c38b7e00c51f114f324a8b345",
+          "source": {
+            "displayName": "监控采集与通知接入",
+            "locator": "utf8-bytes:0-794"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+          "version": 1,
+          "chunkId": "2658759001efd1e50fe576c9a3cba3c377c911ce599c70dace362e40665c2dc9",
+          "source": {
+            "displayName": "监控采集与通知接入",
+            "locator": "utf8-bytes:684-1048"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+        "version": 1,
+        "chunkId": "60bf8f28bf8567a0fac032ac8680f5702bb90d2c38b7e00c51f114f324a8b345",
+        "textHash": "11323787c93d83d7f630a5bc25b3dcca810b0ee29679c0e62eb998a7b3b1294d",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "监控采集与通知接入",
+          "locator": "utf8-bytes:0-794"
+        }
+      },
+      {
+        "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+        "version": 1,
+        "chunkId": "2658759001efd1e50fe576c9a3cba3c377c911ce599c70dace362e40665c2dc9",
+        "textHash": "3f570a0324e6002c10a6007b0e1a4f79e2fa6689b06fac9789e7c632e8cbc2b4",
+        "score": 0.03225806451612903,
+        "source": {
+          "displayName": "监控采集与通知接入",
+          "locator": "utf8-bytes:684-1048"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 287,
+      "generationMs": 2252,
+      "verificationMs": 54,
+      "totalMs": 2595
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "b3f0d7b6-244a-4ae8-8113-361165934487",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "60bf8f28bf8567a0fac032ac8680f5702bb90d2c38b7e00c51f114f324a8b345",
+          "batchDigest": "ca1dd2c1e92c9f18d4be17dbdfc6cf4a3adb8dfa93279928469453f77a0a7edc",
+          "textHash": "11323787c93d83d7f630a5bc25b3dcca810b0ee29679c0e62eb998a7b3b1294d"
+        },
+        {
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "b3f0d7b6-244a-4ae8-8113-361165934487",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "2658759001efd1e50fe576c9a3cba3c377c911ce599c70dace362e40665c2dc9",
+          "batchDigest": "ca1dd2c1e92c9f18d4be17dbdfc6cf4a3adb8dfa93279928469453f77a0a7edc",
+          "textHash": "3f570a0324e6002c10a6007b0e1a4f79e2fa6689b06fac9789e7c632e8cbc2b4"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 234
+      }
+    }
+  },
+  "4597f849-3a71-5bca-b724-0b7c2ae8b426": {
+    "questionId": "4597f849-3a71-5bca-b724-0b7c2ae8b426",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "不能，为采集指标而把管理端口开放到外网是不允许的[1][2]。\n\n要点：\n- 采集管理端点的设计是保持在本机回环（loopback）范围内：宿主 Prometheus 使用 `127.0.0.1:29192`，Docker Desktop 场景的应用 gateway 与其同网络命名空间，管理端点仍是 loopback[2]。\n- 指标采集依赖已有 `127.0.0.1:29087/29084/actuator/prometheus` 端点暴露指标；启动宿主需设置 `OPERATIONS_METRICS_ENABLED=true`，该开关参与固定制品摘要、默认关闭，且不启动 Prometheus、不改变业务数据、队列或预算[2]。\n- 观察入口保留 Alertmanager 页面和 Prometheus `/api/v1/alerts`，`alertmanager.yaml` 默认不配置外部通知接收器；接入外部接收器须有明确目标与发送授权[1]。\n- 指标缺失时应显示采集告警，不能解释为零积压[2]；配置目录只读挂载为 `/etc/agentic-monitoring`[1][2]。\n\n证据只说明了不应公开管理端口及可用的观察入口，未提供任何把管理端口开放到外网的安全替代流程。",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+          "version": 1,
+          "chunkId": "2658759001efd1e50fe576c9a3cba3c377c911ce599c70dace362e40665c2dc9",
+          "source": {
+            "displayName": "监控采集与通知接入",
+            "locator": "utf8-bytes:684-1048"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+          "version": 1,
+          "chunkId": "60bf8f28bf8567a0fac032ac8680f5702bb90d2c38b7e00c51f114f324a8b345",
+          "source": {
+            "displayName": "监控采集与通知接入",
+            "locator": "utf8-bytes:0-794"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+        "version": 1,
+        "chunkId": "2658759001efd1e50fe576c9a3cba3c377c911ce599c70dace362e40665c2dc9",
+        "textHash": "3f570a0324e6002c10a6007b0e1a4f79e2fa6689b06fac9789e7c632e8cbc2b4",
+        "score": 0.03252247488101534,
+        "source": {
+          "displayName": "监控采集与通知接入",
+          "locator": "utf8-bytes:684-1048"
+        }
+      },
+      {
+        "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+        "version": 1,
+        "chunkId": "60bf8f28bf8567a0fac032ac8680f5702bb90d2c38b7e00c51f114f324a8b345",
+        "textHash": "11323787c93d83d7f630a5bc25b3dcca810b0ee29679c0e62eb998a7b3b1294d",
+        "score": 0.03252247488101534,
+        "source": {
+          "displayName": "监控采集与通知接入",
+          "locator": "utf8-bytes:0-794"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 200,
+      "generationMs": 2620,
+      "verificationMs": 74,
+      "totalMs": 2895
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "b3f0d7b6-244a-4ae8-8113-361165934487",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "2658759001efd1e50fe576c9a3cba3c377c911ce599c70dace362e40665c2dc9",
+          "batchDigest": "ca1dd2c1e92c9f18d4be17dbdfc6cf4a3adb8dfa93279928469453f77a0a7edc",
+          "textHash": "3f570a0324e6002c10a6007b0e1a4f79e2fa6689b06fac9789e7c632e8cbc2b4"
+        },
+        {
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "b3f0d7b6-244a-4ae8-8113-361165934487",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "60bf8f28bf8567a0fac032ac8680f5702bb90d2c38b7e00c51f114f324a8b345",
+          "batchDigest": "ca1dd2c1e92c9f18d4be17dbdfc6cf4a3adb8dfa93279928469453f77a0a7edc",
+          "textHash": "11323787c93d83d7f630a5bc25b3dcca810b0ee29679c0e62eb998a7b3b1294d"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 174
+      }
+    }
+  },
+  "b5de1431-93fd-59b3-859d-247abc0f772f": {
+    "questionId": "b5de1431-93fd-59b3-859d-247abc0f772f",
+    "outcome": "SUCCEEDED",
+    "result": {
+      "schemaVersion": "knowledge-qa-result-v1",
+      "answerability": "ANSWERED",
+      "answer": "**对象与问题**：这里指发布流程中的两个索引 sink——Qdrant 和 ES；问的是其中一个 sink 已成功（DONE），另一个失败（保持 PENDING）后重试，是否会重写已成功的那部分。\n\n**结论：不会。已 DONE 的 sink 不重写；重试只幂等重放未完成的 sink。**[1]\n\n要点：\n- **重试范围**：超时或部分失败保持 PENDING，显式重试时幂等重放该 sink；已 DONE 的 sink 不重写。[1]\n- **幂等基础**：冻结准备包使重复/迟到 upsert 写入相同内容，不能覆盖另一批次；Qdrant point ID 由 `chunkId + \":\" + batchDigest` 的 SHA-256 前 128 位 UUID 表达，ES ID 为 `chunkId:batchDigest`，同一批次重放写入同一位置。[1][2]\n- **DONE 的确认条件**：Qdrant 需 `wait=true` 且确认 completed 才记 DONE；ES Bulk 需 `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE。因此“已成功”须以这些确认为准；仅写入可见不算 DONE。[1]\n- **发布限制**：两个 sink 都 DONE 后，才在带租约条件的短事务中提交任务 READY/COMPLETE 与文档 READY/publishedVersion=version；旧 owner、错误批次和单 sink 完成均无法发布。[1]\n- **结果未知时**：发布响应未知时重读权威账本核验。[1]\n\n**限制**：证据未说明“另一个失败”的具体失败类型（超时、部分失败或其他）对应的差异化处理，仅统一为保持 PENDING 并显式重试幂等重放该 sink。[1]",
+      "citations": [
+        {
+          "citationId": "1",
+          "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+          "version": 1,
+          "chunkId": "3040693fb2611e5822ac98defb1c6bc33c6ce4184880b87982ce27fba0b9723e",
+          "source": {
+            "displayName": "双索引发布与恢复",
+            "locator": "utf8-bytes:513-1392"
+          }
+        },
+        {
+          "citationId": "2",
+          "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+          "version": 1,
+          "chunkId": "a3910671428ffb8950afa9193cbd249dfac9f554edafa67e459f7277c9d8e0ba",
+          "source": {
+            "displayName": "双索引发布与恢复",
+            "locator": "utf8-bytes:0-600"
+          }
+        }
+      ]
+    },
+    "retrieved": [
+      {
+        "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+        "version": 1,
+        "chunkId": "3040693fb2611e5822ac98defb1c6bc33c6ce4184880b87982ce27fba0b9723e",
+        "textHash": "b24dcbac2be997a9216531c4e4d43eecdc5d3f8587c88745890a4564748ef92c",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "双索引发布与恢复",
+          "locator": "utf8-bytes:513-1392"
+        }
+      },
+      {
+        "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+        "version": 1,
+        "chunkId": "a3910671428ffb8950afa9193cbd249dfac9f554edafa67e459f7277c9d8e0ba",
+        "textHash": "f8d8a7bff14c42c21f85307ebd87f35672f975bfd6055a46ca34f2db41cdb7fd",
+        "score": 0.03225806451612903,
+        "source": {
+          "displayName": "双索引发布与恢复",
+          "locator": "utf8-bytes:0-600"
+        }
+      }
+    ],
+    "metrics": {
+      "recall": 1.0,
+      "mrr": 1.0,
+      "ndcg": 1.0
+    },
+    "timing": {
+      "retrievalMs": 338,
+      "generationMs": 3949,
+      "verificationMs": 111,
+      "totalMs": 4398
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": null,
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "6acbde26-49fa-41d6-8942-fdb3f0c65970",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "3040693fb2611e5822ac98defb1c6bc33c6ce4184880b87982ce27fba0b9723e",
+          "batchDigest": "d664a33377df49588cf463829b5cf05da9664377c0eb352348231886cbc6d473",
+          "textHash": "b24dcbac2be997a9216531c4e4d43eecdc5d3f8587c88745890a4564748ef92c"
+        },
+        {
+          "documentId": "41f0902b-f2c0-4f0d-9cb3-70e226c25e1b",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "6acbde26-49fa-41d6-8942-fdb3f0c65970",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "a3910671428ffb8950afa9193cbd249dfac9f554edafa67e459f7277c9d8e0ba",
+          "batchDigest": "d664a33377df49588cf463829b5cf05da9664377c0eb352348231886cbc6d473",
+          "textHash": "f8d8a7bff14c42c21f85307ebd87f35672f975bfd6055a46ca34f2db41cdb7fd"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 303
+      }
+    }
+  }
+}

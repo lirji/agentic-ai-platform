@@ -1,0 +1,142 @@
+{
+  "617adc2f-f943-5df8-9fce-520dfac49a6e": {
+    "case": "A01",
+    "sourceCase": "Q01",
+    "resultDigest": "e5d635a9acece4ccc96183ca73611f186d6dd552b3a13b9721a41640fe3e2811",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "OCR10页与原生200页正确区分，像素限制限定扫描PDF。"
+  },
+  "5b297c33-a71a-5dbb-a49a-db96cc9720a4": {
+    "case": "A02",
+    "sourceCase": "Q03",
+    "resultDigest": "4ed5b647aa71a644b2fa65c7cd3662f72b50d7109dae0df34d97a25d84eedf4b",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "不重算公式、缺缓存或错误拒绝且提示过期；“拒绝该公式”未声称跳过继续或改变缺缓存处理，不额外扩判。"
+  },
+  "1899c1e8-1165-5bd8-9849-3c2c9ccee706": {
+    "case": "A03",
+    "sourceCase": "Q05",
+    "resultDigest": "69b845969971548d942c6040e4718f6414b6b7b06bb89dd47f1bb70d3babfaf0",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "编辑后PENDING、重新确认ACTIVE，保留到期/开关/revision重验边界。"
+  },
+  "9bc7b9d9-757e-56a7-a27c-67147717c473": {
+    "case": "A04",
+    "sourceCase": "Q07",
+    "resultDigest": "76292f01ad79c90e808a8eb838d6daffdc9c4ceff9f0801ec594c4426683411a",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "准备/索引失败不改旧发布，单意图/旧租约和恢复保留边界正确。"
+  },
+  "4c61417f-f20d-5e59-947f-e8e6af25ba39": {
+    "case": "A05",
+    "sourceCase": "Q09",
+    "resultDigest": "f4d79f0d5be22d079f16f476c2df14b89b0c85a2779f34aef66f9e635eddc9af",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "双sink DONE、租约短事务与完成确认/显式重试/未知发布回查正确。"
+  },
+  "18193d43-df52-512e-a1ca-3aef01a44aa3": {
+    "case": "A06",
+    "sourceCase": "Q11",
+    "resultDigest": "227abe02590770df663463944ac7a0fa4d9b542a7032c30fb014c255bc3e8e8a",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "owner头不能决定归属，可信身份三要素与稳定sub、服务端scope正确。"
+  },
+  "1edb01bb-ba22-50aa-806c-ec566492e5ef": {
+    "case": "A07",
+    "sourceCase": "Q13",
+    "resultDigest": "2bd7803eb0c6fef3aa0c276b0ac5fb9fb60ce3afe1efa3160db852b03d554212",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "静态预留不借用其他租户，保留空闲份额的吞吐代价。"
+  },
+  "2b3408b4-1933-5dfb-931a-f557038f1d11": {
+    "case": "A08",
+    "sourceCase": "Q15",
+    "resultDigest": "a5048f9f1d86ffe63d442dce3fadfdd33c63927edb4cccc3b778fae97079ced6",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "开关不启动Prometheus、不改业务数据/队列/预算，部署/告警边界正确。"
+  },
+  "4597f849-3a71-5bca-b724-0b7c2ae8b426": {
+    "case": "A09",
+    "sourceCase": "Q16",
+    "resultDigest": "278e6583b6098007fea49a126ca24d15738d974496c96d50ec0fd07b5a5a2a4c",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "禁止公开端口、loopback、同网络命名空间/宿主抓取均保留；29192描述不够明确，但随后仍保留应用29087/29084，未声称改写应用管理端口，不扩判新错误。"
+  },
+  "b5de1431-93fd-59b3-859d-247abc0f772f": {
+    "case": "A10",
+    "sourceCase": "Q10",
+    "resultDigest": "20a4472cb4e32fb005a71387ed9d6720fd4640759495cdee9d679da458151e14",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "PENDING明确属于未完成sink，已DONE不重写；完成确认、双sink租约发布、发布响应未知回查正确。"
+  }
+}

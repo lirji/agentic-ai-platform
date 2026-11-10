@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:580aecd7-a7ea-5a19-ad94-18ba507a06da:9fe9537c-ba06-458c-beb9-4dfd1ee9902e",
+  "answer": "不会。按证据，文档处理/索引失败不改变旧发布指针，旧发布版继续有效；发布只有在满足原子切换条件后才生效。\n\n- **处理失败时**：准备/索引失败不改变旧发布指针；一个文档至多一个当前处理意图`activeJobId`，新受理只能取代已终止失败的意图，不能取代正在执行的意图[2]。\n- **双索引未完成时**：Qdrant 需`wait=true`且确认 completed、ES Bulk 需`refresh=wait_for`且逐条确认无 errors 才记 DONE；超时或部分失败保持 PENDING，需显式幂等重试该 sink。两个 sink 都 DONE 后，才在带租约条件的短事务中提交任务 READY/COMPLETE 与文档 READY/publishedVersion，旧 owner、错误批次和单 sink 完成均无法发布[3]。\n- **生效条件**：发布是`(documentId, publishedRevision, publishedGeneration, publishedJobId)`的一次原子切换，三项发布值全空或指向同一已完成作业，且源 hash、profile、准备批次一致[2]。\n- **结果未知时**：发布响应未知时重读权威账本（Knowledge MySQL 为发布指针唯一权威）[2][3]。\n\n补充限定：未完成发布的数据即使在索引可见也不能从 API 返回[3]。"
+}

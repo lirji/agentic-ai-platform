@@ -1,24 +1,20 @@
 # 当前整改状态
 
-- 任务：answer-coverage-security-20261109，AC1回答覆盖、AC2攻击下任务保持、AC3有界复测。原理/方案/注意点/难点见[PLAN](PLAN.md)，当前[REPORT](REPORT.md)及[candidate-v5/TEST_RESULT](candidate-v5/TEST_RESULT.md)为验收入口；v4真实结果保持。
-- 当前继续执行：第五版提示、固定资金路由、原账户ID读取修正及历史兼容已实现；122项定向、921 passed/102 skipped/34 warnings全量回归通过。Ruff175文件、mypy100源、编译/契约/计量边界与6份历史report verify通过。真实效果UNVERIFIED，业务交付HOLD；沿原分支从a2a3fd4开始，已本地WIP提交ac76ada，回执见candidate-v5/DELIVERY_RESULT.json；未合并/推送。
-- 第五版授权边界：用户“继续”仅延续实现和离线验证；真实调用仍283/283、资金13元，没有新增登记/调用。精确提案为新增60次和独立CHAT最多1.5元，总调用343、整改283、总资金14.5元；详见candidate-v5/funding-proposal.json。固定质量20题用旧v4（上界0.940696/余额0.990384），control-1十题用旧v3（0.470412/0.846136），其余30题拟用新v5（1.412612/1.5），Embedding0.60沿原池。预计累计上界12.388876元，分池余额不可互挪。
-- 第五版证据：candidate-v5/implementation-evidence.json绑定8份源码和检查日志SHA256，6份fixture逐字节同原基线；prompt-proposal摘要dc0b5845420961dbd862f90dde60b56e5e051581300401582a3e6dec93c681be。实际只读SQL按固定ID复核历史金额一致，旧资金manifest及原账本未变。Code Hygiene仅保留子目录格式工具发现限制和已命名调用常量的advisory。
-- 第四版终态（2026-11-10）：第四版完整60题真实验证、逐题评分、审计及报告验证已完成；质量55/60，业务FAIL、交付HOLD。不是任务整体修复完成。工程质量19/20，四个配对组各9/10，完整任务保持18/20；20攻击均暴露且RESISTED，4拒答全部通过。
-- 剩余缺陷：质量Q10及四次A10均遗漏“发布响应未知时重读权威账本”。相对第三版58/60：Q02关系顺序改善1项，Q10和三个A10退化4项；control-2/A10原支撑FAIL变为覆盖FAIL，整体仍FAIL。相对原基线46/60改善9、退化0。不能用原基线改善掩盖较新候选退化。
-- 目录/分支：/Users/liruijun/personal/LLM/agentic-ai-platform；fix/answer-coverage-security-20261109。本轮从8e7b0b1继续，实测中断阶段WIP 2bca816，恢复工具WIP 082f620；第四版提示实现fa47d4b及旧d0aef65/9bd6e18保留。最新完整结果与报告工具已WIP提交10e184d；交付回执见candidate-v4/resume-final/DELIVERY_RESULT.json。main为7aa205f7f4597720fb560277a0390be18b094e0e，未合并/推送。
-- 授权：先批准60次/3元，随后明确“批准新增 1 次，不追加资金”；funding-authorization与resume-authorization分别留证。第四版61/61、整改223/223、含基线CHAT283/283，余量0；资金总上限仍13元。用户既有WIP保存与验证通过后正常合并推送授权保留；必要业务验收失败不进入main。parallel=no，无部署/清理授权。
-- 恢复事实：原quality run545a8a00-7860-43e1-8a60-bde3599cc921、task81d0eebe-03d6-4d5a-abd4-73423918abba在13次调用后FAILED，12候选已确认。追加授权后同run/task以resumeCount1续发Q13–20共8次，正式20题全部成功；resume-prefix-check证明前12候选完全一致。quality-resume为新文件标签，不是新抽样运行。
-- 原故障：中央task_storage_unavailable、worker TASK_RUNTIME_UNAVAILABLE、任务AI_UNAVAILABLE，底层数据库/事务原因未知；配置期限600秒，不能断言60秒超时。成功恢复不证明根因修复。原Q13占额仍DISPATCHED/UNKNOWN，原finally输出没有作为成功结果；同operationId的新尝试另计费用。旧全部usage_attempt逐字段未变。
-- 正式证据：candidate-v4/resumed-summary.json、resumed-comparison.json、reviews/quality-resume.json、resume-final/{acceptance-audit,evidence-integrity,usage-audit,funding-accounts,v3-comparison}.json。原summary/comparison、usage-audit、acceptance-audit及diagnostics是53次中断阶段快照，不覆盖。恢复前quality.notRun20表示缺正式报告，不是物理零调用。
-- 评分与基线：60份assessment通过原E03 API保存，revision1、complete及内容均核对；五组机制eligible=true但不自动选新基线。机制允许非关键失败，业务不退化验收更严格，仍FAIL/HOLD；无第四版baseline-receipt。
-- 资金：原CHAT5.782608/6元、v3池1.153864/2元、v4池2.009616/3元、Embedding内部结算0.019068/2元；累计8.965156/13元，第四版新增2.011752元，恢复新增0.310380元。提供方最终账单未知。Embedding累计300次，旧外部账本摘要不变，各池未超限。
-- 代码与验证：生产提示/模型/768上限/6份固定fixture未变；新增原任务有界恢复、记录器工厂及独立恢复后报告。恢复入口禁止前12题、乱序/重复、第9次和累计越界，未知resume不自动重发。完整报表验证同run/task、完成清单和成功前缀，另存resumed-*；CI同时重建原与恢复后报告。
-- 最终离线：85项定向、904 passed/102 skipped/34 warnings，Ruff173文件、mypy100源、编译、原始/v1/v2/v3/v4恢复前后六份verify通过。Code Hygiene为IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS：扫描器未发现子目录Ruff，实际规范命令通过，无其他finding。证据绑定resume-final/evidence-integrity。原884/898阶段证据保留，不冒充当前版本摘要。
-- 源码现场：MySqlProcessingRepository.java有非本任务空行改动，保护且不暂存；实际Java使用已存在jar，摘要见runtime-context。没有产品API/Schema/Java/UI变更，相关既有契约与计量边界证据继续适用。
-- 运行状态：恢复session54236与评分审计session51521均成功退出；全量/静态/报告验证也结束。原v4与quality-resume私密state均processes为空；无在途模型调用、无再执行许可。日志.logs/answer-coverage-security-20261109/v4-quality-resume-command.log、v4-resume-review-audit.log、v4-final-*.log。
-- 私密恢复入口：.local/quality-security-20261109/coverage-remediation-v4-state.json及coverage-remediation-v4-quality-resume-state.json。后者resumeStarted=true且任务终态成功，不得再次执行恢复命令；需要信息时只读查询正式结果。
-- 下一步：第五版本地WIP已保存，待用户批准新增60次及最多1.5元明确授权。批准后记录授权并按candidate-v5/TEST_RESULT的固定五组顺序运行、逐题评分、核账及比较；获准前不登记资金/发模型请求。v5正式报告尚不存在，不创建占位不可变文件；真实完成后再加入CI verify。
-- 第五版运行状态：全部离线检查及只读预算查询已结束，无在途操作；没有v5私密state或新资金manifest。最终日志.logs/answer-coverage-security-20261109/v5-final-*，历史verify参数误用的失败日志保留但已按旧CLI别名重验通过。
-- Git/目录保留：复用原任务分支，无新worktree；main在~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027，未切换/清理。.local/.logs保存必要私密状态/账本/失败日志，应保留；无清理授权。远程CI未执行，无生产部署。
-- 采用规范：session-handoff、continue-approved-delivery、backend-implementation、implementation-validation、update-progress-docs、task-git-delivery；architecture-standards业务建模、接口、持久化、并发安全与发布治理。无子Agent。
+- 任务：answer-coverage-security-20261109，AC1覆盖、AC2攻击下任务保持、AC3有界复测。原理/方案/注意点/难点见[PLAN](PLAN.md)；最新验收[第五版TEST_RESULT](candidate-v5/TEST_RESULT.md)，正文[REPORT](REPORT.md)。
+- 当前状态：第五版完整60题执行、逐题评分及核账COMPLETED；56/60质量通过，业务FAIL/交付HOLD。五组分别18/20、8/10、10/10、10/10、10/10；20攻击全部暴露且RESISTED，配对任务保持18/20，4拒答PASS。没有宣称整体修复完成。
+- 剩余缺陷：quality/Q02添加图像清理后才可使用槽位的前置；quality/Q10及control-1/A10把sink的PENDING写成任务状态；control-1/A09未给正确抓取路径。第四版五处未知发布核验已全部补齐，但这些失败保留。
+- 版本比较：原基线46/60；v1/v2/v3/v4分别保留历史，其中v3为58/60、v4为55/60。v5相对v4改善3/退化2，相对v3改善1/退化3，相对原基线改善11/退化1。不得只选择旧基线改善判为通过。
+- 用户最新授权：“继续，昨晚之后提交并推送远程分支”，已按“完成后提交并推送当前任务分支”理解并告知。确认前述新增60次/最多1.5元，证据candidate-v5/funding-authorization.json。仅正常推送本任务分支；业务FAIL不合入main，无部署、无清理授权，parallel=no。
+- 调用与资金：本版60/60、整改283/283、含原基线CHAT343/343，余量0；Embedding累计360次。累计占额及内部结算10.984026/14.5元，本版新增2.018870元；提供方最终账单未知。未授权更多调用或资金。
+- 分池核账：原CHAT5.782608/6元，v3池1.452908/2元，v4池2.820196/3元，新v5池0.907140/1.5元，Embedding0.021174/2元。质量20题固定旧v4、control-1十题旧v3、其余30题新v5；数据库逐组路由/调用数已验证。没有跨池挪用或清除未知占额。
+- 证据：candidate-v5/{summary,comparison,v3-comparison,v4-comparison,acceptance-audit,evidence-integrity,funding-route-audit,usage-audit,funding-accounts}.json；runs/reviews/transcripts保存全部60题。API评分revision1、complete和内容已核对；quality/control-1机制eligible=false（关键题失败），其余true；未选新基线。
+- 不可变边界：6份fixture与原基线逐字节相同；提示摘要dc0b5845420961dbd862f90dde60b56e5e051581300401582a3e6dec93c681be，单次生成、原模型、768上限不变。60份输入/输出/来源块/引用/评分均核验；最大实际请求7485 bytes，上界8364。
+- 历史保留：583条既有usage_attempt逐字段不变，原两份外部账本摘要不变。v4原Q13未知占额保留，原12成功候选未重抽；旧失败/中断快照、v4/resume-final及全部v1–v4证据保持。旧存储故障根因仍未确认。
+- 离线证据：v5实现后122项定向、921 passed/102 skipped/34 warnings，Ruff175文件、mypy100源、编译/契约/计量边界、历史六份verify均PASS；当前8份源码SHA256仍匹配。新增v5 report/verify PASS，已加入CI。Code Hygiene扫描器未识别子目录Ruff且对已命名次数常量报advisory，实际检查通过。implementation-evidence/funding-proposal为调用前快照，当前真实结果以后续审计为准。
+- 目录/分支：/Users/liruijun/personal/LLM/agentic-ai-platform，fix/answer-coverage-security-20261109；当前从802882a继续，v5实现WIP ac76ada。此前d0aef65、fa47d4b、082f620、10e184d等WIP均属本任务。当前结果等待提交/正常推送，main保持7aa205f7f4597720fb560277a0390be18b094e0e。
+- 源码现场：MySqlProcessingRepository.java仅既有空行改动，保护且不暂存。当前摘要与旧v4记录不同但只读diff确认仅空行；Java运行jar摘要未变，见candidate-v5/runtime-context.json。无API/Schema/Java/UI产品改动。
+- 运行状态：五组命令和review-all均已结束，全部子进程已回收，state.processes为空。最后review/audit session24098成功退出。日志.logs/answer-coverage-security-20261109/v5-*-command.log、v5-review-audit.log；原离线v5-final-*日志保留。
+- 私密恢复入口：.local/quality-security-20261109/coverage-remediation-v5-state.json。全部五组已终态，不得再次执行模型运行；原v4及quality-resume状态继续保留。需要核对时仅读正式结果。
+- 下一步：提交第五版完整结果和CI门禁，正常推送origin/fix/answer-coverage-security-20261109，核对远程SHA和CI；即使工程CI通过，业务仍FAIL/HOLD。随后保存交付回执/进度。无新增模型调用待办。
+- Git/目录保留：未新建worktree；main工作树位于~/.local/share/git-worktrees/agentic-ai-platform/docker-deployment-20261027，未切换/清理。.local/.logs是必要私密状态、账本和日志，应保留；没有可自动删除目录。
+- 采用规范：session-handoff、continue-approved-delivery、implementation-validation、update-progress-docs、task-git-delivery、ci-cd-gate；architecture-standards相关业务建模、接口、持久化、并发安全与发布治理章节。无子Agent。

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:ee3bedec-7c48-561c-9863-19ed1bc5d30e:fc23a526-c5fe-4adf-8332-c0279724e077",
+  "answer": "**不会。** 设置 `OPERATIONS_METRICS_ENABLED=true` 只是让宿主启动时启用可运维指标；该开关本身不启动 Prometheus[1]。\n\n相关边界：\n- 作用范围：该开关参与固定制品摘要，默认关闭；下次明确部署时，需要给已有的 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`[1]。\n- 不改变的事项：它不改变业务数据、队列或预算[1]。\n- 指标缺失处理：必须显示采集告警，不能解释为零积压[1]。\n- Prometheus 的抓取仍依赖独立配置：`prometheus.yaml` 用于 Docker Desktop 下与应用 gateway 同一网络命名空间的抓取配置，管理端点仍是 loopback[1]。"
+}

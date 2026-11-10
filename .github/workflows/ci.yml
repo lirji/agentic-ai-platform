@@ -73,6 +73,7 @@ jobs:
           uv run --frozen python ../deploy/quality_remediation_report.py verify --candidate v3
           uv run --frozen python ../deploy/quality_remediation_report.py verify --candidate v4
           uv run --frozen python ../deploy/quality_remediation_report.py verify --candidate v4 --checkpoint-resume
+          uv run --frozen python ../deploy/quality_remediation_report.py verify --candidate v5
 
   documents:
     runs-on: ubuntu-24.04
