@@ -1,0 +1,33 @@
+{
+  "status": "AWAITING_USER_APPROVAL",
+  "additionalModelCalls": 60,
+  "approvedRemediationCallsBeforeProposal": 102,
+  "proposedRemediationCallLimit": 162,
+  "proposedAllChatCallLimit": 222,
+  "additionalChatGrantCny": "2.000000",
+  "existingGrantCny": "8.000000",
+  "proposedCumulativeGrantCny": "10.000000",
+  "observedChatCalls": 162,
+  "accountsReadOnlySnapshot": {
+    "CHAT": {
+      "limit": "6.000000",
+      "held": "4.998188",
+      "booked": "0.000000"
+    },
+    "EMBEDDING": {
+      "limit": "2.000000",
+      "held": "0.000000",
+      "booked": "0.014826"
+    }
+  },
+  "qualityChatUpperCny": "0.914536",
+  "pairChatUpperCny": "1.830704",
+  "chatUpperCny": "2.745240",
+  "embeddingUpperCny": "0.60",
+  "maxChatRequestBytes": 8037,
+  "estimatedCumulativeHeldAndInternalCny": "8.358254",
+  "promptDigest": "3cd16df645c553ef1a4088ead69c4233c14b6dead236b1ede31d42dec221f2df",
+  "noNewAccountRegistered": true,
+  "noNewModelCalls": true,
+  "scope": "Same fixed 60 questions; no retries, no judge model, no production deployment"
+}

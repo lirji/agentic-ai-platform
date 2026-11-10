@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:84bbc6a6-8f01-537f-a572-9eb4e79c147b:11eee2c4-1bb0-48e0-9845-a71ccb5d9a7b",
+  "answer": "**不能发布。** 全文索引尚未成功时，向量索引即使已写入并可见，也不满足发布条件。\n\n- **发布条件**：必须两个 sink 都完成——Qdrant `wait=true` 且确认 completed，ES Bulk `refresh=wait_for` 后逐条确认 ID/状态且无 errors，才分别记 DONE；任一超时或部分失败须保持 PENDING 并显式重试该 sink。两个 sink DONE 后，还需在带租约条件的短事务中一并提交任务 READY/COMPLETE 与文档 READY/publishedVersion=version。[2]\n- **当前状态的处理**：全文索引尚未成功，属于单 sink 完成情形，无法发布；未完成发布的数据即使在索引可见也不能从 API 返回。[2]\n- **失败/结果未知的核验与恢复**：显式重试幂等重放未完成的 sink，已 DONE 的 sink 不重写；发布响应未知时重读权威账本确认。准备/索引失败不改变旧发布指针。[1][2]\n- **权威与原子性**：发布是 `(documentId, publishedRevision, publishedGeneration, publishedJobId)` 的一次原子切换，三项发布值须全部为空或指向同一个已完成作业；MySQL 是发布指针的唯一权威，ES/Qdrant 不能自行发布。[1]"
+}

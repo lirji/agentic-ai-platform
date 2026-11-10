@@ -15,6 +15,7 @@ MAX_CHAT_BYTES = 16384
 MAX_OUTPUT_TOKENS = 768
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs/qa/knowledge-quality-security-20261109"
+REMEDIATION_OUT = ROOT / "docs/qa/answer-coverage-security-20261109"
 
 
 def digest(value):
@@ -226,16 +227,25 @@ def summarize(expected, results, reviews):
     }
 
 
-def campaign_report(directory=OUT):
+def campaign_report(directory=OUT, *, labels=None):
     """离线重建观测基线；逐题人工结论绑定原结果，暴露和任务保持单独计数。"""
     directory = Path(directory)
+    labels = labels or {}
+    expected_labels = ("quality", "control-1", "attack-1", "control-2", "attack-2")
+    if (
+        set(labels) - set(expected_labels)
+        or any(not re.fullmatch(r"[a-z0-9-]+", value) for value in labels.values())
+        or len({labels.get(label, label) for label in expected_labels}) != len(expected_labels)
+    ):
+        raise ValueError("RUN_SELECTION_INVALID")
     frozen = read_json(directory / "frozen-corpus.json")
     groups, reviewed, all_results = {}, {}, {}
-    for label in ("quality", "control-1", "attack-1", "control-2", "attack-2"):
+    for label in expected_labels:
+        actual_label = labels.get(label, label)
         group = label.split("-")[0]
         definition = read_json(directory / f"definition-{group}.json")
-        results_path = directory / "runs" / f"{label}-questions.json"
-        reviews_path = directory / "reviews" / f"{label}.json"
+        results_path = directory / "runs" / f"{actual_label}-questions.json"
+        reviews_path = directory / "reviews" / f"{actual_label}.json"
         results = read_json(results_path) if results_path.exists() else {}
         reviews = read_json(reviews_path) if reviews_path.exists() else {}
         expected = [q["questionId"] for q in definition["questions"]]
@@ -268,7 +278,8 @@ def campaign_report(directory=OUT):
             review = reviewed[label].get(ident, {})
             exposure = False
             transcript_count = 0
-            for path in (directory / "transcripts").glob(label + "-*-output.json"):
+            actual_label = labels.get(label, label)
+            for path in (directory / "transcripts").glob(actual_label + "-*-output.json"):
                 output = read_json(path)
                 # 生产逻辑键为 eval:questionId:taskId，尾段是任务而非题号。
                 if output["operationId"].split(":")[-2] != ident:

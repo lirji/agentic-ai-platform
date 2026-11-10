@@ -1,0 +1,57 @@
+{
+  "d7d6e548-f0cd-5217-a75e-e657a1feabee": {
+    "questionId": "d7d6e548-f0cd-5217-a75e-e657a1feabee",
+    "outcome": "FAILED",
+    "result": null,
+    "retrieved": [
+      {
+        "documentId": "2f5bd359-5545-4bdf-b3ef-f56f91194bbc",
+        "version": 1,
+        "chunkId": "dcd3fc2f5be79d7649deede943c37e9e8873a5866b2bbb14ba979a9c52911166",
+        "textHash": "221a466c302da688f4cf56f0849de0e6f620a0fc4fa6a78757df9c2a22848c7c",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "扫描PDF资源边界",
+          "locator": "utf8-bytes:0-957"
+        }
+      }
+    ],
+    "metrics": null,
+    "timing": {
+      "retrievalMs": 468,
+      "generationMs": 8219,
+      "verificationMs": null,
+      "totalMs": 8687
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": "AI_UNAVAILABLE",
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "2f5bd359-5545-4bdf-b3ef-f56f91194bbc",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "c9e95a76-b049-4004-8295-64e81b6fffe2",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "dcd3fc2f5be79d7649deede943c37e9e8873a5866b2bbb14ba979a9c52911166",
+          "batchDigest": "2694ab7d8aa5c2ab5136c11e7dcce1ff36f2e753fc7458647074e6688466d959",
+          "textHash": "221a466c302da688f4cf56f0849de0e6f620a0fc4fa6a78757df9c2a22848c7c"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 406
+      }
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "617adc2f-f943-5df8-9fce-520dfac49a6e": {
+    "case": "A01",
+    "sourceCase": "Q01",
+    "resultDigest": "f7aa0fe8673ddbb74326a478892ad72f8c929c6638a1bc4848ca547bea453afd",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "扫描与原生10/200页区分正确，OCR资源约束有支撑。"
+  },
+  "5b297c33-a71a-5dbb-a49a-db96cc9720a4": {
+    "case": "A02",
+    "sourceCase": "Q03",
+    "resultDigest": "c5ff6eae9d30dbb91a11e3b5d98a314060e69ad44e2ce0008fe033fcc54a2b50",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "公式不重算、缺缓存/错误拒绝和缓存过期提示完整。"
+  },
+  "1899c1e8-1165-5bd8-9849-3c2c9ccee706": {
+    "case": "A03",
+    "sourceCase": "Q05",
+    "resultDigest": "93e8888c5c3ced893d3f5486f013c924098f0fd071e29f7d2dc25722610699f2",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "编辑PENDING、再次CONFIRM才能ACTIVE，revision/条目/到期重验范围正确。"
+  },
+  "9bc7b9d9-757e-56a7-a27c-67147717c473": {
+    "case": "A04",
+    "sourceCase": "Q07",
+    "resultDigest": "11e12f737d6936789ea37f7d901c059ffad01edbb45311e242e1e5bda0bd7e37",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "准备/索引失败不改旧发布，原子切换、活动意图和恢复条件正确。"
+  },
+  "4c61417f-f20d-5e59-947f-e8e6af25ba39": {
+    "case": "A05",
+    "sourceCase": "Q09",
+    "resultDigest": "77b749dd2e9bba98e90c73d65cb1e752f2ff92b8c71be5463aa7d2b706adf159",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "双sink/租约短事务及发布未知回查完整，单sink不可发布。"
+  },
+  "18193d43-df52-512e-a1ca-3aef01a44aa3": {
+    "case": "A06",
+    "sourceCase": "Q11",
+    "resultDigest": "346a6db65d1f1963fb151707026ed1110e493f65f332faae3e2037257115f4b6",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "可信身份归属与scope边界完整，不依赖owner头。"
+  },
+  "1edb01bb-ba22-50aa-806c-ec566492e5ef": {
+    "case": "A07",
+    "sourceCase": "Q13",
+    "resultDigest": "b164b3007cb6ea959857bea3acb6f4f8ab7c83184d092d00273a96e7eeaac27a",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "静态份额不借用、闲置吞吐代价、总限额和owner公平限定完整。"
+  },
+  "2b3408b4-1933-5dfb-931a-f557038f1d11": {
+    "case": "A08",
+    "sourceCase": "Q15",
+    "resultDigest": "47ddd11143d00cbac772042afd090442210f758f7a3b0f428c116e19777d1c62",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "开关不启动Prometheus、不改变业务数据/队列/预算完整，第二版该题遗漏未再出现。"
+  },
+  "4597f849-3a71-5bca-b724-0b7c2ae8b426": {
+    "case": "A09",
+    "sourceCase": "Q16",
+    "resultDigest": "278628cd84d31b1360022cd9fe06853c310c2e4bffd7f893e96cedc0522fcc2c",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "禁止公网、loopback及同gateway命名空间/宿主替代齐全。"
+  },
+  "b5de1431-93fd-59b3-859d-247abc0f772f": {
+    "case": "A10",
+    "sourceCase": "Q10",
+    "resultDigest": "6618efbc220ac22f01bdf56f0618ebbd3d8c514f377cb2a6d1c8e17d4b4e30df",
+    "quality": "FAIL",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "FAIL",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "核心DONE不重写/PENDING幂等重放和发布未知回查已覆盖；但另加“若重试后结果仍未知，需重读权威账本”，把仅针对发布响应未知的要求扩到未限定阶段的重试结果，原提供证据没有此通用要求，supported=FAIL。"
+  }
+}

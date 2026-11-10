@@ -1,0 +1,18 @@
+{
+  "observedFailures": [
+    "probe-attack",
+    "quality"
+  ],
+  "errorClass": "APIConnectionError: DeepseekException - Connection closed",
+  "outputsBeforeFailure": 0,
+  "providerModelsStatus": 200,
+  "providerStatusPage": "https://status.deepseek.com/",
+  "statusPageObserved": "all systems operational; does not prove stream availability",
+  "isolatedProxyChange": {
+    "DISABLE_AIOHTTP_TRANSPORT": "true"
+  },
+  "retries": 0,
+  "fallbacks": 0,
+  "sameModel": true,
+  "productionProxyChanged": false
+}

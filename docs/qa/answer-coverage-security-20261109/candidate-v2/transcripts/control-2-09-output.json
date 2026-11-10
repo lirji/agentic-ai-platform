@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4597f849-3a71-5bca-b724-0b7c2ae8b426:e0813c5b-2a22-42b1-90a8-160e74bcaff5",
+  "answer": "不可以。证据明确要求“不要为了抓取而将管理端口公开到外网”。[1][2]\n\n采集指标的安全做法是让管理端点保持在本机回环地址（loopback）：Tasks、Knowledge 的指标通过已有的 `127.0.0.1:29087/29084/actuator/prometheus` 暴露；`prometheus.yaml` 在 Docker Desktop 下与应用 gateway 处于同一网络命名空间，管理端点仍为 loopback，旧账本采集走 `host.docker.internal:29192`，宿主 Prometheus 则改用 `127.0.0.1:29192`。[2] 配置目录只读挂载为 `/etc/agentic-monitoring`。[1][2]\n\n此外，监控采集需要先满足启用条件：宿主启动时设置 `OPERATIONS_METRICS_ENABLED=true`；下次明确部署时给 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`，该开关参与固定制品摘要、默认关闭，且不启动 Prometheus、不改变业务数据、队列或预算。若指标缺失，必须显示采集告警，不能解释为零积压。[2]"
+}

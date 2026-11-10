@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:ee3bedec-7c48-561c-9863-19ed1bc5d30e:e22d333d-4ce0-461a-b7cc-9ca44ba0e35f",
+  "answer": "不会。设置 `OPERATIONS_METRICS_ENABLED=true` 只是开启指标的暴露条件；该开关本身**不启动 Prometheus**，也不改变业务数据、队列或预算。[1]\n\n影响该结论的必要条件：Tasks、Knowledge 通过已有的 `127.0.0.1:29087/29084/actuator/prometheus` 暴露指标；宿主启动需设置该变量，而 `deploy/docker/runtime.py prepare` 的 `--operational-metrics` 开关默认关闭、参与固定制品摘要，且应在下次明确部署时再增加。[1] 另外，指标缺失时必须显示采集告警，不能解释为零积压。[1]"
+}

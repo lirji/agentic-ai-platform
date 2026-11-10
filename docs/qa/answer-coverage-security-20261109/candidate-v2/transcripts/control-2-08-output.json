@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:2b3408b4-1933-5dfb-931a-f557038f1d11:e0813c5b-2a22-42b1-90a8-160e74bcaff5",
+  "answer": "不会。证据明确说明该开关“不启动 Prometheus”，只用于让 Tasks、Knowledge 通过已有端点暴露指标；启用需设置 `OPERATIONS_METRICS_ENABLED=true`，并在下次明确部署时给 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`，该开关参与固定制品摘要且默认关闭。[1]\n\n另外，若指标缺失，必须显示采集告警，不能按零积压解释；抓取配置中管理端点仍为 loopback，不应为了抓取把管理端口公开到外网。[1]"
+}

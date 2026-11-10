@@ -42,6 +42,7 @@ OWNER = "engineering-reviewer"
 WORKER = "quality-security-worker"
 STRATEGY = "LLAMA_RRF_V1"
 EVAL = "/api/v1/knowledge/evaluations"
+ADMIN_COMMAND_TIMEOUT_SECONDS = 70
 
 
 def free_port():
@@ -62,29 +63,76 @@ def ledgers():
 class Runtime:
     """只启动本轮进程，退出回收其PID；隔离数据和原服务全部保留。"""
 
+    @property
+    def output(self):
+        return OUT
+
+    @property
+    def state_file(self):
+        return WORK / "state.json"
+
+    @property
+    def log_directory(self):
+        return LOGS
+
+    @property
+    def max_total_chat_calls(self):
+        return MAX_CHAT_CALLS
+
+    @property
+    def baseline_note(self):
+        return "固定工程文档首轮观测基线；仅满足既有机制门槛，不是生产质量或安全认证。"
+
+    @property
+    def baseline_labels(self):
+        return ("quality",)
+
+    def evaluation_key(self, name):
+        """仅评测命令可分命名空间，资金登记始终保留原固定身份。"""
+        return stable_id(name)
+
+    def initial_state(self):
+        """首轮状态；复测子类只复用原资料/账户，不借新状态重建资金。"""
+        return {
+            "schemaVersion": "quality-run-state-v1",
+            "frozenDigest": digest(self.frozen),
+            "tenant": TENANT,
+            "documents": {},
+            "datasets": {},
+            "runs": {},
+            "approvedBudget": {"CHAT": "6.000000", "EMBEDDING": "2.000000"},
+            "originalLedgers": ledgers(),
+        }
+
+    def proxy_environment(self):
+        """默认沿原代理配置，隔离复测可显式验证同提供方的传输适配。"""
+        import chat_local
+
+        return chat_local.environment(proxy=True)
+
+    def prepare_supplemental_funding(self):
+        """原基线不追加资金；后续获批轮次可在原账户之外登记独立授权。"""
+
+    def usage_profiles(self):
+        """价格与模型沿固定配置，复测仅可显式选择已登记的资金绑定。"""
+        return {
+            kind: {"profileId": "qs-20261109-" + kind.lower(), "model": model}
+            for kind, model in (
+                ("CHAT", "deepseek-flash"),
+                ("EMBEDDING", "text-embedding-v4"),
+            )
+        }
+
     def __init__(self):
         WORK.mkdir(mode=0o700, exist_ok=True)
         self.lock = os.open(WORK / "runtime.lock", os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
         fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        LOGS.mkdir(exist_ok=True)
-        self.frozen = freeze(read_json(OUT / "campaign.json"))
-        if self.frozen != read_json(OUT / "frozen-corpus.json"):
+        self.log_directory.mkdir(exist_ok=True)
+        self.frozen = freeze(read_json(self.output / "campaign.json"))
+        if self.frozen != read_json(self.output / "frozen-corpus.json"):
             raise ValueError("FROZEN_CORPUS_DRIFT")
-        self.path = WORK / "state.json"
-        self.state = (
-            read_json(self.path)
-            if self.path.exists()
-            else {
-                "schemaVersion": "quality-run-state-v1",
-                "frozenDigest": digest(self.frozen),
-                "tenant": TENANT,
-                "documents": {},
-                "datasets": {},
-                "runs": {},
-                "approvedBudget": {"CHAT": "6.000000", "EMBEDDING": "2.000000"},
-                "originalLedgers": ledgers(),
-            }
-        )
+        self.path = self.state_file
+        self.state = read_json(self.path) if self.path.exists() else self.initial_state()
         if self.state["frozenDigest"] != digest(self.frozen) or self.state["tenant"] != TENANT:
             raise ValueError("STATE_SCOPE_DRIFT")
         self.children, self.logs = [], []
@@ -104,7 +152,7 @@ class Runtime:
         local.private(self.path, json.dumps(self.state, ensure_ascii=False, indent=2) + "\n")
 
     def start(self, name, command, env=None):
-        log = (LOGS / (name + ".log")).open("a")
+        log = (self.log_directory / (name + ".log")).open("a")
         self.logs.append(log)
         process = subprocess.Popen(
             command, cwd=ROOT, env=env or self.env, stdout=log, stderr=subprocess.STDOUT
@@ -268,15 +316,10 @@ class Runtime:
                     "--usage.admin.manifest=" + str(path),
                 ],
             )
-            if admin.wait(timeout=70) != 0:
+            if admin.wait(timeout=ADMIN_COMMAND_TIMEOUT_SECONDS) != 0:
                 raise RuntimeError("FUNDING_BOOTSTRAP_FAILED:" + kind)
-        profiles = {
-            kind: {"profileId": "qs-20261109-" + kind.lower(), "model": model}
-            for kind, model in (
-                ("CHAT", "deepseek-flash"),
-                ("EMBEDDING", "text-embedding-v4"),
-            )
-        }
+        self.prepare_supplemental_funding()
+        profiles = self.usage_profiles()
         usage = {
             "schemaVersion": "usage-runtime-v1",
             "endpoint": self.endpoints["tasks"],
@@ -328,7 +371,7 @@ class Runtime:
                 "--port",
                 str(self.ports["proxy"]),
             ],
-            chat_local.environment(proxy=True),
+            self.proxy_environment(),
         )
         self.wait("proxy", "/v1/models", 401)
         chat = read_json(ROOT / ".local/chat.json")
@@ -433,7 +476,7 @@ class Runtime:
                 len(record["evidence"]["items"]),
                 flush=True,
             )
-        write_once(OUT / "corpus-bindings.json", self.state["documents"])
+        write_once(self.output / "corpus-bindings.json", self.state["documents"])
         for group in ("quality", "control", "attack"):
             questions = questions_for(self.frozen, self.state["documents"], group)
             definition = {
@@ -451,7 +494,7 @@ class Runtime:
                     status=201,
                 )
                 self.save()
-            write_once(OUT / ("definition-" + group + ".json"), definition)
+            write_once(self.output / ("definition-" + group + ".json"), definition)
 
     def accounts(self):
         """仅读取本轮隔离库的两个已批准账户，不通过日志猜测真实花费。"""
@@ -465,8 +508,8 @@ class Runtime:
             if len(row := line.split("\t")) == 4
         }
 
-    def preflight(self):
-        """按最大五块构造真实消息上界，在提交任何问答前检查整轮预算与输入上限。"""
+    def estimate(self, repetitions):
+        """按实际消息与最大五块估算保守预算，不调用模型。"""
         from agentic_ai.qa.pipeline import SYSTEM_PROMPT
 
         chunks = [
@@ -481,8 +524,8 @@ class Runtime:
             reverse=True,
         )
         upper, query_upper, maximum = Decimal(0), Decimal(0), 0
-        for group, repeats in (("quality", 1), ("control", 2), ("attack", 2)):
-            definition = read_json(OUT / ("definition-" + group + ".json"))
+        for group, repeats in repetitions:
+            definition = read_json(self.output / ("definition-" + group + ".json"))
             for question in definition["questions"]:
                 payload = {
                     "question": question["question"],
@@ -518,6 +561,13 @@ class Runtime:
                     Decimal("0.01"),
                     Decimal((len(question["question"].encode()) + 2048) * 4) / 1000000,
                 )
+        return upper, query_upper, maximum
+
+    def preflight(self):
+        """首轮预检保持原记录格式，已冻结的prompt不得被复测静默覆盖。"""
+        from agentic_ai.qa.pipeline import SYSTEM_PROMPT
+
+        upper, query_upper, maximum = self.estimate((("quality", 1), ("control", 2), ("attack", 2)))
         if maximum > MAX_CHAT_BYTES or upper > 6 or query_upper > 2:
             raise RuntimeError("CAMPAIGN_PREFLIGHT_EXCEEDS_GRANT")
         value = {
@@ -536,7 +586,7 @@ class Runtime:
                 "published peak chat 2/8; conservative embedding 2 CNY/million, not provider bill"
             ),
         }
-        write_once(OUT / "preflight.json", value)
+        write_once(self.output / "preflight.json", value)
         accounts = self.accounts()
         if any(
             Decimal(accounts[k]["held"]) + Decimal(accounts[k]["booked"])
@@ -566,7 +616,7 @@ class Runtime:
         from agentic_ai.usage.models import Kind
 
         self.preflight()
-        record = self.state["runs"].setdefault(label, {"key": stable_id("run:" + label)})
+        record = self.state["runs"].setdefault(label, {"key": self.evaluation_key("run:" + label)})
         self.save()
         if "runId" not in record:
             accepted = self.request(
@@ -628,7 +678,7 @@ class Runtime:
                 stack.push_async_callback(embedding.aclose)
                 client = ChatClient(config, None, usage=gate)
                 stack.push_async_callback(client.aclose)
-                recorder = RecordedChat(client, label, OUT)
+                recorder = RecordedChat(client, label, self.output)
                 profile = model_profile(config).model_copy(update={"retrieval_profile": STRATEGY})
                 with tracing_context(enabled=False):
                     final = await execute_qa_task(
@@ -647,7 +697,7 @@ class Runtime:
         elif view["task"]["status"] not in {"SUCCEEDED", "FAILED", "CANCELLED"}:
             raise RuntimeError("UNKNOWN_INFLIGHT_TASK_NO_AUTORETRY")
         self.collect(label, group)
-        account_snapshot = OUT / "runs" / (label + "-accounts.json")
+        account_snapshot = self.output / "runs" / (label + "-accounts.json")
         if not account_snapshot.exists():
             # 恢复已终态任务时保留该组完成时快照，不能用后续组累计占额改写历史。
             write_once(account_snapshot, self.accounts())
@@ -655,13 +705,13 @@ class Runtime:
     def collect(self, label, group):
         record = self.state["runs"][label]
         view = self.request("GET", EVAL + "/runs/" + record["runId"])
-        write_once(OUT / "runs" / (label + ".json"), view)
+        write_once(self.output / "runs" / (label + ".json"), view)
         reports = {}
         if view["report"]:
             outcomes = {q["questionId"]: q["outcome"] for q in view["report"]["questions"]}
-            for question in read_json(OUT / ("definition-" + group + ".json"))["questions"]:
+            for question in read_json(self.output / ("definition-" + group + ".json"))["questions"]:
                 ident = question["questionId"]
-                if outcomes.get(ident) == "UNSTARTED":
+                if outcomes.get(ident, "UNSTARTED") == "UNSTARTED":
                     # 未执行题没有正文接口，仍保留在预先固定的统计分母。
                     continue
                 reports[ident] = self.request(
@@ -669,7 +719,7 @@ class Runtime:
                     EVAL + "/runs/" + record["runId"] + "/questions/" + ident,
                     params={"manifestDigest": view["report"]["manifestDigest"]},
                 )
-        write_once(OUT / "runs" / (label + "-questions.json"), reports)
+        write_once(self.output / "runs" / (label + "-questions.json"), reports)
         record["collected"] = True
         self.save()
         print(
@@ -684,9 +734,9 @@ class Runtime:
 
     def review(self, label):
         """保存已完成逐题审查；原结果摘要不符即拒绝，资格不足不选择合格基线。"""
-        reviews = read_json(OUT / "reviews" / (label + ".json"))
-        reports = read_json(OUT / "runs" / (label + "-questions.json"))
-        view = read_json(OUT / "runs" / (label + ".json"))
+        reviews = read_json(self.output / "reviews" / (label + ".json"))
+        reports = read_json(self.output / "runs" / (label + "-questions.json"))
+        view = read_json(self.output / "runs" / (label + ".json"))
         run_id = view["summary"]["runId"]
         for ident, review in reviews.items():
             if digest(reports[ident]) != review["resultDigest"]:
@@ -696,7 +746,7 @@ class Runtime:
             self.request(
                 "POST",
                 EVAL + f"/runs/{run_id}/questions/{ident}/reviews",
-                key=stable_id(f"review:{label}:{ident}"),
+                key=self.evaluation_key(f"review:{label}:{ident}"),
                 status=201,
                 body={
                     "manifestDigest": view["report"]["manifestDigest"],
@@ -706,24 +756,22 @@ class Runtime:
                 },
             )
         state = self.request("GET", EVAL + f"/runs/{run_id}/reviews")
-        write_once(OUT / "reviews" / (label + "-state.json"), state)
-        if label == "quality" and state["eligibility"]["eligible"]:
+        write_once(self.output / "reviews" / (label + "-state.json"), state)
+        if label in self.baseline_labels and state["eligibility"]["eligible"]:
             receipt = self.request(
                 "POST",
                 EVAL + f"/datasets/{view['summary']['datasetId']}/revisions/1/baseline",
-                key=stable_id("baseline:quality"),
+                key=self.evaluation_key("baseline:quality"),
                 status=201,
                 body={
                     "expectedRevision": 0,
                     "runId": run_id,
                     "manifestDigest": state["manifestDigest"],
                     "reviewDigest": state["reviewDigest"],
-                    "note": (
-                        "固定工程文档首轮观测基线；仅满足既有机制门槛，不是生产质量或安全认证。"
-                    ),
+                    "note": self.baseline_note,
                 },
             )
-            write_once(OUT / "baseline-receipt.json", receipt)
+            write_once(self.output / "baseline-receipt.json", receipt)
         print("reviewed", label, state["eligibility"], flush=True)
 
     def audit(self):
@@ -750,10 +798,10 @@ class Runtime:
                     "usage": json.loads(usage),
                 }
             )
-        if sum(a["kind"] == "CHAT" for a in attempts) > MAX_CHAT_CALLS:
+        if sum(a["kind"] == "CHAT" for a in attempts) > self.max_total_chat_calls:
             raise RuntimeError("CAMPAIGN_CALL_LIMIT_VIOLATION")
         write_once(
-            OUT / "usage-audit.json",
+            self.output / "usage-audit.json",
             {
                 "accounts": self.accounts(),
                 "attempts": attempts,

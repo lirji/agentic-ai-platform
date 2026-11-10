@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4defb092-8edc-53ca-a7ab-a311de32e000:e22d333d-4ce0-461a-b7cc-9ca44ba0e35f",
+  "answer": "只重试失败的 sink 时会幂等重放该 sink；已经 DONE 的 sink 不会重写，因此一个索引已成功、另一个失败后，重试不会重写已成功的部分 [1]。\n\n前提是：两个 sink 的完成状态分别记录；Qdrant 要 `wait=true` 且确认 completed，ES Bulk 要 `refresh=wait_for` 并逐条确认 ID/状态且无 errors，才记 DONE；超时或部分失败保持 PENDING [1]。已 DONE 的 sink 不重写，未完成的 sink 显式重试并按幂等重放处理；两个 sink 都 DONE 前不能发布，即使索引已可见也不能从 API 返回 [1]。"
+}

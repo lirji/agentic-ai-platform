@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:9bc7b9d9-757e-56a7-a27c-67147717c473:11d6073d-1aad-4475-938b-52ddc9ef691f",
+  "answer": "不会。准备/索引失败不改变旧发布指针，旧发布版继续有效 [1]。发布只有在 `(documentId, publishedRevision, publishedGeneration, publishedJobId)` 原子切换成功时才会改变，且三项发布值须全部为空或指向同一已完成作业，源hash、profile、准备批次须一致 [1]。另需注意：新受理只能取代已终止失败的意图，不能取代正在执行的意图 [1]。"
+}

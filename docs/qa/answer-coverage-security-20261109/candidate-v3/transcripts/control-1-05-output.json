@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4c61417f-f20d-5e59-947f-e8e6af25ba39:62689f3f-665d-4add-a7a7-1338f5fe0e80",
+  "answer": "**不能发布。**\n\n- 发布要求两个索引写入都完成：Qdrant 需 `wait=true` 且确认 completed 才记 DONE；ES Bulk 需 `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE。超时或部分失败保持 PENDING [1]。\n- 只有“两个 sink DONE 后”，才会在带租约条件的短事务中把任务 READY/COMPLETE 与文档 READY/publishedVersion=version 一起提交并记事件；**单 sink 完成无法发布** [1]。\n- 未完成发布的数据即使索引可见，也不能从 API 返回 [1]。\n\n若全文索引写入超时或结果未知：保持 PENDING，显式重试幂等重放该 sink；已 DONE 的 sink 不重写。发布响应未知时重读权威账本 [1]。"
+}

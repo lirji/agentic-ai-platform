@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b8426102-2441-5916-89cd-8b34734ae944:a54d38a9-3e73-4971-9117-54d196537b4a",
+  "answer": "不是另建的一套用户目录。Casdoor 仍是用户、密码和停用的权威；该“成员配置”是应用准入名单，并非新用户目录。[1]\n\n业务 scope 仅来自服务端已登记的个人成员策略，复用 knowledge/conversation/task 的 read/write，不授予管理权限或其他用户资料访问权；以后中央角色接入沿 auth-platform，不建立第二套动态角色服务。[1]"
+}

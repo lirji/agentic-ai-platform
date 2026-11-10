@@ -1,0 +1,141 @@
+{
+  "c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513": {
+    "questionId": "c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513",
+    "outcome": "FAILED",
+    "result": null,
+    "retrieved": [
+      {
+        "documentId": "3a5ca73f-6b58-4cc1-a87a-a2586241544d",
+        "version": 1,
+        "chunkId": "f9cf99e55dbd28ca744f7bc9d89e772f50acd00f34bbd501c53346ccc85213c9",
+        "textHash": "75504554bb50507001c13356e521ec84dd0ae41349b59880350ea09af1b1a532",
+        "score": 0.03278688524590164,
+        "source": {
+          "displayName": "扫描PDF资源边界",
+          "locator": "utf8-bytes:0-847"
+        }
+      },
+      {
+        "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+        "version": 1,
+        "chunkId": "a830500bd704e72c24b7c69ba00121d9542b06cac7db32e1c66812824ff59186",
+        "textHash": "f45431f92cf7371f620f3117e16caa0cfa211d869ff9c4ae587904b74800022d",
+        "score": 0.03128054740957967,
+        "source": {
+          "displayName": "文档可见性与版本不变量",
+          "locator": "utf8-bytes:920-1149"
+        }
+      },
+      {
+        "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+        "version": 1,
+        "chunkId": "b3d9c74cff93e5f7c884a1a81a70afc8cb7070878e88c8ff822738c4e75d590a",
+        "textHash": "8023c240d489fbf144e41ad703c829dc185790578943feadb6a204fe9c58b5f7",
+        "score": 0.03125763125763126,
+        "source": {
+          "displayName": "文档可见性与版本不变量",
+          "locator": "utf8-bytes:0-980"
+        }
+      },
+      {
+        "documentId": "9ae6245d-241f-42af-b61b-56137f69b992",
+        "version": 1,
+        "chunkId": "39cdba5943de05c4ef928ee1ca91b164aaf831660ac41909f863485490197ef8",
+        "textHash": "4026ff33783343ffd0d32197cb28f28c193897d96d52c767ff0c50c72e9b0a26",
+        "score": 0.030621785881252923,
+        "source": {
+          "displayName": "表格读取与公式边界",
+          "locator": "utf8-bytes:0-723"
+        }
+      },
+      {
+        "documentId": "f5310342-4706-4239-aa38-a790eec5f735",
+        "version": 1,
+        "chunkId": "ef33e10d56bcbb950dcc831538adaec1daa2f7db06f233b358b56ab71e2d6dc3",
+        "textHash": "86da88e02040c35c6781b7ce14e184ad9c86fd64705ff6ac5a7c55d82dbc0b8e",
+        "score": 0.03055037313432836,
+        "source": {
+          "displayName": "租户公平调度规则",
+          "locator": "utf8-bytes:0-462"
+        }
+      }
+    ],
+    "metrics": null,
+    "timing": {
+      "retrievalMs": 1094,
+      "generationMs": 11178,
+      "verificationMs": null,
+      "totalMs": 12273
+    },
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "providerAmountCny": null,
+      "chatReservedCny": null,
+      "embeddingReservedCny": null
+    },
+    "errorCode": "AI_UNAVAILABLE",
+    "generation": {
+      "schemaVersion": "evaluation-evidence-v2",
+      "strategy": "LLAMA_RRF_V1",
+      "references": [
+        {
+          "documentId": "3a5ca73f-6b58-4cc1-a87a-a2586241544d",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "81bc2ca4-a323-4c4b-b8c3-c3760b89f5e1",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "f9cf99e55dbd28ca744f7bc9d89e772f50acd00f34bbd501c53346ccc85213c9",
+          "batchDigest": "f11aa8b2a7de6a6657c8dbce244e8fe310f6dee866e33d65e8bccec945b00351",
+          "textHash": "75504554bb50507001c13356e521ec84dd0ae41349b59880350ea09af1b1a532"
+        },
+        {
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "a29f8ed8-cf7f-4a51-925b-4354848e925b",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "a830500bd704e72c24b7c69ba00121d9542b06cac7db32e1c66812824ff59186",
+          "batchDigest": "2f2b465413d01d3ee20510fc3c0087d3760fe76f1929e3323a0b7b9f3761c950",
+          "textHash": "f45431f92cf7371f620f3117e16caa0cfa211d869ff9c4ae587904b74800022d"
+        },
+        {
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "a29f8ed8-cf7f-4a51-925b-4354848e925b",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "b3d9c74cff93e5f7c884a1a81a70afc8cb7070878e88c8ff822738c4e75d590a",
+          "batchDigest": "2f2b465413d01d3ee20510fc3c0087d3760fe76f1929e3323a0b7b9f3761c950",
+          "textHash": "8023c240d489fbf144e41ad703c829dc185790578943feadb6a204fe9c58b5f7"
+        },
+        {
+          "documentId": "9ae6245d-241f-42af-b61b-56137f69b992",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "b95d06ea-92eb-473c-9bf5-8e1d90b736a2",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "39cdba5943de05c4ef928ee1ca91b164aaf831660ac41909f863485490197ef8",
+          "batchDigest": "f53e9bc65eb06361f0809515684979ec7d52718a84e34ed9f98d63d5238c0e6a",
+          "textHash": "4026ff33783343ffd0d32197cb28f28c193897d96d52c767ff0c50c72e9b0a26"
+        },
+        {
+          "documentId": "f5310342-4706-4239-aa38-a790eec5f735",
+          "version": 1,
+          "indexGeneration": 1,
+          "jobId": "7c540845-172a-4828-bcb0-01d4ad843690",
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024",
+          "chunkId": "ef33e10d56bcbb950dcc831538adaec1daa2f7db06f233b358b56ab71e2d6dc3",
+          "batchDigest": "ba1db8c3a9aa1284902727f9607c97a162b278a52fad4fee8d7aec662d4534b3",
+          "textHash": "86da88e02040c35c6781b7ce14e184ad9c86fd64705ff6ac5a7c55d82dbc0b8e"
+        }
+      ],
+      "retrieval": {
+        "strategy": "LLAMA_RRF_V1",
+        "mode": "RRF",
+        "degraded": false,
+        "elapsedMs": 942
+      }
+    }
+  }
+}

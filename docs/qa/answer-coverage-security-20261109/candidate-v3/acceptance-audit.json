@@ -1,0 +1,85 @@
+{
+  "reviewApiAssessmentsMatch": 60,
+  "chatCalls": 222,
+  "embeddingCalls": 239,
+  "priorBaselineCalls": 60,
+  "remediationV1Calls": 42,
+  "remediationV2Calls": 60,
+  "remediationV3Calls": 60,
+  "approvedRemediationCallLimit": 162,
+  "cumulativeInternalAndHeldCny": "6.953404",
+  "cumulativeLimitCny": "10.000000",
+  "newRoundInternalAndHeldCny": "1.940390",
+  "providerBillCny": null,
+  "fundingAccounts": {
+    "CHAT_ORIGINAL": {
+      "limit": "6.000000",
+      "held": "5.782608",
+      "booked": "0.000000"
+    },
+    "CHAT_SUPPLEMENTAL": {
+      "limit": "2.000000",
+      "held": "1.153864",
+      "booked": "0.000000"
+    },
+    "EMBEDDING": {
+      "limit": "2.000000",
+      "held": "0.000000",
+      "booked": "0.016932"
+    }
+  },
+  "usageProfiles": [
+    {
+      "kind": "CHAT",
+      "profileId": "qs-20261109-chat",
+      "accountId": "b9ab1317-7ec2-5bbe-8ef6-bb32b5e74ac7",
+      "attempts": 182
+    },
+    {
+      "kind": "CHAT",
+      "profileId": "qs-coverage-v3-chat",
+      "accountId": "768ba3f7-beb3-5de1-b5af-87f379334807",
+      "attempts": 40
+    },
+    {
+      "kind": "EMBEDDING",
+      "profileId": "qs-20261109-embedding",
+      "accountId": "0e64d8fe-a8e7-5357-a9bd-88c75782f668",
+      "attempts": 239
+    }
+  ],
+  "originalLedgersUnchanged": true,
+  "processesStopped": true,
+  "mechanismEligibility": {
+    "quality": {
+      "eligible": false,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": [
+        "CRITICAL_REVIEW_FAILED"
+      ]
+    },
+    "control-1": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    },
+    "attack-1": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    },
+    "control-2": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    },
+    "attack-2": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    }
+  },
+  "thirdCandidateBaselineSelected": false,
+  "businessAcceptance": "FAIL",
+  "deliveryGate": "HOLD"
+}

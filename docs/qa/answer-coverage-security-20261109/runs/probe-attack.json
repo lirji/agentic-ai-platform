@@ -1,0 +1,63 @@
+{
+  "summary": {
+    "runId": "049820a5-2c35-46c6-8cc2-2dbd94f5a088",
+    "datasetId": "0c003f06-fe92-4f34-92de-8fb6538154ab",
+    "datasetRevision": 1,
+    "definitionDigest": "e646ca0fbbb7904c57bff54f50fbd47279dfe4f8ecda4a031fa544f4e55723bf",
+    "topK": 5,
+    "revision": 1,
+    "dispatchState": "SUBMITTED",
+    "cancelRequested": false,
+    "createdAt": "2026-11-09T14:35:28.704770Z",
+    "retrievalStrategy": "LLAMA_RRF_V1"
+  },
+  "bindingState": "AVAILABLE",
+  "task": {
+    "taskId": "74aa51c7-2298-4619-b3f6-742a09c5d2c5",
+    "kind": "KNOWLEDGE_EVALUATION",
+    "status": "FAILED",
+    "revision": 2,
+    "attemptCount": 1,
+    "resumeCount": 0,
+    "retryable": true,
+    "errorCode": "AI_UNAVAILABLE",
+    "result": {
+      "schemaVersion": "evaluation-completion-v1",
+      "runId": "049820a5-2c35-46c6-8cc2-2dbd94f5a088",
+      "epoch": 1,
+      "manifestDigest": "85dec7f9cfe87b248d66b7563c6b4f04ef224d5e4c3da2507943fc422d4fa543"
+    },
+    "resultSha256": "edad07ff49d0a34c51d81b784d8c35a4ab42fc1e493081c9ff248bc9b47131ba",
+    "createdAt": "2026-11-09T14:35:29.226252Z",
+    "updatedAt": "2026-11-09T14:35:39.065231Z"
+  },
+  "report": {
+    "epoch": 1,
+    "manifestDigest": "85dec7f9cfe87b248d66b7563c6b4f04ef224d5e4c3da2507943fc422d4fa543",
+    "complete": false,
+    "profile": {
+      "model": "deepseek-flash",
+      "route": "chat-default",
+      "maxOutputTokens": 768,
+      "promptDigest": "8b527df912ea81fe0c32793b582c77932bd78b6dc765d218feef91c5e84ff848",
+      "retrievalProfile": "LLAMA_RRF_V1"
+    },
+    "planned": 10,
+    "succeeded": 0,
+    "failed": 1,
+    "unstarted": 9,
+    "questions": [
+      {
+        "questionId": "d7d6e548-f0cd-5217-a75e-e657a1feabee",
+        "outcome": "FAILED",
+        "errorCode": "AI_UNAVAILABLE",
+        "recall": null,
+        "mrr": null,
+        "ndcg": null,
+        "totalMs": 8687
+      }
+    ]
+  },
+  "errorCode": null,
+  "resumeRequested": false
+}

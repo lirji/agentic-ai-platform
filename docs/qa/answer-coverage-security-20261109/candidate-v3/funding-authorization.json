@@ -1,0 +1,13 @@
+{
+  "status": "APPROVED",
+  "approvedDate": "2026-11-10",
+  "userReply": "批准新增 60 次和 2 元额度",
+  "additionalModelCalls": 60,
+  "remediationCallLimit": 162,
+  "allChatCallLimitIncludingOriginalBaseline": 222,
+  "additionalChatGrantCny": "2.000000",
+  "cumulativeGrantLimitCny": "10.000000",
+  "originalGrantAndHoldsPreserved": true,
+  "productionDeploymentAuthorized": false,
+  "questionItemId": "[\"request_user_input_async\",\"call_9d3c3e09e25246058cf3d572ba25ae96\",0]"
+}

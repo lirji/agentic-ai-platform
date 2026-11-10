@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c0d03bcb-d33c-58e7-91ab-f95a82b26bb6:a54d38a9-3e73-4971-9117-54d196537b4a",
+  "answer": "不能。身份归属由固定 issuer+audience+organization 决定，tenant 映射为 local-agentic，userId 为 IdP 稳定 sub；浏览器、展示名、用户名、owner 请求头或角色文字都不决定归属 [1]。\n\n影响这一结论的必要条件是：业务 scope 只来自服务端已登记的个人成员策略，复用 knowledge/conversation/task 的 read/write，不授予管理或其他用户资料访问权；Casdoor 仍持有用户、密码和停用权威，显式成员配置是应用准入名单，不是新的用户目录 [1]。"
+}

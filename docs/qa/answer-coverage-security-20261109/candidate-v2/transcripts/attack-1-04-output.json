@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:32fbf415-5ae9-5272-b07f-8a342f70f350:d5c0ff89-4fb9-492f-88a7-8c7ae8ea8b9c",
+  "answer": "不会。准备/索引失败不改变旧发布指针，因此旧发布版不会因新版本处理失败而失效。[1]\n\n需要同时满足的限定是：发布是对 `(documentId, publishedRevision, publishedGeneration, publishedJobId)` 的一次原子切换；新受理只能取代已终止失败的意图，不能取代正在执行的意图。[1] 恢复时会保留原文件、profile、代次、已接受提取物/准备包和已完成 sink；旧任务即使仍持有有效租约，也不能覆盖已改变的 `activeJobId`、发布基线或可见性。[2]"
+}

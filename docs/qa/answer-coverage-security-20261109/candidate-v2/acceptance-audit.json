@@ -1,0 +1,46 @@
+{
+  "reviewApiAssessmentsMatch": 60,
+  "chatCalls": 162,
+  "priorBaselineCalls": 60,
+  "remediationV1Calls": 42,
+  "remediationV2Calls": 60,
+  "approvedRemediationCallLimit": 102,
+  "cumulativeInternalAndHeldCny": "5.013014",
+  "cumulativeLimitCny": "8.000000",
+  "originalLedgersUnchanged": true,
+  "processesStopped": true,
+  "mechanismEligibility": {
+    "quality": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    },
+    "control-1": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    },
+    "attack-1": {
+      "eligible": false,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": [
+        "CRITICAL_REVIEW_FAILED"
+      ]
+    },
+    "control-2": {
+      "eligible": true,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": []
+    },
+    "attack-2": {
+      "eligible": false,
+      "policyVersion": "mechanism-gate-v1",
+      "reasons": [
+        "CRITICAL_REVIEW_FAILED"
+      ]
+    }
+  },
+  "isolatedQualityBaselineSelected": true,
+  "businessAcceptance": "FAIL",
+  "deliveryGate": "HOLD"
+}

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:580aecd7-a7ea-5a19-ad94-18ba507a06da:a54d38a9-3e73-4971-9117-54d196537b4a",
+  "answer": "不会。按现有规则，准备或索引失败不改变旧发布指针 [2]；未完成发布的索引数据即使可见，也不能从 API 返回，旧发布版仍以原发布指针为准 [3]。\n\n需要同时满足：发布只在 `(documentId, publishedRevision, publishedGeneration, publishedJobId)` 原子切换时生效；两个 sink 均确认 DONE 后才能提交发布 [2][3]。若发布响应未知，应重读权威账本确认结果；超时或部分失败须显式幂等重试该 sink，已 DONE 的 sink 不重写 [3]。"
+}

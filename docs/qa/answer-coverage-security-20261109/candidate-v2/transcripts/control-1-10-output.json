@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b5de1431-93fd-59b3-859d-247abc0f772f:11d6073d-1aad-4475-938b-52ddc9ef691f",
+  "answer": "重试不会重写已成功的部分。证据说明：超时或部分失败时保持 PENDING，并显式重试幂等重放该 sink；已 DONE 的 sink 不重写 [1]。\n\n支撑这一点的是幂等性设计：Qdrant point ID 由 `chunkId + \":\" + batchDigest` 计算得出，ES ID 为 `chunkId:batchDigest`，冻结准备包让重复/迟到的 upsert 写入相同内容，不会覆盖另一批次 [1][2]。所以重试只重放未完成的 sink，并且只有在 Qdrant `wait=true` 确认 completed、ES Bulk `refresh=wait_for` 逐条确认 ID 和状态且无 errors 时，才把该 sink 记为 DONE [1]。"
+}

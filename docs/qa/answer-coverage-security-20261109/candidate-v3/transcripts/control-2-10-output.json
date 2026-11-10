@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b5de1431-93fd-59b3-859d-247abc0f772f:357b1376-d8df-4464-825f-97a0e848b59e",
+  "answer": "**结论：重试只重放失败的 sink，不重写已经记为 DONE 的 sink。**\n\n- 两个 sink（Qdrant 和 ES）分别确认：Qdrant 需 `wait=true` 且确认 completed 才记 DONE；ES Bulk 需 `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE。因此一个成功、另一个失败时，只有失败方仍未 DONE。[1]\n- 超时或部分失败时保持 PENDING，重试会显式幂等重放该 sink；**已 DONE 的 sink 不重写**。[1]\n- 幂等性由冻结准备包保证：重复或迟到的 upsert 写入相同内容，不会覆盖另一批次；Qdrant point ID 与 ES ID 均由 chunkId 和 batchDigest 确定，因此重放同一批会落到相同位置。[1][2]\n- 两个 sink 都 DONE 后，才在带租约条件的短事务中一起提交任务 READY/COMPLETE 与文档 publishedVersion=version；单个 sink 完成不能发布。[1]\n- 若重试后结果仍未知，需重读权威账本确认状态；发布响应未知时同样重读权威账本。[1]\n\n限定：以上针对的是同一任务、同一批次（batchDigest 一致）的重试；证据未说明跨批次或换了 batchDigest 时的行为，不能据此推断会重写或不会重写。"
+}

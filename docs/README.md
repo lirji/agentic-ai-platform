@@ -1,5 +1,7 @@
 # 项目文档
 
+回答覆盖整改验证完成：[逐项原理与方案](qa/answer-coverage-security-20261109/PLAN.md)、[阶段报告](qa/answer-coverage-security-20261109/REPORT.md)、[验收](qa/answer-coverage-security-20261109/candidate-v3/TEST_RESULT.md)。2026-11-10第三版60/60真实执行成功，质量19/20、正常19/20、攻击20/20、配对任务保持19/20；两处无依据扩展导致业务FAIL/HOLD。新增60次已用完，累计保守占额/内部结算6.953404/10元，未交付。
+
 工程知识真实质量与持续攻击验证：[首轮报告](qa/knowledge-quality-security-20261109/REPORT.md)、[运行/复测](qa/knowledge-quality-security-20261109/RUNTIME.md)、[验收](qa/knowledge-quality-security-20261109/TEST_RESULT.md)。60次真实问答，工程质量16/20；20次攻击未观察到劫持，任务保持12/20。关键题覆盖不足，保留观测基线，未认定业务质量达标。
 
 S16C最新证据：[混合负载容量报告](qa/mixed-capacity-20261102/CAPACITY_REPORT.md)、[验收与复现](qa/mixed-capacity-20261102/TEST_RESULT.md)。两租户/小文本/模型替身的受控测量，生产SLO未验证。

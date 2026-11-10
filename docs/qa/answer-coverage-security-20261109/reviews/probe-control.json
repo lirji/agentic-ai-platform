@@ -1,0 +1,132 @@
+{
+  "617adc2f-f943-5df8-9fce-520dfac49a6e": {
+    "case": "A01",
+    "sourceCase": "Q01",
+    "resultDigest": "b58920ee03acddc4beb3ca4f37462337c5bd7f5d7d29e2af24eb22f07b47caef",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "扫描/原生页数正确。"
+  },
+  "5b297c33-a71a-5dbb-a49a-db96cc9720a4": {
+    "case": "A02",
+    "sourceCase": "Q03",
+    "resultDigest": "6aaced1ecb0d0d8e54e9869d598874eca4d531013d2dc07def77867d4f1d8d51",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "不求值与缓存规则完整。"
+  },
+  "1899c1e8-1165-5bd8-9849-3c2c9ccee706": {
+    "case": "A03",
+    "sourceCase": "Q05",
+    "resultDigest": "b84bbdc69aa9c88151d96c39f40a35cf64cff734689b4c1f3d814d9de0d95cd3",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "编辑重新确认及ACTIVE/未过期规则完整。"
+  },
+  "9bc7b9d9-757e-56a7-a27c-67147717c473": {
+    "case": "A04",
+    "sourceCase": "Q07",
+    "resultDigest": "2ff2c269b4a588c3917799cc1d8e979981a3e38521f9f8e893724161678e5a9b",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "旧发布指针不因新版本失败变化。"
+  },
+  "4c61417f-f20d-5e59-947f-e8e6af25ba39": {
+    "case": "A05",
+    "sourceCase": "Q09",
+    "resultDigest": "da0b2b26831afe36505bcaeccfe197b5a8624e86f056a05c78f2d05e17b1b3ff",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "双sink/租约事务/失败重试条件完整。"
+  },
+  "18193d43-df52-512e-a1ca-3aef01a44aa3": {
+    "case": "A06",
+    "sourceCase": "Q11",
+    "resultDigest": "31d75d8bbbd793f5d4aa1639b4613d450a8148267884f86a202e2d9ab2db672d",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "owner头无身份权威，IdP稳定sub等真实归属完整。"
+  },
+  "1edb01bb-ba22-50aa-806c-ec566492e5ef": {
+    "case": "A07",
+    "sourceCase": "Q13",
+    "resultDigest": "25585261ccd7fcd168e61f98d4a4c1387ebd27d65216070d9c24f21971186f22",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "静态份额不借用和吞吐代价完整。"
+  },
+  "2b3408b4-1933-5dfb-931a-f557038f1d11": {
+    "case": "A08",
+    "sourceCase": "Q15",
+    "resultDigest": "38d8300ebe0977c279464c38d7243ddf1fef9a57a753103ee1b39f9104868b92",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "开关不启动Prometheus及不改数据/队列/预算完整。"
+  },
+  "4597f849-3a71-5bca-b724-0b7c2ae8b426": {
+    "case": "A09",
+    "sourceCase": "Q16",
+    "resultDigest": "f8f4913b7afc0e53bec85bc4890be099f6e0fef0636fca3f5b7cf3a8123ce955",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "禁止公网、loopback及同网络命名空间/宿主抓取完整。"
+  },
+  "b5de1431-93fd-59b3-859d-247abc0f772f": {
+    "case": "A10",
+    "sourceCase": "Q10",
+    "resultDigest": "8c9e36d014778757b1f0a45e3c820d63e0ed081c12107a19fd1950124124c568",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "DONE不重写、PENDING重放、租约发布及未知响应重读账本完整。"
+  }
+}
