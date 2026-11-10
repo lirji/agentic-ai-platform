@@ -1,0 +1,234 @@
+{
+  "summary": {
+    "runId": "545a8a00-7860-43e1-8a60-bde3599cc921",
+    "datasetId": "bdb0fe0c-f676-4c26-9fb6-da67de4299af",
+    "datasetRevision": 1,
+    "definitionDigest": "729d83c8b16b43b3cf642e4e1d5e158fe44f61cc737d16bf2b1c171303cd3e88",
+    "topK": 5,
+    "revision": 2,
+    "dispatchState": "SUBMITTED",
+    "cancelRequested": false,
+    "createdAt": "2026-11-10T02:14:10.007125Z",
+    "retrievalStrategy": "LLAMA_RRF_V1"
+  },
+  "bindingState": "AVAILABLE",
+  "task": {
+    "taskId": "81d0eebe-03d6-4d5a-abd4-73423918abba",
+    "kind": "KNOWLEDGE_EVALUATION",
+    "status": "SUCCEEDED",
+    "revision": 5,
+    "attemptCount": 1,
+    "resumeCount": 1,
+    "retryable": false,
+    "errorCode": null,
+    "result": {
+      "schemaVersion": "evaluation-completion-v1",
+      "runId": "545a8a00-7860-43e1-8a60-bde3599cc921",
+      "epoch": 2,
+      "manifestDigest": "17c05a139201c630c264d5ea7b043c94d9aa784a3bacafecd2fe474c5f4c0b15"
+    },
+    "resultSha256": "78ea68b927de3efcb851021a955eddb1790fb5b57b3dbec8be941ac034488e24",
+    "createdAt": "2026-11-10T02:14:10.802656Z",
+    "updatedAt": "2026-11-10T02:50:58.204827Z"
+  },
+  "report": {
+    "epoch": 2,
+    "manifestDigest": "17c05a139201c630c264d5ea7b043c94d9aa784a3bacafecd2fe474c5f4c0b15",
+    "complete": true,
+    "profile": {
+      "model": "deepseek-flash",
+      "route": "chat-default",
+      "maxOutputTokens": 768,
+      "promptDigest": "c9c5b951eb21694dd0b80c10ce8cd49e5789d9b950cc38781add160a023c0d2e",
+      "retrievalProfile": "LLAMA_RRF_V1"
+    },
+    "planned": 20,
+    "succeeded": 20,
+    "failed": 0,
+    "unstarted": 0,
+    "questions": [
+      {
+        "questionId": "c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 5309
+      },
+      {
+        "questionId": "16ce898e-896c-55ae-8ea6-b16c5b918fab",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 4214
+      },
+      {
+        "questionId": "456cd1c5-ee0f-51c1-b0ce-6828e7a4dd18",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 2857
+      },
+      {
+        "questionId": "155fdae1-a0d8-5e5f-8d63-f3a722cc688c",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 2410
+      },
+      {
+        "questionId": "572537ca-5f30-5e82-8fd7-c257bc40f77b",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3056
+      },
+      {
+        "questionId": "5681fa51-27ae-5371-a3e2-e398a772413a",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 3672
+      },
+      {
+        "questionId": "580aecd7-a7ea-5a19-ad94-18ba507a06da",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 0.5,
+        "ndcg": 0.6309297535714574,
+        "totalMs": 3794
+      },
+      {
+        "questionId": "731086c1-fa46-52d9-8c1c-c1ceca5947ad",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 2192
+      },
+      {
+        "questionId": "84bbc6a6-8f01-537f-a572-9eb4e79c147b",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 0.5,
+        "ndcg": 0.6309297535714574,
+        "totalMs": 4438
+      },
+      {
+        "questionId": "8ad5790a-d413-5751-8a6d-501940029cab",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 4065
+      },
+      {
+        "questionId": "c0d03bcb-d33c-58e7-91ab-f95a82b26bb6",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 2902
+      },
+      {
+        "questionId": "b8426102-2441-5916-89cd-8b34734ae944",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 2780
+      },
+      {
+        "questionId": "4b551f9f-a955-5528-a172-04227d05d4c6",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 24857
+      },
+      {
+        "questionId": "da55ff0f-859e-5bd1-a7d0-b9e169415c45",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 4576
+      },
+      {
+        "questionId": "75052ba8-1f9d-594c-b4e1-5b0aa5243912",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 5836
+      },
+      {
+        "questionId": "62e36e78-6b40-55b4-9fee-57790e5a4f0c",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": 1.0,
+        "mrr": 1.0,
+        "ndcg": 1.0,
+        "totalMs": 4221
+      },
+      {
+        "questionId": "f3ea50db-ca5c-5235-aef6-1d57b8abf802",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": null,
+        "mrr": null,
+        "ndcg": null,
+        "totalMs": 4578
+      },
+      {
+        "questionId": "0634d7ea-e610-5077-a57e-2d156759c114",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": null,
+        "mrr": null,
+        "ndcg": null,
+        "totalMs": 5182
+      },
+      {
+        "questionId": "12792d3f-330c-5cbe-950d-54dfc768d4a0",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": null,
+        "mrr": null,
+        "ndcg": null,
+        "totalMs": 3477
+      },
+      {
+        "questionId": "863c433f-b159-577e-bef2-969629cc6902",
+        "outcome": "SUCCEEDED",
+        "errorCode": null,
+        "recall": null,
+        "mrr": null,
+        "ndcg": null,
+        "totalMs": 3757
+      }
+    ]
+  },
+  "errorCode": null,
+  "resumeRequested": false
+}

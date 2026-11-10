@@ -15,7 +15,34 @@ from quality_security import (
 )
 
 
-def comparison(baseline=OUT, candidate=REMEDIATION_OUT):
+def checkpoint_selection(candidate):
+    """同任务恢复只替换报告读取位置；原失败快照和成功前缀必须仍可验证。"""
+    original = read_json(candidate / "runs/quality.json")
+    resumed = read_json(candidate / "runs/quality-resume.json")
+    results = read_json(candidate / "runs/quality-resume-questions.json")
+    prefix = read_json(candidate / "diagnostics/quality-partial-candidates.json")
+    check = read_json(candidate / "resume-prefix-check.json")
+    planned = len(read_json(candidate / "definition-quality.json")["questions"])
+    report = resumed.get("report") or {}
+    if (
+        original["task"]["status"] != "FAILED"
+        or original["report"] is not None
+        or resumed["summary"]["runId"] != original["summary"]["runId"]
+        or resumed["task"]["taskId"] != original["task"]["taskId"]
+        or resumed["task"]["status"] != "SUCCEEDED"
+        or resumed["task"]["resumeCount"] != original["task"]["resumeCount"] + 1
+        or not report.get("complete")
+        or report.get("succeeded") != planned
+        or len(results) != planned
+        or not 0 < len(prefix) < planned
+        or any(results.get(row["questionId"]) != row for row in prefix)
+        or check != {"sameRunAndTask": True, "unchangedSuccessfulPrefix": len(prefix)}
+    ):
+        raise ValueError("CHECKPOINT_RESUME_EVIDENCE_INVALID")
+    return {"quality": "quality-resume"}
+
+
+def comparison(baseline=OUT, candidate=REMEDIATION_OUT, *, checkpoint_resume=False):
     """仅同一题集/语料作对比，评分陈旧或执行缺席不能变成质量改善。"""
     for name in (
         "campaign.json",
@@ -43,6 +70,10 @@ def comparison(baseline=OUT, candidate=REMEDIATION_OUT):
         ):
             raise ValueError("RECOVERY_SELECTION_INVALID")
         selections[original] = recovery
+    if checkpoint_resume:
+        if "quality" in selections:
+            raise ValueError("CONFLICTING_RECOVERY_SELECTION")
+        selections.update(checkpoint_selection(candidate))
     new = campaign_report(candidate, labels=selections)
     changes = []
     for label in old["groups"]:
@@ -111,16 +142,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="只重建已保存结果，不发模型请求")
     parser.add_argument("command", choices=("report", "verify"))
     parser.add_argument("--candidate", choices=("draft", "final", "v3", "v4"), default="final")
+    parser.add_argument("--checkpoint-resume", action="store_true")
     args = parser.parse_args()
+    if args.checkpoint_resume and args.candidate != "v4":
+        raise ValueError("CHECKPOINT_RESUME_CANDIDATE_INVALID")
     directory = {
         "draft": REMEDIATION_OUT,
         "final": REMEDIATION_OUT / "candidate-v2",
         "v3": REMEDIATION_OUT / "candidate-v3",
         "v4": REMEDIATION_OUT / "candidate-v4",
     }[args.candidate]
-    result = comparison(candidate=directory)
+    result = comparison(candidate=directory, checkpoint_resume=args.checkpoint_resume)
+    prefix = "resumed-" if args.checkpoint_resume else ""
     if args.command == "report":
-        write_once(directory / "summary.json", result["candidate"])
-        write_once(directory / "comparison.json", result)
-    elif read_json(directory / "comparison.json") != result:
+        write_once(directory / f"{prefix}summary.json", result["candidate"])
+        write_once(directory / f"{prefix}comparison.json", result)
+    elif read_json(directory / f"{prefix}comparison.json") != result:
         raise SystemExit("REMEDIATION_REPORT_DRIFT")

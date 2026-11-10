@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:62e36e78-6b40-55b4-9fee-57790e5a4f0c:81d0eebe-03d6-4d5a-abd4-73423918abba",
+  "answer": "不可以。\n\n- 证据明确要求：不要为了抓取而将管理端口公开到外网。管理端点仍保持 loopback；Prometheus 只把 `host.docker.internal:29192`（Docker Desktop 同网络命名空间抓取场景）或 `127.0.0.1:29192`（宿主 Prometheus 场景）作为旧账本采集地址[2]。\n- 配置端口的方式是：配置目录只读挂载为 `/etc/agentic-monitoring`，不必也不能靠对外开放管理端口来采集[1][2]。\n- 若需要外部通知，`alertmanager.yaml` 默认无外部通知接收器；接入外部接收器须有明确目标与发送授权，并保留 Alertmanager 页面和 Prometheus `/api/v1/alerts` 作为观察入口[1]。"
+}

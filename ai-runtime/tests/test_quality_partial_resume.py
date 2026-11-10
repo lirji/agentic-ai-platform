@@ -238,3 +238,58 @@ def test_resume_response_unknown_is_not_retried(runner):
     with pytest.raises(RuntimeError, match="ALREADY_STARTED"):
         asyncio.run(runner.resume())
     assert methods == ["GET", "POST"]
+
+
+@pytest.mark.parametrize("mutation", [None, "task", "run", "prefix", "incomplete", "empty_prefix"])
+def test_combined_report_rejects_new_run_or_changed_prefix(resume_module, tmp_path, mutation):
+    report = importlib.import_module("quality_remediation_report")
+    prefix = [{"questionId": "q1", "outcome": "SUCCEEDED"}]
+    original = {
+        "summary": {"runId": "run"},
+        "task": {
+            "taskId": "task",
+            "status": "FAILED",
+            "resumeCount": 0,
+        },
+        "report": None,
+    }
+    resumed = {
+        "summary": {"runId": "run"},
+        "task": {
+            "taskId": "task",
+            "status": "SUCCEEDED",
+            "resumeCount": 1,
+        },
+        "report": {"complete": True, "succeeded": 2},
+    }
+    results = {"q1": dict(prefix[0]), "q2": {"questionId": "q2", "outcome": "SUCCEEDED"}}
+    if mutation == "task":
+        resumed["task"]["taskId"] = "different"
+    elif mutation == "run":
+        resumed["summary"]["runId"] = "different"
+    elif mutation == "prefix":
+        results["q1"]["outcome"] = "FAILED"
+    elif mutation == "incomplete":
+        resumed["report"]["complete"] = False
+    elif mutation == "empty_prefix":
+        prefix = []
+    data = {
+        "runs/quality.json": original,
+        "runs/quality-resume.json": resumed,
+        "runs/quality-resume-questions.json": results,
+        "diagnostics/quality-partial-candidates.json": prefix,
+        "resume-prefix-check.json": {
+            "sameRunAndTask": True,
+            "unchangedSuccessfulPrefix": len(prefix),
+        },
+        "definition-quality.json": {"questions": ["q1", "q2"]},
+    }
+    for name, value in data.items():
+        path = tmp_path / name
+        path.parent.mkdir(exist_ok=True)
+        path.write_text(json.dumps(value))
+    if mutation:
+        with pytest.raises(ValueError, match="CHECKPOINT_RESUME_EVIDENCE_INVALID"):
+            report.checkpoint_selection(tmp_path)
+    else:
+        assert report.checkpoint_selection(tmp_path) == {"quality": "quality-resume"}
