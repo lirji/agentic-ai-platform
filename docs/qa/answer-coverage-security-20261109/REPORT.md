@@ -6,6 +6,8 @@
 
 第六版原任务六题已恢复，完整53/60通过、7失败；全部旧失败及未知占额保留，见[第六版验收](candidate-v6/TEST_RESULT.md)。
 
+Git交付：实现与完整实测证据提交`931e069`，四项远程CI通过，已快进合并推送`main`；见[交付回执](candidate-v7/final-delivery/DELIVERY_RESULT.json)。未部署。
+
 以下是各轮历史记录。
 
 2026-11-10 Git交付更新：用户在已知第六版6项质量失败和复测未完成的状态下，明确要求合并main并推远程；按此最新要求执行普通合并。业务验收及追加1次调用授权状态均不改变，最终main/远端/CI核验入口见[PROGRESS_STATE](PROGRESS_STATE.md)。

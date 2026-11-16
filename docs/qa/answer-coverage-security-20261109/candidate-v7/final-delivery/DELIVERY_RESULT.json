@@ -1,0 +1,38 @@
+{
+  "protocol": "skill-contract/v1",
+  "skill": "task-git-delivery",
+  "status": "COMPLETED",
+  "businessAcceptance": "PASS",
+  "task": "answer-coverage-security-20261109",
+  "branch": "fix/answer-coverage-security-20261109",
+  "baseCommit": "d2207ba4d9f8241c3b3edb3260611b5fe6054d48",
+  "implementationCommit": "931e0691bcaa5f36565ca9dda14cbdab035fed2a",
+  "implementationMergedToMain": true,
+  "implementationPushedToOriginMain": true,
+  "mergeMode": "FAST_FORWARD",
+  "forcePush": false,
+  "sourceCiGate": "PASS",
+  "sourceCiRunId": 43791734299,
+  "validation": "../TEST_RESULT.md",
+  "ciResult": "CI_RESULT.json",
+  "followupScope": "Delivery receipt and progress documentation only; final exact head proof retained in .local/quality-security-20261109/v7-main-delivery.json",
+  "deploy": false,
+  "newWorktreesCreated": 0,
+  "cleanupPerformed": false,
+  "retained": {
+    ".local/": "private funding, task recovery state and final remote receipt",
+    ".logs/": "test, timeout, recovery and review evidence",
+    "existing main worktree": "existing checked-out main; no cleanup authorization",
+    ".idea/": "user IDE settings"
+  },
+  "cleanupCandidates": {
+    "build and test caches": "root .pytest_cache/.mypy_cache/.ruff_cache and module target directories; only with separate cleanup authorization"
+  },
+  "remainingBusinessWork": [],
+  "limitations": [
+    "Fixed engineering-document campaign, not independent business-expert sign-off or universal injection resistance",
+    "Historical evaluation HTTP timeout root cause unconfirmed",
+    "Two pre-run legacy Embedding reservations remain preserved; origin unknown",
+    "Provider final bill unavailable"
+  ]
+}

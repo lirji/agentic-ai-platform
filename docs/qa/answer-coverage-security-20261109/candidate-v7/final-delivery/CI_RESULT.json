@@ -1,0 +1,38 @@
+{
+  "protocol": "skill-contract/v1",
+  "skill": "ci-cd-gate",
+  "gate": "PASS",
+  "ref": {
+    "type": "commit",
+    "value": "931e0691bcaa5f36565ca9dda14cbdab035fed2a"
+  },
+  "workflowRunId": 43791734299,
+  "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/43791734299",
+  "checks": [
+    {
+      "name": "java",
+      "required": true,
+      "result": "PASS",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/43791734299/job/133051470216"
+    },
+    {
+      "name": "documents",
+      "required": true,
+      "result": "PASS",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/43791734299/job/133051470425"
+    },
+    {
+      "name": "operational-alerts",
+      "required": true,
+      "result": "PASS",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/43791734299/job/133051470488"
+    },
+    {
+      "name": "python",
+      "required": true,
+      "result": "PASS",
+      "url": "https://github.com/lirji/agentic-ai-platform/actions/runs/43791734299/job/133051470519"
+    }
+  ],
+  "deploy": false
+}
