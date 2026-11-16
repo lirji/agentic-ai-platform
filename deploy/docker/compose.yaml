@@ -168,7 +168,8 @@ services:
     healthcheck:
       test: [CMD, python, -m, agentic_ai.cli, check-qa-worker, --config, /run/agentic/qa-worker.json]
       interval: 60s
-      timeout: 15s
+      # 完整依赖导入和PG/预算预检实测超过20秒；保留真实检查，避免15秒上限误报。
+      timeout: 45s
       retries: 3
       start_period: 30s
 

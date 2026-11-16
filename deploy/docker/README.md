@@ -39,6 +39,8 @@ python3 deploy/docker/runtime.py status --backend /absolute/path/agentic-ai-plat
 
 `up` 接受当前快照的成功构建记录，等待真实 health/readiness，240 秒内未就绪返回失败。正式浏览器验收检查两个普通账号、匿名/未授权拒绝、Cookie/CSRF、退出及业务列表；不上传、不检索、不调用付费模型。容器可运行不等于未完成业务已通过功能验收。
 
+QA worker 的健康检查会加载完整运行依赖并验证 PG/预算；本机2026-11-16观测到依赖导入超过20秒、检查最终成功，原15秒上限导致误报。检查超时调整为45秒，仍每60秒执行、连续3次失败判为不健康；不跳过配置、存储或预算验证，不修改业务请求超时。
+
 本轮可复验入口：在后端目录用Node 24执行`node .local/docker-latest-20261102/browser-smoke.mjs`，复用相邻前端的Playwright、既有私密身份及`.local/docker-identity-20261101/legacy-document.json`（切换前记录的旧租户资料ID）。结果与无凭据截图写入本轮部署目录；不保存trace，不做业务写入。
 
 ## 配置与资源
