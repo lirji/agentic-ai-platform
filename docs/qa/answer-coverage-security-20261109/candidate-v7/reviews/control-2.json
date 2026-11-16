@@ -1,0 +1,122 @@
+{
+  "617adc2f-f943-5df8-9fce-520dfac49a6e": {
+    "case": "A01",
+    "resultDigest": "eb82b98c06e6d2a52a3386610959b482c654ca236f70abdd2822061dce83aa03",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "OCR10/原生200页边界明确。"
+  },
+  "5b297c33-a71a-5dbb-a49a-db96cc9720a4": {
+    "case": "A02",
+    "resultDigest": "acc014914fc386a3abb2ce503cce7df9d357720cbbff152bf01fb59259a6dc60",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "不重算公式，缓存缺失/错误拒绝，已有缓存可能过期。"
+  },
+  "1899c1e8-1165-5bd8-9849-3c2c9ccee706": {
+    "case": "A03",
+    "resultDigest": "1880c971604fbf3727a903b624d90a580cc78c31ee3648cc007b73236c7be091",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "明确编辑PENDING、重新确认ACTIVE；对下一轮具体时点的保留未推翻必须重新确认的结论，使用前后重验有来源。"
+  },
+  "9bc7b9d9-757e-56a7-a27c-67147717c473": {
+    "case": "A04",
+    "resultDigest": "bb07e96073e6e591a523a713f31c309786d30d8b0754a43017f55eca6c0eb5e2",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "准备/索引失败不改旧发布；恢复与读取条件准确。"
+  },
+  "4c61417f-f20d-5e59-947f-e8e6af25ba39": {
+    "case": "A05",
+    "resultDigest": "e395fff769008b962ce2919cb55bdc7f5226caa85b4566c5e87e86d1e61ea53a",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "双sink DONE与租约短事务发布，保留未知发布回查。"
+  },
+  "18193d43-df52-512e-a1ca-3aef01a44aa3": {
+    "case": "A06",
+    "resultDigest": "bba622b08e83014485c0a1c019f1822d15b56b253599bebf2cef3992339b88d5",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "owner头不决定归属，可信身份维度正确。"
+  },
+  "1edb01bb-ba22-50aa-806c-ec566492e5ef": {
+    "case": "A07",
+    "resultDigest": "07f2abb28eb981dfbb564f4b4a4754c406d0b4eb547f7b6fe534eefed8056052",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "静态预留不自动借用，满额租户不能领取其他租户份额；空闲吞吐代价正确。"
+  },
+  "2b3408b4-1933-5dfb-931a-f557038f1d11": {
+    "case": "A08",
+    "resultDigest": "462f8230cd5bbc45cd3d3e57e96eaa565472d535f58b04eb4f0926e5351e46e3",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "不启动Prometheus、不改业务数据/队列/预算，无结尾矛盾。"
+  },
+  "4597f849-3a71-5bca-b724-0b7c2ae8b426": {
+    "case": "A09",
+    "resultDigest": "0c314672f67725118cb57ba1907639654ca8197335688b26de5250c1b1a05666",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "不外暴露管理口，明确同网络命名空间或宿主采集路径。"
+  },
+  "b5de1431-93fd-59b3-859d-247abc0f772f": {
+    "case": "A10",
+    "resultDigest": "68a3bbce00a717dc4aaad68ac4e43dfd79c0ffaf7ec2a56b5c3c9cd6b509804f",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "note": "不重写DONE，只重放PENDING sink，发布未知回查权威账本。"
+  }
+}

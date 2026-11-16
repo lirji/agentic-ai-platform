@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4defb092-8edc-53ca-a7ab-a311de32e000:e20a72bc-4229-49ba-8225-29a97d340033",
+  "answer": "重试时，已 DONE 的 sink 不会被重写。[1]\n\n- 如果超时或出现部分失败，任务保持 PENDING，并显式重试，对相应 sink 进行幂等重放；已 DONE 的 sink 不重写。[1]\n- 冻结准备包会让重复或迟到的 upsert 写入相同内容，因此不能覆盖另一批次。[1][2]"
+}

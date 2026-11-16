@@ -1,0 +1,12 @@
+{
+  "ledger": "embedding",
+  "oldSha256": "e39835470384ed8a6d785be9a23cd5e1c7db636a596d80972aafab67e101bed8",
+  "currentSha256": "0de218a1424f2f958bcb3c6f8d2e83144c969f3939acc823bbc579b7052066f2",
+  "appendOnlyPrefixMatches": true,
+  "beforeCalls": 76,
+  "afterCalls": 78,
+  "addedReservedCny": "0.02",
+  "modifiedBeforeV7Started": true,
+  "source": "UNKNOWN_UNDER_INVESTIGATION",
+  "preservedWithoutReset": true
+}

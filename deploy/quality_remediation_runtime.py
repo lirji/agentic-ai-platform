@@ -13,7 +13,7 @@ from enum import StrEnum
 from uuid import UUID
 
 import local
-from quality_remediation_report import validate_empty_failure
+from quality_remediation_report import checkpoint_selection, validate_empty_failure
 from quality_security import (
     MAX_CHAT_BYTES,
     OUT,
@@ -40,6 +40,9 @@ FIFTH_CHAT_GRANT = Decimal("1.500000")
 SIXTH_REVISION_CALL_LIMIT = 343
 SIXTH_CHAT_PROFILE = "qs-coverage-v6-chat"
 SIXTH_CHAT_GRANT = Decimal("2.000000")
+SEVENTH_REVISION_CALL_LIMIT = 404
+SEVENTH_CHAT_PROFILE = "qs-coverage-v7-chat"
+SEVENTH_CHAT_GRANT = Decimal("3.000000")
 
 
 class RunStage(StrEnum):
@@ -58,6 +61,7 @@ class CandidateRevision(StrEnum):
     V4 = "v4"
     V5 = "v5"
     V6 = "v6"
+    V7 = "v7"
 
 
 class Command(StrEnum):
@@ -720,6 +724,140 @@ class SixthRemediationRuntime(ThirdRemediationRuntime):
         }
 
 
+class SeventhRemediationRuntime(ThirdRemediationRuntime):
+    """第六版原任务恢复完成后才允许新轮次；固定独立CHAT池，不重置历史占额。"""
+
+    funding_revision = CandidateRevision.V7
+    additional_chat_grant = SEVENTH_CHAT_GRANT
+    supplemental_chat_profile = SEVENTH_CHAT_PROFILE
+    previous_grant = Decimal("16.500000")
+    quality_funding_key = "CHAT_V7"
+    paired_funding_key = "CHAT_V7"
+
+    @property
+    def output(self):
+        return REMEDIATION_OUT / "candidate-v7"
+
+    @property
+    def state_file(self):
+        return WORK / "coverage-remediation-v7-state.json"
+
+    @property
+    def log_directory(self):
+        return ROOT / ".logs/answer-coverage-security-20261109/candidate-v7"
+
+    @property
+    def additional_call_limit(self):
+        return SEVENTH_REVISION_CALL_LIMIT
+
+    def evaluation_key(self, name):
+        """新运行和资金身份固定为v7，不能修改前六版的幂等键。"""
+        return stable_id("coverage-remediation-v7:" + name)
+
+    def initial_state(self):
+        """核验原六组和恢复终态后复制身份，不把历史失败伪改为成功。"""
+        source = read_json(WORK / "coverage-remediation-v6-state.json")
+        resumed = read_json(WORK / "coverage-remediation-v6-attack-1-resume-state.json")
+        labels = {
+            "quality",
+            "control-1",
+            "control-1-recovery",
+            "attack-1",
+            "control-2",
+            "attack-2",
+        }
+        if (
+            source.get("processes")
+            or resumed.get("processes")
+            or set(source["runs"]) != labels
+            or set(resumed["runs"]) != {"attack-1-resume"}
+            or any(not run.get("collected") for run in source["runs"].values())
+            or any(
+                source["runs"][label].get("executionStatus") != "SUCCEEDED"
+                for label in labels - {"control-1", "attack-1"}
+            )
+            or not resumed["runs"]["attack-1-resume"].get("collected")
+            or resumed["runs"]["attack-1-resume"].get("executionStatus") != "SUCCEEDED"
+            or resumed.get("resumeSourceDigest") != digest(source)
+            or resumed["runs"]["attack-1-resume"]["runId"] != source["runs"]["attack-1"]["runId"]
+        ):
+            raise RuntimeError("V6_RESUME_NOT_COMPLETE")
+        checkpoint_selection(REMEDIATION_OUT / "candidate-v6", "attack-1")
+        state = copy.deepcopy(source)
+        state["baselineStateDigest"] = digest(source)
+        state["continuationResumeDigest"] = digest(resumed)
+        state["runs"] = {}
+        state["approvedAdditionalCalls"] = self.additional_call_limit
+        return state
+
+    @property
+    def ledger_guard_baseline(self):
+        """只接纳已逐条核对的启动前外部追加，原历史摘要和未知占额始终保留。"""
+        path = self.output / "diagnostics/ledger-reconciliation.json"
+        if not path.exists():
+            return super().ledger_guard_baseline
+        proof = read_json(path)
+        basis = read_json(self.output / "diagnostics/legacy-ledger-change.json")
+        if (
+            proof["historical"] != self.state["originalLedgers"]
+            or proof["current"]["chat"] != proof["historical"]["chat"]
+            or proof["basisDigest"] != digest(basis)
+            or proof["current"]["embedding"] != basis["currentSha256"]
+            or proof["historical"]["embedding"] != basis["oldSha256"]
+            or not all(
+                basis.get(key) is True
+                for key in (
+                    "appendOnlyPrefixMatches",
+                    "modifiedBeforeV7Started",
+                    "preservedWithoutReset",
+                )
+            )
+        ):
+            raise RuntimeError("LEDGER_RECONCILIATION_DRIFT")
+        return proof["current"]
+
+    @property
+    def max_total_chat_calls(self):
+        """原60次授权不变；只有独立、精确的差额授权才能覆盖未确认尝试。"""
+        path = self.output / "resume-call-authorization.json"
+        if not path.exists():
+            return BASELINE_CALLS + SEVENTH_REVISION_CALL_LIMIT
+        approval = read_json(path)
+        if (
+            approval.get("approvedExtraCalls") != 1
+            or approval.get("approvedCumulativeChatCalls") != 465
+            or approval.get("additionalFundingCny") != "0"
+            or approval.get("approved") is not True
+        ):
+            raise RuntimeError("RESUME_CALL_APPROVAL_MISMATCH")
+        return BASELINE_CALLS + SEVENTH_REVISION_CALL_LIMIT + 1
+
+    def usage_profiles(self):
+        """五组均走v7新池，Embedding仍使用原账户。"""
+        profiles = Runtime.usage_profiles(self)
+        profiles["CHAT"]["profileId"] = self.supplemental_chat_profile
+        return profiles
+
+    def funding_accounts(self):
+        """显式保留全部旧账户ID，不能用当前evaluation_key误替换v6账户。"""
+        original = Runtime.accounts(self)
+        accounts = {
+            "CHAT_ORIGINAL": original["CHAT"],
+            "EMBEDDING": original["EMBEDDING"],
+        }
+        for revision in (
+            CandidateRevision.V3,
+            CandidateRevision.V4,
+            CandidateRevision.V5,
+            CandidateRevision.V6,
+            CandidateRevision.V7,
+        ):
+            accounts["CHAT_" + revision.value.upper()] = funding_account(
+                stable_id(f"coverage-remediation-{revision.value}:account:CHAT")
+            )
+        return accounts
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("phase", type=Command, choices=tuple(Command))
@@ -740,6 +878,7 @@ def main():
         CandidateRevision.V4: FourthRemediationRuntime,
         CandidateRevision.V5: FifthRemediationRuntime,
         CandidateRevision.V6: SixthRemediationRuntime,
+        CandidateRevision.V7: SeventhRemediationRuntime,
     }[args.revision]
     # 此处只读取静态范围；不能在授权核对前运行会写私密状态的__init__。
     proposal = object.__new__(runtime_type)

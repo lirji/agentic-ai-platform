@@ -1,0 +1,47 @@
+{
+  "base": "d2207ba4d9f8241c3b3edb3260611b5fe6054d48",
+  "sha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "d4703750841d8e3a26af3f94adcf128205b4ea76406e441b6dfb571f13e7b067",
+    "ai-runtime/tests/test_quality_remediation.py": "f11461a4d5a11f0c390bc9eccebad0dcc9f2e3db869560c47384c43dd2398ad9",
+    "ai-runtime/tests/test_quality_sixth_resume.py": "752793752116e16336e95d85c559607e33d0c6513a903b4e8b6c26bbee74e0e1",
+    "ai-runtime/tests/test_quality_seventh_resume.py": "37f77d7ae2eda97afdcd0e44eb7f45fd91567dcc1b79e94c2a30d77adf223cff",
+    "deploy/quality_security.py": "0079c9057e6fd15c87bdadc512a4c102392f368d35b5e15f65d83c5ddbb884c2",
+    "deploy/quality_security_runtime.py": "a2e1d76004c1ea798ea46be92dd9c36373eae2c00d6d286a227618f3bf5e38e5",
+    "deploy/quality_remediation_runtime.py": "6c16a5b530d630d9bee31f4f2fa22534a1c1c2ab038401ac0ca6be47626ea93c",
+    "deploy/quality_remediation_report.py": "2e854483a75ea4839e887afd634f513f9055e40cd09893a610736338766d9875",
+    "deploy/quality_seventh_resume.py": "03b4e29994d90959ba2de77008816ec883b6586b786b26f93180fa71ea2b4b43",
+    ".github/workflows/ci.yml": "cd2cfa108c4e9e518b27ffd051b086f11444a6d647f2c085df5f71c6679b5ec9"
+  },
+  "offlineRegression": {
+    "passed": 1009,
+    "skipped": 102,
+    "warnings": 34
+  },
+  "afterOnlyTestIsolationChange": {
+    "targetedPassed": 116,
+    "productionPromptChanged": false
+  },
+  "ruff": "PASS",
+  "ruffFormat": "PASS",
+  "mypySourceFiles": 100,
+  "compile": "PASS",
+  "contracts": 16,
+  "sharedWireFixtures": 16,
+  "usageBoundaries": "PASS",
+  "frozenRealCases": 60,
+  "frozenRealQualityPass": 60,
+  "codeHygiene": {
+    "status": "IMPLEMENTATION_COMPLETE_WITH_LIMITATIONS",
+    "limitations": [
+      "FORMAT_TOOL_NOT_AVAILABLE in repository-root automatic discovery; nested ai-runtime Ruff check/format commands both executed and PASS"
+    ],
+    "blockingFindings": 0
+  },
+  "review": {
+    "status": "PASS",
+    "scope": "prompt boundary, same-run prefix restoration, call/funding isolation, legacy ledger reconciliation, report exposure preservation",
+    "newDependencies": false,
+    "publicContractChanged": false
+  },
+  "logs": ".logs/answer-coverage-security-20261109/v7-*.log"
+}

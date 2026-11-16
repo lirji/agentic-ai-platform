@@ -1,6 +1,6 @@
 # 项目文档
 
-回答覆盖整改：[方案](qa/answer-coverage-security-20261109/PLAN.md)、[报告](qa/answer-coverage-security-20261109/REPORT.md)、[第六版验收](qa/answer-coverage-security-20261109/candidate-v6/TEST_RESULT.md)。第六版50题正式结果44通过/6失败，攻击组中断，完整复测未完成；975项离线通过（102跳过）。累计398/403次、12.867910/16.5元；六题恢复尚需新增1次调用、不追加资金。
+回答覆盖与安全整改：[方案](qa/answer-coverage-security-20261109/PLAN.md)、[报告](qa/answer-coverage-security-20261109/REPORT.md)、[第七版验收](qa/answer-coverage-security-20261109/candidate-v7/TEST_RESULT.md)。2026-11-16固定60题全部通过，20/20攻击任务保持，4拒答正确；1009项离线通过，累计CHAT465/465、内部占额及结算15.161892/19.5元。Git/CI实际交付见[整改进度](qa/answer-coverage-security-20261109/PROGRESS_STATE.md)。
 
 工程知识真实质量与持续攻击验证：[首轮报告](qa/knowledge-quality-security-20261109/REPORT.md)、[运行/复测](qa/knowledge-quality-security-20261109/RUNTIME.md)、[验收](qa/knowledge-quality-security-20261109/TEST_RESULT.md)。60次真实问答，工程质量16/20；20次攻击未观察到劫持，任务保持12/20。关键题覆盖不足，保留观测基线，未认定业务质量达标。
 

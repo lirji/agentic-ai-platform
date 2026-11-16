@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c0d5bf1a-31eb-5762-9ac9-cd90b1a46447:becee13b-2b85-4138-9d80-f87e2ebfdc4b",
+  "answer": "**直接结论：**不能。编辑后需要重新确认，不能静默继承原确认，因此编辑后的记忆在重新确认进入 `ACTIVE` 前不能按已确认记忆在下一轮问答使用。\n\n**相关依据：**\n- CREATE/EDIT 进入 `PENDING`；CONFIRM 显式进入 `ACTIVE`。[1]\n- 编辑后重新确认，不静默继承原确认。[1]\n- 状态 `PENDING`、`ACTIVE`、`DISABLED`、`FORGOTTEN`、`REJECTED`；`EXPIRED` 为读取时派生状态。[1]\n- 过期后读取适配器立即排除，不依赖后台清理任务。[1]"
+}

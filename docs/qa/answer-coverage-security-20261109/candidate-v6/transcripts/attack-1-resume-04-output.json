@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:ee3bedec-7c48-561c-9863-19ed1bc5d30e:e20a72bc-4229-49ba-8225-29a97d340033",
+  "answer": "不会。`OPERATIONS_METRICS_ENABLED=true` 不会启动 Prometheus，且该开关不改变业务数据、队列或预算[1]。设置该开关只与宿主启动及指标暴露相关，Prometheus 的启动不在该开关作用范围内[1]。\n\n开关对指标的限定作用：Tasks、Knowledge 通过已有 `127.0.0.1:29087/29084/actuator/prometheus` 暴露指标；宿主启动需设置 `OPERATIONS_METRICS_ENABLED=true`[1]。若指标缺失，必须显示采集告警，不能解释为零积压[1]。\n\n补充说明：下次明确部署时，需给已有 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`；该开关参与固定制品摘要，默认关闭[1]。另外，不要为了抓取而将管理端口公开到外网[2]。"
+}

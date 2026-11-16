@@ -1,0 +1,26 @@
+{
+  "approved": false,
+  "requestedExtraCalls": 1,
+  "requestedCumulativeChatCalls": 465,
+  "additionalFundingCny": "0",
+  "confirmedPrefix": 16,
+  "remainingQualityCalls": 4,
+  "remainingPairedCalls": 40,
+  "callsBefore": 421,
+  "unknownSeventeenthRetained": true,
+  "remaining44ChatUpperCny": "2.108576",
+  "currentV7PoolRemainingCny": "2.294212",
+  "preflight": {
+    "runId": "b511e7a6-44f1-4288-aee5-9bc679fe3995",
+    "taskId": "6b8be80d-2165-4708-b2f1-b0b3bd3b9011",
+    "expectedTaskRevision": 2,
+    "promptDigest": "06535f57a42f9b0f56e2882b054a8d3b40e0e63d6d7feb7666ff3c7b82b6a391",
+    "confirmedPrefix": 16,
+    "remainingCalls": 4,
+    "callsBefore": 421,
+    "approvedCumulativeChatCalls": 465,
+    "additionalFundingCny": "0",
+    "conservative4QuestionChatUpperCny": "0.191792",
+    "conservative20QuestionEmbeddingUpperCny": "0.20"
+  }
+}

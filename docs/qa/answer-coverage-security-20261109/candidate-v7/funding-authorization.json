@@ -1,0 +1,12 @@
+{
+  "status": "APPROVED",
+  "date": "2026-11-16",
+  "userReply": "批准60次调用，新增最多3元",
+  "additionalChatCalls": 60,
+  "approvedRemediationCallLimit": 404,
+  "approvedTotalChatCallLimit": 464,
+  "additionalIndependentChatGrantCny": "3.000000",
+  "approvedCumulativeGrantCny": "19.500000",
+  "scope": "One frozen 60-case v7 campaign; no extra sampling or deployment",
+  "proposal": "funding-proposal.json"
+}

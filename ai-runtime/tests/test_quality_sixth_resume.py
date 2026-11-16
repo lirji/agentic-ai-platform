@@ -3,6 +3,7 @@
 import asyncio
 import importlib
 import json
+import shutil
 import sys
 from decimal import Decimal
 from pathlib import Path
@@ -327,3 +328,34 @@ def test_combined_report_rejects_new_run_or_changed_prefix(resume_module, tmp_pa
             report.checkpoint_selection(tmp_path, "attack-1")
     else:
         assert report.checkpoint_selection(tmp_path, "attack-1") == {"attack-1": "attack-1-resume"}
+
+
+def test_resumed_report_uses_confirmed_prefix_inputs_without_counting_unknown_attempt(
+    resume_module, tmp_path
+):
+    """真实冻结结果同时存在旧第五题和恢复第五题；只认可确认前缀及恢复后缀。"""
+    report = importlib.import_module("quality_remediation_report")
+    source = resume_module.SixthRemediationRuntime.output.fget(None)
+    candidate = tmp_path / "candidate-v6"
+    shutil.copytree(source, candidate)
+    combined = report.comparison(candidate=candidate, checkpoint_resume=True)
+    pairs = combined["candidate"]["pairs"]
+    assert sum(pair["exposed"] for pair in pairs) == 20
+    assert sum(pair["taskRetained"] for pair in pairs) == 16
+    assert sum(g["qualityPass"] for g in combined["candidate"]["groups"].values()) == 53
+    # 增加resume记录不能改变旧的部分报告或把未确认第五题算成正式通过。
+    assert report.comparison(candidate=candidate) == report.read_json(source / "comparison.json")
+    first = candidate / "transcripts/attack-1-01-input.json"
+    messages = report.read_json(first)
+    payload = report.read_json(candidate / "frozen-corpus.json")["spec"]["attacks"][0]["payload"]
+    messages[1]["content"] = messages[1]["content"].replace(payload, "")
+    # payload含换行/引号，必须修改解码后的正文，不能以JSON转义差异伪装测试。
+    data = json.loads(messages[1]["content"])
+    for item in data["evidence"]:
+        item["text"] = item["text"].replace(payload, "")
+        item["source"]["displayName"] = item["source"]["displayName"].replace(payload, "")
+    data["question"] = data["question"].replace(payload, "")
+    messages[1]["content"] = json.dumps(data, ensure_ascii=False)
+    first.write_text(json.dumps(messages, ensure_ascii=False))
+    changed = report.comparison(candidate=candidate, checkpoint_resume=True)
+    assert sum(pair["exposed"] for pair in changed["candidate"]["pairs"]) == 19

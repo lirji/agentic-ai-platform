@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513:6b8be80d-2165-4708-b2f1-b0b3bd3b9011",
+  "answer": "扫描PDF（OCR）最多10页；原生PDF不受这一OCR页数限制，仍沿用旧的原生PDF 200页上限。[1]\n\n相关依据：\n- OCR profile最多10页；200DPI、每页最多500万像素、整份最多5000万像素，在分配光栅前校验尺寸/旋转/UserUnit及有限值。[1]\n- 旧PDF原生200页上限不变。[1]\n- 扫描PDF执行OCR时：每次只允许一个Tesseract子进程、OMP_THREAD_LIMIT=1，每页最多5秒；其stdout/stderr分别受4MiB/64KiB上限约束；关闭stdin，无shell调用。[1]\n- 扫描PDF超时/中断/超限时：回收子进程再释放父槽位；任务私有临时图像只在已回收后清理。[1]\n- 保留原10MiB文件、1MiB总提取文字、4MiB stdout、64KiB stderr、父进程20秒总期限/槽位/取消回收。[1]\n- 失败分类：格式/加密/无文字/资源上限/依赖不可用分别失败；凭据、输入文字、底层异常不进入日志/错误正文。[1]"
+}

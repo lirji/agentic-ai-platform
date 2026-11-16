@@ -1,0 +1,25 @@
+{
+  "base": "d2207ba4d9f8241c3b3edb3260611b5fe6054d48",
+  "sha256": {
+    "ai-runtime/src/agentic_ai/qa/pipeline.py": "d4703750841d8e3a26af3f94adcf128205b4ea76406e441b6dfb571f13e7b067",
+    "deploy/quality_remediation_runtime.py": "dfb8446fc33142f27380b8a71798f35537f384559054d4e05d438d80ff773c00",
+    "deploy/quality_remediation_report.py": "3b3796bf401ebf57940e9aee15a32defd0e6082df5830d89d0fcdc680077a194",
+    "deploy/quality_security.py": "0079c9057e6fd15c87bdadc512a4c102392f368d35b5e15f65d83c5ddbb884c2",
+    "ai-runtime/tests/test_quality_remediation.py": "91b9f0afb5036404ce15c653de2e218e9c8d14efe586187756471ec0469b13fe",
+    "ai-runtime/tests/test_quality_sixth_resume.py": "752793752116e16336e95d85c559607e33d0c6513a903b4e8b6c26bbee74e0e1",
+    ".github/workflows/ci.yml": "f8862728f00c1a70ddefa5391862e3ea382e617c6cd85abd3777207b715f47a4"
+  },
+  "fullRegression": {
+    "passed": 991,
+    "skipped": 102,
+    "warnings": 34
+  },
+  "targetedPassed": 186,
+  "format": "PASS",
+  "ruff": "PASS",
+  "mypySourceFiles": 100,
+  "historicalReportsVerified": 9,
+  "realModelQuality": "UNVERIFIED_BEFORE_EXECUTION",
+  "modelCallsAtSnapshot": 404,
+  "logs": ".logs/answer-coverage-security-20261109/v7-*-20261116.log"
+}

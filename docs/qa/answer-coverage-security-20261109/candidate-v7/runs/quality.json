@@ -1,0 +1,32 @@
+{
+  "summary": {
+    "runId": "b511e7a6-44f1-4288-aee5-9bc679fe3995",
+    "datasetId": "bdb0fe0c-f676-4c26-9fb6-da67de4299af",
+    "datasetRevision": 1,
+    "definitionDigest": "729d83c8b16b43b3cf642e4e1d5e158fe44f61cc737d16bf2b1c171303cd3e88",
+    "topK": 5,
+    "revision": 1,
+    "dispatchState": "SUBMITTED",
+    "cancelRequested": false,
+    "createdAt": "2026-11-16T02:02:58.519747Z",
+    "retrievalStrategy": "LLAMA_RRF_V1"
+  },
+  "bindingState": "AVAILABLE",
+  "task": {
+    "taskId": "6b8be80d-2165-4708-b2f1-b0b3bd3b9011",
+    "kind": "KNOWLEDGE_EVALUATION",
+    "status": "FAILED",
+    "revision": 2,
+    "attemptCount": 1,
+    "resumeCount": 0,
+    "retryable": true,
+    "errorCode": "AI_UNAVAILABLE",
+    "result": null,
+    "resultSha256": null,
+    "createdAt": "2026-11-16T02:03:00.162370Z",
+    "updatedAt": "2026-11-16T02:04:21.915103Z"
+  },
+  "report": null,
+  "errorCode": null,
+  "resumeRequested": false
+}

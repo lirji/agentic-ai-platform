@@ -1,0 +1,10 @@
+{
+  "approved": true,
+  "approvedExtraCalls": 1,
+  "approvedCumulativeChatCalls": 465,
+  "additionalFundingCny": "0",
+  "cumulativeFundingLimitCny": "19.5",
+  "userAnswer": "批准追加1次，不新增资金",
+  "proposalDigest": "e1bb3cc023157762577ca0246ad5ba68f4db101929c3218611cd8a9d894cee7d",
+  "scope": "same quality run checkpoint resume and remaining fixed paired groups; no deployment"
+}

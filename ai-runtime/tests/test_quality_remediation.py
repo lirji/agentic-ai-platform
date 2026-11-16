@@ -311,6 +311,10 @@ def test_report_rejects_extra_groups_paths_and_double_counting(remediation, tmp_
         ("v6", 343, "0", "quality", "FUNDING_APPROVAL_MISMATCH"),
         ("v6", 343, "1.5", "quality", "FUNDING_APPROVAL_MISMATCH"),
         ("v6", 343, "2", "probe-control", "UNAPPROVED_RUN_LABEL"),
+        ("v7", 344, "3", "quality", "CALL_APPROVAL_MISMATCH"),
+        ("v7", 404, "0", "quality", "FUNDING_APPROVAL_MISMATCH"),
+        ("v7", 404, "2", "quality", "FUNDING_APPROVAL_MISMATCH"),
+        ("v7", 404, "3", "probe-control", "UNAPPROVED_RUN_LABEL"),
     ],
 )
 def test_new_revision_rejects_missing_grant_or_unplanned_run_before_side_effects(
@@ -901,3 +905,144 @@ def test_v6_checks_fixed_pools_and_cumulative_calls(
         # 已完成的首轮配对不重复预留；剩余两组只检查新池的剩余额度。
         runner.active_label = "control-2"
         runner.preflight()
+
+
+@pytest.mark.parametrize(
+    "mutation", [None, "running", "uncollected", "failed", "source", "identity"]
+)
+def test_v7_requires_completed_resume_and_preserves_both_old_states(
+    remediation, tmp_path, monkeypatch, mutation
+):
+    """原六组包含有意保留的失败，只有已核实的原任务恢复能开启新轮次。"""
+    source = {
+        "processes": [],
+        "datasets": {"quality": "unchanged"},
+        "runs": {
+            label: {"collected": True, "executionStatus": "SUCCEEDED", "runId": label}
+            for label in (
+                "quality",
+                "control-1",
+                "control-1-recovery",
+                "attack-1",
+                "control-2",
+                "attack-2",
+            )
+        },
+    }
+    for label in ("control-1", "attack-1"):
+        source["runs"][label]["executionStatus"] = "FAILED"
+    resumed = {
+        "processes": [],
+        "resumeSourceDigest": remediation.digest(source),
+        "runs": {
+            "attack-1-resume": {
+                "collected": True,
+                "executionStatus": "SUCCEEDED",
+                "runId": "attack-1",
+            }
+        },
+    }
+    if mutation == "running":
+        resumed["processes"] = [{"pid": 1}]
+    elif mutation == "uncollected":
+        resumed["runs"]["attack-1-resume"]["collected"] = False
+    elif mutation == "failed":
+        resumed["runs"]["attack-1-resume"]["executionStatus"] = "FAILED"
+    elif mutation == "source":
+        resumed["resumeSourceDigest"] = "stale"
+    elif mutation == "identity":
+        resumed["runs"]["attack-1-resume"]["runId"] = "new-run"
+    monkeypatch.setattr(remediation, "WORK", tmp_path)
+    files = [
+        tmp_path / "coverage-remediation-v6-state.json",
+        tmp_path / "coverage-remediation-v6-attack-1-resume-state.json",
+    ]
+    for path, value in zip(files, [source, resumed], strict=True):
+        path.write_text(json.dumps(value))
+    before = [p.read_bytes() for p in files]
+    checks = []
+    monkeypatch.setattr(
+        remediation, "checkpoint_selection", lambda path, group: checks.append((path, group))
+    )
+    runner = object.__new__(remediation.SeventhRemediationRuntime)
+    if mutation:
+        with pytest.raises(RuntimeError, match="V6_RESUME_NOT_COMPLETE"):
+            runner.initial_state()
+        assert checks == []
+    else:
+        state = runner.initial_state()
+        assert state["datasets"] == source["datasets"] and state["runs"] == {}
+        assert state["approvedAdditionalCalls"] == 404
+        assert checks == [(remediation.REMEDIATION_OUT / "candidate-v6", "attack-1")]
+    assert [p.read_bytes() for p in files] == before
+    assert not runner.state_file.exists()
+
+
+def test_v7_funding_keeps_v6_identity_and_all_prior_holds(remediation, tmp_path, monkeypatch):
+    monkeypatch.setattr(remediation, "REMEDIATION_OUT", tmp_path)
+    runner = object.__new__(remediation.SeventhRemediationRuntime)
+    monkeypatch.setattr(
+        remediation.Runtime,
+        "accounts",
+        lambda _: {
+            "CHAT": {"limit": "6", "held": "5.7", "booked": "0"},
+            "EMBEDDING": {"limit": "2", "held": "0", "booked": "0.02"},
+        },
+    )
+    values = {
+        remediation.stable_id(f"coverage-remediation-{rev}:account:CHAT"): {
+            "limit": limit,
+            "held": held,
+            "booked": "0",
+        }
+        for rev, limit, held in [
+            ("v3", "2", "1.7"),
+            ("v4", "3", "2.8"),
+            ("v5", "1.5", "1.2"),
+            ("v6", "2", "1.4"),
+            ("v7", "3", "0"),
+        ]
+    }
+    monkeypatch.setattr(remediation, "funding_account", values.__getitem__)
+    accounts = runner.funding_accounts()
+    assert accounts["CHAT_V6"]["held"] == "1.4"
+    assert accounts["CHAT_V7"]["held"] == "0"
+    assert runner.accounts()["CHAT"] == {"limit": "17.5", "held": "12.8", "booked": "0"}
+    assert runner.max_total_chat_calls == 464
+    for label in runner.planned_labels:
+        runner.active_label = label
+        assert runner.run_funding_key(label) == "CHAT_V7"
+        assert runner.usage_profiles()["CHAT"]["profileId"] == "qs-coverage-v7-chat"
+
+
+@pytest.mark.parametrize("failure", [None, "chat", "embedding", "calls"])
+def test_v7_preflight_bounds_new_pool_and_remaining_calls(
+    remediation, tmp_path, monkeypatch, failure
+):
+    monkeypatch.setattr(remediation, "REMEDIATION_OUT", tmp_path)
+    monkeypatch.setattr(
+        remediation.local, "mysql", lambda _: "405" if failure == "calls" else "404"
+    )
+    runner = object.__new__(remediation.SeventhRemediationRuntime)
+    runner.state = {"runs": {}}
+    runner.active_label, runner.phase = "quality", remediation.RunStage.FINAL
+    runner.frozen = {"specDigest": "fixed"}
+    accounts = {
+        key: {"limit": limit, "held": "0", "booked": "0"}
+        for key, limit in [("CHAT_V7", "3"), ("EMBEDDING", "2")]
+    }
+    if failure in {"chat", "embedding"}:
+        key = "CHAT_V7" if failure == "chat" else "EMBEDDING"
+        accounts[key]["held"] = accounts[key]["limit"]
+    runner.funding_accounts = lambda: accounts
+    runner.estimate = lambda groups: (Decimal("2.5"), Decimal("0.6"), 8000)
+    if failure:
+        error = (
+            "REMAINING_CALL_ALLOWANCE_INSUFFICIENT"
+            if failure == "calls"
+            else "REMAINING_BUDGET_INSUFFICIENT"
+        )
+        with pytest.raises(RuntimeError, match=error):
+            runner.preflight()
+    else:
+        assert runner.preflight()["cumulativeGrantCny"] == "19.500000"

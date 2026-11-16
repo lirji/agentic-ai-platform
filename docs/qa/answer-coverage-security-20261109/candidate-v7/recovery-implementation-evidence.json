@@ -1,0 +1,23 @@
+{
+  "files": {
+    "deploy/quality_seventh_resume.py": "03b4e29994d90959ba2de77008816ec883b6586b786b26f93180fa71ea2b4b43",
+    "deploy/quality_security_runtime.py": "a2e1d76004c1ea798ea46be92dd9c36373eae2c00d6d286a227618f3bf5e38e5",
+    "deploy/quality_remediation_runtime.py": "6c16a5b530d630d9bee31f4f2fa22534a1c1c2ab038401ac0ca6be47626ea93c",
+    "deploy/quality_remediation_report.py": "2e854483a75ea4839e887afd634f513f9055e40cd09893a610736338766d9875",
+    "ai-runtime/tests/test_quality_seventh_resume.py": "37f77d7ae2eda97afdcd0e44eb7f45fd91567dcc1b79e94c2a30d77adf223cff"
+  },
+  "legacyLedgerChecks": {
+    "chat": "14f9620fbf07b0bcaece781de531342ecd551cb97ba553f7d0b48c99da724885",
+    "embedding": "0de218a1424f2f958bcb3c6f8d2e83144c969f3939acc823bbc579b7052066f2"
+  },
+  "legacyLedgerUnchangedDuringOfflineTests": true,
+  "targetedPassed": 159,
+  "offlinePassed": 1009,
+  "offlineSkipped": 102,
+  "offlineWarnings": 34,
+  "offlineLog": ".logs/answer-coverage-security-20261109/v7-recovery-full.log",
+  "ruff": "PASS",
+  "format": "PASS",
+  "mypySources": 100,
+  "modelCallsAdded": 0
+}

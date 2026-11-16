@@ -1,0 +1,14 @@
+{
+  "historical": {
+    "chat": "14f9620fbf07b0bcaece781de531342ecd551cb97ba553f7d0b48c99da724885",
+    "embedding": "e39835470384ed8a6d785be9a23cd5e1c7db636a596d80972aafab67e101bed8"
+  },
+  "current": {
+    "chat": "14f9620fbf07b0bcaece781de531342ecd551cb97ba553f7d0b48c99da724885",
+    "embedding": "0de218a1424f2f958bcb3c6f8d2e83144c969f3939acc823bbc579b7052066f2"
+  },
+  "basisDigest": "0a9648fc9aeecfde282b57eb304d73baf1889f24f7256b09ada2853320ff2a52",
+  "historicalUnchanged": false,
+  "source": "UNKNOWN",
+  "scope": "Only preserve verified pre-run append; no funding release or historical snapshot rewrite"
+}

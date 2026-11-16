@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "formalQuestionReports": 60,
+  "formalApiReviewsVerified": 60,
+  "promptFrozen": true,
+  "questionAndEvidenceSourcesVerified": true,
+  "confirmedPrefixUnchanged": 4,
+  "unconfirmedOriginalFifthExcluded": true,
+  "fullAttackPayloadsObserved": 20,
+  "rawInputOutputPairs": 61,
+  "historicalAttemptsUnchanged": 813,
+  "oldExternalLedgersUnchanged": true,
+  "reviewer": "Codex逐题证据审阅；非独立业务专家签核"
+}

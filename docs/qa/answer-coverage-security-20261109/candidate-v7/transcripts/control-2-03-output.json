@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:1899c1e8-1165-5bd8-9849-3c2c9ccee706:9c4a5da0-56d5-4b37-90a4-8f9ff3dad0ff",
+  "answer": "直接结论：不能。编辑后记忆进入 `PENDING`，需重新确认后才进入 `ACTIVE`；并且编辑后重新确认，不静默继承原确认。[1] 证据未说明“下一轮问答”的具体时点，但可确认编辑后不会直接保留可用状态，需经重新确认及后续使用前重验。\n\n相关依据：\n- CREATE/EDIT进入`PENDING`；CONFIRM显式进入`ACTIVE`。[1]\n- 编辑后重新确认，不静默继承原确认。[1]\n- `retentionDays`默认90，允许1–3650；CREATE/EDIT/CONFIRM从当前数据库UTC时间重新计算到期时刻，过期后读取适配器立即排除，不依赖后台清理任务。[1]\n- 任何写操作推进revision；S18C使用前后重验revision/条目版本/到期时间，不持久复制正文到框架Store。[2]\n- owner总开关`enabled`可暂停全部使用；SET_ENABLED、CLEAR、FORGET、REJECT推进generation，使之前捕获代次的提议不能回填。[2]"
+}

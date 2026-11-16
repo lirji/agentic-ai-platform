@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b5de1431-93fd-59b3-859d-247abc0f772f:d62293f6-fd44-4dd6-a46c-c424977cbe03",
+  "answer": "**直接结论：** 不会重写已成功的部分。显式重试时，只对保持 PENDING 的 sink（即失败或超时、部分失败的那个索引）做幂等重放；已 DONE 的 sink 不重写[1]。\n\n**相关依据：**\n- 完成判定：Qdrant `wait=true` 且确认 completed 后才记 DONE；ES Bulk `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE[1]。\n- 失败处理：超时或部分失败保持 PENDING，显式重试幂等重放该 sink；已 DONE 的 sink 不重写[1]。\n- 幂等保障：冻结准备包使重复/迟到 upsert 写入相同内容，不能覆盖另一批次[1][2]。\n- 后续发布条件：两个 sink DONE 后，才会在带租约条件的短事务中提交任务 READY/COMPLETE 与文档 READY/publishedVersion；单 sink 完成无法发布[1]。\n- 发布响应未知时：重读权威账本核验[1]。"
+}

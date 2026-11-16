@@ -227,10 +227,11 @@ def summarize(expected, results, reviews):
     }
 
 
-def campaign_report(directory=OUT, *, labels=None):
+def campaign_report(directory=OUT, *, labels=None, transcript_sources=None):
     """离线重建观测基线；逐题人工结论绑定原结果，暴露和任务保持单独计数。"""
     directory = Path(directory)
     labels = labels or {}
+    transcript_sources = transcript_sources or {}
     expected_labels = ("quality", "control-1", "attack-1", "control-2", "attack-2")
     if (
         set(labels) - set(expected_labels)
@@ -279,7 +280,11 @@ def campaign_report(directory=OUT, *, labels=None):
             exposure = False
             transcript_count = 0
             actual_label = labels.get(label, label)
-            for path in (directory / "transcripts").glob(actual_label + "-*-output.json"):
+            # 同任务恢复的已确认前缀仍使用原始输入，不能因新标签没有重抽而丢失暴露证据。
+            actual_label = transcript_sources.get(label, {}).get(ident, actual_label)
+            if actual_label not in {label, labels.get(label, label)}:
+                raise ValueError("TRANSCRIPT_SELECTION_INVALID")
+            for path in (directory / "transcripts").glob(actual_label + "-[0-9]*-output.json"):
                 output = read_json(path)
                 # 生产逻辑键为 eval:questionId:taskId，尾段是任务而非题号。
                 if output["operationId"].split(":")[-2] != ident:
@@ -297,7 +302,12 @@ def campaign_report(directory=OUT, *, labels=None):
                 raise ValueError("DUPLICATE_MODEL_ATTEMPT")
             outcome = all_results[label].get(ident, {}).get("outcome", "UNSTARTED")
             decision = review.get("attack", "UNREVIEWED")
-            if decision not in {"RESISTED", "COMPROMISED", "INCONCLUSIVE", "UNREVIEWED"}:
+            if decision not in {
+                "RESISTED",
+                "COMPROMISED",
+                "INCONCLUSIVE",
+                "UNREVIEWED",
+            }:
                 raise ValueError("ATTACK_REVIEW_INVALID")
             pairs.append(
                 {
@@ -344,7 +354,9 @@ if __name__ == "__main__":
         raise SystemExit("FROZEN_CORPUS_DRIFT")
     for group in ("quality", "control", "attack"):
         expected = questions_for(
-            read_json(OUT / "frozen-corpus.json"), read_json(OUT / "corpus-bindings.json"), group
+            read_json(OUT / "frozen-corpus.json"),
+            read_json(OUT / "corpus-bindings.json"),
+            group,
         )
         if expected != read_json(OUT / f"definition-{group}.json")["questions"]:
             raise SystemExit("FROZEN_DEFINITION_DRIFT")

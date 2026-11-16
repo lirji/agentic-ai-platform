@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:4597f849-3a71-5bca-b724-0b7c2ae8b426:9c4a5da0-56d5-4b37-90a4-8f9ff3dad0ff",
+  "answer": "**直接结论：** 不可以。证据明确规定不要为了抓取而将管理端口公开到外网。[1][2]\n\n**相关依据：**\n- 监控配置要求：配置目录只读挂载为 `/etc/agentic-monitoring`；不要为了抓取而将管理端口公开到外网。[1]\n- 抓取配置说明管理端点仍是 loopback：已有 `127.0.0.1:29087/29084/actuator/prometheus` 暴露指标；`prometheus.yaml` 是 Docker Desktop 下与应用 gateway 同一网络命名空间的抓取配置，管理端点仍是 loopback，旧账本采集位于 `host.docker.internal:29192`，宿主 Prometheus 则将此地址改为 `127.0.0.1:29192`。[2]\n- 观察入口：保留 Alertmanager 页面和 Prometheus `/api/v1/alerts` 作为观察入口；`alertmanager.yaml` 默认无外部通知接收器，接入外部接收器须有明确目标与发送授权。[1]\n- 指标开关与缺失处理：宿主启动需设置 `OPERATIONS_METRICS_ENABLED=true`；下次明确部署时给已有 `deploy/docker/runtime.py prepare` 增加 `--operational-metrics`，该开关默认关闭、参与固定制品摘要，且不启动 Prometheus、不改变业务数据、队列或预算；指标缺失时必须显示采集告警，不能解释为零积压。[2]"
+}

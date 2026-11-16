@@ -1,0 +1,16 @@
+{
+  "status": "APPROVED_BY_USER_CONTINUATION",
+  "date": "2026-11-16",
+  "userInstruction": "先做先收尾质量与安全整改",
+  "context": "用户已获知六题恢复需要新增1次调用、无需追加资金，并要求先收尾该整改。",
+  "proposal": "resume-proposal.json",
+  "additionalChatCalls": 1,
+  "cumulativeChatCallLimit": 404,
+  "additionalFundingCny": "0",
+  "cumulativeFundingLimitCny": "16.5",
+  "resumeQuestions": "A05-A10",
+  "confirmedPrefixMustRemainUnchanged": 4,
+  "sameRunAndTaskRequired": true,
+  "newFullRetestAuthorized": false,
+  "deploymentAuthorized": false
+}

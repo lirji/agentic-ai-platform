@@ -1,0 +1,25 @@
+{
+  "status": "AWAITING_APPROVAL",
+  "additionalChatCalls": 60,
+  "currentCumulativeChatCalls": 404,
+  "proposedCumulativeChatCalls": 464,
+  "proposedRemediationChatCalls": 404,
+  "additionalChatFundingCny": "3.000000",
+  "proposedCumulativeFundingCny": "19.500000",
+  "currentHeldAndBookedCny": "13.052412",
+  "fixedGroups": {
+    "quality": "quality",
+    "control-1": "control",
+    "attack-1": "attack",
+    "control-2": "control",
+    "attack-2": "attack"
+  },
+  "chatUpperCny": "2.874360",
+  "embeddingUpperCny": "0.60",
+  "maximumRequestBytes": 8575,
+  "promptDigest": "06535f57a42f9b0f56e2882b054a8d3b40e0e63d6d7feb7666ff3c7b82b6a391",
+  "privateStateCreated": false,
+  "modelCallsPerformed": 0,
+  "oldFundingPreserved": true,
+  "productionDeployment": false
+}

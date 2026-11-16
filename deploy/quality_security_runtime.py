@@ -185,6 +185,11 @@ class Runtime:
             self.__exit__(*sys.exc_info())
             raise
 
+    @property
+    def ledger_guard_baseline(self):
+        """历史轮次沿原保护基线；新轮次只能通过显式核对证据继承外部变动。"""
+        return self.state["originalLedgers"]
+
     def __exit__(self, *_):
         for _, process in reversed(self.children):
             if process.poll() is None:
@@ -200,13 +205,16 @@ class Runtime:
         self.state["lastLedgerCheck"] = ledgers()
         self.save()
         os.close(self.lock)
-        if self.state["lastLedgerCheck"] != self.state["originalLedgers"]:
+        if self.state["lastLedgerCheck"] != self.ledger_guard_baseline:
             raise RuntimeError("ORIGINAL_LEDGER_CHANGED")
 
     def prepare(self):
         """固定库名与资金来源防止恢复时重建另一套额度；应用用户仍无DDL权。"""
         import chat_local
         import task_local
+
+        if ledgers() != self.ledger_guard_baseline:
+            raise RuntimeError("ORIGINAL_LEDGER_CHANGED")
 
         for kind, config, prefix in (
             ("knowledge", local.load(), "KNOWLEDGE"),

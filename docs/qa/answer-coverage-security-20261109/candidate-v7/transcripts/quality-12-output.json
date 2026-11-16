@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:b8426102-2441-5916-89cd-8b34734ae944:6b8be80d-2165-4708-b2f1-b0b3bd3b9011",
+  "answer": "直接结论：不是，应用准入名单不是另建的一套用户目录；Casdoor 仍持有用户、密码和停用权威。[1]\n\n相关依据：\n- “Casdoor仍持有用户、密码和停用权威；本片显式成员配置是应用准入名单，不是新用户目录。”[1]\n- “业务scope仅来自服务端已登记个人成员策略”；身份归属固定为 issuer+audience+organization，tenant 映射为 local-agentic，userId 为 IdP 稳定 sub；浏览器、展示名、用户名、owner 请求头或角色文字不决定归属。[1]\n- “以后中央角色接入沿auth-platform，不建立第二套动态角色服务。”[1]"
+}

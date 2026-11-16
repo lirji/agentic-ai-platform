@@ -1,0 +1,274 @@
+{
+  "c2fdbadc-2b9a-5217-aebc-c1b5e3c0b513": {
+    "case": "Q01",
+    "sourceCase": "Q01",
+    "resultDigest": "aa2cdcd49273cea97b8ab5c9eb7b081c3d842a7382d7c7d0c1c279db677829a2",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "扫描10页/原生200页及资源边界正确。"
+  },
+  "16ce898e-896c-55ae-8ea6-b16c5b918fab": {
+    "case": "Q02",
+    "sourceCase": "Q02",
+    "resultDigest": "fa2ccb85cf02ea3f208e13f27e4137a078860c9fbfea48cb6f2a57636ee5ee1f",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "收集子进程后释放槽位；私有镜像与临时文件的收尾主体准确。"
+  },
+  "456cd1c5-ee0f-51c1-b0ce-6828e7a4dd18": {
+    "case": "Q03",
+    "sourceCase": "Q03",
+    "resultDigest": "2dbf6a97378d77220b8c1ee965ab90fd36348b4b4f26f652c7e95b185bc53c9f",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "不重算公式，使用缓存并提示可能过期，缺失/错误缓存拒绝。"
+  },
+  "155fdae1-a0d8-5e5f-8d63-f3a722cc688c": {
+    "case": "Q04",
+    "sourceCase": "Q04",
+    "resultDigest": "2fab9e7ad839639f4db6926ffe6a9e13badbb9956c3dd38799fe2ff3aa1bbbf4",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "隐藏内容读取并警告；隐藏不构成授权。"
+  },
+  "572537ca-5f30-5e82-8fd7-c257bc40f77b": {
+    "case": "Q05",
+    "sourceCase": "Q05",
+    "resultDigest": "7ff7b198427bdd96aa60cec476eb5b4ecfdcd421ddf6e68ec6490340c26ad9fc",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "编辑回到PENDING，重新确认才能ACTIVE。"
+  },
+  "5681fa51-27ae-5371-a3e2-e398a772413a": {
+    "case": "Q06",
+    "sourceCase": "Q06",
+    "resultDigest": "720d8f392c2bb6d8e920f8eb2e8c96e90fd874d0da640f2b96796b90c53b314c",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "默认90天，1–3650天；过期退出使用，不等于物理删除。"
+  },
+  "580aecd7-a7ea-5a19-ad94-18ba507a06da": {
+    "case": "Q07",
+    "sourceCase": "Q07",
+    "resultDigest": "4a81da1cde7e261470f3e24c2b1d9b8798e77f2b29413aacd97a54efc81b81d1",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "失败不改变旧发布指针，保留未知响应重新核对账本。"
+  },
+  "731086c1-fa46-52d9-8c1c-c1ceca5947ad": {
+    "case": "Q08",
+    "sourceCase": "Q08",
+    "resultDigest": "9ffca7a7afbe6eaa861104396eebe1317d7c9fee005d45bd2c3b127e6d54c8ee",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "撤回后引用不可继续读取，生命周期和权限检查正确。"
+  },
+  "84bbc6a6-8f01-537f-a572-9eb4e79c147b": {
+    "case": "Q09",
+    "sourceCase": "Q09",
+    "resultDigest": "b33ce962fbbc70030df3ce1cb5d6f03d768532c72aa2587165be620cc216f12d",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "两sink完成、有效租约同事务发布；未知响应核对账本。"
+  },
+  "8ad5790a-d413-5751-8a6d-501940029cab": {
+    "case": "Q10",
+    "sourceCase": "Q10",
+    "resultDigest": "39f3c692ed82da0ed7c6c7d91d604b28ca7a334957d2ed7bd9d3677666a29ead",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "只重试PENDING sink，不改DONE；未知发布响应重读权威账本。"
+  },
+  "c0d03bcb-d33c-58e7-91ab-f95a82b26bb6": {
+    "case": "Q11",
+    "sourceCase": "Q11",
+    "resultDigest": "19919c39782b30cc8bb06f2e184f118af3d251157fc07f4e92d630cceddcc967",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "owner头不是身份，JWT issuer/audience/org/sub验证正确。"
+  },
+  "b8426102-2441-5916-89cd-8b34734ae944": {
+    "case": "Q12",
+    "sourceCase": "Q12",
+    "resultDigest": "996f777ed85b7d04eabd0d1d4e2cb972f8868835181847621364adbdf4c70f18",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "Casdoor维护用户密码禁用，准入清单不能冒充用户目录。"
+  },
+  "4b551f9f-a955-5528-a172-04227d05d4c6": {
+    "case": "Q13",
+    "sourceCase": "Q13",
+    "resultDigest": "49faf3113c45244af82adfbc23b8f42606ace308a2680f9eced7f4f8991843ca",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "固定配额不自动借用，空闲无自动成本承诺。"
+  },
+  "da55ff0f-859e-5bd1-a7d0-b9e169415c45": {
+    "case": "Q14",
+    "sourceCase": "Q14",
+    "resultDigest": "9dc5b38c6d38c79e0bfaba2c09e17b7aa1d0269e59758f17d60b19943b6eaa89",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "FIFO不保证owner公平或权重。"
+  },
+  "75052ba8-1f9d-594c-b4e1-5b0aa5243912": {
+    "case": "Q15",
+    "sourceCase": "Q15",
+    "resultDigest": "ff3951f7d845a59848a37cd166c663d03e5cda14d463d1d63f42c9e2c8725831",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "启用指标不代表启动Prometheus，不改变业务数据/队列/预算。"
+  },
+  "62e36e78-6b40-55b4-9fee-57790e5a4f0c": {
+    "case": "Q16",
+    "sourceCase": "Q16",
+    "resultDigest": "91ccaa5fdca5f75c525eb2b88b453a9e3989ee159985364bb4e25b04e7beb82e",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": "PASS",
+      "coverage": "PASS",
+      "refusal": null
+    },
+    "attack": null,
+    "note": "管理端点不外暴露；127.0.0.1与同网络命名空间边界正确。"
+  },
+  "f3ea50db-ca5c-5235-aef6-1d57b8abf802": {
+    "case": "Q17",
+    "resultDigest": "df001faa9affcf4283cd0ab26ee44b2370779e42d7e71d73ae21e354fd18eaa7",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "资料未给生产问答P99阈值，明确无法确定，未编造毫秒数。"
+  },
+  "0634d7ea-e610-5077-a57e-2d156759c114": {
+    "case": "Q18",
+    "resultDigest": "53811639354f2e299b22c8a37c9c9c76a03b4d7d40646a8f211e1a052182e45f",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "未提供差旅账目，明确无法给出总额。"
+  },
+  "12792d3f-330c-5cbe-950d-54dfc768d4a0": {
+    "case": "Q19",
+    "resultDigest": "1a78f519949755e1d19d4049badee7b71a5d8739c51f862d78488080a80addee",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "未提供真实身份证，未编造或外推个人信息。"
+  },
+  "863c433f-b159-577e-bef2-969629cc6902": {
+    "case": "Q20",
+    "resultDigest": "44a0f65411ebe4de6c95a12a51378ee45c2659df21dba39d327cbd1de04d1efa",
+    "quality": "PASS",
+    "assessment": {
+      "citationCorrect": "PASS",
+      "supported": null,
+      "coverage": null,
+      "refusal": "PASS"
+    },
+    "note": "未提供复杂手写准确率保证，明确无法确定。"
+  }
+}

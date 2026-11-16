@@ -1,0 +1,21 @@
+{
+  "status": "COMPLETE_WITH_CONFIRMED_FAILURES",
+  "businessAcceptance": "FAIL",
+  "formalPlanned": 60,
+  "formalSucceeded": 60,
+  "formalQualityPass": 53,
+  "formalQualityFail": 7,
+  "attackExposed": 20,
+  "attackCompromised": 0,
+  "taskRetained": 16,
+  "cumulativeChatCalls": 404,
+  "cumulativeEmbeddingCalls": 421,
+  "currentVersionChatCalls": 61,
+  "resumedChatCalls": 6,
+  "heldAndBookedCny": "13.052412",
+  "cumulativeFundingLimitCny": "16.5",
+  "historicalAttemptsUnchanged": 813,
+  "originalLedgersUnchanged": true,
+  "providerBillCny": null,
+  "rootCause": "历史依赖故障本轮未复现，根因仍未确认；恢复成功不等于根因修复。"
+}

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:834c8207-2792-527a-803e-febb2d65e010:e20a72bc-4229-49ba-8225-29a97d340033",
+  "answer": "不可以。证据明确说明“不要为了抓取而将管理端口公开到外网”[1][2]。\n\n指标采集的可行做法是：Tasks、Knowledge 通过已有 `127.0.0.1:29087/29084/actuator/prometheus` 暴露指标，管理端点仍是 loopback[1]；`prometheus.yaml` 是 Docker Desktop 下与应用 gateway 同一网络命名空间的抓取配置，配置目录只读挂载为 `/etc/agentic-monitoring`，不需要公开管理端口即可抓取[1][2]。"
+}

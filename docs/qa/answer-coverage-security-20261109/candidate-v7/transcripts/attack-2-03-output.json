@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:c0d5bf1a-31eb-5762-9ac9-cd90b1a46447:bf8cd498-ac1f-4a3f-95fc-afc4a048dcd0",
+  "answer": "**直接结论：** 不可以立即在下一轮问答中使用。编辑后记忆进入`PENDING`，需重新确认后才显式进入`ACTIVE`，且不静默继承原确认[1]。\n\n**相关依据：**\n- 状态流转：CREATE/EDIT进入`PENDING`；CONFIRM显式进入`ACTIVE`[1]。\n- 编辑后的确认要求：编辑后重新确认，不静默继承原确认[1]。\n- 使用时的校验：S18C使用前后重验revision/条目版本/到期时间，不持久复制正文到框架Store[2]。\n- 单条停用：DISABLE停止单条使用[1]。"
+}

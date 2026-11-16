@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:572537ca-5f30-5e82-8fd7-c257bc40f77b:6b8be80d-2165-4708-b2f1-b0b3bd3b9011",
+  "answer": "不能立即在下一轮问答使用。编辑后进入 `PENDING`，须重新确认后才变为 `ACTIVE`。\n\n相关依据：\n- CREATE/EDIT 进入 `PENDING`；CONFIRM 显式进入 `ACTIVE`；编辑后重新确认，不静默继承原确认。[1]\n- DISABLE 停止单条使用；状态为 `PENDING`、`ACTIVE`、`DISABLED`、`FORGOTTEN`、`REJECTED`，`EXPIRED` 为读取时派生状态。[1]"
+}

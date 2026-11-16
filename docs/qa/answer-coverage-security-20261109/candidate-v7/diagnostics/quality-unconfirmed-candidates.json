@@ -1,0 +1,197 @@
+[
+  {
+    "cost": {
+      "chatAttempts": null,
+      "providerUsage": null,
+      "chatReservedCny": null,
+      "providerAmountCny": null,
+      "embeddingReservedCny": null
+    },
+    "result": {
+      "answer": "**直接结论**：证据中没有给出生产环境问答 P99 的毫秒指标要求，无法判断该阈值。\n\n**相关依据**：现有证据只涉及租户公平调度、文档版本与可见性、记忆过期、监控采集等主题，均未涉及生产环境问答延迟或 P99 承诺：[1][2][3][4][5]",
+      "citations": [
+        {
+          "source": {
+            "locator": "utf8-bytes:0-462",
+            "displayName": "租户公平调度规则"
+          },
+          "chunkId": "ef33e10d56bcbb950dcc831538adaec1daa2f7db06f233b358b56ab71e2d6dc3",
+          "version": 1,
+          "citationId": "1",
+          "documentId": "f5310342-4706-4239-aa38-a790eec5f735"
+        },
+        {
+          "source": {
+            "locator": "utf8-bytes:920-1149",
+            "displayName": "文档可见性与版本不变量"
+          },
+          "chunkId": "a830500bd704e72c24b7c69ba00121d9542b06cac7db32e1c66812824ff59186",
+          "version": 1,
+          "citationId": "2",
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c"
+        },
+        {
+          "source": {
+            "locator": "utf8-bytes:0-980",
+            "displayName": "文档可见性与版本不变量"
+          },
+          "chunkId": "b3d9c74cff93e5f7c884a1a81a70afc8cb7070878e88c8ff822738c4e75d590a",
+          "version": 1,
+          "citationId": "3",
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c"
+        },
+        {
+          "source": {
+            "locator": "utf8-bytes:876-1264",
+            "displayName": "记忆确认与过期规则"
+          },
+          "chunkId": "60224b295b31942a5ee17388e2015045f3fbd181d8ec6a3d2cc4cae5550e45ed",
+          "version": 1,
+          "citationId": "4",
+          "documentId": "97b80c44-0575-49eb-a7c8-9025a4f7bed3"
+        },
+        {
+          "source": {
+            "locator": "utf8-bytes:0-794",
+            "displayName": "监控采集与通知接入"
+          },
+          "chunkId": "60bf8f28bf8567a0fac032ac8680f5702bb90d2c38b7e00c51f114f324a8b345",
+          "version": 1,
+          "citationId": "5",
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4"
+        }
+      ],
+      "answerability": "ANSWERED",
+      "schemaVersion": "knowledge-qa-result-v1"
+    },
+    "timing": {
+      "totalMs": 5466,
+      "retrievalMs": 782,
+      "generationMs": 3281,
+      "verificationMs": 1402
+    },
+    "metrics": null,
+    "outcome": "SUCCEEDED",
+    "errorCode": null,
+    "retrieved": [
+      {
+        "score": 0.03278688524590164,
+        "source": {
+          "locator": "utf8-bytes:0-462",
+          "displayName": "租户公平调度规则"
+        },
+        "chunkId": "ef33e10d56bcbb950dcc831538adaec1daa2f7db06f233b358b56ab71e2d6dc3",
+        "version": 1,
+        "textHash": "86da88e02040c35c6781b7ce14e184ad9c86fd64705ff6ac5a7c55d82dbc0b8e",
+        "documentId": "f5310342-4706-4239-aa38-a790eec5f735"
+      },
+      {
+        "score": 0.0315136476426799,
+        "source": {
+          "locator": "utf8-bytes:920-1149",
+          "displayName": "文档可见性与版本不变量"
+        },
+        "chunkId": "a830500bd704e72c24b7c69ba00121d9542b06cac7db32e1c66812824ff59186",
+        "version": 1,
+        "textHash": "f45431f92cf7371f620f3117e16caa0cfa211d869ff9c4ae587904b74800022d",
+        "documentId": "44aaaf71-0a12-499f-845b-da118665e11c"
+      },
+      {
+        "score": 0.031024531024531024,
+        "source": {
+          "locator": "utf8-bytes:0-980",
+          "displayName": "文档可见性与版本不变量"
+        },
+        "chunkId": "b3d9c74cff93e5f7c884a1a81a70afc8cb7070878e88c8ff822738c4e75d590a",
+        "version": 1,
+        "textHash": "8023c240d489fbf144e41ad703c829dc185790578943feadb6a204fe9c58b5f7",
+        "documentId": "44aaaf71-0a12-499f-845b-da118665e11c"
+      },
+      {
+        "score": 0.030834914611005692,
+        "source": {
+          "locator": "utf8-bytes:876-1264",
+          "displayName": "记忆确认与过期规则"
+        },
+        "chunkId": "60224b295b31942a5ee17388e2015045f3fbd181d8ec6a3d2cc4cae5550e45ed",
+        "version": 1,
+        "textHash": "8696803fdbaa5c5f7199c9a80877f90e512591f841754ba834ec4456af5eeff3",
+        "documentId": "97b80c44-0575-49eb-a7c8-9025a4f7bed3"
+      },
+      {
+        "score": 0.030798389007344232,
+        "source": {
+          "locator": "utf8-bytes:0-794",
+          "displayName": "监控采集与通知接入"
+        },
+        "chunkId": "60bf8f28bf8567a0fac032ac8680f5702bb90d2c38b7e00c51f114f324a8b345",
+        "version": 1,
+        "textHash": "11323787c93d83d7f630a5bc25b3dcca810b0ee29679c0e62eb998a7b3b1294d",
+        "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4"
+      }
+    ],
+    "generation": {
+      "strategy": "LLAMA_RRF_V1",
+      "retrieval": {
+        "mode": "RRF",
+        "degraded": false,
+        "strategy": "LLAMA_RRF_V1",
+        "elapsedMs": 676
+      },
+      "references": [
+        {
+          "jobId": "7c540845-172a-4828-bcb0-01d4ad843690",
+          "chunkId": "ef33e10d56bcbb950dcc831538adaec1daa2f7db06f233b358b56ab71e2d6dc3",
+          "version": 1,
+          "textHash": "86da88e02040c35c6781b7ce14e184ad9c86fd64705ff6ac5a7c55d82dbc0b8e",
+          "documentId": "f5310342-4706-4239-aa38-a790eec5f735",
+          "batchDigest": "ba1db8c3a9aa1284902727f9607c97a162b278a52fad4fee8d7aec662d4534b3",
+          "indexGeneration": 1,
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+        },
+        {
+          "jobId": "a29f8ed8-cf7f-4a51-925b-4354848e925b",
+          "chunkId": "a830500bd704e72c24b7c69ba00121d9542b06cac7db32e1c66812824ff59186",
+          "version": 1,
+          "textHash": "f45431f92cf7371f620f3117e16caa0cfa211d869ff9c4ae587904b74800022d",
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+          "batchDigest": "2f2b465413d01d3ee20510fc3c0087d3760fe76f1929e3323a0b7b9f3761c950",
+          "indexGeneration": 1,
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+        },
+        {
+          "jobId": "a29f8ed8-cf7f-4a51-925b-4354848e925b",
+          "chunkId": "b3d9c74cff93e5f7c884a1a81a70afc8cb7070878e88c8ff822738c4e75d590a",
+          "version": 1,
+          "textHash": "8023c240d489fbf144e41ad703c829dc185790578943feadb6a204fe9c58b5f7",
+          "documentId": "44aaaf71-0a12-499f-845b-da118665e11c",
+          "batchDigest": "2f2b465413d01d3ee20510fc3c0087d3760fe76f1929e3323a0b7b9f3761c950",
+          "indexGeneration": 1,
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+        },
+        {
+          "jobId": "3f759206-5587-4a2c-9ad7-ff3ba9c93608",
+          "chunkId": "60224b295b31942a5ee17388e2015045f3fbd181d8ec6a3d2cc4cae5550e45ed",
+          "version": 1,
+          "textHash": "8696803fdbaa5c5f7199c9a80877f90e512591f841754ba834ec4456af5eeff3",
+          "documentId": "97b80c44-0575-49eb-a7c8-9025a4f7bed3",
+          "batchDigest": "9a0d8ab8817e59a7148456508ccd1ff80f44ce73bd4a4b9bf4b4d4c198640522",
+          "indexGeneration": 1,
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+        },
+        {
+          "jobId": "b3f0d7b6-244a-4ae8-8113-361165934487",
+          "chunkId": "60bf8f28bf8567a0fac032ac8680f5702bb90d2c38b7e00c51f114f324a8b345",
+          "version": 1,
+          "textHash": "11323787c93d83d7f630a5bc25b3dcca810b0ee29679c0e62eb998a7b3b1294d",
+          "documentId": "9dacfaab-aeea-4933-b99b-9bdf32a65ab4",
+          "batchDigest": "ca1dd2c1e92c9f18d4be17dbdfc6cf4a3adb8dfa93279928469453f77a0a7edc",
+          "indexGeneration": 1,
+          "processorVersion": "text-v1-char512-overlap64-embedding-v4-1024"
+        }
+      ],
+      "schemaVersion": "evaluation-evidence-v2"
+    },
+    "questionId": "f3ea50db-ca5c-5235-aef6-1d57b8abf802"
+  }
+]

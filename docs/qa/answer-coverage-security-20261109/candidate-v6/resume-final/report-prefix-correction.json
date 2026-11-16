@@ -1,0 +1,6 @@
+{
+  "reason": "恢复报告原先仅查新标签，漏读四题已确认前缀的原始输入；现在按已核实的前缀逐题选择来源，排除原未知第五题。",
+  "beforeExposed": 16,
+  "afterExposed": 20,
+  "qualityCountsUnchanged": true
+}

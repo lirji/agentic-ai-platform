@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:8ad5790a-d413-5751-8a6d-501940029cab:6b8be80d-2165-4708-b2f1-b0b3bd3b9011",
+  "answer": "直接结论：不会。已成功且记为 DONE 的索引（sink）在重试时不会重写；重试是幂等重放尚未完成的 sink，超时或部分失败时保持 PENDING。[1]\n\n相关依据：\n- 完成确认：Qdrant 需 `wait=true` 且确认 completed 后才记 DONE；ES Bulk 需 `refresh=wait_for`，逐条确认 ID/状态且无 errors 才记 DONE。[1]\n- 失败与重试：超时或部分失败保持 PENDING，显式重试幂等重放该 sink；已 DONE 的 sink 不重写。[1]\n- 恢复保留范围：恢复保留原文件、profile、代次、已接受提取物/准备包和已完成 sink。[4]\n- 最终发布条件（两个 sink DONE 之后）：在带租约条件的短事务中将任务 READY/COMPLETE 和文档 READY/publishedVersion=version 一起提交并记事件；旧 owner、错误批次和单 sink 完成均无法发布。[1]\n- 发布结果未知时：重读权威账本。[1]"
+}

@@ -95,6 +95,7 @@ def comparison(baseline=OUT, candidate=REMEDIATION_OUT, *, checkpoint_resume=Fal
         if not valid_failure or recovery != original + "-recovery":
             raise ValueError("RECOVERY_SELECTION_INVALID")
         selections[original] = recovery
+    transcript_sources = {}
     if checkpoint_resume:
         group = "attack-1" if candidate.name == "candidate-v6" else "quality"
         if group in selections:
@@ -104,7 +105,11 @@ def comparison(baseline=OUT, candidate=REMEDIATION_OUT, *, checkpoint_resume=Fal
             if group != "quality"
             else checkpoint_selection(candidate)
         )
-    new = campaign_report(candidate, labels=selections)
+        if group.startswith("attack-"):
+            # checkpoint_selection已逐字段核对原候选；只对确认前缀选择旧输入，未知第五题不混入。
+            prefix = read_json(candidate / f"diagnostics/{group}-partial-candidates.json")
+            transcript_sources[group] = {row["questionId"]: group for row in prefix}
+    new = campaign_report(candidate, labels=selections, transcript_sources=transcript_sources)
     changes = []
     for label in old["groups"]:
         actual_label = selections.get(label, label)
@@ -173,12 +178,12 @@ if __name__ == "__main__":
     parser.add_argument("command", choices=("report", "verify"))
     parser.add_argument(
         "--candidate",
-        choices=("draft", "final", "v3", "v4", "v5", "v6"),
+        choices=("draft", "final", "v3", "v4", "v5", "v6", "v7"),
         default="final",
     )
     parser.add_argument("--checkpoint-resume", action="store_true")
     args = parser.parse_args()
-    if args.checkpoint_resume and args.candidate not in {"v4", "v6"}:
+    if args.checkpoint_resume and args.candidate not in {"v4", "v6", "v7"}:
         raise ValueError("CHECKPOINT_RESUME_CANDIDATE_INVALID")
     directory = {
         "draft": REMEDIATION_OUT,
@@ -187,6 +192,7 @@ if __name__ == "__main__":
         "v4": REMEDIATION_OUT / "candidate-v4",
         "v5": REMEDIATION_OUT / "candidate-v5",
         "v6": REMEDIATION_OUT / "candidate-v6",
+        "v7": REMEDIATION_OUT / "candidate-v7",
     }[args.candidate]
     result = comparison(candidate=directory, checkpoint_resume=args.checkpoint_resume)
     prefix = "resumed-" if args.checkpoint_resume else ""

@@ -1,0 +1,4 @@
+{
+  "operationId": "eval:617adc2f-f943-5df8-9fce-520dfac49a6e:d62293f6-fd44-4dd6-a46c-c424977cbe03",
+  "answer": "**直接结论**\n- 扫描PDF（OCR profile）最多处理 **10页**[1]。\n- 原生PDF不受同样限制，证据明确“**旧PDF原生200页上限不变**”[1]。\n\n**相关依据**\n- OCR范围：“OCR profile最多10页；200DPI、每页最多500万像素、整份最多5000万像素，在分配光栅前校验尺寸/旋转/UserUnit及有限值。”[1]\n- 原生PDF上限：“旧PDF原生200页上限不变。”[1]\n- 相关资源约束：每次只允许一个Tesseract子进程，每页最多5秒；stdout/stderr分别受4MiB/64KiB上限约束[1]。"
+}

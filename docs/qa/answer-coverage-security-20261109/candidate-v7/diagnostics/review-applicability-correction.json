@@ -1,0 +1,8 @@
+{
+  "observed": "E03 rejected Q17 with HTTP 400; first 16 reviews had succeeded",
+  "cause": "NO_ANSWER supported/coverage must be null, not PASS",
+  "correction": "Q17–Q20 retain citationCorrect/refusal PASS; supported/coverage N/A per existing ReviewRules",
+  "semanticVerdictsChanged": false,
+  "modelCallsAdded": 0,
+  "originalSuccessfulReviewsPreserved": 16
+}
